@@ -9,6 +9,7 @@
       delimiter-color="rgba(255, 255, 255, 0.6)"
       show-arrows="hover"
       cycle
+      loa
       interval="9000"
       class="custom-carousel responsive-carousel"
     >
@@ -18,6 +19,7 @@
       >
         <v-img
           :src="pathImage + item.poster_url"
+          :lazy-src="pathImage + item.poster_url"
           cover
           height="100%"
           class="carousel-image"

@@ -1,8 +1,12 @@
 <template>
   <div style="width: 100%">
     <CarouselPage />
-
-    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex" ref="sectionRefs">
+<v-lazy
+  :min-height="200"
+  :options="{'threshold':0.5}"
+  transition="fade-transition"
+>
+<div v-for="(section, sectionIndex) in sections" :key="sectionIndex" ref="sectionRefs">
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
           <h2 class="category-title">
@@ -99,6 +103,8 @@
       </div>
       
     </div>
+</v-lazy>
+    
   </div>
 </template>
 
