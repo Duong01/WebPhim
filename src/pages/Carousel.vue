@@ -74,9 +74,9 @@ export default {
       path: "phim-moi-cap-nhat",
     };
   },
-  // async created() {
-  //   await this.ListMovie();
-  // },
+  async created() {
+    await this.ListMovie();
+  },
   methods: {
     onSlideChange(newIndex) {
     // nếu chưa load phim ở vị trí newIndex thì mới gán
