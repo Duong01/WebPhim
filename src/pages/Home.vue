@@ -32,14 +32,14 @@
           v-for="(item, index) in isLoading
             ? Array(12).fill({})
             : section.listMovie.slice(0, 12)"
-          :key="item.slug || index"
-          cols="4"
-          xs="4"
-          sm="4"
-          md="3"
-          lg="2"
-          xl="2"
-          style="padding: 10px"
+            :key="item.slug || index"
+            cols="4"
+            xs="4"
+            sm="4"
+            md="3"
+            lg="2"
+            xl="2"
+            style="padding: 10px"
         >
           <v-skeleton-loader v-if="isLoading" type="image" height="250" />
           <router-link
