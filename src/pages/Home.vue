@@ -218,29 +218,45 @@ export default {
   //   await Promise.all(
   //     this.sections.map(item => this.ListMovie(item.id, item))
   // );
-    this.observeSections();
+    this.$nextTick(() => {
+      this.observeSections();
+    });
     
   },
   methods: {
     observeSections() {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const sectionIndex = [...this.$refs.sectionRefs].indexOf(entry.target);
-              const section = this.sections[sectionIndex];
-              if (section && !section.loaded) {
-                section.loaded = true; // Bật render nội dung
-                this.ListMovie(section.id, section); // Gọi API
-              }
-              observer.unobserve(entry.target);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionIndex = [...this.$refs.sectionRefs].indexOf(entry.target);
+            const section = this.sections[sectionIndex];
+            if (section && !section.loaded) {
+              section.loaded = true; // bật render skeleton
+              this.isLoading = true; // bật loading toàn cục hoặc bạn có thể thêm riêng cho từng section
+              this.ListMovie(section.id, section)
+                .then(() => {
+                  this.isLoading = false;
+                })
+                .catch((err) => {
+                  console.error(err);
+                  this.isLoading = false;
+                });
             }
-          });
-        },
-        { rootMargin: "0px 0px 200px 0px", threshold: 0.1 }
-      );
-      this.$refs.sectionRefs.forEach((el) => observer.observe(el));
-    },
+            observer.unobserve(entry.target); // chỉ load 1 lần
+          }
+        });
+      },
+      {
+        rootMargin: "0px 0px 300px 0px", // preload trước 300px khi gần vào màn hình
+        threshold: 0.1
+      }
+    );
+
+    this.$refs.sectionRefs.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+  },
     ListMovie(sectionId, section) {
       if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
         return new Promise((resolve, reject) =>{
