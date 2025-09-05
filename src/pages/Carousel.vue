@@ -11,7 +11,6 @@
       cycle
       interval="9000"
       class="custom-carousel responsive-carousel"
-      @change="onSlideChange"
     >
       <v-carousel-item
         v-for="(item) in videoList"
@@ -67,8 +66,6 @@ export default {
   name: "CarouselPage",
   data() {
     return {
-      currentSlide: 0,
-      rawMovies: [],
       pathImage: "https://img.ophim.live/uploads/movies/",
       videoList: [],
       path: "phim-moi-cap-nhat",
@@ -78,31 +75,21 @@ export default {
     await this.ListMovie();
   },
   methods: {
-    onSlideChange(newIndex) {
-    // nếu chưa load phim ở vị trí newIndex thì mới gán
-    if (!this.videoList[newIndex] && this.rawMovies[newIndex]) {
-      this.$set(this.videoList, newIndex, {
-        ...this.rawMovies[newIndex],
-        loaded: true
-      })
-    }
-  },
-
-  ListMovie() {
-    ListMovieByCate(`${this.path}?page=1`, (result) => {
-      if (result.status === "success") {
-        // lưu dữ liệu thô nhưng KHÔNG render hết
-        this.rawMovies = result.data.items.slice(0, 6).map(item => ({
-          ...item,
-          loaded: false
-        }))
-        // load trước slide đầu tiên
-        this.onSlideChange(0)
-      }
-    }, (err) => {
-      console.error(err)
-    })
-  },
+    ListMovie() {
+      ListMovieByCate(`${this.path}?page=1`, (result) => {
+        if (result.status === "success") {
+          // Giả sử dữ liệu có rating, duration, short_description
+          this.videoList = result.data.items.slice(1, 6).map(item => ({
+            ...item,
+            rating: item.rating || null,
+            duration: item.duration || null,
+            short_description: item.short_description || null,
+          }));
+        }
+      }, (err) => {
+        console.error(err);
+      });
+    },
     goToDetail(slug) {
       this.$router.push({ name: "MovieDetail", params: { slug } });
     },
