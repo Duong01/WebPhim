@@ -1,13 +1,14 @@
 <template>
   <div style="width: 100%">
     <CarouselPage />
-
 <div v-for="(section, sectionIndex) in sections" :key="sectionIndex" ref="sectionRefs">
-  <v-lazy
-  :min-height="200"
-  :options="{'threshold':0.5}"
+    <v-lazy
+  :options="{ threshold: 0.5 }"
+  min-height="300"
   transition="fade-transition"
 >
+  <template #default>
+    <div>
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
           <h2 class="category-title">
@@ -102,9 +103,13 @@
       <div v-else style="height: 400px">
         <v-skeleton-loader type="card" height="100%" />
       </div>
-      </v-lazy>
     </div>
-
+  </template>
+</v-lazy>
+  
+      
+      
+    </div>
     
   </div>
 </template>
