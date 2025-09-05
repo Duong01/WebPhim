@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <CarouselPage />
 
-    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex" ref="sectionRefs">
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
           <h2 class="category-title">
@@ -27,7 +27,8 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters tag="transition-group" name="fade-scale" class="movie-list">
+      <div v-if="section.loaded">
+        <v-row no-gutters tag="transition-group" name="fade-scale" class="movie-list">
         <v-col
           v-for="(item, index) in isLoading
             ? Array(12).fill({})
@@ -92,6 +93,11 @@
           </router-link>
         </v-col>
       </v-row>
+      </div>
+      <div v-else style="height: 400px">
+        <v-skeleton-loader type="card" height="100%" />
+      </div>
+      
     </div>
   </div>
 </template>
@@ -116,14 +122,18 @@ export default {
           id: "danh-sach/thinh-hanh",
           name: "PhimNew",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: { name: "PhimNew" }
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
           id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: { name: "PhimNew" }
 
         },
         {
@@ -131,7 +141,12 @@ export default {
           id: "quoc-gia/viet-nam?page=1&limit=20",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: {
+            name: "QuocGia", 
+            params: { path: "viet-nam" } 
+          }
 
         },
         {
@@ -139,7 +154,9 @@ export default {
           id: "danh-sach/phim-bo",
           name: "PhimBo",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: { name: "PhimBo" }
 
         },
         {
@@ -147,7 +164,9 @@ export default {
           id: "danh-sach/phim-le",
           name: "PhimLe",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: { name: "PhimLe" }
 
         },
         {
@@ -155,7 +174,12 @@ export default {
           id: "quoc-gia/han-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false,
+          link: { 
+            name: "QuocGia", 
+            params: { path: "han-quoc" } 
+          }
 
         },
         {
@@ -163,7 +187,12 @@ export default {
           id: "quoc-gia/trung-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          loaded: false, 
+          link: { 
+            name: "QuocGia", 
+            params: { path: "trung-quoc" } 
+          }
 
         },
       ],
@@ -174,14 +203,32 @@ export default {
     CarouselPage,
   },
   async mounted() {
-    await Promise.all(
-      this.sections.map(item => this.ListMovie(item.id, item))
-  );
-    // this.sections.forEach((item) => {
-    //   await this.ListMovie(item.id, item);
-    // });
+  //   await Promise.all(
+  //     this.sections.map(item => this.ListMovie(item.id, item))
+  // );
+    this.observeSections();
+    
   },
   methods: {
+    observeSections() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const sectionIndex = [...this.$refs.sectionRefs].indexOf(entry.target);
+              const section = this.sections[sectionIndex];
+              if (section && !section.loaded) {
+                section.loaded = true; // Bật render nội dung
+                this.ListMovie(section.id, section); // Gọi API
+              }
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px 200px 0px", threshold: 0.1 }
+      );
+      this.$refs.sectionRefs.forEach((el) => observer.observe(el));
+    },
     ListMovie(sectionId, section) {
       if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
         return new Promise((resolve, reject) =>{
