@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <CarouselPage />
 
-    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex" :ref="el => sectionRefs[sectionIndex] = el">
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
           <h2 class="category-title">
@@ -50,6 +50,7 @@
               <v-img
                 :src="getOptimizedImage(item.poster_url, section.id)"
                 :lazy-src="getOptimizedImage(item.poster_url, section.id)"
+
                 :alt="`Poster phim ${item.name}`"
                 class="movie-img"
                 height="250"
@@ -105,6 +106,7 @@ export default {
   name: "HomePage",
   data() {
     return {
+      sectionRefs: [],
       urlImage: urlImage,
       urlImage1: urlImage1,
       isLoading: true,
@@ -116,14 +118,18 @@ export default {
           id: "danh-sach/thinh-hanh",
           name: "PhimNew",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
           id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
         {
@@ -131,7 +137,9 @@ export default {
           id: "quoc-gia/viet-nam?page=1&limit=20",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
         {
@@ -139,7 +147,9 @@ export default {
           id: "danh-sach/phim-bo",
           name: "PhimBo",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
         {
@@ -147,7 +157,9 @@ export default {
           id: "danh-sach/phim-le",
           name: "PhimLe",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
         {
@@ -155,7 +167,9 @@ export default {
           id: "quoc-gia/han-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
         {
@@ -163,7 +177,9 @@ export default {
           id: "quoc-gia/trung-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: ''
+          content: '',
+          isLoading: true,
+          loaded: false,
 
         },
       ],
@@ -177,11 +193,51 @@ export default {
     await Promise.all(
       this.sections.map(item => this.ListMovie(item.id, item))
   );
+  this.initObserver()
     // this.sections.forEach((item) => {
     //   await this.ListMovie(item.id, item);
     // });
   },
   methods: {
+    initObserver() {
+      const options = {
+        root: null,
+        threshold: 0.2 // 20% section xuất hiện thì load
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = this.sectionRefs.indexOf(entry.target)
+            if (index !== -1 && !this.sections[index].loaded) {
+              this.loadSection(index)
+              this.sections[index].loaded = true
+              observer.unobserve(entry.target) // bỏ theo dõi sau khi đã load
+            }
+          }
+        })
+      }, options)
+
+      this.sectionRefs.forEach(ref => {
+        if (ref) observer.observe(ref)
+      })
+    },
+    async loadSection(index) {
+      const section = this.sections[index]
+      try {
+        const result = await new Promise((resolve, reject) => {
+          ListMovieByCateHome(section.id, (res) => {
+            if (res.status === "success") resolve(res)
+            else reject(res)
+          }, reject)
+        })
+
+        section.listMovie = result.data.items
+        section.isLoading = false
+      } catch (e) {
+        console.error("Lỗi load section:", e)
+      }
+    },
     ListMovie(sectionId, section) {
       if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
         return new Promise((resolve, reject) =>{
