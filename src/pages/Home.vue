@@ -248,8 +248,8 @@ export default {
         });
       },
       {
-        rootMargin: "0px 0px 150px 0px", // preload trước 300px khi gần vào màn hình
-        threshold: 0
+        rootMargin: "0px 0px 10px 0px", // preload trước 300px khi gần vào màn hình
+        threshold: 0.3
       }
     );
 
