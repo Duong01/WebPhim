@@ -1,122 +1,145 @@
 <template>
   <div style="width: 100%">
     <CarouselPage />
-<div v-for="(section, sectionIndex) in sections" :key="sectionIndex" ref="sectionRefs">
-    <v-lazy
-  :options="{ threshold: 0.5 }"
-  min-height="300"
-  transition="fade-transition"
->
-  <template #default>
-    <div>
-      <v-row class="category-header" align="center" no-gutters>
-        <v-col cols="auto">
-          <h2 class="category-title">
-            <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
-            {{ section.title }}
-          </h2>
-        </v-col>
-        <v-col cols="auto">
-          <router-link
-            :to="
-              section.name === 'QuocGia' || section.name === 'PhimNew'
-                ? {
-                    name: section.name,
-                    params: { path: section.id.split('/')[1] },
-                  }
-                : { name: section.name }
-            "
-            class="view-all"
-          >
-            {{$t('Xem tất cả')}} >>
-          </router-link>
-        </v-col>
-      </v-row>
-
-      <div v-if="section.loaded">
-        <v-row no-gutters tag="transition-group" name="fade-scale" class="movie-list">
-        <v-col
-          v-for="(item, index) in isLoading
-            ? Array(12).fill({})
-            : section.listMovie.slice(0, 12)"
-            :key="item.slug || index"
-            cols="4"
-            xs="4"
-            sm="4"
-            md="3"
-            lg="2"
-            xl="2"
-            style="padding: 10px"
-        >
-          <v-skeleton-loader v-if="isLoading" type="image" height="250" />
-          <router-link
-            :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
-            v-else
-          >
-            <v-card class="mx-auto bg-dark text-white" max-width="344">
-              <v-img
-                :src="getOptimizedImage(item.poster_url, section.id)"
-                :lazy-src="getOptimizedImage(item.poster_url, section.id)"
-                :alt="`Poster phim ${item.name}`"
-                class="movie-img"
-                height="250"
-                cover
-              >
-                <template #default>
-                  <v-btn
-                    icon
-                    size="small"
-                    color="red"
-                    variant="flat"
-                    class="favorite-btn"
-                    @click.stop="toggleFavorite(item)"
+    <div
+      v-for="(section, sectionIndex) in sections"
+      :key="sectionIndex"
+      ref="sectionRefs"
+    >
+      <v-lazy
+        :options="{ threshold: 0.5 }"
+        min-height="300"
+        transition="fade-transition"
+      >
+        <template #default>
+          <div>
+            <v-row class="category-header" align="center" no-gutters>
+              <v-col cols="auto">
+                <h2 class="category-title">
+                  <v-icon size="20" color="#ffcc00" class="mr-1"
+                    >mdi-filmstrip</v-icon
                   >
-                    <v-icon>{{
-                      isFavorite(item) ? "mdi-heart" : "mdi-heart-outline"
-                    }}</v-icon>
-                  </v-btn>
-                </template>
-              </v-img>
+                  {{ section.title }}
+                </h2>
+              </v-col>
+              <v-col cols="auto">
+                <router-link
+                  :to="
+                    section.name === 'QuocGia' || section.name === 'PhimNew'
+                      ? {
+                          name: section.name,
+                          params: { path: section.id.split('/')[1] },
+                        }
+                      : { name: section.name }
+                  "
+                  class="view-all"
+                >
+                  {{ $t("Xem tất cả") }} >>
+                </router-link>
+              </v-col>
+            </v-row>
 
-              <v-card-subtitle class="episode-lang">
-                {{
-                  item.episode_current === "Tập 0"
-                    ? `Full - ${item.lang}`
-                    : `${item.episode_current} - ${item.lang}`
-                }}
-              </v-card-subtitle>
+            <div v-if="section.loaded">
+              <v-row
+                no-gutters
+                tag="transition-group"
+                name="fade-scale"
+                class="movie-list"
+              >
+                <v-col
+                  v-for="(item, index) in isLoading
+                    ? Array(12).fill({})
+                    : section.listMovie.slice(0, 12)"
+                  :key="item.slug || index"
+                  cols="4"
+                  xs="4"
+                  sm="4"
+                  md="3"
+                  lg="2"
+                  xl="2"
+                  style="padding: 10px"
+                >
+                  <v-skeleton-loader
+                    v-if="isLoading"
+                    type="image"
+                    height="250"
+                  />
+                  <router-link
+                    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+                    v-else
+                  >
+                    <v-card class="mx-auto bg-dark text-white" max-width="344">
+                      <v-img
+                        :src="getOptimizedImage(item.poster_url, section.id)"
+                        :lazy-src="
+                          getOptimizedImage(item.poster_url, section.id)
+                        "
+                        :alt="`Poster phim ${item.name}`"
+                        class="movie-img"
+                        height="250"
+                        cover
+                      >
+                        <template #default>
+                          <v-btn
+                            icon
+                            size="small"
+                            color="red"
+                            variant="flat"
+                            class="favorite-btn"
+                            @click.stop="toggleFavorite(item)"
+                          >
+                            <v-icon>{{
+                              isFavorite(item)
+                                ? "mdi-heart"
+                                : "mdi-heart-outline"
+                            }}</v-icon>
+                          </v-btn>
+                        </template>
+                      </v-img>
 
-              <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+                      <v-card-subtitle class="episode-lang">
+                        {{
+                          item.episode_current === "Tập 0"
+                            ? `Full - ${item.lang}`
+                            : `${item.episode_current} - ${item.lang}`
+                        }}
+                      </v-card-subtitle>
 
-              <v-card-text class="movie-info">
-                <div class="text-grey text-truncate">
-                  <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
-                  {{ item.origin_name }} ({{ item.year }})
-                </div>
-                
-              </v-card-text>
-            </v-card>
-          </router-link>
-        </v-col>
-      </v-row>
-      </div>
-      <div v-else style="height: 400px">
-        <v-skeleton-loader type="card" height="100%" />
-      </div>
+                      <v-card-title class="movie-title">{{
+                        item.name
+                      }}</v-card-title>
+
+                      <v-card-text class="movie-info">
+                        <div class="text-grey text-truncate">
+                          <v-icon size="14" class="mr-1" color="grey"
+                            >mdi-tag</v-icon
+                          >
+                          {{ item.origin_name }} ({{ item.year }})
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </router-link>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else style="height: 400px">
+              <v-skeleton-loader type="card" height="100%" />
+            </div>
+          </div>
+        </template>
+      </v-lazy>
     </div>
-  </template>
-</v-lazy>
-  
-      
-      
-    </div>
-    
   </div>
 </template>
 
 
 <script>
-import { ListMovieByCateHome,ListMovieByCateHome1, urlImage,urlImage1 } from "@/model/api";
+import {
+  ListMovieByCateHome,
+  ListMovieByCateHome1,
+  urlImage,
+  urlImage1,
+} from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 
 export default {
@@ -126,241 +149,233 @@ export default {
       urlImage: urlImage,
       urlImage1: urlImage1,
       isLoading: true,
+      loaded: false,
+      loading: false,
       favoriteMovies: [],
       sections: [
-        
         {
-          title: this.$t('PHIM THỊNH HÀNH'),
+          title: this.$t("PHIM THỊNH HÀNH"),
           id: "danh-sach/thinh-hanh",
           name: "PhimNew",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
-          link: { name: "PhimNew" }
+          link: { name: "PhimNew" },
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
           id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
-          link: { name: "PhimNew" }
-
+          link: { name: "PhimNew" },
         },
         {
           title: this.$t("PHIM VIỆT NAM"),
           id: "quoc-gia/viet-nam?page=1&limit=20",
           name: "QuocGia",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
           link: {
-            name: "QuocGia", 
-            params: { path: "viet-nam" } 
-          }
-
+            name: "QuocGia",
+            params: { path: "viet-nam" },
+          },
         },
         {
           title: this.$t("PHIM BỘ"),
           id: "danh-sach/phim-bo",
           name: "PhimBo",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
-          link: { name: "PhimBo" }
-
+          link: { name: "PhimBo" },
         },
         {
           title: this.$t("PHIM LẺ"),
           id: "danh-sach/phim-le",
           name: "PhimLe",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
-          link: { name: "PhimLe" }
-
+          link: { name: "PhimLe" },
         },
         {
           title: this.$t("PHIM HÀN QUỐC"),
           id: "quoc-gia/han-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: '',
+          content: "",
           loaded: false,
-          link: { 
-            name: "QuocGia", 
-            params: { path: "han-quoc" } 
-          }
-
+          link: {
+            name: "QuocGia",
+            params: { path: "han-quoc" },
+          },
         },
         {
           title: this.$t("PHIM TRUNG QUỐC"),
           id: "quoc-gia/trung-quoc",
           name: "QuocGia",
           listMovie: [],
-          content: '',
-          loaded: false, 
-          link: { 
-            name: "QuocGia", 
-            params: { path: "trung-quoc" } 
-          }
-
+          content: "",
+          loaded: false,
+          link: {
+            name: "QuocGia",
+            params: { path: "trung-quoc" },
+          },
         },
       ],
-      link: ''
+      link: "",
     };
   },
   components: {
     CarouselPage,
   },
   async mounted() {
-  //   await Promise.all(
-  //     this.sections.map(item => this.ListMovie(item.id, item))
-  // );
+    //   await Promise.all(
+    //     this.sections.map(item => this.ListMovie(item.id, item))
+    // );
     this.$nextTick(() => {
       this.observeSections();
     });
-    
   },
   methods: {
     observeSections() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const sectionIndex = [...this.$refs.sectionRefs].indexOf(entry.target);
-            const section = this.sections[sectionIndex];
-            if (section && !section.loaded) {
-              section.loaded = true; // bật render skeleton
-              this.isLoading = true; // bật loading toàn cục hoặc bạn có thể thêm riêng cho từng section
-              this.ListMovie(section.id, section)
-                .then(() => {
-                  this.isLoading = false;
-                })
-                .catch((err) => {
-                  console.error(err);
-                  this.isLoading = false;
-                });
-            }
-            observer.unobserve(entry.target); // chỉ load 1 lần
-          }
-        });
-      },
-      {
-        rootMargin: "0px 0px 10px 0px", // preload trước 300px khi gần vào màn hình
-        threshold: 0.3
-      }
-    );
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const sectionIndex = [...this.$refs.sectionRefs].indexOf(
+                entry.target
+              );
+              const section = this.sections[sectionIndex];
 
-    this.$refs.sectionRefs.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-  },
+              if (section && !section.loaded) {
+                section.loaded = true; // bật render skeleton
+                section.loading = true; // loading riêng cho section
+
+                this.ListMovie(section.id, section)
+                  .then(() => {
+                    section.loading = false;
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                    section.loading = false;
+                  });
+              }
+
+              observer.unobserve(entry.target); // chỉ quan sát 1 lần
+            }
+          });
+        },
+        {
+          rootMargin: "0px 0px 0px 0px", // bỏ preload, chỉ khi chạm vào mới load
+          threshold: 0.25, // ít nhất 25% section visible mới load
+        }
+      );
+
+      this.$refs.sectionRefs.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+    },
     ListMovie(sectionId, section) {
-      if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
-        return new Promise((resolve, reject) =>{
+      if (section.id == "quoc-gia/viet-nam?page=1&limit=20") {
+        return new Promise((resolve, reject) => {
           ListMovieByCateHome1(
-          sectionId,
-          (result) => {
-            if (result.status === "success") {
-              section.listMovie = result.data.items;
-                this.link = 'link2';
-              if (result.data.seoOnPage) {
-                  this.updateMetaTags(result.data.seoOnPage)
-                }
-              this.isLoading = false;
-              resolve(true)
-            }
-            else{
-              resolve(false)
-            }
-          },
-          (err) => {
-            console.error(err);
-            reject(err)
-          }
-        );
-        })
-        
-      }
-      else{
-        return new Promise((resolve, reject) =>{
-          ListMovieByCateHome(
             sectionId,
             (result) => {
               if (result.status === "success") {
-                this.link = '';
                 section.listMovie = result.data.items;
-                
+                this.link = "link2";
                 if (result.data.seoOnPage) {
-                    this.updateMetaTags(result.data.seoOnPage)
-                  }
+                  this.updateMetaTags(result.data.seoOnPage);
+                }
                 this.isLoading = false;
                 resolve(true);
-              }
-              else{
-                resolve(false)
+              } else {
+                resolve(false);
               }
             },
             (err) => {
               console.error(err);
-              reject(err)
+              reject(err);
             }
           );
-      
-        })
-        
-      }
-      
+        });
+      } else {
+        return new Promise((resolve, reject) => {
+          ListMovieByCateHome(
+            sectionId,
+            (result) => {
+              if (result.status === "success") {
+                this.link = "";
+                section.listMovie = result.data.items;
 
+                if (result.data.seoOnPage) {
+                  this.updateMetaTags(result.data.seoOnPage);
+                }
+                this.isLoading = false;
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            },
+            (err) => {
+              console.error(err);
+              reject(err);
+            }
+          );
+        });
+      }
     },
-    getOptimizedImage(imagePath,sectionID) {
-      if(sectionID != "quoc-gia/viet-nam?page=1&limit=20"){
+    getOptimizedImage(imagePath, sectionID) {
+      if (sectionID != "quoc-gia/viet-nam?page=1&limit=20") {
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-
-      }
-      else{
-        return `${this.urlImage1 + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`;
-
+      } else {
+        return `${
+          this.urlImage1 +
+          "https://phimimg.com/" +
+          encodeURIComponent(imagePath)
+        }`;
       }
     },
     // Chuan SEO
     updateMetaTags(seo) {
-    document.title = seo.titleHead || 'Phim hay'
+      document.title = seo.titleHead || "Phim hay";
 
-    const removeOldMeta = (key, attr = 'name') => {
-      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
-      old.forEach(tag => tag.remove())
-    }
+      const removeOldMeta = (key, attr = "name") => {
+        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
+        old.forEach((tag) => tag.remove());
+      };
 
-    const setMeta = (key, content, attr = 'name') => {
-      if (!content) return
-      const meta = document.createElement('meta')
-      meta.setAttribute(attr, key)
-      meta.setAttribute('content', content)
-      document.head.appendChild(meta)
-    }
+      const setMeta = (key, content, attr = "name") => {
+        if (!content) return;
+        const meta = document.createElement("meta");
+        meta.setAttribute(attr, key);
+        meta.setAttribute("content", content);
+        document.head.appendChild(meta);
+      };
 
-    // Xóa cũ
-    removeOldMeta('description')
-    removeOldMeta('og:title', 'property')
-    removeOldMeta('og:description', 'property')
-    removeOldMeta('og:type', 'property')
-    removeOldMeta('og:image', 'property')
+      // Xóa cũ
+      removeOldMeta("description");
+      removeOldMeta("og:title", "property");
+      removeOldMeta("og:description", "property");
+      removeOldMeta("og:type", "property");
+      removeOldMeta("og:image", "property");
 
-    // Thêm mới
-    setMeta('description', seo.descriptionHead)
-    setMeta('og:title', seo.titleHead, 'property')
-    setMeta('og:description', seo.descriptionHead, 'property')
-    setMeta('og:type', seo.og_type || 'website', 'property')
+      // Thêm mới
+      setMeta("description", seo.descriptionHead);
+      setMeta("og:title", seo.titleHead, "property");
+      setMeta("og:description", seo.descriptionHead, "property");
+      setMeta("og:type", seo.og_type || "website", "property");
 
-    if (Array.isArray(seo.og_image)) {
-      seo.og_image.forEach(img => {
-        setMeta('og:image', img, 'property')
-      })
-    }
-  },
+      if (Array.isArray(seo.og_image)) {
+        seo.og_image.forEach((img) => {
+          setMeta("og:image", img, "property");
+        });
+      }
+    },
     onImageLoad(index) {
       this.$nextTick(() => {
         const imgRef = this.$refs["img_" + index];
@@ -370,18 +385,20 @@ export default {
       });
     },
     isFavorite(movie) {
-    return this.favoriteMovies.some(fav => fav.slug === movie.slug);
-  },
+      return this.favoriteMovies.some((fav) => fav.slug === movie.slug);
+    },
 
-  // Thêm/bỏ yêu thích
-  toggleFavorite(movie) {
-    const index = this.favoriteMovies.findIndex(fav => fav.slug === movie.slug);
-    if (index !== -1) {
-      this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-    } else {
-      this.favoriteMovies.push(movie); // Thêm yêu thích
-    }
-  },
+    // Thêm/bỏ yêu thích
+    toggleFavorite(movie) {
+      const index = this.favoriteMovies.findIndex(
+        (fav) => fav.slug === movie.slug
+      );
+      if (index !== -1) {
+        this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
+      } else {
+        this.favoriteMovies.push(movie); // Thêm yêu thích
+      }
+    },
   },
 };
 </script>
@@ -446,9 +463,8 @@ a {
 }
 .v-img img {
   transition: opacity 0.5s ease-in-out;
-  
 }
-.v-img img[lazy='loaded'] {
+.v-img img[lazy="loaded"] {
   opacity: 1 !important;
 }
 .v-card {

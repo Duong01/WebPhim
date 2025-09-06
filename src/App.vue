@@ -3,6 +3,10 @@
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
         <router-view />
+        <div v-if="isLoading" class="overlay">
+          <div class="loader"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
       </v-snackbar>
@@ -12,7 +16,7 @@
 </template>
 
 <script>
-
+import { mapState } from "vuex";
 export default {
   name: 'App',
   data(){
@@ -22,12 +26,16 @@ export default {
       errorMessage: ''
     }
   },
+  computed: {
+    ...mapState("loading", ["isLoading"]),
+  },
    provide() {
     return {
       currentTheme: () => this.theme,
       setTheme: this.setTheme
     }
   },
+
   mounted(){
     const loginTime = localStorage.getItem("loginTimestamp");
     if (loginTime) {
@@ -84,5 +92,30 @@ export default {
 }
 .v-btn {
   text-transform: none !important;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #42b983;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
