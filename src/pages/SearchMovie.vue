@@ -147,9 +147,15 @@ export default {
   methods: {
     SearchMovie(query) {
       return new Promise((resolve,reject) => {
+        const timer = setTimeout(() => {
+        this.loading = false;
+        alert("⏳ Hết thời gian chờ. Vui lòng thử lại!");
+        reject(new Error("Timeout"));
+      }, 120000);
         Search(
           { keyword: query, page: this.currentPage },
           (result) => {
+            clearTimeout(timer);
             if (result.status == "success"|| result.status == true) {
               this.link = "";
               if (result.data.items.length != 0 || result.data.item != null) {
@@ -183,6 +189,7 @@ export default {
           },
           (err) => {
             console.log(err);
+            clearTimeout(timer);
             this.link = "link1";
             this.SearchMovie1(query)
             .then(resolve)
@@ -194,9 +201,15 @@ export default {
     },
     SearchMovie1(query) {
       return new Promise((resolve, reject) =>{
+        const timer = setTimeout(() => {
+        this.loading = false;
+        alert("⏳ Hết thời gian chờ . Vui lòng thử lại!");
+        reject(new Error("Timeout"));
+      }, 120000);
           Search1(
         { keyword: query, page: 1, limit: 10 },
         (result) => {
+          clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
             if (result.data.items.length == 0) {
               this.movies = [];
@@ -217,6 +230,7 @@ export default {
           console.log(result);
         },
         (err) => {
+          clearTimeout(timer);
           console.log(err);
         }
       );

@@ -35,7 +35,11 @@ export default {
       setTheme: this.setTheme
     }
   },
-
+  watch: {
+      theme(newVal) {
+        localStorage.setItem('theme', newVal)
+      }
+    },
   mounted(){
     const loginTime = localStorage.getItem("loginTimestamp");
     if (loginTime) {
@@ -55,11 +59,7 @@ export default {
       this.showError = true;
     });
   },
-  watch: {
-    theme(newVal) {
-      localStorage.setItem('theme', newVal)
-    }
-  },
+  
   created() {
   const expireAt = localStorage.getItem("expireAt");
   const now = new Date().getTime();

@@ -47,79 +47,75 @@
                 class="movie-list"
               >
                 <v-col
-                  v-for="(item, index) in isLoading
-                    ? Array(12).fill({})
-                    : section.listMovie.slice(0, 12)"
-                  :key="item.slug || index"
-                  cols="4"
-                  xs="4"
-                  sm="4"
-                  md="3"
-                  lg="2"
-                  xl="2"
-                  style="padding: 10px"
-                >
-                  <v-skeleton-loader
-                    v-if="isLoading"
-                    type="image"
-                    height="250"
-                  />
-                  <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
-                    v-else
-                  >
-                    <v-card class="mx-auto bg-dark text-white" max-width="344">
-                      <v-img
-                        :src="getOptimizedImage(item.poster_url, section.id)"
-                        :lazy-src="
-                          getOptimizedImage(item.poster_url, section.id)
-                        "
-                        :alt="`Poster phim ${item.name}`"
-                        class="movie-img"
-                        height="250"
-                        cover
-                      >
-                        <template #default>
-                          <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
-                          >
-                            <v-icon>{{
-                              isFavorite(item)
-                                ? "mdi-heart"
-                                : "mdi-heart-outline"
-                            }}</v-icon>
-                          </v-btn>
-                        </template>
-                      </v-img>
+  v-for="(item, index) in isLoading ? Array(12).fill({}) : section.listMovie.slice(0, 12)"
+  :key="item.slug || index"
+  cols="4"
+  xs="4"
+  sm="4"
+  md="3"
+  lg="2"
+  xl="2"
+  style="padding: 10px"
+>
+  <v-skeleton-loader v-if="isLoading" type="image" height="250" />
+  <router-link
+    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+    v-else
+  >
+    <v-card class="mx-auto bg-dark text-white movie-card" max-width="344">
+      <v-img
+        :src="getOptimizedImage(item.poster_url, section.id)"
+        :lazy-src="getOptimizedImage(item.poster_url, section.id)"
+        :alt="`Poster phim ${item.name}`"
+        class="movie-img"
+        height="250"
+        cover
+      >
+        <template #default>
+          <v-btn
+            icon
+            size="small"
+            color="red"
+            variant="flat"
+            class="favorite-btn"
+            @click.stop="toggleFavorite(item)"
+          >
+            <v-icon>
+              {{ isFavorite(item) ? "mdi-heart" : "mdi-heart-outline" }}
+            </v-icon>
+          </v-btn>
 
-                      <v-card-subtitle class="episode-lang">
-                        {{
-                          item.episode_current === "Tập 0"
-                            ? `Full - ${item.lang}`
-                            : `${item.episode_current} - ${item.lang}`
-                        }}
-                      </v-card-subtitle>
+          <div class="movie-overlay" aria-hidden="true"></div>
 
-                      <v-card-title class="movie-title">{{
-                        item.name
-                      }}</v-card-title>
+          <div class="movie-play" aria-hidden="true">
+            <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)"/>
+              <path d="M26 20 L46 32 L26 44 Z" fill="#fff"/>
+            </svg>
+          </div>
+        </template>
+      </v-img>
 
-                      <v-card-text class="movie-info">
-                        <div class="text-grey text-truncate">
-                          <v-icon size="14" class="mr-1" color="grey"
-                            >mdi-tag</v-icon
-                          >
-                          {{ item.origin_name }} ({{ item.year }})
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </router-link>
-                </v-col>
+      <v-card-subtitle class="episode-lang">
+        {{
+          item.episode_current === "Tập 0"
+            ? `Full - ${item.lang}`
+            : `${item.episode_current} - ${item.lang}`
+        }}
+      </v-card-subtitle>
+
+      <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+
+      <v-card-text class="movie-info">
+        <div class="text-grey text-truncate">
+          <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
+          {{ item.origin_name }} ({{ item.year }})
+        </div>
+      </v-card-text>
+    </v-card>
+  </router-link>
+</v-col>
+
               </v-row>
             </div>
             <div v-else style="height: 400px">
@@ -525,4 +521,69 @@ a {
     height: 180px;
   }
 }
+
+
+/* container card */
+.movie-card {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* v-img wrapper */
+.movie-img {
+  position: relative;
+  overflow: hidden;
+}
+
+/* target cả <img> hoặc class vuetify image */
+.movie-img img,
+.movie-img .v-image__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .35s ease;
+}
+
+/* zoom nhẹ khi hover card */
+.movie-card:hover .movie-img img,
+.movie-card:hover .movie-img .v-image__image {
+  transform: scale(1.04);
+}
+
+/* overlay mờ (ẩn mặc định) */
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  transition: background .25s ease;
+  pointer-events: none; /* không chặn click */
+}
+
+.movie-card:hover .movie-overlay {
+  background: rgba(0,0,0,0.45);
+}
+
+.movie-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(.95);
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events: none; 
+  z-index: 2;
+}
+
+/* show play khi hover */
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.favorite-btn {
+  /* position: relative; */
+  z-index: 4;
+}
+
 </style>

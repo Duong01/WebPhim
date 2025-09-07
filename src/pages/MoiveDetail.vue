@@ -39,31 +39,30 @@
               Trailer
             </v-btn>
             <v-btn variant="text" @click="shareMovie"
-              ><v-icon start icon="mdi-share-variant" />{{$t('Chia sẻ')}}</v-btn
+              ><v-icon start icon="mdi-share-variant" />{{
+                $t("Chia sẻ")
+              }}</v-btn
             >
             <v-btn variant="text" @click="ResponseError"
-              ><v-icon start icon="mdi-flag" />{{$t('Báo lỗi')}}</v-btn
+              ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
             >
             <v-btn variant="text"
-              ><v-icon start icon="mdi-bookmark-outline" />{{$t('Xem sau')}}</v-btn
+              ><v-icon start icon="mdi-bookmark-outline" />{{
+                $t("Xem sau")
+              }}</v-btn
             >
           </div>
 
           <!-- Server -->
-          
+
           <div class="d-flex" style="gap: 8px">
-            <router-link
-              :to="movie.LinkDown"
-              download
-              target="_blank"
-            >
+            <router-link :to="movie.LinkDown" download target="_blank">
               <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
             </router-link>
             <v-tabs
               v-model="tabserver"
               class="custom-tabs"
               background-color="transparent"
-
             >
               <v-tab
                 v-for="(server, index) in movie.servers"
@@ -75,7 +74,6 @@
               </v-tab>
             </v-tabs>
           </div>
-
         </div>
 
         <!-- Danh sách tập -->
@@ -89,9 +87,12 @@
               class="ml-2"
               color="red"
               text-color="white"
-              v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')"
+              v-if="
+                typeof movie.page === 'string' &&
+                movie.page.toUpperCase().includes('HOÀN TẤT')
+              "
             >
-              {{$t('Tập ')}}1
+              {{ $t("Tập ") }}1
             </v-chip>
           </v-card-title>
           <v-card-text>
@@ -103,12 +104,90 @@
                 class="pa-2"
               >
                 <v-btn color="primary" @click="playEpisode(episode)">
-                  {{ episode.name ?( episode.name.includes("Tập") ? episode.name: $t('Tập ') + episode.name) : "Trailer" }}
+                  {{
+                    episode.name
+                      ? episode.name.includes("Tập")
+                        ? episode.name
+                        : $t("Tập ") + episode.name
+                      : "Trailer"
+                  }}
                 </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
         </v-card>
+
+        <!-- TRAILER -->
+<div class="mb-4">
+    <v-row>
+      <v-col cols="12" sm="6" md="3">
+        <h3 class="text-white mb-2">TRAILER</h3>
+
+        <!-- Thumb container -->
+        <div class="trailer-thumb" @click="dialogTrailer = true" role="button" aria-label="Play trailer">
+          <img
+            :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
+            :alt="`Trailer ${movie.name}`"
+            loading="lazy"
+          />
+
+          <!-- dark overlay khi hover -->
+          <div class="trailer-overlay" />
+
+          <!-- nút Play (SVG) ở giữa -->
+          <div class="trailer-play" aria-hidden="true">
+            <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <!-- nền tròn tối để làm nổi tam giác -->
+              <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)"/>
+              <!-- tam giác play màu trắng -->
+              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+            </svg>
+          </div>
+        </div>
+      </v-col>
+
+      <v-col cols="12" sm="6" md="6" class="d-flex align-center">
+        <p class="text-grey-lighten-1">
+          {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
+        </p>
+      </v-col>
+    </v-row>
+  </div>
+
+
+        <!-- Dialog trailer -->
+        <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
+          <v-card class="bg-black relative">
+            <!-- Nút đóng -->
+            <v-btn
+              icon="mdi-close"
+              class="absolute top-2 right-2 z-10"
+              variant="text"
+              @click="dialogTrailer = false"
+            ></v-btn>
+
+            <!-- Video -->
+            <iframe
+              width="100%"
+              height="600"
+              :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            >
+            </iframe>
+
+            <!-- <iframe
+      width="100%"
+      height="500"
+      :src="movie.trailer_url"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe> -->
+          </v-card>
+        </v-dialog>
 
         <!-- Thông tin phim -->
         <v-card
@@ -125,11 +204,19 @@
             <div v-html="movie.description"></div>
           </v-card-text>
           <v-card-text class="text-white">
-            <p><strong>{{$t('Diễn viên')}}:</strong> {{ movie.actors.join(", ") }}</p>
-            <p><strong>{{$t('Đạo diễn')}}:</strong> {{ movie.director.join(", ") }}</p>
-            <p><strong>{{$t('Thể loại')}}:</strong> {{ movie.genre.name }}</p>
+            <p>
+              <strong>{{ $t("Diễn viên") }}:</strong>
+              {{ movie.actors.join(", ") }}
+            </p>
+            <p>
+              <strong>{{ $t("Đạo diễn") }}:</strong>
+              {{ movie.director.join(", ") }}
+            </p>
+            <p>
+              <strong>{{ $t("Thể loại") }}:</strong> {{ movie.genre.name }}
+            </p>
             <div class="d-flex align-center">
-              <strong class="mr-2">{{$t('Đánh giá')}}:</strong>
+              <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
               <v-rating
                 readonly
                 :length="5"
@@ -143,7 +230,9 @@
 
         <!-- Bình luận -->
         <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-          <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ {{$t('Bình luận')}}</h2>
+          <h2 class="text-white mb-6 text-h5 font-weight-bold">
+            🗨️ {{ $t("Bình luận") }}
+          </h2>
           <v-text-field
             v-model="newComment"
             :placeholder="$t('Thêm bình luận...')"
@@ -184,7 +273,7 @@
                 class="text-caption mt-2 text-grey-lighten-1"
                 style="cursor: pointer"
               >
-                {{$t('Phản hồi')}}
+                {{ $t("Phản hồi") }}
               </div>
             </div>
           </div>
@@ -196,8 +285,8 @@
       <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
         <v-card class="pa-0" color="grey-darken-4" flat>
           <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-            <v-tab value="1">{{$t('Gợi ý cho bạn')}}</v-tab>
-            <v-tab value="2">{{$t('Top phim')}}</v-tab>
+            <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
+            <v-tab value="2">{{ $t("Top phim") }}</v-tab>
           </v-tabs>
 
           <v-card-text style="max-height: 87vh; overflow-y: auto">
@@ -215,7 +304,10 @@
                   class="text-decoration-none"
                 >
                   <v-list-item-avatar size="80">
-                    <v-img  :src="getOptimizedImage(suggested.poster_url)" :lazy-src="getOptimizedImage(suggested.poster_url)" />
+                    <v-img
+                      :src="getOptimizedImage(suggested.poster_url)"
+                      :lazy-src="getOptimizedImage(suggested.poster_url)"
+                    />
                   </v-list-item-avatar>
 
                   <v-list-item-content>
@@ -238,9 +330,9 @@
       </v-col>
 
       <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
-      
+
       <div class="suggested-movies my-8">
-        <h2 class="text-h5 mb-4">🎬 {{$t('Phim được đề xuất')}}</h2>
+        <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
         <v-row>
           <v-col
             v-for="suggested in suggestedMovies"
@@ -259,7 +351,6 @@
                   :src="getOptimizedImage(suggested.poster_url)"
                   aspect-ratio="16/9"
                   cover
-                  
                 ></v-img>
                 <v-card-title class="text-white text-body-2 text-wrap">
                   {{ suggested.name }}
@@ -373,6 +464,7 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      dialogTrailer: false,
       videoLoaded: false,
       tab: "",
       shareUrl: window.location.href,
@@ -407,7 +499,8 @@ export default {
         categoris: "",
         trailer_url: "",
         name: "",
-        LinkDown: ''
+        LinkDown: "",
+        trailer_id: "",
       },
       idMovie: "",
       isTrailer: false,
@@ -417,80 +510,73 @@ export default {
       comments: [],
       newComment: "",
       shareDialog: false,
-      link: ''
+      link: "",
     };
   },
   props: ["slug"],
   watch: {
     async slug(newSlug) {
-      await  this.MoveInfor(newSlug);
+      await this.MoveInfor(newSlug);
       await this.ListMovieByCate();
       //await this.GetComment();
     },
   },
   async mounted() {
-    try{
+    try {
       await this.MoveInfor(this.slug);
       await this.ListMovieByCate();
       //await this.GetComment();
+    } catch (err) {
+      console.log(err);
     }
-    catch(err){
-      console.log(err)
-    }
-    
   },
   methods: {
     // Call API
     MoveInfor(slug) {
-      return new Promise((resolve,reject) =>{
+      return new Promise((resolve, reject) => {
         MoveInfor(
-        slug,
-        (result) => {
-          console.log(result);
-          if (result.status == true || result.status == "success") {
-            this.link = '';
-            this.movie.page = result.movie.episode_current;
-            this.idMovie = result.movie._id;
-            this.movie.title = result.movie.origin_name;
-            this.movie.description = result.movie.content;
-            this.movie.pageMovie = result.episodes[0].server_data;
-            this.movie.director = result.movie.director;
-            this.movie.servers = result.episodes;
-            this.movie.trailer_url = result.movie.trailer_url;
-            this.movie.name = result.movie.name;
+          slug,
+          (result) => {
+            console.log(result);
+            if (result.status == true || result.status == "success") {
+              this.link = "";
+              this.movie.page = result.movie.episode_current;
+              this.idMovie = result.movie._id;
+              this.movie.title = result.movie.origin_name;
+              this.movie.description = result.movie.content;
+              this.movie.pageMovie = result.episodes[0].server_data;
+              this.movie.director = result.movie.director;
+              this.movie.servers = result.episodes;
+              this.movie.trailer_url = result.movie.trailer_url;
+              this.movie.name = result.movie.name;
 
-            // if (result.data.seoOnPage) {
-            //   this.updateMetaTags(result.data.seoOnPage)
-            // }
-            if (
-              result.movie.status == "trailer" ||
-              result.episodes[0].server_data[0].link_embed == ""
-            ) {
-              this.movie.videoUrl = result.movie.trailer_url;
-              // this.movie.title = result.movie.name;
-              this.isTrailer = true;
-            } else {
+              // if (result.data.seoOnPage) {
+              //   this.updateMetaTags(result.data.seoOnPage)
+              // }
+              if (this.movie.trailer_url != "") {
+                this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
+              }
+
               if (
-                this.movie.page == "Full" ||
-                this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                this.movie.page.includes("/")
+                result.movie.status == "trailer" ||
+                result.episodes[0].server_data[0].link_embed == ""
               ) {
-                this.movie.videoUrl =
-                  result.episodes[0].server_data[0].link_embed;
+                this.movie.videoUrl = result.movie.trailer_url;
                 // this.movie.title = result.movie.name;
-                this.isTrailer = false;
+                this.isTrailer = true;
               } else {
-                var tap = this.movie.page.split("Tập ")[1].trim();
-                const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap || ep.slug.includes(tap)
-                );
-                if (data) {
-                  this.movie.videoUrl = data.link_embed;
-                  this.movie.LinkDown = data.link_m3u8;
-                  // this.movie.title = data.filename;
+                if (
+                  this.movie.page == "Full" ||
+                  this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+                  this.movie.page.includes("/")
+                ) {
+                  this.movie.videoUrl =
+                    result.episodes[0].server_data[0].link_embed;
+                  // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
-                  const data = result.episodes[1].server_data.find(
+                  var tap = this.movie.page.split("Tập ")[1].trim();
+                  const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   if (data) {
@@ -498,138 +584,141 @@ export default {
                     this.movie.LinkDown = data.link_m3u8;
                     // this.movie.title = data.filename;
                     this.isTrailer = false;
+                  } else {
+                    const data = result.episodes[1].server_data.find(
+                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                    );
+                    if (data) {
+                      this.movie.videoUrl = data.link_embed;
+                      this.movie.LinkDown = data.link_m3u8;
+                      // this.movie.title = data.filename;
+                      this.isTrailer = false;
+                    }
                   }
+                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                  // this.isTrailer = false;
                 }
-                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                // this.isTrailer = false;
               }
+              this.movie.actors = result.movie.actor;
+              for (var i = 0; i < result.movie.country.length; i++) {
+                this.movie.genre = result.movie.country[i];
+              }
+              this.movie.categoris = result.movie.category[0].slug;
+              this.isLoading = false;
+              // this.GetComment()
+              // .then(resolve)
+              // .catch(reject);
+              resolve(true);
+            } else {
+              this.MoveInfor1(slug).then(resolve).catch(reject);
             }
-            this.movie.actors = result.movie.actor;
-            for (var i = 0; i < result.movie.country.length; i++) {
-              this.movie.genre = result.movie.country[i];
-            }
-            this.movie.categoris = result.movie.category[0].slug;
-            this.isLoading = false;
-            // this.GetComment()
-            // .then(resolve)
-            // .catch(reject);
-            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            this.MoveInfor1(slug).then(resolve).catch(reject);
           }
-          else{
-            this.MoveInfor1(slug)
-            .then(resolve)
-            .catch(reject);
-          }
-        },
-        (err) => {
-          console.log(err);
-          this.MoveInfor1(slug)
-          .then(resolve)
-          .catch(reject);
-        }
-      );
-    
-      })
-      
+        );
+      });
     },
     MoveInfor1(slug) {
-      return new Promise((resolve,reject) =>{
+      return new Promise((resolve, reject) => {
         MoveInfor1(
-        slug,
-        (result) => {
-          console.log(result);
-          if (result.status == true || result.status == "success") {
-            this.link = 'link';
-            this.movie.page = result.movie.episode_current;
-            this.idMovie = result.movie._id;
-            this.movie.title = result.movie.origin_name;
-            this.movie.description = result.movie.content;
-            this.movie.pageMovie = result.episodes[0].server_data;
-            this.movie.director = result.movie.director;
-            this.movie.servers = result.episodes;
-            this.movie.trailer_url = result.movie.trailer_url;
-            this.movie.name = result.movie.name;
+          slug,
+          (result) => {
+            console.log(result);
+            if (result.status == true || result.status == "success") {
+              this.link = "link";
+              this.movie.page = result.movie.episode_current;
+              this.idMovie = result.movie._id;
+              this.movie.title = result.movie.origin_name;
+              this.movie.description = result.movie.content;
+              this.movie.pageMovie = result.episodes[0].server_data;
+              this.movie.director = result.movie.director;
+              this.movie.servers = result.episodes;
+              this.movie.trailer_url = result.movie.trailer_url;
+              this.movie.name = result.movie.name;
 
-            // if (result.data.seoOnPage) {
-            //   this.updateMetaTags(result.data.seoOnPage)
-            // }
-            if (
-              result.movie.status == "trailer" ||
-              result.episodes[0].server_data[0].link_embed == ""
-            ) {
-              this.movie.videoUrl = result.movie.trailer_url;
-              // this.movie.title = result.movie.name;
-              this.isTrailer = true;
-            } else {
+              // if (result.data.seoOnPage) {
+              //   this.updateMetaTags(result.data.seoOnPage)
+              // }
+
+              if (this.movie.trailer_url != "") {
+                this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
+              }
               if (
-                this.movie.page == "Full" ||
-                this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                this.movie.page.includes("/")
+                result.movie.status == "trailer" ||
+                result.episodes[0].server_data[0].link_embed == ""
               ) {
-                this.movie.videoUrl =
-                  result.episodes[0].server_data[0].link_embed;
+                this.movie.videoUrl = result.movie.trailer_url;
                 // this.movie.title = result.movie.name;
-                this.isTrailer = false;
+                this.isTrailer = true;
               } else {
-                var tap = this.movie.page.split("Tập ")[1].trim();
-                const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap || ep.slug.includes(tap)
-                );
-                if (data) {
-                  this.movie.videoUrl = data.link_embed;
-                  // this.movie.title = data.filename;
+                if (
+                  this.movie.page == "Full" ||
+                  this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+                  this.movie.page.includes("/")
+                ) {
+                  this.movie.videoUrl =
+                    result.episodes[0].server_data[0].link_embed;
+                  // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
-                  const data = result.episodes[1].server_data.find(
+                  var tap = this.movie.page.split("Tập ")[1].trim();
+                  const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
                     // this.movie.title = data.filename;
                     this.isTrailer = false;
+                  } else {
+                    const data = result.episodes[1].server_data.find(
+                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                    );
+                    if (data) {
+                      this.movie.videoUrl = data.link_embed;
+                      // this.movie.title = data.filename;
+                      this.isTrailer = false;
+                    }
                   }
+                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                  // this.isTrailer = false;
                 }
-                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                // this.isTrailer = false;
               }
+              this.movie.actors = result.movie.actor;
+              for (var i = 0; i < result.movie.country.length; i++) {
+                this.movie.genre = result.movie.country[i];
+              }
+              this.movie.categoris = result.movie.category[0].slug;
+              this.isLoading = false;
+              // this.GetComment()
+              // .then(resolve)
+              // .catch(reject);
+              resolve(true);
+            } else {
+              reject("error");
             }
-            this.movie.actors = result.movie.actor;
-            for (var i = 0; i < result.movie.country.length; i++) {
-              this.movie.genre = result.movie.country[i];
-            }
-            this.movie.categoris = result.movie.category[0].slug;
-            this.isLoading = false;
-            // this.GetComment()
-            // .then(resolve)
-            // .catch(reject);
-            resolve(true)
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
           }
-          else{
-            reject("error");
-          }
-          
-        },
-        (err) => {
-          console.log(err);
-          reject(err);
-        }
-      );
-    
-      })
-      
+        );
+      });
     },
 
-    DownloadVideo(linkdown){
+    DownloadVideo(linkdown) {
       window.open(linkdown);
-    
     },
     getOptimizedImage(imagePath) {
-      if(this.link == ""){
+      if (this.link == "") {
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      }
-      else{
-        return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`;
-
+      } else {
+        return `${
+          this.urlImage1 +
+          "https://phimimg.com/" +
+          encodeURIComponent(imagePath)
+        }`;
       }
     },
     // Chuản SEO
@@ -669,54 +758,47 @@ export default {
       }
     },
     ListMovieByCate() {
-      return new Promise((resolve, reject) =>{
-        if(this.link == ""){
+      return new Promise((resolve, reject) => {
+        if (this.link == "") {
           ListMovieByCate(
             this.movie.categoris,
 
             (data) => {
-              console.log(data)
+              console.log(data);
               if (data.status == "success") {
                 this.suggestedMovies = data.data.items;
                 this.isLoading = false;
-                resolve(true)
-              }
-              else{
+                resolve(true);
+              } else {
                 reject("error");
               }
             },
             (err) => {
               console.log(err);
-              reject(err)
+              reject(err);
             }
-        );
-        
-      }
-      else{
-        Categoris1(
-        this.movie.categoris,
+          );
+        } else {
+          Categoris1(
+            this.movie.categoris,
 
-        (data) => {
-          console.log(data)
-          if (data.status == true) {
-            this.suggestedMovies = data.data.items;
-            this.isLoading = false;
-            resolve(true)
-          }
-          else{
-            reject("error");
-          }
-        },
-        (err) => {
-          console.log(err);
-          reject(err)
+            (data) => {
+              console.log(data);
+              if (data.status == true) {
+                this.suggestedMovies = data.data.items;
+                this.isLoading = false;
+                resolve(true);
+              } else {
+                reject("error");
+              }
+            },
+            (err) => {
+              console.log(err);
+              reject(err);
+            }
+          );
         }
-      );
-      }
-      
-      
-      })
-      
+      });
     },
     shareMovie() {
       this.shareDialog = true;
@@ -742,15 +824,15 @@ export default {
 
       window.open(shareLink, "_blank");
     },
-    ResponseError(){
-      this.Message = this.$t('Dữ liệu đã được gửi tới Admin để xử lý');
+    ResponseError() {
+      this.Message = this.$t("Dữ liệu đã được gửi tới Admin để xử lý");
       this.color = "error";
-      this.mess = true
+      this.mess = true;
     },
     copyLink() {
       const shareUrl = window.location.href;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert(this.$t('Đã sao chép liên kết!'));
+        alert(this.$t("Đã sao chép liên kết!"));
       });
     },
     addComment() {
@@ -786,31 +868,28 @@ export default {
       }
     },
     GetComment() {
-      return new Promise((resolve, reject) =>{
-      if (!this.idMovie) reject("error");
+      return new Promise((resolve, reject) => {
+        if (!this.idMovie) reject("error");
         GetComments(
-        { movieId: this.idMovie, episode: this.movie.page },
-        (res) => {
-          if (Array.isArray(res)) {
-            this.comments = res.map((c) => ({
-              username: c.username,
-              content: c.content,
-              createdAt: c.createdAt,
-            }));
-            resolve(true)
+          { movieId: this.idMovie, episode: this.movie.page },
+          (res) => {
+            if (Array.isArray(res)) {
+              this.comments = res.map((c) => ({
+                username: c.username,
+                content: c.content,
+                createdAt: c.createdAt,
+              }));
+              resolve(true);
+            } else {
+              reject("error");
+            }
+          },
+          (err) => {
+            console.error("Lỗi lấy bình luận:", err);
+            reject(err);
           }
-          else{
-            reject("error")
-          }
-        },
-        (err) => {
-          console.error("Lỗi lấy bình luận:", err);
-          reject(err)
-        }
-      );
-    
-      })
-      
+        );
+      });
     },
 
     scrollLeft() {
@@ -827,13 +906,14 @@ export default {
     },
     getTrailer() {
       this.movie.videoUrl = this.movie.trailer_url;
+      this.isTrailer = true;
     },
     playEpisode(episode) {
       this.isLoading = true;
       // this.movie.title = episode.filename;
       this.movie.videoUrl = episode.link_embed;
       this.movie.LinkDown = episode.link_m3u8;
-      
+
       this.movie.page = "Tập " + episode.slug;
       this.GetComment();
       this.isLoading = false;
@@ -864,14 +944,16 @@ export default {
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
-        const youtubeMatch = url.match(
-          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        );
-        if (youtubeMatch) {
+        const youtubeMatch = this.movie.trailer_url.split("?v=");
+        // const youtubeMatch = url.match(
+        //   /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
+        // );
+        if (youtubeMatch.length > 0) {
           const videoId = youtubeMatch[1];
+
           return `
-            <iframe width="100%" height="600"
-              src="https://www.youtube.com/embed/${videoId}"
+            <iframe width="100%" height="100%"
+              src="https://www.youtube.com/embed/${videoId}?autoplay=1"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen loading="lazy">
@@ -880,7 +962,7 @@ export default {
         } else {
           // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
           return `
-            <video width="100%" height="600" controls preload="none">
+            <video width="100%" height="100%" controls preload="none">
               <source src="${url}" type="video/mp4">
               Trình duyệt của bạn không hỗ trợ video.
             </video>
@@ -896,13 +978,12 @@ export default {
         loading="lazy"
         allowfullscreen
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
       ></iframe>
     </div>`;
       }
     },
-    
   },
   computed: {
     thumbnailUrl() {
@@ -915,7 +996,7 @@ export default {
     },
 
     embedHtml() {
-      const url = this.movie.videoUrl
+      const url = this.movie.videoUrl;
       if (this.isTrailer) {
         const youtubeMatch = url.match(
           /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
@@ -947,16 +1028,15 @@ export default {
               class="w-full h-full"
               loading="lazy"
               allowfullscreen
-              allow="autoplay; fullscreen"
+              allow=" fullscreen"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
             ></iframe>
           </div>
         `;
       }
-    }
-    
-  }
+    },
+  },
 };
 </script>
 
@@ -1166,5 +1246,62 @@ a {
 
 .nav-btn.right {
   margin-left: 8px;
+}
+
+
+.trailer-thumb{
+  width: 222px;
+  height: 125px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+  transition: transform .25s ease;
+}
+
+/* Ảnh */
+.trailer-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .35s ease;
+}
+
+/* overlay (mặc định trong suốt) */
+.trailer-overlay{
+  position: absolute;
+  inset: 0; /* top:0;right:0;bottom:0;left:0; */
+  background: rgba(0,0,0,0); 
+  transition: background .25s ease;
+  pointer-events: none; /* để click qua overlay */
+}
+
+/* nút play (ẩn mặc định) */
+.trailer-play{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(.95);
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events: none; /* cho phép click container */
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+}
+
+/* khi hover -> làm nổi ảnh, hiện overlay + play */
+.trailer-thumb:hover img{
+  transform: scale(1.03);
+}
+
+.trailer-thumb:hover .trailer-overlay{
+  background: rgba(0,0,0,0.45);
+  border: 1px solid yellow;
+}
+
+.trailer-thumb:hover .trailer-play{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 </style>

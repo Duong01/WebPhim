@@ -20,7 +20,8 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-
+import "intersection-observer";
+import ResizeObserver from "resize-observer-polyfill";
 
 const vuetify = createVuetify({
   components,
@@ -52,6 +53,10 @@ window.addEventListener('error', function (e) {
   }
 });
 
+
+if (!window.ResizeObserver) {
+  window.ResizeObserver = ResizeObserver;
+}
 app.use(router)
 app.use(store);
 app.use(BootstrapVue3)
