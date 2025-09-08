@@ -211,11 +211,7 @@ export default {
         (result) => {
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
-            if (result.data.items.length == 0) {
-              this.movies = [];
-              this.loading = false;
-              
-            } else {
+            if (result.data.items.length != 0 || result.data.item != null) {
               this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
@@ -224,6 +220,9 @@ export default {
               }
               this.loading = false;
               resolve(true)
+            } else {
+              this.movies = [];
+              this.loading = false;
             }
           }
           reject()
