@@ -584,7 +584,7 @@ export default {
         Search(
           { keyword },
           (dat) => {
-            if (dat.data.items == null || dat.data.items.length == 0) {
+            if (dat.data.items == null || dat.data.items == []) {
               Search1(
                 { keyword },
                 (data) => {
