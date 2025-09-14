@@ -588,7 +588,7 @@ export default {
               Search1(
                 { keyword },
                 (data) => {
-                  if (data.data.items != null || data.data.items.length != 0) {
+                  if (data.data.items != null) {
                     this.movieSuggestions = data.data.items.sort((a, b) => b.year - a.year) || [];
                     this.menuVisible = this.movieSuggestions.length > 0;
                   }
