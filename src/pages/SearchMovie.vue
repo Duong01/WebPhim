@@ -158,7 +158,7 @@ export default {
             clearTimeout(timer);
             if (result.status == "success"|| result.status == true) {
               this.link = "";
-              if (result.data.items.length != 0 || result.data.item != null) {
+              if (result.data.items.length != 0 || result.data.items != null) {
                 
 
                 this.movies = result.data.items.sort((a, b) => {
@@ -213,8 +213,9 @@ export default {
           
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
-            if ( result.data.item != null ) {
-              this.movies = result.data.items.sort((a, b) => {
+            if ( result.data.items != null || result.data.items.length != 0) {
+              
+                this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
               if (result.data.seoOnPage) {
@@ -222,6 +223,8 @@ export default {
               }
               this.loading = false;
               resolve(true)
+              
+              
             } else {
               this.movies = [];
               this.loading = false;
