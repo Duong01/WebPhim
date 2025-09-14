@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# Chặn các thư mục không cần index
+Disallow: /login
+Disallow: /register
+Disallow: /error
+
+# Sitemap
 Sitemap: https://web-phim-one.vercel.app/sitemap.xml
