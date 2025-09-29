@@ -131,7 +131,7 @@
 
 <script>
 import {
-  ListMovieByCateHome,
+  // ListMovieByCateHome,
   ListMovieByCateHome1,
   urlImage,
   urlImage1,
@@ -151,7 +151,7 @@ export default {
       sections: [
         {
           title: this.$t("PHIM THỊNH HÀNH"),
-          id: "danh-sach/thinh-hanh",
+          id: "danh-sach/tv-shows?page=1&limit=20",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -160,7 +160,7 @@ export default {
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/phim-moi-cap-nhat?page=2",
+          id: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -180,38 +180,8 @@ export default {
           },
         },
         {
-          title: this.$t("PHIM BỘ"),
-          id: "danh-sach/phim-bo",
-          name: "PhimBo",
-          listMovie: [],
-          content: "",
-          loaded: false,
-          link: { name: "PhimBo" },
-        },
-        {
-          title: this.$t("PHIM LẺ"),
-          id: "danh-sach/phim-le",
-          name: "PhimLe",
-          listMovie: [],
-          content: "",
-          loaded: false,
-          link: { name: "PhimLe" },
-        },
-        {
-          title: this.$t("PHIM HÀN QUỐC"),
-          id: "quoc-gia/han-quoc",
-          name: "QuocGia",
-          listMovie: [],
-          content: "",
-          loaded: false,
-          link: {
-            name: "QuocGia",
-            params: { path: "han-quoc" },
-          },
-        },
-        {
           title: this.$t("PHIM TRUNG QUỐC"),
-          id: "quoc-gia/trung-quoc",
+          id: "quoc-gia/trung-quoc?page=1&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -221,6 +191,36 @@ export default {
             params: { path: "trung-quoc" },
           },
         },
+        {
+          title: this.$t("PHIM BỘ"),
+          id: "danh-sach/phim-bo?page=1&limit=20",
+          name: "PhimBo",
+          listMovie: [],
+          content: "",
+          loaded: false,
+          link: { name: "PhimBo" },
+        },
+        {
+          title: this.$t("PHIM LẺ"),
+          id: "danh-sach/phim-le?page=1&limit=20",
+          name: "PhimLe",
+          listMovie: [],
+          content: "",
+          loaded: false,
+          link: { name: "PhimLe" },
+        },
+        {
+          title: this.$t("PHIM HÀN QUỐC"),
+          id: "quoc-gia/han-quoc?page=1&limit=20",
+          name: "QuocGia",
+          listMovie: [],
+          content: "",
+          loaded: false,
+          link: {
+            name: "QuocGia",
+            params: { path: "han-quoc" },
+          },
+        }
       ],
       link: "",
     };
@@ -281,9 +281,9 @@ export default {
           ListMovieByCateHome1(
             sectionId,
             (result) => {
-              if (result.status === "success") {
+              if (result.status === "success" || result.status == true) {
                 section.listMovie = result.data.items;
-                this.link = "link2";
+                this.link = "link1";
                 if (result.data.seoOnPage) {
                   this.updateMetaTags(result.data.seoOnPage);
                 }
@@ -301,11 +301,11 @@ export default {
         });
       } else {
         return new Promise((resolve, reject) => {
-          ListMovieByCateHome(
+          ListMovieByCateHome1(
             sectionId,
             (result) => {
-              if (result.status === "success") {
-                this.link = "";
+              if (result.status === "success" || result.status == true) {
+                this.link = "link1";
                 section.listMovie = result.data.items;
 
                 if (result.data.seoOnPage) {
@@ -326,7 +326,8 @@ export default {
       }
     },
     getOptimizedImage(imagePath, sectionID) {
-      if (sectionID != "quoc-gia/viet-nam?page=1&limit=20") {
+      if (this.link != "link1") {
+        console.log(sectionID)
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       } else {
         return `${

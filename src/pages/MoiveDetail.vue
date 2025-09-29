@@ -516,14 +516,14 @@ export default {
   props: ["slug"],
   watch: {
     async slug(newSlug) {
-      await this.MoveInfor(newSlug);
+      await this.MoveInfor1(newSlug);
       await this.ListMovieByCate();
       //await this.GetComment();
     },
   },
   async mounted() {
     try {
-      await this.MoveInfor(this.slug);
+      await this.MoveInfor1(this.slug);
       await this.ListMovieByCate();
       //await this.GetComment();
     } catch (err) {
@@ -542,7 +542,7 @@ export default {
               this.link = "";
               this.movie.page = result.movie.episode_current;
               this.idMovie = result.movie._id;
-              this.movie.title = result.movie.origin_name;
+              this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
@@ -610,12 +610,14 @@ export default {
               // .catch(reject);
               resolve(true);
             } else {
-              this.MoveInfor1(slug).then(resolve).catch(reject);
+              reject("error");
+              //this.MoveInfor1(slug).then(resolve).catch(reject);
             }
           },
           (err) => {
             console.log(err);
-            this.MoveInfor1(slug).then(resolve).catch(reject);
+            //this.MoveInfor1(slug).then(resolve).catch(reject);
+            reject(err);
           }
         );
       });
@@ -630,7 +632,7 @@ export default {
               this.link = "link";
               this.movie.page = result.movie.episode_current;
               this.idMovie = result.movie._id;
-              this.movie.title = result.movie.origin_name;
+              this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
@@ -696,12 +698,14 @@ export default {
               // .catch(reject);
               resolve(true);
             } else {
-              reject("error");
+              this.MoveInfor(slug).then(resolve).catch(reject);
+              // reject("error");
             }
           },
           (err) => {
             console.log(err);
-            reject(err);
+            this.MoveInfor(slug).then(resolve).catch(reject);
+            //reject(err);
           }
         );
       });

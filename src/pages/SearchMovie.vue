@@ -135,13 +135,13 @@ export default {
         this.loading = true;
         this.path = query;
 
-        await this.SearchMovie(query);
+        await this.SearchMovie1(query);
       },
     },
     async currentPage(newpage) {
       this.loading = true;
       this.currentPage = newpage;
-      await this.SearchMovie(this.path);
+      await this.SearchMovie1(this.path);
     },
   },
   methods: {
@@ -171,29 +171,34 @@ export default {
                 resolve(true)
                 
               } else {
-                // this.movies = [];
-                this.link = "link1";
-                this.SearchMovie1(query)
-                .then(resolve)
-                .catch(reject);
+                this.movies = [];
+              this.loading = false;
+
+                // this.link = "link1";
+                // this.SearchMovie1(query)
+                // .then(resolve)
+                // .catch(reject);
               }
-            } else {
-              this.link = "link1";
-              this.SearchMovie1(query)
-              .then(resolve)
-              .catch(reject);
-              resolve(true)
-            }
+            } 
+            // else {
+            //   this.link = "link1";
+            //   this.SearchMovie1(query)
+            //   .then(resolve)
+            //   .catch(reject);
+            //   resolve(true)
+            // }
             reject(result)
             console.log(result);
           },
           (err) => {
-            console.log(err);
             clearTimeout(timer);
-            this.link = "link1";
-            this.SearchMovie1(query)
-            .then(resolve)
-            .catch(reject);
+          console.log(err);
+            // console.log(err);
+            // clearTimeout(timer);
+            // this.link = "link1";
+            // this.SearchMovie1(query)
+            // .then(resolve)
+            // .catch(reject);
             
           }
         );
@@ -214,7 +219,7 @@ export default {
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
             if ( result.data.items != null && result.data.items.length != 0) {
-              
+              this.link = ""
                 this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
@@ -226,15 +231,33 @@ export default {
               
               
             } else {
-              this.movies = [];
-              this.loading = false;
+              // this.movies = [];
+              // this.loading = false;
+
+              this.link = "";
+              this.SearchMovie(query)
+              .then(resolve)
+              .catch(reject);
+              resolve(true)
             }
+          }
+          else{
+            this.link = "";
+                this.SearchMovie(query)
+                .then(resolve)
+                .catch(reject);
           }
           reject()
         },
         (err) => {
-          clearTimeout(timer);
+          // clearTimeout(timer);
+          // console.log(err);
           console.log(err);
+            clearTimeout(timer);
+            this.link = "";
+            this.SearchMovie(query)
+            .then(resolve)
+            .catch(reject);
         }
       );
       })
