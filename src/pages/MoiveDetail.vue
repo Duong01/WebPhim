@@ -33,7 +33,7 @@
           style="background-color: #1a1a1a"
         >
           <!-- Nút chức năng -->
-          <div class="d-flex align-center flex-wrap" style="gap: 16px">
+          <div class="d-flex align-center flex-wrap" style="gap: 16px;">
             <v-btn variant="text" @click="getTrailer()">
               <v-icon start icon="mdi-youtube" />
               Trailer
@@ -55,14 +55,15 @@
 
           <!-- Server -->
 
-          <div class="d-flex" style="gap: 8px">
+          <div class="d-flex align-center" style="gap: 8px; overflow-x: auto; flex-wrap: nowrap;">
             <router-link :to="movie.LinkDown" download target="_blank">
               <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
             </router-link>
             <v-tabs
               v-model="tabserver"
-              class="custom-tabs"
+              class="custom-tabs flex-shrink-0"
               background-color="transparent"
+              
             >
               <v-tab
                 v-for="(server, index) in movie.servers"
@@ -102,8 +103,9 @@
                 :key="index"
                 cols="auto"
                 class="pa-2"
+
               >
-                <v-btn color="primary" @click="playEpisode(episode)">
+                <v-btn color="primary"  @click="playEpisode(episode)">
                   {{
                     episode.name
                       ? episode.name.includes("Tập")
@@ -114,6 +116,7 @@
                 </v-btn>
               </v-col>
             </v-row>
+            
           </v-card-text>
         </v-card>
 
