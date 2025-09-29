@@ -219,7 +219,7 @@ export default {
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
             if ( result.data.items != null && result.data.items.length != 0) {
-              this.link = ""
+              this.link = "link1"
                 this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
