@@ -131,7 +131,7 @@
         ListMovieByCate1(
           `${this.path}?page=${this.currentPage}&sort_type=desc&limit=20`,
           (result) => {
-            if (result.status === "success") {
+            if (result.status === "success" || result.status == true) {
               this.movies = result.data.items;
               this.titlePage = result.data.titlePage;
               if (result.data.seoOnPage) {
