@@ -107,7 +107,7 @@
   </template>
   
   <script>
-  import { urlImage, ListMovieByCate } from "@/model/api";
+  import { urlImage1, ListMovieByCate1 } from "@/model/api";
   
   export default {
     name: "HoatHinh",
@@ -119,7 +119,7 @@
         totalMovies: 100,
         movies: [],
         path: "hoat-hinh",
-        urlImage: urlImage,
+        urlImage: urlImage1,
         titlePage: "",
       };
     },
@@ -128,8 +128,8 @@
     },
     methods: {
       ListMovie() {
-        ListMovieByCate(
-          `${this.path}?page=${this.currentPage}`,
+        ListMovieByCate1(
+          `${this.path}?page=${this.currentPage}&sort_type=desc&limit=20`,
           (result) => {
             if (result.status === "success") {
               this.movies = result.data.items;
@@ -146,7 +146,7 @@
         );
       },
       getOptimizedImage(imagePath) {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+         return `${this.urlImage + encodeURIComponent(imagePath)}<!--&w=384&q=100-->`;  
       },
       // Chuan SEO
       updateMetaTags(seo) {
