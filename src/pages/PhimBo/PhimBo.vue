@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { urlImage, ListMovieByCate } from "@/model/api";
+import { urlImage1, ListMovieByCate1 } from "@/model/api";
 
 export default {
   name: "PhimBo",
@@ -119,7 +119,7 @@ export default {
       totalMovies: 100,
       movies: [],
       path: "phim-bo",
-      urlImage: urlImage,
+      urlImage: urlImage1,
       titlePage: "",
     };
   },
@@ -128,10 +128,10 @@ export default {
   },
   methods: {
     ListMovie() {
-      ListMovieByCate(
-        `${this.path}?page=${this.currentPage}`,
+      ListMovieByCate1(
+        `${this.path}?page=${this.currentPage}&sort_type=desc&limit=20`,
         (result) => {
-          if (result.status === "success") {
+          if (result.status === "success" || result.status == true) {
             this.movies = result.data.items;
             this.titlePage = result.data.titlePage;
             if (result.data.seoOnPage) {
@@ -146,7 +146,7 @@ export default {
       );
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      return `${this.urlImage + "https://phimimg.com/" +encodeURIComponent(imagePath)}`; 
     },
     // Chuan SEO
     updateMetaTags(seo) {
