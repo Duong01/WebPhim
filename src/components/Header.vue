@@ -486,8 +486,8 @@ export default {
           //   this.genres = dat.data.items;
           //   this.loadingTheLoai = false;
           // }
-          this.genres = dat.data.items;
-            this.loadingTheLoai = false;
+          this.genres = dat;
+          this.loadingTheLoai = false;
           
         },
         (err) => {
@@ -505,8 +505,8 @@ export default {
           //   this.countries = dat.data.items;
           //   this.loadingQuocGia = false;
           // }
-          this.countries = dat.data.items;
-            this.loadingQuocGia = false;
+          this.countries = dat;
+          this.loadingQuocGia = false;
         },
         (err) => {
           console.log(err);
