@@ -1054,21 +1054,17 @@ export default {
 
 <style scoped>
 .video-wrapper {
-  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   background: black;
   position: relative;
   overflow: hidden;
-  touch-action: none;
 }
 
 .video-wrapper iframe,
 .video-wrapper video {
-  position: absolute;
   width: 100%;
   height: 100%;
-  touch-action: auto;
 }
 .suggested-item {
   cursor: pointer;
