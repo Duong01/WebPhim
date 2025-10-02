@@ -105,14 +105,13 @@
               </v-chip>
             </v-card-title>
             <v-card-text>
-              <v-row>
+              <v-row align="center" justify="center">
                 <v-col
                   v-for="(episode, index) in movie.pageMovie"
                   :key="index"
                   cols="auto"
-                  class="pa-1"
                 >
-                  <v-btn color="primary" density="compact" size="small" class="ma-1" @click="playEpisode(episode)">
+                  <v-btn color="primary"  size="small" @click="playEpisode(episode)">
                     {{
                       episode.name
                         ? episode.name.includes("Tập")
