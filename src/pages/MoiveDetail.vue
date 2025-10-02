@@ -110,9 +110,9 @@
                   v-for="(episode, index) in movie.pageMovie"
                   :key="index"
                   cols="auto"
-                  class="pa-2"
+                  class="pa-1"
                 >
-                  <v-btn color="primary" @click="playEpisode(episode)">
+                  <v-btn color="primary" density="compact" size="small" class="ma-1" @click="playEpisode(episode)">
                     {{
                       episode.name
                         ? episode.name.includes("Tập")
