@@ -1,187 +1,202 @@
 <template>
-  <v-col cols="12" class="text-center" v-if="isLoading">
-    <v-progress-circular indeterminate color="primary" size="50" />
-  </v-col>
+  <v-container class="search-page" fluid>
+    <v-col cols="12" class="text-center" v-if="isLoading">
+      <v-progress-circular indeterminate color="primary" size="50" />
+    </v-col>
 
-  <div v-else>
-    <!-- Breadcrumb -->
-    <v-breadcrumbs :items="items">
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
+    <div v-else>
+      <!-- Breadcrumb -->
+      <v-breadcrumbs :items="items">
+        <template v-slot:divider>
+          <v-icon icon="mdi-chevron-right"></v-icon>
+        </template>
+      </v-breadcrumbs>
 
-    <!-- Bố cục hai cột -->
-    <v-row dense>
-      <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-      <v-col cols="12" md="10">
-        <!-- VIDEO -->
-        <div
-          class="video-wrapper"
-          v-html="generateEmbedHtml(movie.videoUrl)"
-        ></div>
-        <!-- <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
+      <!-- Bố cục hai cột -->
+      <v-row dense>
+        <!-- Cột bên trái: Video + nút + danh sách tập + info -->
+        <v-col cols="12" md="10">
+          <!-- VIDEO -->
+          <div
+            class="video-wrapper"
+            v-html="generateEmbedHtml(movie.videoUrl)"
+          ></div>
+          <!-- <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
           <img :src="thumbnailUrl" alt="Preview" style="width:100%;cursor:pointer;" />
           <div class="play-button">▶</div>
         </div>
 
         <div v-else class="video-wrapper" v-html="embedHtml()"></div> -->
 
-        <!-- Nhóm nút + server -->
-        <div
-          class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
-          style="background-color: #1a1a1a"
-        >
-          <!-- Nút chức năng -->
-          <div class="d-flex align-center flex-wrap" style="gap: 16px;">
-            <v-btn variant="text" @click="getTrailer()">
-              <v-icon start icon="mdi-youtube" />
-              Trailer
-            </v-btn>
-            <v-btn variant="text" @click="shareMovie"
-              ><v-icon start icon="mdi-share-variant" />{{
-                $t("Chia sẻ")
-              }}</v-btn
-            >
-            <v-btn variant="text" @click="ResponseError"
-              ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
-            >
-            <v-btn variant="text"
-              ><v-icon start icon="mdi-bookmark-outline" />{{
-                $t("Xem sau")
-              }}</v-btn
-            >
-          </div>
-
-          <!-- Server -->
-
-          <div class="d-flex align-center" style="gap: 8px; overflow-x: auto; flex-wrap: nowrap;">
-            <router-link :to="movie.LinkDown" download target="_blank">
-              <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
-            </router-link>
-            <v-tabs
-              v-model="tabserver"
-              class="custom-tabs flex-shrink-0"
-              background-color="transparent"
-              
-            >
-              <v-tab
-                v-for="(server, index) in movie.servers"
-                :key="index"
-                @click="switchServer(server)"
-                :class="{ 'active-tab': tabserver === index }"
+          <!-- Nhóm nút + server -->
+          <div
+            class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
+            style="background-color: #1a1a1a"
+          >
+            <!-- Nút chức năng -->
+            <div class="d-flex align-center flex-wrap" style="gap: 16px">
+              <v-btn variant="text" @click="getTrailer()">
+                <v-icon start icon="mdi-youtube" />
+                Trailer
+              </v-btn>
+              <v-btn variant="text" @click="shareMovie"
+                ><v-icon start icon="mdi-share-variant" />{{
+                  $t("Chia sẻ")
+                }}</v-btn
               >
-                {{ server.server_name || `Server ${index + 1}` }}
-              </v-tab>
-            </v-tabs>
-          </div>
-        </div>
+              <v-btn variant="text" @click="ResponseError"
+                ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
+              >
+              <v-btn variant="text"
+                ><v-icon start icon="mdi-bookmark-outline" />{{
+                  $t("Xem sau")
+                }}</v-btn
+              >
+            </div>
 
-        <!-- Danh sách tập -->
-        <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
-          <v-card-title class="d-flex align-center">
-            <span class="text-h6">{{ movie.title }}</span>
-            <v-chip class="ml-2" color="red" text-color="white">{{
-              movie.page
-            }}</v-chip>
-            <v-chip
-              class="ml-2"
-              color="red"
-              text-color="white"
-              v-if="
-                typeof movie.page === 'string' &&
-                movie.page.toUpperCase().includes('HOÀN TẤT')
-              "
+            <!-- Server -->
+
+            <div
+              class="d-flex align-center"
+              style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
             >
-              {{ $t("Tập ") }}1
-            </v-chip>
-          </v-card-title>
-          <v-card-text>
+              <router-link :to="movie.LinkDown" download target="_blank">
+                <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
+              </router-link>
+              <v-tabs
+                v-model="tabserver"
+                class="custom-tabs flex-shrink-0"
+                background-color="transparent"
+              >
+                <v-tab
+                  v-for="(server, index) in movie.servers"
+                  :key="index"
+                  @click="switchServer(server)"
+                  :class="{ 'active-tab': tabserver === index }"
+                >
+                  {{ server.server_name || `Server ${index + 1}` }}
+                </v-tab>
+              </v-tabs>
+            </div>
+          </div>
+
+          <!-- Danh sách tập -->
+          <v-card
+            class="my-4"
+            variant="flat"
+            color="grey-darken-4"
+            theme="dark"
+          >
+            <v-card-title class="d-flex align-center">
+              <span class="text-h6">{{ movie.title }}</span>
+              <v-chip class="ml-2" color="red" text-color="white">{{
+                movie.page
+              }}</v-chip>
+              <v-chip
+                class="ml-2"
+                color="red"
+                text-color="white"
+                v-if="
+                  typeof movie.page === 'string' &&
+                  movie.page.toUpperCase().includes('HOÀN TẤT')
+                "
+              >
+                {{ $t("Tập ") }}1
+              </v-chip>
+            </v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col
+                  v-for="(episode, index) in movie.pageMovie"
+                  :key="index"
+                  cols="auto"
+                  class="pa-2"
+                >
+                  <v-btn color="primary" @click="playEpisode(episode)">
+                    {{
+                      episode.name
+                        ? episode.name.includes("Tập")
+                          ? episode.name
+                          : $t("Tập ") + episode.name
+                        : "Trailer"
+                    }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+
+          <!-- TRAILER -->
+          <div class="mb-4">
             <v-row>
-              <v-col
-                v-for="(episode, index) in movie.pageMovie"
-                :key="index"
-                cols="auto"
-                class="pa-2"
+              <v-col cols="12" sm="6" md="3">
+                <h3 class="text-white mb-2">TRAILER</h3>
 
-              >
-                <v-btn color="primary"  @click="playEpisode(episode)">
-                  {{
-                    episode.name
-                      ? episode.name.includes("Tập")
-                        ? episode.name
-                        : $t("Tập ") + episode.name
-                      : "Trailer"
-                  }}
-                </v-btn>
+                <!-- Thumb container -->
+                <div
+                  class="trailer-thumb"
+                  @click="dialogTrailer = true"
+                  role="button"
+                  aria-label="Play trailer"
+                >
+                  <img
+                    :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
+                    :alt="`Trailer ${movie.name}`"
+                    loading="lazy"
+                  />
+
+                  <!-- dark overlay khi hover -->
+                  <div class="trailer-overlay" />
+
+                  <!-- nút Play (SVG) ở giữa -->
+                  <div class="trailer-play" aria-hidden="true">
+                    <svg
+                      width="64"
+                      height="64"
+                      viewBox="0 0 64 64"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <!-- nền tròn tối để làm nổi tam giác -->
+                      <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)" />
+                      <!-- tam giác play màu trắng -->
+                      <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+                    </svg>
+                  </div>
+                </div>
+              </v-col>
+
+              <v-col cols="12" sm="6" md="6" class="d-flex align-center">
+                <p class="text-grey-lighten-1">
+                  {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
+                </p>
               </v-col>
             </v-row>
-            
-          </v-card-text>
-        </v-card>
-
-        <!-- TRAILER -->
-<div class="mb-4">
-    <v-row>
-      <v-col cols="12" sm="6" md="3">
-        <h3 class="text-white mb-2">TRAILER</h3>
-
-        <!-- Thumb container -->
-        <div class="trailer-thumb" @click="dialogTrailer = true" role="button" aria-label="Play trailer">
-          <img
-            :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
-            :alt="`Trailer ${movie.name}`"
-            loading="lazy"
-          />
-
-          <!-- dark overlay khi hover -->
-          <div class="trailer-overlay" />
-
-          <!-- nút Play (SVG) ở giữa -->
-          <div class="trailer-play" aria-hidden="true">
-            <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-              <!-- nền tròn tối để làm nổi tam giác -->
-              <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)"/>
-              <!-- tam giác play màu trắng -->
-              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-            </svg>
           </div>
-        </div>
-      </v-col>
 
-      <v-col cols="12" sm="6" md="6" class="d-flex align-center">
-        <p class="text-grey-lighten-1">
-          {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
-        </p>
-      </v-col>
-    </v-row>
-  </div>
+          <!-- Dialog trailer -->
+          <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
+            <v-card class="bg-black relative">
+              <!-- Nút đóng -->
+              <v-btn
+                icon="mdi-close"
+                class="absolute top-2 right-2 z-10"
+                variant="text"
+                @click="dialogTrailer = false"
+              ></v-btn>
 
+              <!-- Video -->
+              <iframe
+                width="100%"
+                height="600"
+                :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+              >
+              </iframe>
 
-        <!-- Dialog trailer -->
-        <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
-          <v-card class="bg-black relative">
-            <!-- Nút đóng -->
-            <v-btn
-              icon="mdi-close"
-              class="absolute top-2 right-2 z-10"
-              variant="text"
-              @click="dialogTrailer = false"
-            ></v-btn>
-
-            <!-- Video -->
-            <iframe
-              width="100%"
-              height="600"
-              :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              loading="lazy"
-            >
-            </iframe>
-
-            <!-- <iframe
+              <!-- <iframe
       width="100%"
       height="500"
       :src="movie.trailer_url"
@@ -189,266 +204,274 @@
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
     ></iframe> -->
+            </v-card>
+          </v-dialog>
+
+          <!-- Thông tin phim -->
+          <v-card
+            class="pa-6 text-left"
+            color="grey-darken-4"
+            variant="flat"
+            rounded="lg"
+            theme="dark"
+          >
+            <v-card-title class="text-white mb-4"
+              >{{ movie.title }} ( {{ movie.name }})</v-card-title
+            >
+            <v-card-text class="text-white">
+              <div v-html="movie.description"></div>
+            </v-card-text>
+            <v-card-text class="text-white">
+              <p>
+                <strong>{{ $t("Diễn viên") }}:</strong>
+                {{ movie.actors.join(", ") }}
+              </p>
+              <p>
+                <strong>{{ $t("Đạo diễn") }}:</strong>
+                {{ movie.director.join(", ") }}
+              </p>
+              <p>
+                <strong>{{ $t("Thể loại") }}:</strong> {{ movie.genre.name }}
+              </p>
+              <div class="d-flex align-center">
+                <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
+                <v-rating
+                  readonly
+                  :length="5"
+                  :size="28"
+                  :model-value="movie.rating"
+                  active-color="yellow-darken-2"
+                />
+              </div>
+            </v-card-text>
           </v-card>
-        </v-dialog>
 
-        <!-- Thông tin phim -->
-        <v-card
-          class="pa-6 text-left"
-          color="grey-darken-4"
-          variant="flat"
-          rounded="lg"
-          theme="dark"
-        >
-          <v-card-title class="text-white mb-4"
-            >{{ movie.title }} ( {{ movie.name }})</v-card-title
-          >
-          <v-card-text class="text-white">
-            <div v-html="movie.description"></div>
-          </v-card-text>
-          <v-card-text class="text-white">
-            <p>
-              <strong>{{ $t("Diễn viên") }}:</strong>
-              {{ movie.actors.join(", ") }}
-            </p>
-            <p>
-              <strong>{{ $t("Đạo diễn") }}:</strong>
-              {{ movie.director.join(", ") }}
-            </p>
-            <p>
-              <strong>{{ $t("Thể loại") }}:</strong> {{ movie.genre.name }}
-            </p>
-            <div class="d-flex align-center">
-              <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
-              <v-rating
-                readonly
-                :length="5"
-                :size="28"
-                :model-value="movie.rating"
-                active-color="yellow-darken-2"
-              />
-            </div>
-          </v-card-text>
-        </v-card>
-
-        <!-- Bình luận -->
-        <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-          <h2 class="text-white mb-6 text-h5 font-weight-bold">
-            🗨️ {{ $t("Bình luận") }}
-          </h2>
-          <v-text-field
-            v-model="newComment"
-            :placeholder="$t('Thêm bình luận...')"
-            variant="outlined"
-            color="blue"
-            class="rounded-xl mb-4"
-            density="comfortable"
-            hide-details
-            append-inner-icon="mdi-send"
-            @click:append-inner="addComment"
-            :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
-          ></v-text-field>
-          <v-divider class="mb-4" color="grey darken-3"></v-divider>
-          <div
-            v-for="(comment, index) in comments"
-            :key="index"
-            class="d-flex align-start mb-5"
-          >
-            <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
-              <v-icon color="white">mdi-account</v-icon>
-            </v-avatar>
-            <div class="flex-grow-1">
-              <div class="d-flex align-center mb-1">
-                <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-                  comment.username
-                }}</span>
-                <v-chip
-                  size="x-small"
-                  color="grey-darken-4"
-                  text-color="grey-lighten-1"
-                  variant="flat"
+          <!-- Bình luận -->
+          <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
+            <h2 class="text-white mb-6 text-h5 font-weight-bold">
+              🗨️ {{ $t("Bình luận") }}
+            </h2>
+            <v-text-field
+              v-model="newComment"
+              :placeholder="$t('Thêm bình luận...')"
+              variant="outlined"
+              color="blue"
+              class="rounded-xl mb-4"
+              density="comfortable"
+              hide-details
+              append-inner-icon="mdi-send"
+              @click:append-inner="addComment"
+              :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
+            ></v-text-field>
+            <v-divider class="mb-4" color="grey darken-3"></v-divider>
+            <div
+              v-for="(comment, index) in comments"
+              :key="index"
+              class="d-flex align-start mb-5"
+            >
+              <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+                <v-icon color="white">mdi-account</v-icon>
+              </v-avatar>
+              <div class="flex-grow-1">
+                <div class="d-flex align-center mb-1">
+                  <span class="text-blue-lighten-3 font-weight-medium me-2">{{
+                    comment.username
+                  }}</span>
+                  <v-chip
+                    size="x-small"
+                    color="grey-darken-4"
+                    text-color="grey-lighten-1"
+                    variant="flat"
+                  >
+                    {{ comment.time }}
+                  </v-chip>
+                </div>
+                <div class="text-white text-body-2">{{ comment.content }}</div>
+                <div
+                  class="text-caption mt-2 text-grey-lighten-1"
+                  style="cursor: pointer"
                 >
-                  {{ comment.time }}
-                </v-chip>
-              </div>
-              <div class="text-white text-body-2">{{ comment.content }}</div>
-              <div
-                class="text-caption mt-2 text-grey-lighten-1"
-                style="cursor: pointer"
-              >
-                {{ $t("Phản hồi") }}
+                  {{ $t("Phản hồi") }}
+                </div>
               </div>
             </div>
-          </div>
-        </v-card>
-      </v-col>
+          </v-card>
+        </v-col>
 
-      <!-- Cột bên phải: Gợi ý -->
-      <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
-      <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
-        <v-card class="pa-0" color="grey-darken-4" flat>
-          <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-            <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
-            <v-tab value="2">{{ $t("Top phim") }}</v-tab>
-          </v-tabs>
+        <!-- Cột bên phải: Gợi ý -->
+        <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
+        <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
+          <v-card class="pa-0" color="grey-darken-4" flat>
+            <v-tabs v-model="tab" background-color="grey-darken-3" grow>
+              <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
+              <v-tab value="2">{{ $t("Top phim") }}</v-tab>
+            </v-tabs>
 
-          <v-card-text style="max-height: 87vh; overflow-y: auto">
-            <v-list dense nav>
-              <v-list-item
-                v-for="suggested in suggestedMovies"
-                :key="suggested.id"
-                class="suggested-item"
+            <v-card-text style="max-height: 87vh; overflow-y: auto">
+              <v-list dense nav>
+                <v-list-item
+                  v-for="suggested in suggestedMovies"
+                  :key="suggested.id"
+                  class="suggested-item"
+                >
+                  <router-link
+                    :to="{
+                      name: 'MovieDetail',
+                      params: { slug: suggested.slug },
+                    }"
+                    class="text-decoration-none"
+                  >
+                    <v-list-item-avatar size="80">
+                      <v-img
+                        :src="getOptimizedImage(suggested.poster_url)"
+                        :lazy-src="getOptimizedImage(suggested.poster_url)"
+                      />
+                    </v-list-item-avatar>
+
+                    <v-list-item-content>
+                      <v-list-item-title
+                        class="text-white text-wrap text-body-2"
+                      >
+                        {{ suggested.name }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        class="text-grey-lighten-1 text-caption"
+                      >
+                        {{ suggested.episode_current }} | {{ suggested.lang
+                        }}<br />
+                        {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </router-link>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+
+        <div class="suggested-movies my-8">
+          <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
+          <v-row>
+            <v-col
+              v-for="suggested in suggestedMovies"
+              :key="suggested._id"
+              cols="6"
+              sm="4"
+              md="2"
+            >
+              <router-link
+                :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+                class="text-decoration-none"
               >
-                <router-link
-                  :to="{
-                    name: 'MovieDetail',
-                    params: { slug: suggested.slug },
-                  }"
-                  class="text-decoration-none"
-                >
-                  <v-list-item-avatar size="80">
-                    <v-img
-                      :src="getOptimizedImage(suggested.poster_url)"
-                      :lazy-src="getOptimizedImage(suggested.poster_url)"
-                    />
-                  </v-list-item-avatar>
+                <v-card elevation="2" class="bg-grey-darken-4" hover>
+                  <v-img
+                    :lazy-src="getOptimizedImage(suggested.poster_url)"
+                    :src="getOptimizedImage(suggested.poster_url)"
+                    aspect-ratio="16/9"
+                    cover
+                  ></v-img>
+                  <v-card-title class="text-white text-body-2 text-wrap">
+                    {{ suggested.name }}
+                  </v-card-title>
+                  <v-card-subtitle
+                    class="text-grey-lighten-1 text-caption px-4 pb-4"
+                  >
+                    {{ suggested.episode_current }} | {{ suggested.lang }}<br />
+                    {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                  </v-card-subtitle>
+                </v-card>
+              </router-link>
+            </v-col>
+          </v-row>
+        </div>
+      </v-row>
 
-                  <v-list-item-content>
-                    <v-list-item-title class="text-white text-wrap text-body-2">
-                      {{ suggested.name }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                      class="text-grey-lighten-1 text-caption"
-                    >
-                      {{ suggested.episode_current }} | {{ suggested.lang
-                      }}<br />
-                      {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </router-link>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </v-col>
+      <!-- dialog share -->
+      <v-dialog v-model="shareDialog" max-width="500">
+        <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
+          <v-card-title class="text-h6 justify-center">Chia sẻ</v-card-title>
 
-      <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+          <v-row class="justify-center mt-4" dense>
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('facebook')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-facebook" />
+              </v-btn>
+              <div class="mt-1 text-caption">Facebook</div>
+            </v-col>
 
-      <div class="suggested-movies my-8">
-        <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
-        <v-row>
-          <v-col
-            v-for="suggested in suggestedMovies"
-            :key="suggested._id"
-            cols="6"
-            sm="4"
-            md="2"
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('youtube')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-youtube" />
+              </v-btn>
+              <div class="mt-1 text-caption">YouTube</div>
+            </v-col>
+
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="copyLink"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-link-variant" />
+              </v-btn>
+              <div class="mt-1 text-caption">Copy link</div>
+            </v-col>
+
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('twitter')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-twitter" />
+              </v-btn>
+              <div class="mt-1 text-caption">Twitter</div>
+            </v-col>
+          </v-row>
+
+          <v-card
+            class="mt-4 px-3 py-2 d-flex align-center"
+            style="background-color: #2a2a2a; border-radius: 8px"
           >
-            <router-link
-              :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-              class="text-decoration-none"
-            >
-              <v-card elevation="2" class="bg-grey-darken-4" hover>
-                <v-img
-                  :lazy-src="getOptimizedImage(suggested.poster_url)"
-                  :src="getOptimizedImage(suggested.poster_url)"
-                  aspect-ratio="16/9"
-                  cover
-                ></v-img>
-                <v-card-title class="text-white text-body-2 text-wrap">
-                  {{ suggested.name }}
-                </v-card-title>
-                <v-card-subtitle
-                  class="text-grey-lighten-1 text-caption px-4 pb-4"
-                >
-                  {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                  {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                </v-card-subtitle>
-              </v-card>
-            </router-link>
-          </v-col>
-        </v-row>
-      </div>
-    </v-row>
-
-    <!-- dialog share -->
-    <v-dialog v-model="shareDialog" max-width="500">
-      <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
-        <v-card-title class="text-h6 justify-center">Chia sẻ</v-card-title>
-
-        <v-row class="justify-center mt-4" dense>
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('facebook')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-facebook" />
+            <span class="text-truncate" style="color: #facc15; max-width: 100%">
+              {{ shareUrl }}
+            </span>
+            <v-spacer />
+            <v-btn icon @click="copyLink" size="small">
+              <v-icon icon="mdi-content-copy" />
             </v-btn>
-            <div class="mt-1 text-caption">Facebook</div>
-          </v-col>
+          </v-card>
 
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('youtube')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-youtube" />
-            </v-btn>
-            <div class="mt-1 text-caption">YouTube</div>
-          </v-col>
-
-          <v-col cols="3" class="text-center">
-            <v-btn icon size="large" @click="copyLink" class="bg-grey-darken-4">
-              <v-icon icon="mdi-link-variant" />
-            </v-btn>
-            <div class="mt-1 text-caption">Copy link</div>
-          </v-col>
-
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('twitter')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-twitter" />
-            </v-btn>
-            <div class="mt-1 text-caption">Twitter</div>
-          </v-col>
-        </v-row>
-
-        <v-card
-          class="mt-4 px-3 py-2 d-flex align-center"
-          style="background-color: #2a2a2a; border-radius: 8px"
-        >
-          <span class="text-truncate" style="color: #facc15; max-width: 100%">
-            {{ shareUrl }}
-          </span>
-          <v-spacer />
-          <v-btn icon @click="copyLink" size="small">
-            <v-icon icon="mdi-content-copy" />
+          <v-btn
+            icon
+            class="position-absolute"
+            style="top: 8px; right: 8px"
+            @click="shareDialog = false"
+          >
+            <v-icon icon="mdi-close" />
           </v-btn>
         </v-card>
-
-        <v-btn
-          icon
-          class="position-absolute"
-          style="top: 8px; right: 8px"
-          @click="shareDialog = false"
-        >
-          <v-icon icon="mdi-close" />
-        </v-btn>
-      </v-card>
-    </v-dialog>
-    <!-- Snackbar -->
-    <v-snackbar v-model="mess" :timeout="3000" :color="color">
-      {{ Message }}
-    </v-snackbar>
-  </div>
+      </v-dialog>
+      <!-- Snackbar -->
+      <v-snackbar v-model="mess" :timeout="3000" :color="color">
+        {{ Message }}
+      </v-snackbar>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -1260,59 +1283,58 @@ a {
   margin-left: 8px;
 }
 
-
-.trailer-thumb{
+.trailer-thumb {
   width: 222px;
   height: 125px;
   position: relative;
   overflow: hidden;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-  transition: transform .25s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease;
 }
 
 /* Ảnh */
-.trailer-thumb img{
+.trailer-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform .35s ease;
+  transition: transform 0.35s ease;
 }
 
 /* overlay (mặc định trong suốt) */
-.trailer-overlay{
+.trailer-overlay {
   position: absolute;
   inset: 0; /* top:0;right:0;bottom:0;left:0; */
-  background: rgba(0,0,0,0); 
-  transition: background .25s ease;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
   pointer-events: none; /* để click qua overlay */
 }
 
 /* nút play (ẩn mặc định) */
-.trailer-play{
+.trailer-play {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(.95);
+  transform: translate(-50%, -50%) scale(0.95);
   opacity: 0;
-  transition: opacity .18s ease, transform .18s ease;
+  transition: opacity 0.18s ease, transform 0.18s ease;
   pointer-events: none; /* cho phép click container */
-  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
 }
 
 /* khi hover -> làm nổi ảnh, hiện overlay + play */
-.trailer-thumb:hover img{
+.trailer-thumb:hover img {
   transform: scale(1.03);
 }
 
-.trailer-thumb:hover .trailer-overlay{
-  background: rgba(0,0,0,0.45);
+.trailer-thumb:hover .trailer-overlay {
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid yellow;
 }
 
-.trailer-thumb:hover .trailer-play{
+.trailer-thumb:hover .trailer-play {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
