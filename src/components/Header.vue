@@ -482,10 +482,12 @@ export default {
       Categoris2(
         {},
         (dat) => {
-          if (dat.status == "success" || dat.status == true) {
-            this.genres = dat.data.items;
+          // if (dat.status == "success" || dat.status == true) {
+          //   this.genres = dat.data.items;
+          //   this.loadingTheLoai = false;
+          // }
+          this.genres = dat.data.items;
             this.loadingTheLoai = false;
-          }
           
         },
         (err) => {
@@ -499,10 +501,12 @@ export default {
       City2(
         {},
         (dat) => {
-          if (dat.status == "success" || dat.status == true) {
-            this.countries = dat.data.items;
+          // if (dat.status == "success" || dat.status == true) {
+          //   this.countries = dat.data.items;
+          //   this.loadingQuocGia = false;
+          // }
+          this.countries = dat.data.items;
             this.loadingQuocGia = false;
-          }
         },
         (err) => {
           console.log(err);
