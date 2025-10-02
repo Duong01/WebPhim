@@ -132,10 +132,10 @@
 
         <v-btn
           text
-          :to="{ path: '/phim-sap-chieu' }"
-          :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
+          :to="{ path: '/tv-shows' }"
+          :class="{ 'text-green': $route.path === '/tv-shows' }"
         >
-          {{ $t("Sắp chiếu") }}
+          {{ $t("TV Show") }}
         </v-btn>
         <v-btn
           text
@@ -342,10 +342,10 @@
 
           <!-- Sắp chiếu -->
           <v-list-item
-            :to="{ path: '/phim-sap-chieu' }"
-            :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
+            :to="{ path: '/tv-shows' }"
+            :class="{ 'text-green': $route.path === '/tv-shows' }"
           >
-            <v-list-item-title>{{ $t("Sắp chiếu") }}</v-list-item-title>
+            <v-list-item-title>{{ $t("TV Show") }}</v-list-item-title>
           </v-list-item>
           <!-- Divider -->
           <v-divider class="my-2"></v-divider>
@@ -434,7 +434,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris, City, Search,Search1 } from "@/model/api";
+import { Categoris1, City1, Search,Search1 } from "@/model/api";
 import imageLogo from "@/assets/Logo.png";
 export default {
   name: "HeaderVuetify",
@@ -479,10 +479,10 @@ export default {
     },
     getTheLoai() {
       this.loadingTheLoai = true;
-      Categoris(
+      Categoris1(
         {},
         (dat) => {
-          if (dat.status == "success") {
+          if (dat.status == "success" || dat.status == true) {
             this.genres = dat.data.items;
             this.loadingTheLoai = false;
           }
@@ -495,10 +495,10 @@ export default {
     },
     getQuocGia() {
       this.loadingQuocGia = true;
-      City(
+      City1(
         {},
         (dat) => {
-          if (dat.status == "success") {
+          if (dat.status == "success" || dat.status == true) {
             this.countries = dat.data.items;
             this.loadingQuocGia = false;
           }

@@ -105,6 +105,7 @@ export default
   'Tình Cảm': 'Tình Cảm',
   'Hành Động': 'Hành Động',
   'Âu Mỹ': 'Âu Mỹ',
-  'Việt Nam': 'Việt Nam'
+  'Việt Nam': 'Việt Nam',
+  'TV Show': 'TV Show'
 
 }

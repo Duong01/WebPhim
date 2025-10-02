@@ -105,7 +105,8 @@ export default
   'Tình Cảm': 'Romance',
   'Hành Động': 'Action',
   'Âu Mỹ': 'Western',
-  'Việt Nam': 'Vietnamese'
+  'Việt Nam': 'Vietnamese',
+  'TV Show': 'TV Show'
     
 
 

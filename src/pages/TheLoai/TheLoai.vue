@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { urlImage, CategorisDetail } from '@/model/api'
+import { urlImage1, Categoris1 } from '@/model/api'
 
 export default {
   name: 'TheLoai',
@@ -127,7 +127,7 @@ export default {
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
-      urlImage,
+      urlImage: urlImage1,
       titlePage: '',
     }
   },
@@ -136,8 +136,8 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      CategorisDetail(`${path}?page=${this.currentPage}`, (result) => {
-        if (result.status === 'success') {
+      Categoris1(`${path}?page=${this.currentPage}&sort_type=desc&limit=20`, (result) => {
+        if (result.status === 'success' || result.status === true) {
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
           if (result.data.seoOnPage) {
@@ -151,8 +151,10 @@ export default {
       })
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+      return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
     },
+      // return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+
     updateMetaTags(seo) {
     document.title = seo.titleHead || 'Phim hay'
 

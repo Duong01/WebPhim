@@ -105,5 +105,6 @@ export default
   "Tình Cảm": "爱情",
   "Hành Động": "动作",
   "Âu Mỹ": "欧美",
-  "Việt Nam": "越南"
+  "Việt Nam": "越南",
+  'TV Show': 'TV Show'
 }

@@ -75,6 +75,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  
  // quoc gia
  export const City= (params, success, error) => http.GetNew(`${urlCity}`, params  , success, error)
+ export const City1= (params, success, error) => http.GetNew(`${urlCity1}`, params  , success, error)
 
  // the loai phim
  export const CityDetail= (params, success, error) => http.GetNew(`${urlCity}${params}`, {}  , success, error)

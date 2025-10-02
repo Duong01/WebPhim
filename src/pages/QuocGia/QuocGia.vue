@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { urlImage,urlImage1, CityDetail,CityDetail1 } from '@/model/api'
+import { urlImage,urlImage1,CityDetail1 } from '@/model/api'
 
 export default {
   name: 'QuocGia',
@@ -138,9 +138,39 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      if(path.includes("page=1&limit=20")){
-        CityDetail1(`${path}`, (result) => {
-        if (result.status === 'success') {
+      // if(path.includes("page=1&limit=20")){
+      //   CityDetail1(`${path}`, (result) => {
+      //   if (result.status === 'success') {
+      //     this.link1 = 'link2'
+      //     this.movies = result.data.items
+      //     this.titlePage = result.data.titlePage
+      //     if (result.data.seoOnPage) {
+      //       this.updateMetaTags(result.data.seoOnPage)
+      //     }
+      //     this.loading = false
+      //   }
+      // }, (err) => {
+      //   console.log(err)
+      // })
+      // }
+      // else{
+      //   CityDetail(`${path}?page=${this.currentPage}`, (result) => {
+      //       if (result.status === 'success') {
+      //         this.link1 = '';
+      //         this.movies = result.data.items
+      //         this.titlePage = result.data.titlePage
+      //         if (result.data.seoOnPage) {
+      //           this.updateMetaTags(result.data.seoOnPage)
+      //         }
+      //         this.loading = false
+      //       }
+      //     }, (err) => {
+      //       console.log(err)
+      //     })
+      //   }
+
+      CityDetail1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
+        if (result.status === 'success' || result.status == true) {
           this.link1 = 'link2'
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
@@ -152,32 +182,16 @@ export default {
       }, (err) => {
         console.log(err)
       })
-      }
-      else{
-        CityDetail(`${path}?page=${this.currentPage}`, (result) => {
-            if (result.status === 'success') {
-              this.link1 = '';
-              this.movies = result.data.items
-              this.titlePage = result.data.titlePage
-              if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage)
-              }
-              this.loading = false
-            }
-          }, (err) => {
-            console.log(err)
-          })
-        }
       
     },
     getOptimizedImage(imagePath) {
-      if(this.link1 == ""){
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+      // if(this.link1 == ""){
+      //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
 
-      }
-      else{
+      // }
+      // else{
         return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
-      }
+      // }
     },
     updateMetaTags(seo) {
       document.title = seo.titleHead || 'Phim hay'

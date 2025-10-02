@@ -85,9 +85,9 @@ const routes =[
         }
         },
         {
-            path: '/phim-sap-chieu',
-            name: "PhimSapChieu",
-            component: () => import("@/pages/PhimSapChieu/SapChieu.vue"),
+            path: '/tv-shows',
+            name: "TVShow",
+            component: () => import("@/pages/TVShow/TVShow.vue"),
             meta: {
           title: "Phim sắp chiếu - Web Phim Online",
           description: "Khám phá những bộ phim bom tấn sắp ra mắt."

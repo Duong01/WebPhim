@@ -9,7 +9,7 @@ const urls = [
   "/home",
   "/phim-bo",
   "/phim-le",
-  "/phim-sap-chieu",
+  "/tv-shows",
   "/hoat-hinh",
   "/phim-moi",
   "/phim-hot",

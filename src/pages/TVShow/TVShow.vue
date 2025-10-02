@@ -104,7 +104,7 @@
 import { urlImage1, ListMovieByCate1 } from '@/model/api'
 
 export default {
-  name: 'PhimSapChieu',
+  name: 'TVShow',
   data() {
     return {
       loading: true,
@@ -112,7 +112,7 @@ export default {
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
-      path: 'phim-sap-chieu',
+      path: 'tv-shows',
       urlImage: urlImage1,
       titlePage: '',
     }
