@@ -22,6 +22,8 @@ let urlListMoiveByCategoris1 = "https://phimapi.com/v1/api/danh-sach/"
 let urlCategoris = "https://ophim1.com/v1/api/the-loai/"
 
 let urlCategoris1 = "https://phimapi.com/v1/api/the-loai/"
+let urlCategoris2 = "https://phimapi.com/the-loai"
+
 
 
 let urlCategorisHome = "https://ophim1.com/v1/api/"
@@ -34,6 +36,7 @@ let urlCity = "https://ophim1.com/v1/api/quoc-gia/"
 
 let urlCity1 = "https://phimapi.com/v1/api/quoc-gia/"
 
+let urlCity2 = "https://phimapi.com/quoc-gia"
 
 // tim kiem
 let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
@@ -60,6 +63,8 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  export const Categoris1= (params,success, error) => http.GetNew(`${urlCategoris1}${params}`,{}  , success, error)
 
+ export const Categoris2= (params,success, error) => http.GetNew(`${urlCategoris2}${params}`,{}  , success, error)
+
  // danh sach phim theo the loai phim
  export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris}${params}`, {}  , success, error)
 
@@ -76,6 +81,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  // quoc gia
  export const City= (params, success, error) => http.GetNew(`${urlCity}`, params  , success, error)
  export const City1= (params, success, error) => http.GetNew(`${urlCity1}`, params  , success, error)
+ export const City2= (params, success, error) => http.GetNew(`${urlCity2}`, params  , success, error)
 
  // the loai phim
  export const CityDetail= (params, success, error) => http.GetNew(`${urlCity}${params}`, {}  , success, error)

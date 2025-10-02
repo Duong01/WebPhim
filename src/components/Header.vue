@@ -434,7 +434,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris1, City1, Search,Search1 } from "@/model/api";
+import { Categoris2, City2, Search,Search1 } from "@/model/api";
 import imageLogo from "@/assets/Logo.png";
 export default {
   name: "HeaderVuetify",
@@ -479,13 +479,14 @@ export default {
     },
     getTheLoai() {
       this.loadingTheLoai = true;
-      Categoris1(
+      Categoris2(
         {},
         (dat) => {
           if (dat.status == "success" || dat.status == true) {
             this.genres = dat.data.items;
             this.loadingTheLoai = false;
           }
+          
         },
         (err) => {
           console.log(err);
@@ -495,7 +496,7 @@ export default {
     },
     getQuocGia() {
       this.loadingQuocGia = true;
-      City1(
+      City2(
         {},
         (dat) => {
           if (dat.status == "success" || dat.status == true) {
