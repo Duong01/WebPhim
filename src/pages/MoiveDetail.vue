@@ -963,13 +963,15 @@ export default {
               src="https://www.youtube.com/embed/${videoId}?autoplay=1"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy">
+              allowfullscreen loading="lazy"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
+              >
             </iframe>
           `;
         } else {
           // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
           return `
-            <video width="100%" height="100%" controls preload="none">
+            <video width="100%" height="100%" controls preload="none" style="touch-action: manipulation;">
               <source src="${url}" type="video/mp4">
               Trình duyệt của bạn không hỗ trợ video.
             </video>
@@ -986,7 +988,7 @@ export default {
         allowfullscreen
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
       ></iframe>
     </div>`;
       }
@@ -1015,12 +1017,15 @@ export default {
               src="https://www.youtube.com/embed/${videoId}"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy">
+              allowfullscreen loading="lazy"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
+              
+              >
             </iframe>
           `;
         } else {
           return `
-            <video width="100%" height="600" controls preload="none">
+            <video width="100%" height="600" controls preload="none" style="touch-action: manipulation;">
               <source src="${url}" type="video/mp4">
               Trình duyệt của bạn không hỗ trợ video.
             </video>
@@ -1037,7 +1042,7 @@ export default {
               allowfullscreen
               allow=" fullscreen"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
             ></iframe>
           </div>
         `;

@@ -88,6 +88,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #fff;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
  
 }
 .v-btn {
@@ -117,5 +120,15 @@ export default {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; 
+}
+.v-main {
+  height: 100%;
+  overflow: auto;
 }
 </style>
