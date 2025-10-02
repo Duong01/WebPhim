@@ -480,7 +480,6 @@ export default {
     getTheLoai() {
       this.loadingTheLoai = true;
       Categoris2(
-        {},
         (dat) => {
           if (dat.status == "success" || dat.status == true) {
             this.genres = dat.data.items;
@@ -497,7 +496,6 @@ export default {
     getQuocGia() {
       this.loadingQuocGia = true;
       City2(
-        {},
         (dat) => {
           if (dat.status == "success" || dat.status == true) {
             this.countries = dat.data.items;
