@@ -63,7 +63,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  export const Categoris1= (params,success, error) => http.GetNew(`${urlCategoris1}${params}`,{}  , success, error)
 
- export const Categoris2= (success, error) => http.GetNew(`${urlCategoris2}${params}` , success, error)
+ export const Categoris2= (success, error) => http.GetNew(`${urlCategoris2}`  , success, error)
 
  // danh sach phim theo the loai phim
  export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris}${params}`, {}  , success, error)
