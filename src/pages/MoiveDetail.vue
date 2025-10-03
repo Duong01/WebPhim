@@ -105,15 +105,13 @@
               </v-chip>
             </v-card-title>
             <v-card-text>
-              <v-row align="center" justify="center">
+              <v-row class="episode-list">
                 <v-col
                   v-for="(episode, index) in movie.pageMovie"
                   :key="index"
-                  cols="12"
-                  sm="2"
                   class="episode-col"
                 >
-                  <v-btn color="primary"  size="small" @click="playEpisode(episode)">
+                  <v-btn color="primary" block size="small" @click="playEpisode(episode)">
                     {{
                       episode.name
                         ? episode.name.includes("Tập")
@@ -1339,8 +1337,13 @@ a {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+.episode-list {
+  display: flex;
+  flex-wrap: wrap;
+}
 .episode-col {
-  flex: 0 0 20% !important;
-  max-width: 20% !important;
+  flex: 0 0 20% !important;  
+  max-width: 20% !important; 
+  padding: 4px;
 }
 </style>
