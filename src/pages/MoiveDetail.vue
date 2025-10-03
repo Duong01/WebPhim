@@ -954,7 +954,7 @@ export default {
       console.log(this.movie.page)
       if (
         this.movie.page == "Full" ||
-        this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+        // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
         this.movie.page.includes("/")
       ) {
         this.movie.videoUrl = server.server_data[0].link_embed;
