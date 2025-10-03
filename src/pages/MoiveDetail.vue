@@ -1339,4 +1339,8 @@ a {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+.episode-col {
+  flex: 0 0 20% !important;
+  max-width: 20% !important;
+}
 </style>
