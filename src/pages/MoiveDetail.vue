@@ -677,7 +677,7 @@ export default {
                 result.episodes[0].server_data[0].link_embed == ""
               ) {
                 this.movie.videoUrl = result.movie.trailer_url;
-                // this.movie.title = result.movie.name;
+                this.movie.title = result.movie.name;
                 this.isTrailer = true;
               } else {
                 if (
@@ -687,7 +687,7 @@ export default {
                 ) {
                   this.movie.videoUrl =
                     result.episodes[0].server_data[0].link_embed;
-                  // this.movie.title = result.movie.name;
+                  this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
                   var tap = this.movie.page.split("Tập ")[1].trim();
@@ -696,7 +696,7 @@ export default {
                   );
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
-                    // this.movie.title = data.filename;
+                    this.movie.title = data.filename;
                     this.isTrailer = false;
                   } else {
                     const data = result.episodes[1].server_data.find(
@@ -704,7 +704,7 @@ export default {
                     );
                     if (data) {
                       this.movie.videoUrl = data.link_embed;
-                      // this.movie.title = data.filename;
+                      this.movie.title = data.filename;
                       this.isTrailer = false;
                     }
                   }
@@ -939,16 +939,17 @@ export default {
     },
     playEpisode(episode) {
       this.isLoading = true;
-      // this.movie.title = episode.filename;
+      this.movie.title = episode.filename;
       this.movie.videoUrl = episode.link_embed;
       this.movie.LinkDown = episode.link_m3u8;
 
-      this.movie.page = "Tập " + episode.slug;
+      this.movie.page = episode.name;
       this.GetComment();
       this.isLoading = false;
     },
     switchServer(server) {
       this.isLoading = true;
+      
       this.movie.pageMovie = server.server_data;
       console.log(server)
       console.log(this.movie.page)
@@ -962,7 +963,8 @@ export default {
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.find((ep) => ep.slug === tap);
+        console.log(tap)
+        const data = server.server_data.includes(tap);
         if (data) {
           this.movie.videoUrl = data.link_embed;
           this.movie.LinkDown = data.link_m3u8;
@@ -973,7 +975,10 @@ export default {
       
 
       this.GetComment();
-      this.isLoading = false;
+      setTimeout(() => {
+        this.isLoading = false;
+
+      }, 1000);
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {

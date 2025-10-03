@@ -212,7 +212,7 @@ export default {
         reject(new Error("Timeout"));
       }, 120000);
           Search1(
-        { keyword: query, page: 1, limit: 10 },
+        { keyword: query, page: this.currentPage, limit: 20 },
         (result) => {
           console.log(result);
           
