@@ -109,7 +109,9 @@
                 <v-col
                   v-for="(episode, index) in movie.pageMovie"
                   :key="index"
-                  cols="auto"
+                  cols="12"
+                  sm="2"
+                  class="episode-col"
                 >
                   <v-btn color="primary"  size="small" @click="playEpisode(episode)">
                     {{
