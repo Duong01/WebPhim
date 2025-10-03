@@ -950,6 +950,8 @@ export default {
     switchServer(server) {
       this.isLoading = true;
       this.movie.pageMovie = server.server_data;
+      console.log(server)
+      console.log(this.movie.page)
       if (
         this.movie.page == "Full" ||
         this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
@@ -966,7 +968,9 @@ export default {
           this.movie.LinkDown = data.link_m3u8;
           this.isTrailer = false;
         }
+        console.log(data)
       }
+      
 
       this.GetComment();
       this.isLoading = false;
