@@ -633,18 +633,31 @@ export default {
               // this.GetComment()
               // .then(resolve)
               // .catch(reject);
-              for(let j=0;j<result.episodes.length;j++){
-                if((result.episodes[j].server_data[0].link_embed == "" || result.episodes[j].server_data[0].length <=0) && (result.episodes[result.episodes.length-1].server_data[0].link_embed == "" || result.episodes[result.episodes.length-1].server_data[0].length <=0)){
-                  window.open('https://rophiim.me/?s='+this.slug);
-                }
+              const isEmpty = result.episodes.every(ep => 
+                ep.server_data.every(s => !s.link_embed && !s.link_m3u8)
+              );
+              if (isEmpty) {
+                window.location.href = 'https://rophiim.me/?s=' + this.slug;
               }
+              // for(let j=0;j<result.episodes.length;j++){
+              //   if((result.episodes[j].server_data[0].link_embed == "" || result.episodes[j].server_data[0].length <=0) && (result.episodes[result.episodes.length-1].server_data[0].link_embed == "" || result.episodes[result.episodes.length-1].server_data[0].length <=0)){
+              //     window.location.href = 'https://rophiim.me/?s='+this.slug;
+              //   }
+              // }
               resolve(true);
             } else {
-              for(let j=0;j<result.episodes.length;j++){
-                if((result.episodes[j].server_data[0].link_embed == "" || result.episodes[j].server_data[0].length <=0) && (result.episodes[result.episodes.length-1].server_data[0].link_embed == "" || result.episodes[result.episodes.length-1].server_data[0].length <=0)){
-                  window.open('https://rophiim.me/?s='+this.slug);
-                }
+              const isEmpty = result.episodes.every(ep => 
+                ep.server_data.every(s => !s.link_embed && !s.link_m3u8)
+              );
+              if (isEmpty) {
+                window.location.href = 'https://rophiim.me/?s=' + this.slug;
               }
+              // for(let j=0;j<result.episodes.length;j++){
+              //   if((result.episodes[j].server_data[0].link_embed == "" || result.episodes[j].server_data[0].length <=0) && (result.episodes[result.episodes.length-1].server_data[0].link_embed == "" || result.episodes[result.episodes.length-1].server_data[0].length <=0)){
+              //     window.location.href = 'https://rophiim.me/?s='+this.slug;
+
+              //   }
+              // }
               reject("error");
               //this.MoveInfor1(slug).then(resolve).catch(reject);
             }
@@ -733,7 +746,8 @@ export default {
               // .catch(reject);
               for(let j=0;j<result.episodes.length;j++){
                 if((result.episodes[j].server_data.link_embed == "" || result.episodes[j].server_data.length <=0) && (result.episodes[result.episodes.length-1].server_data.link_embed == "" || result.episodes[result.episodes.length-1].server_data.length <=0)){
-                  window.open('https://rophiim.me/?s='+this.slug);
+                  window.location.href = 'https://rophiim.me/?s='+this.slug;
+
                 }
               }
               
