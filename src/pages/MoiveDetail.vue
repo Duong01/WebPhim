@@ -721,8 +721,8 @@ export default {
               // this.GetComment()
               // .then(resolve)
               // .catch(reject);
-              for(var i=0;i<result.episodes.length;i++){
-                if((result.episodes[i].server_data.link_embed == "" || result.episodes[i].server_data.length <=0) && (result.episodes[result.episodes.length-1].server_data.link_embed == "" || result.episodes[result.episodes.length-1].server_data.length <=0)){
+              for(var j=0;j<result.episodes.length;j++){
+                if((result.episodes[j].server_data.link_embed == "" || result.episodes[j].server_data.length <=0) && (result.episodes[result.episodes.length-1].server_data.link_embed == "" || result.episodes[result.episodes.length-1].server_data.length <=0)){
                   window.open('https://rophiim.me/?s='+this.slug);
                 }
               }
