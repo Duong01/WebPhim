@@ -1,7 +1,15 @@
 <template>
   <v-container fluid class="pa-0">
+    <div v-if="isLoading || !videoList.length" class="default-placeholder">
+      <v-skeleton-loader
+        type="image, article"
+        height="550"
+        class="rounded-lg"
+      />
+      
+    </div>
     <v-carousel
-      v-if="videoList.length"
+      v-else
       height="550"
       hide-delimiters="false"
       delimiter-icon="mdi-circle"

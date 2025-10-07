@@ -9,6 +9,7 @@ let URLInfor = "https://ophim1.com/phim/"
 
 let URLInfor1 = "https://phimapi.com/phim/"
 
+let urlMovies = "https://phimapi.com/danh-sach/"
 
 // ex =>    let URLInfor = "https://ophim1.com/phim/ngoi-truong-xac-song"
 
@@ -52,6 +53,9 @@ export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.li
 export const urlImage1 = "https://phimapi.com/image.php?url="
 
  export const ListmovieNew= (params, success, error) => http.GetNew(`${URL}`, params, success, error)
+
+ export const ListMovieNew1= (params, success, error) => http.GetNew(`${urlMovies}${params}`, {}, success, error)
+
  export const ListmovieInfor= (params, success, error) => http.GetNew(`${URLInfor}`, params, success, error)
  export const MoveInfor= (params, success, error) => http.GetNew(`${URLInfor}${params}`, {}  , success, error)
 

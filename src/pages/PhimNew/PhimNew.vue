@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { urlImage1, ListMovieByCate1 } from '@/model/api'
+import { urlImage1, ListMovieNew1 } from '@/model/api'
 
 export default {
   name: 'PhimNew',
@@ -128,13 +128,13 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      ListMovieByCate1(`${path}?page=${this.currentPage}&sort_type=desc&limit=20`, (result) => {
+      ListMovieNew1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
-          this.movies = result.data.items
-          this.titlePage = result.data.titlePage
-          if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage)
-              }
+          this.movies = result.items
+          this.titlePage = "Phim mới cập nhật"
+          // if (result.data.seoOnPage) {
+          //       this.updateMetaTags(result.data.seoOnPage)
+          //     }
           this.loading = false
         }
       }, (err) => {
@@ -142,7 +142,9 @@ export default {
       })
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
+      // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
+      return `${this.urlImage + encodeURIComponent(imagePath)}`
+
     },
 
       // return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`

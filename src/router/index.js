@@ -113,7 +113,7 @@ const routes =[
         }
         },
         {
-            path: '/:path(phim-moi|phim-hot)',
+            path: '/danh-sach/:path',
             name: "PhimNew",
             component: () => import("@/pages/PhimNew/PhimNew.vue"),
             props: true,

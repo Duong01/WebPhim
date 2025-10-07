@@ -1,22 +1,41 @@
 <template>
   <div style="width: 100%">
     <CarouselPage />
-    <div style="overflow-x: auto; white-space: nowrap;">
-    <v-row no-gutters class="flex-nowrap">
-      <template v-for="(item, index) in items" :key="index">
-        <v-col cols="auto" class="mr-3 scroll">
-          <v-btn
-            :style="{ backgroundColor: getColor(index), color: 'white', margin:'10px' }"
-            :ripple="false"
-            height="152"
-            min-width="264"
-          >
-            {{ item.title }}
-          </v-btn>
+    <div style="overflow-x: auto; white-space: nowrap; margin-top: 10px;">
+      <v-row no-gutters class="align-center mb-2">
+        <v-col cols="12">
+          <h1 class="category-title d-flex align-center">
+            <v-icon size="20" color="#ffcc00" class="mr-2"
+              >mdi-filmstrip</v-icon
+            >
+            Bạn muốn xem gì?
+          </h1>
         </v-col>
-      </template>
-    </v-row>
-  </div>
+      </v-row>
+
+      <div
+        class="d-flex"
+        style="overflow-x: auto; gap: 12px; padding-bottom: 8px"
+      >
+      <router-link
+    v-for="(item, index) in items"
+    :key="index"
+    :to="item.link"
+    style="text-decoration: none;"
+  >
+    <v-btn
+      class="btnList flex-shrink-0"
+      :style="{ backgroundColor: getColor(index), color: 'white' }"
+      :ripple="false"
+      height="152"
+      min-width="264"
+    >
+      {{ item.title }}
+    </v-btn>
+  </router-link>
+        
+      </div>
+    </div>
     <div
       v-for="(section, sectionIndex) in sections"
       :key="sectionIndex"
@@ -31,12 +50,12 @@
           <div>
             <v-row class="category-header" align="center" no-gutters>
               <v-col cols="auto">
-                <h2 class="category-title">
+                <h1 class="category-title">
                   <v-icon size="20" color="#ffcc00" class="mr-1"
                     >mdi-filmstrip</v-icon
                   >
                   {{ section.title }}
-                </h2>
+                </h1>
               </v-col>
               <v-col cols="auto">
                 <router-link
@@ -63,75 +82,104 @@
                 class="movie-list"
               >
                 <v-col
-  v-for="(item, index) in isLoading ? Array(12).fill({}) : section.listMovie.slice(0, 12)"
-  :key="item.slug || index"
-  cols="4"
-  xs="4"
-  sm="4"
-  md="3"
-  lg="2"
-  xl="2"
-  style="padding: 10px"
->
-  <v-skeleton-loader v-if="isLoading" type="image" height="250" />
-  <router-link
-    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
-    v-else
-  >
-    <v-card class="mx-auto bg-dark text-white movie-card" max-width="344">
-      <v-img
-        :src="getOptimizedImage(item.poster_url, section.id)"
-        :lazy-src="getOptimizedImage(item.poster_url, section.id)"
-        :alt="`Poster phim ${item.name}`"
-        class="movie-img"
-        height="250"
-        cover
-      >
-        <template #default>
-          <v-btn
-            icon
-            size="small"
-            color="red"
-            variant="flat"
-            class="favorite-btn"
-            @click.stop="toggleFavorite(item)"
-          >
-            <v-icon>
-              {{ isFavorite(item) ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon>
-          </v-btn>
+                  v-for="(item, index) in isLoading
+                    ? Array(12).fill({})
+                    : section.listMovie.slice(0, 12)"
+                  :key="item.slug || index"
+                  cols="4"
+                  xs="4"
+                  sm="4"
+                  md="3"
+                  lg="2"
+                  xl="2"
+                  style="padding: 10px"
+                >
+                  <v-skeleton-loader
+                    v-if="isLoading"
+                    type="image"
+                    height="250"
+                  />
+                  <router-link
+                    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+                    v-else
+                  >
+                    <v-card
+                      class="mx-auto bg-dark text-white movie-card"
+                      max-width="344"
+                    >
+                      <v-img
+                        :src="getOptimizedImage(item.poster_url, section.id)"
+                        :lazy-src="
+                          getOptimizedImage(item.poster_url, section.id)
+                        "
+                        :alt="`Poster phim ${item.name}`"
+                        class="movie-img"
+                        height="250"
+                        cover
+                      >
+                        <template #default>
+                          <v-btn
+                            icon
+                            size="small"
+                            color="red"
+                            variant="flat"
+                            class="favorite-btn"
+                            @click.stop="toggleFavorite(item)"
+                          >
+                            <v-icon>
+                              {{
+                                isFavorite(item)
+                                  ? "mdi-heart"
+                                  : "mdi-heart-outline"
+                              }}
+                            </v-icon>
+                          </v-btn>
 
-          <div class="movie-overlay" aria-hidden="true"></div>
+                          <div class="movie-overlay" aria-hidden="true"></div>
 
-          <div class="movie-play" aria-hidden="true">
-            <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)"/>
-              <path d="M26 20 L46 32 L26 44 Z" fill="#fff"/>
-            </svg>
-          </div>
-        </template>
-      </v-img>
+                          <div class="movie-play" aria-hidden="true">
+                            <svg
+                              width="64"
+                              height="64"
+                              viewBox="0 0 64 64"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r="30"
+                                fill="rgba(0,0,0,0.55)"
+                              />
+                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+                            </svg>
+                          </div>
+                        </template>
+                      </v-img>
 
-      <v-card-subtitle class="episode-lang">
-        {{
-          item.episode_current === "Tập 0"
-            ? `Full - ${item.lang}`
-            : `${item.episode_current} - ${item.lang}`
-        }}
-      </v-card-subtitle>
+                      <v-card-subtitle class="episode-lang">
+                        {{
+                          item.episode_current === "Tập 0"
+                            ? `Full - ${item.lang}`
+                            : `${item.episode_current} - ${item.lang}`
+                        }}
+                      </v-card-subtitle>
 
-      <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+                      <v-card-title class="movie-title">{{
+                        item.name
+                      }}</v-card-title>
 
-      <v-card-text class="movie-info">
-        <div class="text-grey text-truncate">
-          <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
-          {{ item.origin_name }} ({{ item.year }})
-        </div>
-      </v-card-text>
-    </v-card>
-  </router-link>
-</v-col>
-
+                      <v-card-text class="movie-info">
+                        <div class="text-grey text-truncate">
+                          <v-icon size="14" class="mr-1" color="grey"
+                            >mdi-tag</v-icon
+                          >
+                          {{ item.origin_name }} ({{ item.year }})
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </router-link>
+                </v-col>
               </v-row>
             </div>
             <div v-else style="height: 400px">
@@ -143,7 +191,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import {
@@ -158,13 +205,14 @@ export default {
   name: "HomePage",
   data() {
     return {
+      hoverIndex: null,
       urlImage: urlImage,
       urlImage1: urlImage1,
       isLoading: true,
       loaded: false,
       loading: false,
       favoriteMovies: [],
-      colorList: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8'],
+      colorList: ["#e57373", "#81c784", "#64b5f6", "#ffb74d", "#ba68c8"],
       sections: [
         {
           title: this.$t("PHIM THỊNH HÀNH"),
@@ -237,58 +285,69 @@ export default {
             name: "QuocGia",
             params: { path: "han-quoc" },
           },
-        }
+        },
       ],
-      items:[
+      items: [
         {
           title: this.$t("PHIM MỚI"),
           name: "PhimNew",
           link: {
-              name: "PhimNew",
-              params: { path: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            name: "PhimNew",
+            params: {
+              path: "/phim-moi-cap-nhat-v2",
             },
+          },
         },
         {
           title: this.$t("PHIM BỘ"),
           name: "PhimBo",
           link: {
-              name: "PhimBo",
-              params: { path: "danh-sach/phim-bo?page=2&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            name: "PhimBo",
+            params: {
+              path: "/phim-bo",
             },
-        },
-        {
-          title: this.$t("PHIM TRUNG QUOC"),
-          name: "PhimLe",
-          link: {
-            name: "PhimLe",
-              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
-            },
-        },
-          {
-            title: this.$t("PHIM LẺ"),
-            name: "PhimLe",
-            link: {
-                name: "PhimLe",
-                params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
-              },
           },
+        },
         {
-          title: this.$t("PHIM LẺ"),
-          name: "PhimLe",
+          title: this.$t("PHIM TRUNG QUỐC"),
+          name: "QuocGia",
           link: {
-              name: "PhimLe",
-              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            name: "QuocGia",
+            params: {
+              path: "trung-quoc",
             },
+          },
         },
         {
           title: this.$t("PHIM LẺ"),
           name: "PhimLe",
           link: {
-              name: "PhimLe",
-              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            name: "PhimLe",
+            params: {
+              path: "/phim-le",
             },
-        }
-        
+          },
+        },
+        {
+          title: this.$t("PHIM HOẠT HÌNH"),
+          name: "HoatHinh",
+          link: {
+            name: "HoatHinh",
+            params: {
+              path: "/hoat-hinh",
+            },
+          },
+        },
+        {
+          title: this.$t("PHIM TÌNH CẢM"),
+          name: "TheLoai",
+          link: {
+            name: "TheLoai",
+            params: {
+              path: "tinh-cam",
+            },
+          },
+        },
       ],
       link: "",
     };
@@ -308,7 +367,7 @@ export default {
     getColor(index) {
       return this.colorList[index % this.colorList.length];
     },
-    
+
     observeSections() {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -399,7 +458,7 @@ export default {
     },
     getOptimizedImage(imagePath, sectionID) {
       if (this.link != "link1") {
-        console.log(sectionID)
+        console.log(sectionID);
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       } else {
         return `${
@@ -595,7 +654,6 @@ a {
   }
 }
 
-
 /* container card */
 .movie-card {
   overflow: hidden;
@@ -615,7 +673,7 @@ a {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform .35s ease;
+  transition: transform 0.35s ease;
 }
 
 /* zoom nhẹ khi hover card */
@@ -628,23 +686,23 @@ a {
 .movie-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0);
-  transition: background .25s ease;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
   pointer-events: none; /* không chặn click */
 }
 
 .movie-card:hover .movie-overlay {
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .movie-play {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(.95);
+  transform: translate(-50%, -50%) scale(0.95);
   opacity: 0;
-  transition: opacity .18s ease, transform .18s ease;
-  pointer-events: none; 
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
   z-index: 2;
 }
 
@@ -661,7 +719,17 @@ a {
 .v-btn {
   transition: background-color 0.3s;
 }
-.scroll{
+.scroll {
   margin: 15px;
+}
+.btnList {
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: none;
+  transition: all 0.3s ease;
+}
+.btnList:hover{
+  
+  transform: scale(1.05); 
 }
 </style>
