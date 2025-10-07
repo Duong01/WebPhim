@@ -1,6 +1,22 @@
 <template>
   <div style="width: 100%">
     <CarouselPage />
+    <div style="overflow-x: auto; white-space: nowrap;">
+    <v-row no-gutters class="flex-nowrap">
+      <template v-for="(item, index) in items" :key="index">
+        <v-col cols="auto" class="mr-3 scroll">
+          <v-btn
+            :style="{ backgroundColor: getColor(index), color: 'white', margin:'10px' }"
+            :ripple="false"
+            height="152"
+            min-width="264"
+          >
+            {{ item.title }}
+          </v-btn>
+        </v-col>
+      </template>
+    </v-row>
+  </div>
     <div
       v-for="(section, sectionIndex) in sections"
       :key="sectionIndex"
@@ -148,6 +164,7 @@ export default {
       loaded: false,
       loading: false,
       favoriteMovies: [],
+      colorList: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8'],
       sections: [
         {
           title: this.$t("PHIM THỊNH HÀNH"),
@@ -222,6 +239,57 @@ export default {
           },
         }
       ],
+      items:[
+        {
+          title: this.$t("PHIM MỚI"),
+          name: "PhimNew",
+          link: {
+              name: "PhimNew",
+              params: { path: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            },
+        },
+        {
+          title: this.$t("PHIM BỘ"),
+          name: "PhimBo",
+          link: {
+              name: "PhimBo",
+              params: { path: "danh-sach/phim-bo?page=2&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            },
+        },
+        {
+          title: this.$t("PHIM TRUNG QUOC"),
+          name: "PhimLe",
+          link: {
+            name: "PhimLe",
+              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            },
+        },
+          {
+            title: this.$t("PHIM LẺ"),
+            name: "PhimLe",
+            link: {
+                name: "PhimLe",
+                params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+              },
+          },
+        {
+          title: this.$t("PHIM LẺ"),
+          name: "PhimLe",
+          link: {
+              name: "PhimLe",
+              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            },
+        },
+        {
+          title: this.$t("PHIM LẺ"),
+          name: "PhimLe",
+          link: {
+              name: "PhimLe",
+              params: { path: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20" },
+            },
+        }
+        
+      ],
       link: "",
     };
   },
@@ -237,6 +305,10 @@ export default {
     });
   },
   methods: {
+    getColor(index) {
+      return this.colorList[index % this.colorList.length];
+    },
+    
     observeSections() {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -586,5 +658,10 @@ a {
   /* position: relative; */
   z-index: 4;
 }
-
+.v-btn {
+  transition: background-color 0.3s;
+}
+.scroll{
+  margin: 15px;
+}
 </style>
