@@ -25,7 +25,7 @@
   >
     <v-btn
       class="btnList flex-shrink-0"
-      :style="{ backgroundColor: getColor(index), color: 'white' }"
+      :style="{ backgroundColor: getColor(index), color: 'white',margin:'15px' }"
       :ripple="false"
       height="152"
       min-width="264"

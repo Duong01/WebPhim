@@ -54,12 +54,18 @@ export default {
       this.$store.commit("setEmpInfor", null);
     }
   }
+  
   this.$bus.$on("show-error", (msg) => {
       this.errorMessage = msg;
       this.showError = true;
     });
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    window.addEventListener("pageshow", this.handlePageShow);
   },
-  
+  beforeUnmount() {
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    window.removeEventListener("pageshow", this.handlePageShow);
+  },
   created() {
   const expireAt = localStorage.getItem("expireAt");
   const now = new Date().getTime();
@@ -75,7 +81,20 @@ export default {
   methods: {
     setTheme(newTheme) {
       this.theme = newTheme
-    }
+    },
+    reloadPage() {
+      this.$router.go(0);
+    },
+    handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        this.reloadPage();
+      }
+    },
+    handlePageShow(event) {
+      if (event.persisted) {
+        this.reloadPage();
+      }
+    },
   }
 }
 </script>

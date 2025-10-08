@@ -1,6 +1,12 @@
 import axios from "axios";
 //import store from "@/store"
 
+const api = axios.create({
+  baseURL: process.env.VUE_APP_API_BASE_URL|| "/api", // /api
+  timeout: 10000,
+  headers: { "Content-Type": "application/json" },
+});
+
 function InitAxiosForSession()  
 {
     axios.defaults.timeout = 300000;
@@ -13,7 +19,7 @@ function InitAxiosForNoNSession()
 }
 
 function Post(url, params, success, error) {
-    InitAxiosForSession()
+    InitAxiosForSession()   
     //store.state.isLoading=true
     axios({
         method: 'post',
@@ -105,17 +111,25 @@ function GetNonSession(url, params, success, error) {
 
 
 
+// function GetNew(url, params, success, error) {
+//     axios.create({
+//         baseURL: "/api", // Dùng proxy
+//         timeout: 10000,
+//         headers: {
+//         "Content-Type": "application/json",
+//         },
+//     })
+//       .get(url, { params })
+//       .then((res) => success(res.data))
+//       .catch((err) => error(err));
+//   }
+
 function GetNew(url, params, success, error) {
-    axios.create({
-        baseURL: "/api", // Dùng proxy
-        timeout: 10000,
-        headers: {
-        "Content-Type": "application/json",
-        },
-    })
-      .get(url, { params })
-      .then((res) => success(res.data))
-      .catch((err) => error(err));
+    InitAxiosForNoNSession();
+    api
+    .get(url, { params })
+    .then((res) => success(res.data))
+    .catch((err) => error(err));
   }
   
 
