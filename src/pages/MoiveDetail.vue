@@ -3,7 +3,9 @@
     <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
-
+    <div v-else-if="isLoadingData">
+      <p style="text-align: center;">Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet</p>
+    </div>
     <div v-else>
       <!-- Breadcrumb -->
       <v-breadcrumbs :items="items">
@@ -21,12 +23,31 @@
             class="video-wrapper"
             v-html="generateEmbedHtml(movie.videoUrl)"
           ></div>
-          <!-- <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
-          <img :src="thumbnailUrl" alt="Preview" style="width:100%;cursor:pointer;" />
-          <div class="play-button">▶</div>
-        </div>
 
-        <div v-else class="video-wrapper" v-html="embedHtml()"></div> -->
+          <!-- nut next tap và back tap -->
+           <div class="d-flex justify-center align-center my-3" style="gap: 12px">
+              <v-btn
+                color="grey-darken-2"
+                @click="prevEpisode"
+                :disabled="currentEpisodeIndex <= 0"
+              >
+                <v-icon start>mdi-chevron-left</v-icon>
+                {{ $t("Tập trước") }}
+              </v-btn>
+
+              <v-chip color="blue-darken-2" text-color="white">
+                {{ $t("Tập") }} {{ currentEpisodeIndex +1}}
+              </v-chip>
+
+              <v-btn
+                color="grey-darken-2"
+                @click="nextEpisode"
+                :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
+              >
+                {{ $t("Tập tiếp") }}
+                <v-icon end>mdi-chevron-right</v-icon>
+              </v-btn>
+            </div>
 
           <!-- Nhóm nút + server -->
           <div
@@ -494,6 +515,7 @@ export default {
       tab: "",
       shareUrl: window.location.href,
       tabserver: null,
+      currentEpisodeIndex: 0,
       items: [
         {
           title: "Home",
@@ -506,6 +528,7 @@ export default {
         },
       ],
       isLoading: true,
+      isLoadingData: false,
       Message: "",
       color: "",
       mess: false,
@@ -604,6 +627,7 @@ export default {
                   const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
+                  this.currentEpisodeIndex = parseInt(tap,10) -1;
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
                     this.movie.LinkDown = data.link_m3u8;
@@ -665,6 +689,8 @@ export default {
           (err) => {
             console.log(err);
             //this.MoveInfor1(slug).then(resolve).catch(reject);
+            this.loading = false;
+            this.isLoadingData = true;
             reject(err);
           }
         );
@@ -717,6 +743,8 @@ export default {
                   const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
+                  this.currentEpisodeIndex = parseInt(tap,10)-1;
+
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
                     this.movie.title = data.filename;
@@ -968,14 +996,27 @@ export default {
       this.isTrailer = true;
     },
     playEpisode(episode) {
-      this.isLoading = true;
-      this.movie.title = episode.filename;
-      this.movie.videoUrl = episode.link_embed;
-      this.movie.LinkDown = episode.link_m3u8;
+      try{
+        console.log(episode)
+        this.isLoading = true;
+        if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
+          this.movie.title = episode.filename;
 
-      this.movie.page = episode.name;
-      this.GetComment();
-      this.isLoading = false;
+        }
+        this.movie.videoUrl = episode.link_embed;
+        this.movie.LinkDown = episode.link_m3u8;
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+          (ep) => ep.name === episode.name
+        );
+        this.movie.page = episode.name;
+        this.GetComment();
+        this.isLoading = false;
+      }
+      catch{
+        this.isLoading = false;
+        
+      }
+      
     },
     switchServer(server) {
       this.isLoading = true;
@@ -1010,6 +1051,21 @@ export default {
 
       }, 1000);
     },
+    nextEpisode() {
+  if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
+    this.currentEpisodeIndex++;
+    const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
+    this.playEpisode(nextEp);
+  }
+},
+prevEpisode() {
+  if (this.currentEpisodeIndex > 0) {
+    this.currentEpisodeIndex--;
+    console.log(this.currentEpisodeIndex)
+    const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
+    this.playEpisode(prevEp);
+  }
+},
     generateEmbedHtml(url) {
       if (this.isTrailer) {
         const youtubeMatch = this.movie.trailer_url.split("?v=");
