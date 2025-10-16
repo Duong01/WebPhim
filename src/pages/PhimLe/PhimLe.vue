@@ -26,6 +26,105 @@
           </router-link>
         </v-alert>
 
+
+        <v-row
+                no-gutters
+                tag="transition-group"
+                name="fade-scale"
+                class="movie-list"
+              >
+                <v-col
+                  v-for="movie in movies"
+                  :key="movie.id"
+                  cols="4"
+                  
+                  style="padding: 10px"
+                >
+                  
+                  <router-link
+                    :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+                    class="text-decoration-none"
+                  >
+                    <v-card
+                      class="mx-auto bg-dark movie-card"
+                      width="auto"
+                    >
+                      <v-img
+                        :src="getOptimizedImage(movie.poster_url)"
+                        :lazy-src="getOptimizedImage(movie.poster_url)"
+                        :alt="movie.name"
+                        spect-ratio="16/9"
+                        class="movie-image"
+                        transition="fade-transition"
+                        height="250"
+                        cover
+                      >
+                        <template #default>
+                          <!-- <v-btn
+                            icon
+                            size="small"
+                            color="red"
+                            variant="flat"
+                            class="favorite-btn"
+                            @click.stop="toggleFavorite(item)"
+                          >
+                            <v-icon>
+                              {{
+                                isFavorite(item)
+                                  ? "mdi-heart"
+                                  : "mdi-heart-outline"
+                              }}
+                            </v-icon>
+                          </v-btn> -->
+
+                          <div class="movie-overlay" aria-hidden="true"></div>
+
+                          <div class="movie-play" aria-hidden="true">
+                            <svg
+                              width="64"
+                              height="64"
+                              viewBox="0 0 64 64"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r="30"
+                                fill="rgba(0,0,0,0.55)"
+                              />
+                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+                            </svg>
+                          </div>
+                        </template>
+                      </v-img>
+
+                      <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
+                        {{
+                          movie.episode_current === "Tập 0"
+                            ? `Full - ${movie.lang}`
+                            : `${movie.episode_current} - ${movie.lang}`
+                        }}
+                      </v-card-subtitle>
+
+                      <v-card-title class="movie-title">{{
+                        movie.name
+                      }}</v-card-title>
+
+                      <v-card-text class="movie-info">
+                        <div class="text-grey text-truncate">
+                          <v-icon size="14" class="mr-1"
+                            >mdi-tag</v-icon
+                          >
+                          {{ movie.origin_name }} ({{ movie.year }})
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </router-link>
+                </v-col>
+              </v-row>
+
+<!-- 
         <router-link
           v-for="movie in movies"
           :key="movie.id"
@@ -94,7 +193,7 @@
               </v-col>
             </v-row>
           </v-card>
-        </router-link>
+        </router-link> -->
 
         <v-pagination
           v-model="currentPage"
@@ -208,6 +307,7 @@ export default {
 
 .movie-card:hover {
   transform: translateY(-3px);
+  color: orange;
 }
 .movie-image-loaded {
   opacity: 1;
@@ -360,5 +460,35 @@ export default {
 }
 .title:hover{
   color: orange;
+}
+
+
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
+  pointer-events: none; /* không chặn click */
+}
+
+.movie-card:hover .movie-overlay {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.movie-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* show play khi hover */
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 </style>
