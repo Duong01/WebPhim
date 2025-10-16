@@ -32,6 +32,7 @@
                 tag="transition-group"
                 name="fade-scale"
                 class="movie-list"
+                v-if="movies.length >=5"
               >
                 <v-col
                   v-for="movie in movies"
@@ -123,13 +124,14 @@
                   </router-link>
                 </v-col>
               </v-row>
-        <!-- <router-link
+        <router-link
+          v-else
           v-for="movie in movies"
           :key="movie.id"
           :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
           class="text-decoration-none"
         >
-          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
+          <v-card class="mb-5 overflow-hidden movie-car" elevation="4" hover>
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
@@ -191,7 +193,7 @@
               </v-col>
             </v-row>
           </v-card>
-        </router-link> -->
+        </router-link>
 
         <v-pagination
           v-model="currentPage"
