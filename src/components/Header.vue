@@ -340,16 +340,23 @@
             </v-expansion-panel-text>
           </v-expansion-panel>
 
-          <!-- Sắp chiếu -->
+          
+          <!-- Divider -->
+          <v-divider class="my-2"></v-divider>
+        </v-expansion-panels>
+        <!-- Sắp chiếu -->
           <v-list-item
             :to="{ path: '/tv-shows' }"
             :class="{ 'text-green': $route.path === '/tv-shows' }"
           >
             <v-list-item-title>{{ $t("TV Show") }}</v-list-item-title>
           </v-list-item>
-          <!-- Divider -->
-          <v-divider class="my-2"></v-divider>
-        </v-expansion-panels>
+          <v-list-item
+            :to="{ path: '/hoat-hinh' }"
+            :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+          >
+            <v-list-item-title>{{ $t("Hoạt hình") }}</v-list-item-title>
+          </v-list-item>
         <!-- Theme (chuyển theme) -->
         <v-list-item @click="changeTheme">
           <v-list-item-icon>

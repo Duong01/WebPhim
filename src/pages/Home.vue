@@ -228,7 +228,7 @@ export default {
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&sort_lang=long-tieng&category=hanh-dong&country=trung-quoc&limit=20",
+          id: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&category=hanh-dong&country=trung-quoc&limit=20",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -297,7 +297,7 @@ export default {
           link: {
             name: "PhimNew",
             params: {
-              path: "/phim-moi-cap-nhat-v2",
+              path: "phim-moi-cap-nhat-v2",
             },
           },
         },

@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          {{ titlePage }}
+         Danh sách phim:  {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -56,6 +56,7 @@
                         class="movie-image"
                         transition="fade-transition"
                         height="250"
+                        width="100%"
                         cover
                       >
                         <template #default>
@@ -204,7 +205,7 @@
 </template>
 
 <script>
-import { urlImage1, ListMovieByCate1 } from '@/model/api'
+import { urlImage1, ListMovieByCate1,ListMovieNew1 } from '@/model/api'
 
 export default {
   name: 'PhimNew',
@@ -218,6 +219,7 @@ export default {
       movies: [],
       urlImage: urlImage1,
       titlePage: '',
+      link1: '',
     }
   },
   mounted() {
@@ -225,7 +227,23 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
+      if(path.includes('phim-moi-cap-nhat')){
+        ListMovieNew1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
+        if (result.status === 'success' || result.status == true) {
+          this.movies = result.items
+          this.titlePage = "Phim mới cập nhật"
+          this.link1 = 'link1'
+          // if (result.data.seoOnPage) {
+          //       this.updateMetaTags(result.data.seoOnPage)
+          //     }
+          this.loading = false
+        }
+      }, (err) => {
+        console.log(err)
+      })
+      }
+      else{
+        ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.movies = result.data.items
           this.titlePage = "Phim mới cập nhật"
@@ -237,10 +255,18 @@ export default {
       }, (err) => {
         console.log(err)
       })
+      }
+      
     },
     getOptimizedImage(imagePath) {
       // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
+      if(this.link1 == 'link1'){
+        return `${this.urlImage + encodeURIComponent(imagePath)}`
+      }
+      else{
       return `${this.urlImage + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`
+
+      }
 
     },
 

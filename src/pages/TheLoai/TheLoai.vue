@@ -51,6 +51,7 @@
                         class="movie-image"
                         transition="fade-transition"
                         height="250"
+                        width="100%"
                         cover
                       >
                         <template #default>

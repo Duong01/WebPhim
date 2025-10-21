@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          {{ titlePage }}
+          Danh sách phim: {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -53,6 +53,7 @@
                         class="movie-image"
                         transition="fade-transition"
                         height="250"
+                        width="100%"
                         cover
                       >
                         <template #default>
