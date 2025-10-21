@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { urlImage1, ListMovieNew1 } from '@/model/api'
+import { urlImage1, ListMovieByCate1 } from '@/model/api'
 
 export default {
   name: 'PhimNew',
@@ -225,7 +225,7 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      ListMovieNew1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
+      ListMovieByCate1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.movies = result.items
           this.titlePage = "Phim mới cập nhật"
