@@ -240,7 +240,7 @@ export default {
     },
     getOptimizedImage(imagePath) {
       // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
-      return `${this.urlImage + encodeURIComponent(imagePath)}`
+      return `${this.urlImage + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`
 
     },
 
