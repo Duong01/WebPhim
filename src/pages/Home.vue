@@ -63,9 +63,12 @@
                     section.name === 'QuocGia' || section.name === 'PhimNew'
                       ? {
                           name: section.name,
-                          params: { path: section.id.split('/')[1] },
+                          params: { path: section.id.split('/')[1].split('?')[0] },
                         }
-                      : { name: section.name }
+                      : { 
+                          name: section.name,
+                          params: { path: section.id.split('/')[1].split('?')[0] },
+                        }
                   "
                   class="view-all"
                 >
