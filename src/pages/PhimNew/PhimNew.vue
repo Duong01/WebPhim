@@ -225,9 +225,9 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      ListMovieByCate1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
+      ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
-          this.movies = result.items
+          this.movies = result.data.items
           this.titlePage = "Phim mới cập nhật"
           // if (result.data.seoOnPage) {
           //       this.updateMetaTags(result.data.seoOnPage)
