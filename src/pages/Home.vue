@@ -89,12 +89,10 @@
                     ? Array(12).fill({})
                     : section.listMovie.slice(0, 12)"
                   :key="item.slug || index"
-                  cols="4"
-                  xs="4"
+                  
+                  cols="6"
                   sm="4"
-                  md="3"
-                  lg="2"
-                  xl="2"
+                  md="2"
                   style="padding: 10px"
                 >
                   <v-skeleton-loader

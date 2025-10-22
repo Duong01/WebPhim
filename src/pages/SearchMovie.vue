@@ -40,7 +40,6 @@
                   cols="6"
                   sm="4"
                   md="2"
-                  style="padding: 10px"
                 >
                   
                   <router-link
@@ -110,7 +109,7 @@
                         }}
                       </v-card-subtitle>
 
-                      <v-card-title class="movie-title">{{
+                      <v-card-title class="movie-title text-body-2 text-wrap">{{
                         movie.name
                       }}</v-card-title>
 
