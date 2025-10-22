@@ -31,9 +31,9 @@
                 <v-col
                   v-for="movie in movies"
                   :key="movie.id"
-                  cols="4"
-                  
-                  style="padding: 10px"
+                  cols="6"
+                  sm="4"
+                  md="2"
                 >
                   
                   <router-link
@@ -270,7 +270,7 @@ export default {
       //     })
       //   }
 
-      CityDetail1(`${path}?page=${this.currentPage}&limit=20`, (result) => {
+      CityDetail1(`${path}?page=${this.currentPage}&sort_field=year&sort_type=desc&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.link1 = 'link2'
           this.movies = result.data.items

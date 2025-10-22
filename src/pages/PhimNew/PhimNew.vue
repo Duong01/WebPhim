@@ -35,9 +35,9 @@
                 <v-col
                   v-for="movie in movies"
                   :key="movie.id"
-                  cols="4"
-                  
-                  style="padding: 10px"
+                  cols="6"
+                  sm="4"
+                  md="2"
                 >
                   
                   <router-link
@@ -228,7 +228,7 @@ export default {
   methods: {
     ListMovie(path) {
       if(path.includes('phim-moi-cap-nhat')){
-        ListMovieNew1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
+        ListMovieNew1(`${path}?page=${this.currentPage}&sort_field=year&sort_type=desc&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.movies = result.items
           this.titlePage = "Phim mới cập nhật"

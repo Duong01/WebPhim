@@ -217,7 +217,7 @@ export default {
       sections: [
         {
           title: this.$t("PHIM THỊNH HÀNH"),
-          id: "danh-sach/tv-shows?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "danh-sach/tv-shows?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -226,7 +226,7 @@ export default {
         },
         {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&category=hanh-dong&country=trung-quoc&limit=20",
+          id: "danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&category=hanh-dong&country=trung-quoc&limit=20",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -235,7 +235,7 @@ export default {
         },
         {
           title: this.$t("PHIM VIỆT NAM"),
-          id: "quoc-gia/viet-nam?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -247,7 +247,7 @@ export default {
         },
         {
           title: this.$t("PHIM TRUNG QUỐC"),
-          id: "quoc-gia/trung-quoc?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "quoc-gia/trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -259,7 +259,7 @@ export default {
         },
         {
           title: this.$t("PHIM BỘ"),
-          id: "danh-sach/phim-bo?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "PhimBo",
           listMovie: [],
           content: "",
@@ -268,7 +268,7 @@ export default {
         },
         {
           title: this.$t("PHIM LẺ"),
-          id: "danh-sach/phim-le?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "PhimLe",
           listMovie: [],
           content: "",
@@ -277,7 +277,7 @@ export default {
         },
         {
           title: this.$t("PHIM HÀN QUỐC"),
-          id: "quoc-gia/han-quoc?page=1&sort_field=_id&sort_type=desc&limit=20",
+          id: "quoc-gia/han-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -305,7 +305,7 @@ export default {
           link: {
             name: "PhimBo",
             params: {
-              path: "/phim-bo?page=1&sort_field=_id&sort_type=desc&limit=20",
+              path: "/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
             },
           },
         },
@@ -315,7 +315,7 @@ export default {
           link: {
             name: "QuocGia",
             params: {
-              path: "trung-quoc?page=1&sort_field=_id&sort_type=desc&limit=20",
+              path: "trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
             },
           },
         },
@@ -325,7 +325,7 @@ export default {
           link: {
             name: "PhimLe",
             params: {
-              path: "/phim-le?page=1&sort_field=_id&sort_type=desc&limit=20",
+              path: "/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
             },
           },
         },
@@ -335,7 +335,7 @@ export default {
           link: {
             name: "HoatHinh",
             params: {
-              path: "/hoat-hinh?page=1&sort_field=_id&sort_type=desc&limit=20",
+              path: "/hoat-hinh?page=1&sort_field=year&sort_type=desc&limit=20",
             },
           },
         },
@@ -345,7 +345,7 @@ export default {
           link: {
             name: "TheLoai",
             params: {
-              path: "tinh-cam?page=1&sort_field=_id&sort_type=desc&limit=20",
+              path: "tinh-cam?page=1&sort_field=year&sort_type=desc&limit=20",
             },
           },
         },
