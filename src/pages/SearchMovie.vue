@@ -37,8 +37,9 @@
                 <v-col
                   v-for="movie in movies"
                   :key="movie.id"
-                  cols="4"
-                  
+                  cols="6"
+                  sm="4"
+                  md="2"
                   style="padding: 10px"
                 >
                   
@@ -58,6 +59,7 @@
                         class="movie-image"
                         transition="fade-transition"
                         height="250"
+                        width="100%"
                         cover
                       >
                         <template #default>
