@@ -34,7 +34,7 @@
                   cols="6"
                   sm="4"
                   md="2"
-                  style="padding: 10x"
+                  style="padding: 10px"
                 >
                   
                   <router-link
