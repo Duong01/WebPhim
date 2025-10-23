@@ -176,7 +176,7 @@ export default {
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
-      path: "hoat-hinh-trung-quoc",
+      path: "hoat-hinh",
       urlImage: urlImage1,
       titlePage: "",
 
