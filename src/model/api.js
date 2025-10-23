@@ -96,7 +96,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  // tim kiem phim
  export const Search= (params, success, error) => http.GetNew(`${urlSearch}`, params  , success, error)
 
- export const Search1= (params, success, error) => http.GetNew(`${urlSearch1}`, params  , success, error)
+ export const Search1= (params, success, error) => http.GetNew(`${urlSearch1}${params}`, {}  , success, error)
  
 
 // api login

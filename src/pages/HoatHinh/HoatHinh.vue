@@ -11,102 +11,101 @@
 
 
     <!-- 🧭 Thanh bộ lọc tìm kiếm -->
-    <v-row class="mb-6 align-center" justify="center">
-    <v-col cols="12" md="10" lg="8">
-      <v-card class="pa-4 filter-bar" elevation="6">
-        <v-row dense>
-          <!-- 🔍 Tìm kiếm -->
-          <v-col cols="12" sm="4">
-            <v-text-field
-              v-model="filters.keyword"
-              label="Tìm phim..."
-              clearable
-              prepend-inner-icon="mdi-magnify"
-              variant="outlined"
-            />
-          </v-col>
 
-          <!-- 🎞 Thể loại -->
-          <v-col cols="6" sm="3">
-            <v-select
-              v-model="filters.category"
-              :items="Categories"
-              item-title="title"
-              item-value="value"
-              label="Thể loại"
-              clearable
-              variant="outlined"
-              density="comfortable"
-            />
-          </v-col>
+  <v-row
+    justify="center"
+  >
+    <!-- 🔍 Tìm kiếm -->
+    <v-col>
+      <v-text-field
+        v-model="filters.keyword"
+        label="Tìm phim..."
+        clearable
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
 
-          <!-- 🌍 Quốc gia -->
-          <v-col cols="6" sm="3">
-            <v-select
-              v-model="filters.country"
-              :items="Countries"
-              item-title="title"
-              item-value="value"
-              label="Quốc gia"
-              clearable
-              variant="outlined"
-              density="comfortable"
-            />
-          </v-col>
+    <!-- 🎞 Thể loại -->
+    <v-col >
+      <v-select
+        v-model="filters.category"
+        :items="Categories"
+        item-title="title"
+        item-value="value"
+        label="Thể loại"
+        clearable
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
 
-          <!-- 📅 Năm -->
-          <v-col cols="6" sm="2">
-            <v-select
-              v-model="filters.year"
-              :items="years"
-              label="Năm"
-              clearable
-              variant="outlined"
-              density="comfortable"
-            />
-          </v-col>
+    <!-- 🌍 Quốc gia -->
+    <v-col >
+      <v-select
+        v-model="filters.country"
+        :items="Countries"
+        item-title="title"
+        item-value="value"
+        label="Quốc gia"
+        clearable
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
 
-          <!-- 💬 Ngôn ngữ -->
-          <v-col cols="6" sm="2">
-            <v-select
-              v-model="filters.lang"
-              :items="languages"
-              label="Ngôn ngữ"
-              clearable
-              variant="outlined"
-              density="comfortable"
-            />
-          </v-col>
+    <!-- 📅 Năm -->
+    <v-col >
+      <v-select
+        v-model="filters.year"
+        :items="years"
+        label="Năm"
+        clearable
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
 
-          <!-- ↕️ Sắp xếp -->
-          <v-col cols="6" sm="2">
-            <v-select
-              v-model="filters.sort"
-              :items="sortOptions"
-              item-title="title"
-              item-value="value"
-              label="Sắp xếp"
-              variant="outlined"
-              density="comfortable"
-            />
-          </v-col>
+    <!-- 💬 Ngôn ngữ -->
+    <v-col  >
+      <v-select
+        v-model="filters.lang"
+        :items="languages"
+        label="Ngôn ngữ"
+        clearable
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
 
-          <!-- 🧭 Nút lọc -->
-          <v-col cols="12" sm="2" class="d-flex align-center justify-center">
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              round
-              @click="applyFilters"
-              style="width: 100%; background-color: #42a5f5; color: white"
-            >
-              Lọc
-            </el-button>
-          </v-col>
-        </v-row>
-      </v-card>
+    <!-- ↕️ Sắp xếp -->
+    <v-col  >
+      <v-select
+        v-model="filters.sort"
+        :items="sortOptions"
+        item-title="title"
+        item-value="value"
+        label="Sắp xếp"
+        variant="outlined"
+        density="comfortable"
+      />
+    </v-col>
+
+    <!-- 🧭 Nút lọc -->
+    <v-col >
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        class="mt-2"
+        @click="applyFilters"
+      >
+        Lọc
+      </el-button>
     </v-col>
   </v-row>
+<v-divider class="my-4" />
+
 
 
 
@@ -381,20 +380,35 @@ export default {
       this.loading = true;
       this.movies = [];
       this.currentPage = 1;
+      const params = new URLSearchParams({
+        keyword: this.filters.keyword || "",
+        page: this.currentPage,
+        sort_field: "modified.time",
+        sort_type: "desc",
+        sort_lang: this.filters.lang || "",
+        category: this.filters.category || "",
+        country: this.filters.country || "",
+        year: this.filters.year || "",
+        limit: 20,
+      }).toString();
+      
       Search1(
-        `?keyword=${this.keyword}?page=${this.currentPage}&sort_field=modified.time&sort_type=desc&sort_lang=${this.languages}&category=${this.category}&country=${this.country}&year=${this.year}&limit=20`,
+        `${params}`,
         (result) => {
-          if (result.status === "success" || result.status == true) {
+          if (result.status === "success" || result.status === true) {
             this.movies = result.data.items;
             this.titlePage = result.data.titlePage;
             if (result.data.seoOnPage) {
               this.updateMetaTags(result.data.seoOnPage);
             }
-            this.loading = false;
+          } else {
+            console.warn("⚠️ Không có dữ liệu hợp lệ từ API");
           }
+          this.loading = false;
         },
         (err) => {
-          console.log(err);
+          console.error("❌ Lỗi gọi API:", err);
+          this.loading = false;
         }
       );
       
@@ -653,6 +667,8 @@ export default {
 .v-text-field {
   color: white;
 }
-
+.movie-title{
+  font-size: 14px;
+}
 </style>
   

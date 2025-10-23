@@ -468,5 +468,7 @@ export default {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-
+.movie-title{
+  font-size: 14px;
+}
 </style>
