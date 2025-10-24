@@ -15,18 +15,7 @@
   <v-row
     justify="center"
   >
-    <!-- 🔍 Tìm kiếm -->
-    <v-col>
-      <v-text-field
-        v-model="filters.keyword"
-        label="Tìm phim..."
-        clearable
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        density="comfortable"
-      />
-    </v-col>
-
+    
     <!-- 🎞 Thể loại -->
     <v-col >
       <v-select
@@ -72,6 +61,8 @@
       <v-select
         v-model="filters.lang"
         :items="languages"
+        item-title="title"
+        item-value="value"
         label="Ngôn ngữ"
         clearable
         variant="outlined"
@@ -82,7 +73,7 @@
     <!-- ↕️ Sắp xếp -->
     <v-col  >
       <v-select
-        v-model="filters.sort"
+        v-model="filters.sortOption"
         :items="sortOptions"
         item-title="title"
         item-value="value"
@@ -307,7 +298,7 @@
 </template>
   
   <script>
-import { urlImage1, ListMovieByCate1,Search1 } from "@/model/api";
+import { urlImage1, ListMovieByCate1 } from "@/model/api";
 
 export default {
   name: "HoatHinh",
@@ -324,16 +315,19 @@ export default {
 
       // Bộ lọc
       filters: {
-        keyword: "",
         year: "",
         lang: "",
         category: "",
         country: "",
-        sort: "desc",
+        sortOption: "year"
       },
 
       years: Array.from({ length: 20 }, (_, i) => `${2025 - i}`),
-      languages: ["vietsub ", "thuyet-minh ", "long-tieng"],
+      languages: [
+        {title: "VietSub", value: "vietsub"},
+        {title: "Thuyết Minh", value: "thuyet-minh"},
+        {title: "Lồng Tiếng", value: "long-tieng"}
+        ],
       Categories:[
         { title: "Hành động", value: "hanh-dong" },
         { title: "Tình cảm", value: "tinh-cam" }
@@ -343,8 +337,8 @@ export default {
         { title: "Việt Nam", value: "viet-nam" }
       ],
       sortOptions: [
-        { title: "Năm ↓", value: "desc" },
-        { title: "Năm ↑", value: "asc" }
+        { title: "Thời gian cập nhật", value: "modified.time" },
+        { title: "Năm ↓", value: "year" }
       ],
     };
   },
@@ -355,7 +349,7 @@ export default {
     ListMovie() {
       ListMovieByCate1(
         
-        `${this.path}?page=${this.currentPage}&sort_field=year&sort_type=desc&limit=20`,
+        `${this.path}?page=${this.currentPage}&sort_field=${this.sortOption}&sort_type=desc&sort_lang=${this.lang}&category=${this.category}&country=${this.country}&year=${this.year}&limit=20`,
         (result) => {
           if (result.status === "success" || result.status == true) {
             this.movies = result.data.items;
@@ -377,40 +371,8 @@ export default {
 
 
     applyFilters() {
-      this.loading = true;
-      this.movies = [];
       this.currentPage = 1;
-      const params = new URLSearchParams({
-        keyword: this.filters.keyword || "",
-        page: this.currentPage,
-        sort_field: "modified.time",
-        sort_type: "desc",
-        sort_lang: this.filters.lang || "",
-        category: this.filters.category || "",
-        country: this.filters.country || "",
-        year: this.filters.year || "",
-        limit: 20,
-      }).toString();
-      
-      Search1(
-        `${params}`,
-        (result) => {
-          if (result.status === "success" || result.status === true) {
-            this.movies = result.data.items;
-            this.titlePage = result.data.titlePage;
-            if (result.data.seoOnPage) {
-              this.updateMetaTags(result.data.seoOnPage);
-            }
-          } else {
-            console.warn("⚠️ Không có dữ liệu hợp lệ từ API");
-          }
-          this.loading = false;
-        },
-        (err) => {
-          console.error("❌ Lỗi gọi API:", err);
-          this.loading = false;
-        }
-      );
+      this.ListMovie();
       
     },
     //return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}&w=384&q=100`;
