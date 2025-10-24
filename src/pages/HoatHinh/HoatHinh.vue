@@ -365,6 +365,20 @@ export default {
   },
   methods: {
     ListMovie() {
+
+      if(this.filters.year == null || this.filters.year == undefined){
+        this.filters.year = ''
+      }
+      if(this.filters.lang == null || this.filters.lang == undefined){
+        this.filters.lang = ''
+      }
+      if(this.filters.category == null || this.filters.category == undefined){
+        this.filters.category = ''
+      }
+      if(this.filters.country == null || this.filters.country == undefined){
+        this.filters.country = ''
+      }
+
       ListMovieByCate1(
         
         `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
