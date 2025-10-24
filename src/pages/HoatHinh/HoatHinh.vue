@@ -11,7 +11,7 @@
 
 
     <!-- 🧭 Thanh bộ lọc tìm kiếm -->
-<div class="d-flex justify-start mb-2">
+<div class="d-flex justify-start mb-6">
       <el-button
         type="primary"
         size="large"
