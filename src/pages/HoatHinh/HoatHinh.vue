@@ -378,7 +378,8 @@ export default {
       if(this.filters.country == null || this.filters.country == undefined){
         this.filters.country = ''
       }
-
+      this.loading = true;
+      this.movies = [];
       ListMovieByCate1(
         
         `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
