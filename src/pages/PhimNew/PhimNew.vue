@@ -8,14 +8,14 @@
         <v-divider class="my-4" />
       </v-col>
     </v-row>
-
+    <FilterMovie @filter-changed="onFilterChanged" />
     <v-row justify="center">
       <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0" class="text-center">
+        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
           Không tìm thấy phim nào với từ khóa "<strong>{{
             $route.query.keyword
           }}</strong
@@ -24,6 +24,13 @@
           <router-link to="/home">
             <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
           </router-link>
+        </v-alert>
+
+        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
+          Không tìm thấy phim nào với từ khóa "<strong>{{
+            MessageErr
+          }}</strong
+          >".
         </v-alert>
 
         <v-row
@@ -207,7 +214,7 @@
 
 <script>
 import { urlImage1, ListMovieByCate1,ListMovieNew1 } from '@/model/api'
-
+import FilterMovie from "@/pages/FilterMovie.vue"
 export default {
   name: 'PhimNew',
   props: ['path'],
@@ -221,15 +228,47 @@ export default {
       urlImage: urlImage1,
       titlePage: '',
       link1: '',
+      MessageErr: '',
+
+      filters: {
+        year: "",
+        lang: "",
+        category: "",
+        country: "",
+        sortOption: "year"
+      },
     }
   },
   mounted() {
     this.ListMovie(this.path)
   },
+  components:{
+    FilterMovie
+  },
   methods: {
+    onFilterChanged(newFilters) {
+      this.filters = { ...newFilters };
+      this.currentPage = 1;
+      this.ListMovie(this.path);
+    },
+
     ListMovie(path) {
+      if(this.filters.year == null || this.filters.year == undefined){
+        this.filters.year = ''
+      }
+      if(this.filters.lang == null || this.filters.lang == undefined){
+        this.filters.lang = ''
+      }
+      if(this.filters.category == null || this.filters.category == undefined){
+        this.filters.category = ''
+      }
+      if(this.filters.country == null || this.filters.country == undefined){
+        this.filters.country = ''
+      }
+      this.loading = true;
+      this.movies = [];
       if(path.includes('phim-moi-cap-nhat')){
-        ListMovieNew1(`${path}?page=${this.currentPage}&sort_field=year&sort_type=desc&limit=20`, (result) => {
+        ListMovieNew1(`${path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.movies = result.items
           this.titlePage = "Phim mới cập nhật"
@@ -239,12 +278,18 @@ export default {
           //     }
           this.loading = false
         }
+        else{
+            this.loading = false
+          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+          }
       }, (err) => {
         console.log(err)
+        this.loading = false
+          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
       })
       }
       else{
-        ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=_id&sort_type=desc&&limit=20`, (result) => {
+        ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
           this.movies = result.data.items
           this.titlePage = "Phim mới cập nhật"

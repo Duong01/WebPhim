@@ -3,8 +3,8 @@
     <!-- 🧭 Thanh bộ lọc tìm kiếm -->
     <div class="d-flex justify-start mb-6">
       <el-button type="primary" size="large" @click="showFilter = !showFilter">
-        <v-icon left size="20" color="white" class="mr-1">
-          mdi-filter-variant
+        <v-icon left size="20" class="mr-1">
+          mdi-filter-menu
         </v-icon>
         {{ showFilter ? "Ẩn bộ lọc" : "Lọc phim" }}
       </el-button>
@@ -13,7 +13,7 @@
       <div v-if="showFilter">
         <v-row justify="center" align="center">
           <!-- 🎞 Thể loại -->
-          <v-col cols="12" sm="6" md="2" class="p-0">
+          <v-col cols="12" sm="6" md="2" class="p-1">
             <v-select
               v-model="filters.category"
               :items="Categories"
@@ -27,7 +27,7 @@
           </v-col>
 
           <!-- 🌍 Quốc gia -->
-          <v-col cols="12" sm="6" md="2" class="p-0">
+          <v-col cols="12" sm="6" md="2" class="p-1">
             <v-select
               v-model="filters.country"
               :items="Countries"
@@ -41,7 +41,7 @@
           </v-col>
 
           <!-- 📅 Năm -->
-          <v-col cols="12" sm="6" md="2" class="p-0">
+          <v-col cols="12" sm="6" md="2" class="p-1">
             <v-select
               v-model="filters.year"
               :items="years"
@@ -53,7 +53,7 @@
           </v-col>
 
           <!-- 💬 Ngôn ngữ -->
-          <v-col cols="12" sm="6" md="2" class="p-0">
+          <v-col cols="12" sm="6" md="2" class="p-1">
             <v-select
               v-model="filters.lang"
               :items="languages"
@@ -67,7 +67,7 @@
           </v-col>
 
           <!-- ↕️ Sắp xếp -->
-          <v-col cols="12" sm="6" md="2" class="p-0">
+          <v-col cols="12" sm="6" md="2" class="p-1">
             <v-select
               v-model="filters.sortOption"
               :items="sortOptions"
@@ -78,15 +78,19 @@
               density="compact"
             />
           </v-col>
+          
 
           <!-- 🧭 Nút Lọc -->
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="12"  class="p-0">
             <v-btn
-              type="success"
+              color="success"
               class="filter-btn"
               size="large"
               @click="applyFilters"
             >
+            <v-icon left size="25" class="mr-1">
+              mdi-magnify
+            </v-icon>
               Lọc
             </v-btn>
           </v-col>

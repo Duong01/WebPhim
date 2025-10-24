@@ -19,7 +19,7 @@
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0" class="text-center">
+        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
           Không tìm thấy phim nào với từ khóa "<strong>{{
             $route.query.keyword
           }}</strong
@@ -30,6 +30,12 @@
           </router-link>
         </v-alert>
 
+        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
+          Không tìm thấy phim nào với từ khóa "<strong>{{
+            MessageErr
+          }}</strong
+          >".
+        </v-alert>
 
         <v-row
                 no-gutters
@@ -224,6 +230,7 @@ export default {
       path: "hoat-hinh",
       urlImage: urlImage1,
       titlePage: "",
+      MessageErr: '',
 
       // Bộ lọc
       
@@ -280,9 +287,15 @@ export default {
             }
             this.loading = false;
           }
+          else{
+            this.loading = false
+          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+          }
         },
         (err) => {
           console.log(err);
+          this.loading = false
+          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
         }
       );
     },
