@@ -1,26 +1,17 @@
 <template>
-  
+  <v-container fluid>
     <!-- 🧭 Thanh bộ lọc tìm kiếm -->
-<div class="d-flex justify-start mb-6">
-      <el-button
-        type="primary"
-        size="large"
-        @click="showFilter = !showFilter"
-      >
-      <v-icon
-          left
-          size="20"
-          color="white"
-          class="mr-1"
-        >
+    <div class="d-flex justify-start mb-6">
+      <el-button type="primary" size="large" @click="showFilter = !showFilter">
+        <v-icon left size="20" color="white" class="mr-1">
           mdi-filter-variant
         </v-icon>
         {{ showFilter ? "Ẩn bộ lọc" : "Lọc phim" }}
       </el-button>
     </div>
-  <v-expand-transition>
+    <v-expand-transition>
       <div v-if="showFilter">
-        <v-row justify="center" align="center" class="filter-row">
+        <v-row justify="center" align="center">
           <!-- 🎞 Thể loại -->
           <v-col cols="12" sm="6" md="2" class="p-0">
             <v-select
@@ -89,37 +80,46 @@
           </v-col>
 
           <!-- 🧭 Nút Lọc -->
-          <v-col cols="12" sm="6" md="1" class="p-0 d-flex justify-center">
-            <el-button
+          <v-col cols="12" sm="6" md="2">
+            <v-btn
               type="success"
-              icon="el-icon-search"
               class="filter-btn"
+              size="large"
               @click="applyFilters"
             >
               Lọc
-            </el-button>
+            </v-btn>
           </v-col>
         </v-row>
-        <v-divider class="my-4" />
       </div>
     </v-expand-transition>
-
-
+    <v-divider class="my-4" />
+  </v-container>
 </template>
 
 <script>
 export default {
-    name: "FilterMovie",
-    data(){
-        return{
-            showFilter: false,
-        years: Array.from({ length: 20 }, (_, i) => `${2025 - i}`),
+  name: "FilterMovie",
+  emits: ["filter-changed"],
+  data() {
+    return {
+      filters: {
+        year: "",
+        lang: "",
+        category: "",
+        country: "",
+        sortOption: "year"
+      },
+
+
+      showFilter: false,
+      years: Array.from({ length: 20 }, (_, i) => `${2025 - i}`),
       languages: [
-        {title: "VietSub", value: "vietsub"},
-        {title: "Thuyết Minh", value: "thuyet-minh"},
-        {title: "Lồng Tiếng", value: "long-tieng"}
-        ],
-      Categories:[
+        { title: "VietSub", value: "vietsub" },
+        { title: "Thuyết Minh", value: "thuyet-minh" },
+        { title: "Lồng Tiếng", value: "long-tieng" },
+      ],
+      Categories: [
         { title: "Hành động", value: "hanh-dong" },
         { title: "Tình cảm", value: "tinh-cam" },
         { title: "Chiến tranh", value: "chien-tranh" },
@@ -132,7 +132,6 @@ export default {
         { title: "Học đường", value: "hoc-duong" },
         { title: "Hài hước", value: "hai-huoc" },
         { title: "Chính kịch", value: "chinh-kich" },
-
       ],
       Countries: [
         { title: "Việt Nam", value: "viet-nam" },
@@ -151,19 +150,20 @@ export default {
         { title: "Nhật Bản", value: "nhat-ban" },
         { title: "Đài Loan", value: "dai-loan" },
         { title: "Anh", value: "anh" },
-
-
       ],
       sortOptions: [
         { title: "Năm ↓", value: "year" },
-        { title: "Thời gian cập nhật", value: "modified.time" }
-      ]
-        }
-        
+        { title: "Thời gian cập nhật", value: "modified.time" },
+      ],
+    };
+  },
+  methods:{
+    applyFilters(){
+      this.$emit("filter-changed", { ...this.filters });
+      this.showFilter = false
     }
-}
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

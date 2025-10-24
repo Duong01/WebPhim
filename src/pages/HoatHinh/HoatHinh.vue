@@ -9,7 +9,7 @@
       </v-col>
     </v-row>
 
-    <FilterMovie />
+    <FilterMovie @filter-changed="onFilterChanged" />
 
 
 
@@ -245,6 +245,13 @@ export default {
     this.ListMovie();
   },
   methods: {
+
+    onFilterChanged(newFilters) {
+      this.filters = { ...newFilters };
+      this.currentPage = 1;
+      this.ListMovie();
+    },
+
     ListMovie() {
 
       if(this.filters.year == null || this.filters.year == undefined){
