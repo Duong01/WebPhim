@@ -14,21 +14,21 @@
       </v-row>
 
       <div
-        class="d-flex"
-        style="overflow-x: auto; gap: 12px; padding-bottom: 8px"
+        class="d-flex align-center justify-space-between"
+  style="overflow-x: auto; white-space: nowrap; gap: 12px; padding: 10px 0; width: 100%;"
       >
       <router-link
     v-for="(item, index) in items"
     :key="index"
     :to="item.link"
-    style="text-decoration: none;"
+    style="text-decoration: none; display: inline-block; flex: 1 0 auto;"
   >
     <v-btn
       class="btnList flex-shrink-0"
       :style="{ backgroundColor: getColor(index), color: 'white',margin:'15px' }"
       :ripple="false"
-      height="152"
-      min-width="264"
+      height="120"
+      min-width="200"
     >
       {{ item.title }}
     </v-btn>
