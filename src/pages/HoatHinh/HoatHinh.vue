@@ -367,7 +367,7 @@ export default {
     ListMovie() {
       ListMovieByCate1(
         
-        `${this.path}?page=${this.currentPage}&sort_field=${this.sortOption}&sort_type=desc&sort_lang=${this.lang}&category=${this.category}&country=${this.country}&year=${this.year}&limit=20`,
+        `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
         (result) => {
           if (result.status === "success" || result.status == true) {
             this.movies = result.data.items;
