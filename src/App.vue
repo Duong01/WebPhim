@@ -43,16 +43,16 @@ export default {
   mounted(){
     const loginTime = localStorage.getItem("loginTimestamp");
     if (loginTime) {
-    const now = Date.now();
-    const diff = now - Number(loginTime);
-    const oneDay = 24 * 60 * 60 * 1000;
+    // const now = Date.now();
+    // const diff = now - Number(loginTime);
+    // const oneDay = 24 * 60 * 60 * 1000;
 
-    if (diff > oneDay) {
-      localStorage.removeItem("name");
-      localStorage.removeItem("loginTimestamp");
-      // Nếu cần, xóa luôn thông tin trong Vuex store:
-      this.$store.commit("setEmpInfor", null);
-    }
+    // if (diff > oneDay) {
+    //   localStorage.removeItem("name");
+    //   localStorage.removeItem("loginTimestamp");
+    //   // Nếu cần, xóa luôn thông tin trong Vuex store:
+    //   this.$store.commit("setEmpInfor", null);
+    // }
   }
   
   this.$bus.$on("show-error", (msg) => {
@@ -67,16 +67,16 @@ export default {
     window.removeEventListener("pageshow", this.handlePageShow);
   },
   created() {
-  const expireAt = localStorage.getItem("expireAt");
-  const now = new Date().getTime();
+  // const expireAt = localStorage.getItem("expireAt");
+  // const now = new Date().getTime();
 
-  if (expireAt && now > parseInt(expireAt)) {
-    // Đã hết hạn → xóa dữ liệu
-    localStorage.removeItem("name");
-    localStorage.removeItem("expireAt");
-    this.$store.commit("setEmpInfor", null);
+  // if (expireAt && now > parseInt(expireAt)) {
+  //   // Đã hết hạn → xóa dữ liệu
+  //   localStorage.removeItem("name");
+  //   localStorage.removeItem("expireAt");
+  //   this.$store.commit("setEmpInfor", null);
 
-  }
+  // }
 },
   methods: {
     setTheme(newTheme) {

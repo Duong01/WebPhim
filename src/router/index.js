@@ -143,7 +143,13 @@ const routes =[
 
 ]
 
+// Thời gian session tối đa (ví dụ: 30 phút)
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 phút
 
+// Lưu thời điểm bắt đầu khi user vào trang lần đầu
+if (!sessionStorage.getItem('sessionStart')) {
+  sessionStorage.setItem('sessionStart', Date.now());
+}
 
 
 
@@ -187,6 +193,22 @@ let descTag = document.querySelector('meta[name="description"]');
   }
   ogDesc.setAttribute("content", to.meta.description || defaultDesc);
 
+
+  //  Kiểm tra session hết hạn
+  const sessionStart = parseInt(sessionStorage.getItem('sessionStart'), 10);
+  const now = Date.now();
+  const inactiveTime = now - sessionStart;
+
+  if (inactiveTime > SESSION_TIMEOUT) {
+    // Xoá session cũ và reload trang
+    sessionStorage.removeItem('sessionStart');
+    console.log("Phiên làm việc đã hết hạn, đang tải lại trang...");
+    window.location.reload();
+    return; // Dừng điều hướng để reload
+  } else {
+    // Cập nhật lại thời gian hoạt động gần nhất
+    sessionStorage.setItem('sessionStart', now);
+  }
   
 
     if (to.matched.length === 0) {
