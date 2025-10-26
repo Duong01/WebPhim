@@ -1091,6 +1091,7 @@ prevEpisode() {
         src="${url}"
         frameborder="0"
         class="w-full h-full"
+        webkit-playsinline
         loading="lazy"
         allowfullscreen
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
@@ -1145,6 +1146,7 @@ prevEpisode() {
               src="${url}"
               frameborder="0"
               class="w-full h-full"
+              webkit-playsinline
               loading="lazy"
               allowfullscreen
               allow=" fullscreen"

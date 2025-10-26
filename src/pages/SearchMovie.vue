@@ -332,7 +332,7 @@ export default {
             } else {
               // this.movies = [];
               // this.loading = false;
-
+              this.loading = true
               this.link = "";
               this.SearchMovie(query)
               .then(resolve)
@@ -342,6 +342,7 @@ export default {
           }
           else{
             this.link = "";
+            this.loading = true
                 this.SearchMovie(query)
                 .then(resolve)
                 .catch(reject);
