@@ -68,8 +68,8 @@
               <v-btn variant="text" @click="ResponseError"
                 ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
               >
-              <v-btn variant="text"
-                ><v-icon start icon="mdi-bookmark-outline" />{{
+              <v-btn variant="text" @click="handleFavorite"
+                ><v-icon start :icon="isFavorited ? 'mdi-bookmark' : 'mdi-bookmark-outline'" />{{
                   $t("Xem sau")
                 }}</v-btn
               >
@@ -505,6 +505,7 @@ import {
   GetComments,
   AddComment,
 } from "@/model/api";
+import {  toggleFavorite, isFavorite } from "@/utils/favorite";
 
 export default {
   name: "MovieDetail",
@@ -549,8 +550,13 @@ export default {
         name: "",
         LinkDown: "",
         trailer_id: "",
+        idMovie: "",
+        thumb_url: "",
+        lang: "",
+        origin_name: "",
+        year: "",
+        slug: "",
       },
-      idMovie: "",
       isTrailer: false,
       urlImage: urlImage,
       urlImage1: urlImage1,
@@ -559,6 +565,7 @@ export default {
       newComment: "",
       shareDialog: false,
       link: "",
+      liked: false
     };
   },
   props: ["slug"],
@@ -585,11 +592,11 @@ export default {
         MoveInfor(
           slug,
           (result) => {
-            console.log(result);
+            console.log(result)
             if (result.status == true || result.status == "success") {
               this.link = "";
               this.movie.page = result.movie.episode_current;
-              this.idMovie = result.movie._id;
+              this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data;
@@ -597,7 +604,11 @@ export default {
               this.movie.servers = result.episodes;
               this.movie.trailer_url = result.movie.trailer_url;
               this.movie.name = result.movie.name;
-
+              this.movie.thumb_url = result.movie.thumb_url
+              this.movie.lang = result.movie.lang
+              this.movie.origin_name = result.movie.origin_name
+              this.movie.year = result.movie.year
+              this.movie.slug = result.movie.slug
               // if (result.data.seoOnPage) {
               //   this.updateMetaTags(result.data.seoOnPage)
               // }
@@ -655,30 +666,14 @@ export default {
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
               // this.GetComment()
-              // .then(resolve)
-              // .catch(reject);
-              // const isEmpty = result.episodes.every(ep => 
-              //   ep.server_data.every(s => !s.link_embed && !s.link_m3u8)
-              // );
-              // if (isEmpty) {
-              //   window.location.href = 'https://rophiim.me/?s=' + this.movie.title;
-              // }
+              this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
             } else {
-              // const isEmpty = result.episodes.every(ep => 
-              //   ep.server_data.every(s => !s.link_embed && !s.link_m3u8)
-              // );
-              // if (isEmpty) {
-              //   window.location.href = 'https://rophiim.me/?s=' + this.movie.title;
-              // }
-              
               reject("error");
-              //this.MoveInfor1(slug).then(resolve).catch(reject);
             }
           },
           (err) => {
             console.log(err);
-            //this.MoveInfor1(slug).then(resolve).catch(reject);
             this.loading = false;
             this.isLoadingData = true;
             reject(err);
@@ -691,11 +686,11 @@ export default {
         MoveInfor1(
           slug,
           (result) => {
-            console.log(result);
+            console.log(result)
             if (result.status == true || result.status == "success") {
               this.link = "link";
               this.movie.page = result.movie.episode_current;
-              this.idMovie = result.movie._id;
+              this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data;
@@ -703,6 +698,11 @@ export default {
               this.movie.servers = result.episodes;
               this.movie.trailer_url = result.movie.trailer_url;
               this.movie.name = result.movie.name;
+              this.movie.thumb_url = result.movie.thumb_url;
+              this.movie.lang = result.movie.lang;
+              this.movie.origin_name = result.movie.origin_name
+              this.movie.year = result.movie.year
+              this.movie.slug = result.movie.slug
 
               // if (result.data.seoOnPage) {
               //   this.updateMetaTags(result.data.seoOnPage)
@@ -760,15 +760,7 @@ export default {
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
               // this.GetComment()
-              // .then(resolve)
-              // .catch(reject);
-              // for(let j=0;j<result.episodes.length;j++){
-              //   if((result.episodes[j].server_data.link_embed == "" || result.episodes[j].server_data.length <=0) && (result.episodes[result.episodes.length-1].server_data.link_embed == "" || result.episodes[result.episodes.length-1].server_data.length <=0)){
-              //     window.location.href = 'https://rophiim.me/?s='+this.movie.title;
-
-              //   }
-              // }
-              
+              this.liked = isFavorite(this.movie._id);
               resolve(true);
             } else {
               this.MoveInfor(slug).then(resolve).catch(reject);
@@ -787,6 +779,12 @@ export default {
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },
+    handleFavorite(){
+      let aa = toggleFavorite(this.movie);
+      console.log(aa)
+      this.liked = !this.liked;
+    },
+
     getOptimizedImage(imagePath) {
       if (this.link == "") {
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
@@ -841,7 +839,6 @@ export default {
             this.movie.categoris,
 
             (data) => {
-              console.log(data);
               if (data.status == "success") {
                 this.suggestedMovies = data.data.items;
                 this.isLoading = false;
@@ -860,7 +857,6 @@ export default {
             this.movie.categoris,
 
             (data) => {
-              console.log(data);
               if (data.status == true) {
                 this.suggestedMovies = data.data.items;
                 this.isLoading = false;
@@ -915,7 +911,7 @@ export default {
     addComment() {
       var account = localStorage.getItem("name");
       var data = {
-        movieId: this.idMovie,
+        movieId: this.movie.idMovie,
         episode: this.movie.page,
         userId: this.$store.state.empInfor.id,
         username: account,
@@ -946,9 +942,9 @@ export default {
     },
     GetComment() {
       return new Promise((resolve, reject) => {
-        if (!this.idMovie) reject("error");
+        if (!this.movie.idMovie) reject("error");
         GetComments(
-          { movieId: this.idMovie, episode: this.movie.page },
+          { movieId: this.movie.idMovie, episode: this.movie.page },
           (res) => {
             if (Array.isArray(res)) {
               this.comments = res.map((c) => ({
@@ -987,7 +983,6 @@ export default {
     },
     playEpisode(episode) {
       try{
-        console.log(episode)
         this.isLoading = true;
         if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
           this.movie.title = episode.filename;
@@ -1012,8 +1007,6 @@ export default {
       this.isLoading = true;
       
       this.movie.pageMovie = server.server_data;
-      console.log(server)
-      console.log(this.movie.page)
       if (
         this.movie.page == "Full" ||
         // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
@@ -1024,14 +1017,12 @@ export default {
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
-        console.log(tap)
         const data = server.server_data.includes(tap);
         if (data) {
           this.movie.videoUrl = data.link_embed;
           this.movie.LinkDown = data.link_m3u8;
           this.isTrailer = false;
         }
-        console.log(data)
       }
       
 
@@ -1051,7 +1042,6 @@ export default {
 prevEpisode() {
   if (this.currentEpisodeIndex > 0) {
     this.currentEpisodeIndex--;
-    console.log(this.currentEpisodeIndex)
     const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
     this.playEpisode(prevEp);
   }

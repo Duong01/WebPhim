@@ -56,6 +56,15 @@ const routes =[
         }
         },
         {
+            path: '/favorite',
+            name: "FavoritePage",
+            component: () => import("@/pages/Favorite/Favorite.vue"),
+            meta: {
+          title: "Phim bộ hay nhất - Web Phim Online",
+          description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục."
+        }
+        },
+        {
             path: 'search',
             name: "SearchMovie",
             component: () => import("@/pages/SearchMovie.vue"),

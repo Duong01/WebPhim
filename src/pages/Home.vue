@@ -36,6 +36,112 @@
         
       </div>
     </div>
+
+    <div v-if="isFavo" >
+    <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
+      <template #default>
+        <div>
+          <v-row class="category-header" align="center" no-gutters>
+            <v-col cols="auto">
+              <h1 class="category-title">
+                <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
+                Danh sách film của bạn!
+              </h1>
+            </v-col>
+            <v-col cols="auto">
+              <router-link
+                :to="{ name: 'FavoritePage', params: {  } }"
+                class="view-all"
+              >
+                Xem tất cả >>
+              </router-link>
+            </v-col>
+          </v-row>
+          <!-- Khi đã load -->
+          <div v-if="!isLoading">
+            <v-row
+              no-gutters
+              tag="transition-group"
+              name="fade-scale"
+              class="movie-list"
+            >
+              <v-col
+                v-for="(item, index1) in section.listMovie.slice(0, 12)"
+                :key="item.slug || index1"
+                cols="6"
+                sm="4"
+                md="2"
+                style="padding: 10px"
+              >
+                <router-link
+                  :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+                >
+                  <v-card
+                    class="mx-auto bg-dark text-white movie-card"
+                    max-width="344"
+                  >
+                    <v-img
+                      :src="`https://phimapi.com/image.php?url=`+item.thumb_url"
+                      :lazy-src="`https://phimapi.com/image.php?url=`+item.thumb_url"
+                      height="250"
+                      cover
+                    >
+                      <template #default>
+                        <div class="movie-overlay"></div>
+                        <div class="movie-play">
+                          <svg width="64" height="64" viewBox="0 0 64 64">
+                            <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)" />
+                            <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+                          </svg>
+                        </div>
+                      </template>
+                    </v-img>
+                    
+                    <v-card-subtitle class="episode-lang">
+                      {{
+                        item.slug === "Tập 0"
+                          ? `Full - ${item.lang}`
+                          : `${item.slug} - ${item.lang}`
+                      }}
+                    </v-card-subtitle>
+
+                    <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+
+                    <v-card-text class="movie-info">
+                      <div class="text-grey text-truncate">
+                        <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
+                        {{ item.origin_name }} ({{ item.year }})
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </router-link>
+              </v-col>
+            </v-row>
+          </div>
+
+          <!-- Khi đang load -->
+          <div v-else style="height: 400px">
+            <v-row>
+              <v-col
+                v-for="n in 6"
+                :key="n"
+                cols="6"
+                sm="4"
+                md="2"
+                style="padding: 10px"
+              >
+                <v-skeleton-loader type="image" height="250" />
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+      </template>
+    </v-lazy>
+  </div>
+
+
+
+
     <div
       v-for="(section, sectionIndex) in sections"
       :key="sectionIndex"
@@ -119,7 +225,7 @@
                         cover
                       >
                         <template #default>
-                          <v-btn
+                          <!-- <v-btn
                             icon
                             size="small"
                             color="red"
@@ -134,7 +240,7 @@
                                   : "mdi-heart-outline"
                               }}
                             </v-icon>
-                          </v-btn>
+                          </v-btn> -->
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -201,6 +307,7 @@ import {
   urlImage1,
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
+import { getFavorites } from "@/utils/favorite";
 
 export default {
   name: "HomePage",
@@ -213,6 +320,8 @@ export default {
       loaded: false,
       loading: false,
       favoriteMovies: [],
+      ListMovieFavo: [],
+      isFavo: false,
       colorList: ["#e57373", "#81c784", "#64b5f6", "#ffb74d", "#ba68c8"],
       sections: [
         {
@@ -360,11 +469,39 @@ export default {
     //   await Promise.all(
     //     this.sections.map(item => this.ListMovie(item.id, item))
     // );
+    this.loadFavorites();
+    
     this.$nextTick(() => {
       this.observeSections();
     });
   },
   methods: {
+
+
+    loadFavorites() {
+      this.isLoading = true;
+      setTimeout(() => {
+        const favorites = getFavorites();
+
+        if (favorites && favorites.length > 0) {
+          this.isFavo = true;
+          this.ListMovieFavo = [
+            {
+              loaded: true,
+              listMovie: favorites,
+            },
+          ];
+        } else {
+          this.isFavo = false;
+        }
+
+        this.isLoading = false;
+      }, 800); // Delay 0.8s cho hiệu ứng loading
+
+      
+    },
+
+
     getColor(index) {
       return this.colorList[index % this.colorList.length];
     },
@@ -457,9 +594,8 @@ export default {
         });
       }
     },
-    getOptimizedImage(imagePath, sectionID) {
+    getOptimizedImage(imagePath) {
       if (this.link != "link1") {
-        console.log(sectionID);
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       } else {
         return `${
@@ -516,7 +652,7 @@ export default {
     isFavorite(movie) {
       return this.favoriteMovies.some((fav) => fav.slug === movie.slug);
     },
-
+    
     // Thêm/bỏ yêu thích
     toggleFavorite(movie) {
       const index = this.favoriteMovies.findIndex(

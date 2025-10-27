@@ -3,11 +3,15 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          {{ $t("Kết quả tìm kiếm cho") }} "{{ $route.query.keyword }}"
+          Danh sách phim: {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
+
+    <FilterMovie @filter-changed="onFilterChanged" />
+
+
 
     <v-row justify="center">
       <v-col cols="12" class="text-center" v-if="loading">
@@ -15,24 +19,29 @@
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0" class="text-center">
-          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
+        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
+          Không tìm thấy phim nào với từ khóa "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">{{
-              $t("Về trang chủ")
-            }}</v-btn>
+            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
           </router-link>
         </v-alert>
+
+        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
+          Không tìm thấy phim nào với từ khóa "<strong>{{
+            MessageErr
+          }}</strong
+          >".
+        </v-alert>
+
         <v-row
                 no-gutters
                 tag="transition-group"
                 name="fade-scale"
                 class="movie-list"
-                v-if="movies.length >=5"
               >
                 <v-col
                   v-for="movie in movies"
@@ -110,7 +119,7 @@
                         }}
                       </v-card-subtitle>
 
-                      <v-card-title class="movie-title text-body-2 text-wrap">{{
+                      <v-card-title class="movie-title">{{
                         movie.name
                       }}</v-card-title>
 
@@ -126,14 +135,14 @@
                   </router-link>
                 </v-col>
               </v-row>
-        <router-link
-          v-else
+
+        <!-- <router-link
           v-for="movie in movies"
           :key="movie.id"
           :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
           class="text-decoration-none"
         >
-          <v-card class="mb-5 overflow-hidden movie-car" elevation="4" hover>
+          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
@@ -146,8 +155,8 @@
                   cover
                 />
               </v-col>
-              <v-col cols="12" md="8" class="pa-4">
-                <h3 class="text-left">{{ movie.name }}</h3>
+              <v-col cols="12" md="8" class="pa-6">
+                <h3 class="text-left title">{{ movie.name }}</h3>
                 <div class="genre-section mb-3">
                   <v-chip
                     v-for="(genre, index) in movie.category"
@@ -170,8 +179,7 @@
                 </div>
 
                 <p class="text-body-2 description-text">
-                  {{ $t("Miêu tả") }}:  
-                  <span v-html="movie.origin_name"></span>
+                  Miêu tả: {{ movie.origin_name }}
                 </p>
 
                 <div class="action-buttons mt-4">
@@ -195,7 +203,7 @@
               </v-col>
             </v-row>
           </v-card>
-        </router-link>
+        </router-link> -->
 
         <v-pagination
           v-model="currentPage"
@@ -206,173 +214,104 @@
     </v-row>
   </v-container>
 </template>
-
-
-<script>
-import { Search, Search1, urlImage, urlImage1 } from "@/model/api";
+  
+  <script>
+import { urlImage1, ListMovieByCate1 } from "@/model/api";
+import FilterMovie from "@/pages/FilterMovie.vue"
 export default {
-  name: "SearchMovie",
+  name: "FavoritePage",
   data() {
     return {
-      movies: [],
       loading: true,
-      urlImage: urlImage,
-      urlImage1: urlImage1,
       currentPage: 1,
       moviesPerPage: 20,
       totalMovies: 100,
-      valueRate: 5,
-      path: "",
-      link: "",
+      movies: [],
+      path: "hoat-hinh",
+      urlImage: urlImage1,
+      titlePage: "",
+      MessageErr: '',
+
+      // Bộ lọc
+      
+      filters: {
+        year: "",
+        lang: "",
+        category: "",
+        country: "",
+        sortOption: "year"
+      },
+
+      
     };
   },
-  watch: {
-    "$route.query.keyword": {
-      immediate: true,
-      async handler(query) {
-        document.title = `${this.$t("Kết quả tìm kiếm: ")} ${query}`;
-        this.loading = true;
-        this.path = query;
-
-        await this.SearchMovie1(query);
-      },
-    },
-    async currentPage(newpage) {
-      this.loading = true;
-      this.currentPage = newpage;
-      await this.SearchMovie1(this.path);
-    },
+  components:{
+    FilterMovie
+  },
+  mounted() {
+    this.ListMovie();
   },
   methods: {
-    SearchMovie(query) {
-      return new Promise((resolve,reject) => {
-        const timer = setTimeout(() => {
-        this.loading = false;
-        alert("⏳ Hết thời gian chờ. Vui lòng thử lại!");
-        reject(new Error("Timeout"));
-      }, 120000);
-        Search(
-          { keyword: query, page: this.currentPage },
-          (result) => {
-            clearTimeout(timer);
-            if (result.status == "success" || result.status == true) {
-              this.link = "";
-              if (result.data.items.length != 0 && result.data.items != null) {
-                
 
-                this.movies = result.data.items.sort((a, b) => {
-                  return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
-                });
-                if (result.data.seoOnPage) {
-                  this.updateMetaTags(result.data.seoOnPage);
-                }
-                this.loading = false;
-                resolve(true)
-                
-              } else {
-                this.movies = [];
-              this.loading = false;
-
-                // this.link = "link1";
-                // this.SearchMovie1(query)
-                // .then(resolve)
-                // .catch(reject);
-              }
-            } 
-            // else {
-            //   this.link = "link1";
-            //   this.SearchMovie1(query)
-            //   .then(resolve)
-            //   .catch(reject);
-            //   resolve(true)
-            // }
-            reject(result)
-          },
-          (err) => {
-            clearTimeout(timer);
-          console.log(err);
-            // console.log(err);
-            // clearTimeout(timer);
-            // this.link = "link1";
-            // this.SearchMovie1(query)
-            // .then(resolve)
-            // .catch(reject);
-            
-          }
-        );
-      });
+    onFilterChanged(newFilters) {
+      this.filters = { ...newFilters };
+      this.currentPage = 1;
+      this.ListMovie();
     },
-    SearchMovie1(query) {
-      return new Promise((resolve, reject) =>{
-        const timer = setTimeout(() => {
-        this.loading = false;
-        alert("⏳ Hết thời gian chờ . Vui lòng thử lại!");
-        reject(new Error("Timeout"));
-      }, 120000);
-          Search1(
-        { keyword: query, page: this.currentPage, limit: 20 },
+
+    ListMovie() {
+
+      if(this.filters.year == null || this.filters.year == undefined){
+        this.filters.year = ''
+      }
+      if(this.filters.lang == null || this.filters.lang == undefined){
+        this.filters.lang = ''
+      }
+      if(this.filters.category == null || this.filters.category == undefined){
+        this.filters.category = ''
+      }
+      if(this.filters.country == null || this.filters.country == undefined){
+        this.filters.country = ''
+      }
+      this.loading = true;
+      this.movies = [];
+      ListMovieByCate1(
+        
+        `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
         (result) => {
-          
-          clearTimeout(timer);
-          if (result.status == "success" || result.status == true) {
-            if ( result.data.items != null && result.data.items.length != 0) {
-              this.link = "link1"
-                this.movies = result.data.items.sort((a, b) => {
-                return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
-              });
-              if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage);
-              }
-              this.loading = false;
-              resolve(true)
-              
-              
-            } else {
-              // this.movies = [];
-              // this.loading = false;
-              this.loading = true
-              this.link = "";
-              this.SearchMovie(query)
-              .then(resolve)
-              .catch(reject);
-              resolve(true)
+          if (result.status === "success" || result.status == true) {
+            this.movies = result.data.items;
+            this.titlePage = result.data.titlePage;
+            if (result.data.seoOnPage) {
+              this.updateMetaTags(result.data.seoOnPage);
             }
+            this.loading = false;
           }
           else{
-            this.link = "";
-            this.loading = true
-                this.SearchMovie(query)
-                .then(resolve)
-                .catch(reject);
+            this.loading = false
+          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
           }
-          reject()
         },
         (err) => {
-          // clearTimeout(timer);
-          // console.log(err);
           console.log(err);
-            clearTimeout(timer);
-            this.link = "";
-            this.SearchMovie(query)
-            .then(resolve)
-            .catch(reject);
+          this.loading = false
+          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
         }
       );
-      })
-      
+    },
+    getOptimizedImage(imagePath) {
+      return `${ this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath) }`;
     },
 
-    getOptimizedImage(imagePath) {
-      if (this.link == "") {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      } else {
-        return `${
-          this.urlImage1 +
-          "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
-        }`;
-      }
+
+    applyFilters() {
+      this.currentPage = 1;
+      this.ListMovie();
+      this.showFilter= false
+      
     },
+    //return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}&w=384&q=100`;
+    // Chuan SEO
     updateMetaTags(seo) {
       document.title = seo.titleHead || "Phim hay";
 
@@ -409,10 +348,16 @@ export default {
       }
     },
   },
+  watch: {
+    currentPage() {
+      this.loading = true;
+      this.ListMovie();
+    },
+  },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 .search-page {
   min-height: 100vh;
   padding: 2rem 0;
@@ -578,6 +523,10 @@ export default {
   align-items: center;
   gap: 0.5rem;
 }
+.title:hover {
+  color: orange;
+}
+
 .movie-overlay {
   position: absolute;
   inset: 0;
@@ -606,7 +555,17 @@ export default {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+.filter-bar {
+  background: #1f1f2a;
+  color: #fff;
+  border-radius: 12px;
+}
+.v-select,
+.v-text-field {
+  color: white;
+}
 .movie-title{
   font-size: 14px;
 }
 </style>
+  
