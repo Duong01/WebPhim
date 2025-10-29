@@ -26,7 +26,6 @@
           <video
             ref="videoPlayer"
             controls
-            autoplay
             preload="metadata"
             style="width: 100%; height: 100%; background-color: black;"
           ></video>
@@ -797,11 +796,15 @@ export default {
       }
       // Nếu là file .m3u8 → dùng HLS
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        const hls = new Hls({ maxBufferLength: 5 });
+        const hls = new Hls({ maxBufferLength: 5, autoStartLoad: false });
         hls.loadSource(url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play();
+        video.addEventListener("play", () => {
+          hls.startLoad();
+        });
+
+        video.addEventListener("pause", () => {
+          hls.stopLoad();
         });
       } else {
         // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
