@@ -27,7 +27,7 @@
             ref="videoPlayer"
             controls
             preload="metadata"
-            style="width: 100%; height: 100%; background-color: black;"
+            style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
           ></video>
     </div>
 
@@ -581,7 +581,7 @@ export default {
       await this.MoveInfor1(newSlug);
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
-      //await this.GetComment();
+      await this.GetComment();
     },
   },
   async mounted() {
@@ -589,7 +589,7 @@ export default {
       await this.MoveInfor1(this.slug);
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
-      //await this.GetComment();
+      await this.GetComment();
     } catch (err) {
       console.log(err);
     }
@@ -674,7 +674,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              // this.GetComment()
+               this.GetComment()
               this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
             } else {
@@ -768,7 +768,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              // this.GetComment()
+               this.GetComment()
               this.liked = isFavorite(this.movie._id);
               resolve(true);
             } else {
@@ -948,7 +948,6 @@ export default {
       var account = localStorage.getItem("name");
       var data = {
         movieId: this.movie.idMovie,
-        episode: this.movie.page,
         userId: this.$store.state.empInfor.id,
         username: account,
         content: this.newComment,
@@ -980,7 +979,7 @@ export default {
       return new Promise((resolve, reject) => {
         if (!this.movie.idMovie) reject("error");
         GetComments(
-          { movieId: this.movie.idMovie, episode: this.movie.page },
+          { movieId: this.movie.idMovie },
           (res) => {
             if (Array.isArray(res)) {
               this.comments = res.map((c) => ({

@@ -144,14 +144,18 @@
                   eight="300"
                   transition="fade-transition"
                   cover
-                />
-              </v-col>
-              <v-col cols="12" md="8" class="pa-4">
-                <v-card-subtitle class="text-left" style="margin-top: 5px;">
+                >
+                <template #default>
+                  <v-card-subtitle class="text-left" style="margin-top: 5px;color: orange;">
                   {{
                     movie.lang + " - " + movie.episode_current
                   }}
                 </v-card-subtitle>
+                </template>
+                </v-img>
+              </v-col>
+              <v-col cols="12" md="8" class="pa-4">
+                
                  <h3 class="text-left">{{ movie.name }} </h3>
                 <!--<h5 class="text-left">{{movie.lang + " - " + movie.episode_current}}</h5> -->
                 <div class="genre-section mb-3">
@@ -721,5 +725,6 @@ export default {
 }
 .movie-title{
   font-size: 14px;
+  
 }
 </style>
