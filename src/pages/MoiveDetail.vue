@@ -4,7 +4,7 @@
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else-if="isLoadingData">
-      <p style="text-align: center;">Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet</p>
+      <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
     </div>
     <div v-else>
       <!-- Breadcrumb -->
@@ -19,10 +19,18 @@
         <!-- Cột bên trái: Video + nút + danh sách tập + info -->
         <v-col cols="12" md="10">
           <!-- VIDEO -->
+          <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
           <div
             class="video-wrapper"
-            v-html="generateEmbedHtml(movie.videoUrl)"
-          ></div>
+          >
+          <video
+            ref="videoPlayer"
+            controls
+            autoplay
+            preload="metadata"
+            style="width: 100%; height: auto; background-color: black;"
+          ></video>
+    </div>
 
           <!-- nut next tap và back tap -->
            <div class="d-flex justify-center align-center my-3" style="gap: 12px">
@@ -506,7 +514,7 @@ import {
   AddComment,
 } from "@/model/api";
 import {  toggleFavorite, isFavorite } from "@/utils/favorite";
-
+import Hls from "hls.js";
 export default {
   name: "MovieDetail",
   data() {
@@ -579,6 +587,7 @@ export default {
   async mounted() {
     try {
       await this.MoveInfor1(this.slug);
+      this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       //await this.GetComment();
     } catch (err) {
@@ -776,6 +785,21 @@ export default {
       });
     },
 
+
+    playVideo(url) {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+
+      // Nếu là file .m3u8 → dùng HLS
+      if (Hls.isSupported() && url.endsWith(".m3u8")) {
+        const hls = new Hls({ maxBufferLength: 5 });
+        hls.loadSource(url);
+        hls.attachMedia(video);
+      } else {
+        // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
+        video.src = url;
+      }
+    },
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },

@@ -248,7 +248,7 @@ export default {
       return new Promise((resolve,reject) => {
         const timer = setTimeout(() => {
         this.loading = false;
-        alert("⏳ Hết thời gian chờ. Vui lòng thử lại!");
+        alert(this.$t("⏳ Hết thời gian chờ. Vui lòng thử lại!"));
         reject(new Error("Timeout"));
       }, 120000);
         Search(
@@ -306,7 +306,7 @@ export default {
       return new Promise((resolve, reject) =>{
         const timer = setTimeout(() => {
         this.loading = false;
-        alert("⏳ Hết thời gian chờ . Vui lòng thử lại!");
+        alert(this.$t("⏳ Hết thời gian chờ . Vui lòng thử lại!"));
         reject(new Error("Timeout"));
       }, 120000);
           Search1(

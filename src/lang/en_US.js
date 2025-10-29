@@ -106,7 +106,19 @@ export default
   'Hành Động': 'Action',
   'Âu Mỹ': 'Western',
   'Việt Nam': 'Vietnamese',
-  'TV Show': 'TV Show'
+  'TV Show': 'TV Show',
+
+  'Danh sách phim của bạn': 'Your movie list',
+'Bạn không có dữ liệu nào được lưu': 'You have no saved data',
+'Bạn muốn xem gì?': 'What do you want to watch?',
+'Danh sách phim của bạn!': 'Your movie list!',
+'Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet': 'Request timed out, please check your internet connection',
+'⏳ Hết thời gian chờ. Vui lòng thử lại!': '⏳ Timeout. Please try again!',
+'Lọc': 'Filter',
+'Danh sách phim:': 'Movie list:',
+'Không tìm thấy phim nào với từ khóa': 'No movies found for the keyword',
+"Không có dữ liệu được hiển thị, vui lòng tải lại trang": "No data to display, please reload the page",
+"Hết thời gian chờ, vui lòng tải lại trang": "Timeout, please reload the page"
     
 
 

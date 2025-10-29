@@ -91,7 +91,7 @@
             <v-icon left size="25" class="mr-1">
               mdi-magnify
             </v-icon>
-              Lọc
+              {{$t('Lọc')}}
             </v-btn>
           </v-col>
         </v-row>

@@ -22,7 +22,7 @@
         </v-alert>
 
         <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             MessageErr
           }}</strong
           >".
@@ -285,12 +285,12 @@ export default {
         }
         else{
             this.loading = false
-          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
           }
       }, (err) => {
         console.log(err)
         this.loading = false
-          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
       })
     },
     getOptimizedImage(imagePath) {

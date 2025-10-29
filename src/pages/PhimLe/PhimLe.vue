@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          Danh sách phim: {{ titlePage }}
+          {{$t('Danh sách phim:')}} {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -17,18 +17,18 @@
 
       <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 
         <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             MessageErr
           }}</strong
           >".
@@ -278,12 +278,12 @@ export default {
         }
         else{
             this.loading = false
-          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
           }
       }, (err) => {
         console.log(err)
         this.loading = false
-          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
       })
     },
     getOptimizedImage(imagePath) {

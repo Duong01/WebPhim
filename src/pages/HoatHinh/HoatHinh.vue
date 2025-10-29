@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          Danh sách phim: {{ titlePage }}
+          {{$t('Danh sách phim:')}} {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -20,7 +20,7 @@
 
       <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
@@ -31,7 +31,7 @@
         </v-alert>
 
         <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             MessageErr
           }}</strong
           >".
@@ -136,75 +136,6 @@
                 </v-col>
               </v-row>
 
-        <!-- <router-link
-          v-for="movie in movies"
-          :key="movie.id"
-          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
-          class="text-decoration-none"
-        >
-          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
-                  :alt="movie.name"
-                  spect-ratio="16/9"
-                  class="movie-image"
-                  transition="fade-transition"
-                  cover
-                />
-              </v-col>
-              <v-col cols="12" md="8" class="pa-6">
-                <h3 class="text-left title">{{ movie.name }}</h3>
-                <div class="genre-section mb-3">
-                  <v-chip
-                    v-for="(genre, index) in movie.category"
-                    :key="index"
-                    class="ma-1"
-                    label
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </div>
-
-                <div class="meta-info mb-2 d-flex align-center flex-wrap">
-                  <v-rating
-                    v-model="valueRate"
-                    active-color="orange"
-                    color="orange-lighten-1"
-                  ></v-rating>
-                  <v-icon size="18" class="me-1 text-grey">mdi-calendar</v-icon>
-                  <span class="me-4">{{ movie.year }}</span>
-                </div>
-
-                <p class="text-body-2 description-text">
-                  Miêu tả: {{ movie.origin_name }}
-                </p>
-
-                <div class="action-buttons mt-4">
-                  <v-btn
-                    variant="flat"
-                    color="primary"
-                    class="me-2"
-                    prepend-icon="mdi-play-circle"
-                  >
-                    {{ $t("Xem ngay") }}
-                  </v-btn>
-                  <v-btn
-                    v-bind="props"
-                    color="secondary"
-                    variant="outlined"
-                    prepend-icon="mdi-share-variant"
-                  >
-                    {{ $t("Chia sẻ") }}
-                  </v-btn>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </router-link> -->
-
         <v-pagination
           v-model="currentPage"
           :length="Math.ceil(totalMovies / moviesPerPage)"
@@ -289,13 +220,13 @@ export default {
           }
           else{
             this.loading = false
-          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
           }
         },
         (err) => {
           console.log(err);
           this.loading = false
-          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+          this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
         }
       );
     },

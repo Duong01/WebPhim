@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          Danh sách phim của bạn
+          {{$t('Danh sách phim của bạn')}}
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -24,7 +24,7 @@
           >.
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 
@@ -188,7 +188,7 @@ export default {
           this.loading = false;
           
         } else {
-          this.MessageErr = "Bạn không có dữ liệu nào được lưu";
+          this.MessageErr = this.$t("Bạn không có dữ liệu nào được lưu");
           this.loading = false;
         }
 

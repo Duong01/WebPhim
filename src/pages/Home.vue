@@ -8,7 +8,7 @@
             <v-icon size="20" color="#ffcc00" class="mr-2"
               >mdi-filmstrip</v-icon
             >
-            Bạn muốn xem gì?
+            {{$t('Bạn muốn xem gì?')}}
           </h1>
         </v-col>
       </v-row>
@@ -45,7 +45,7 @@
             <v-col cols="auto">
               <h1 class="category-title">
                 <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
-                Danh sách phim của bạn!
+                {{$t('Danh sách phim của bạn!')}}
               </h1>
             </v-col>
             <v-col cols="auto">
@@ -53,7 +53,7 @@
                 :to="{ name: 'FavoritePage', params: {  } }"
                 class="view-all"
               >
-                Xem tất cả >>
+                {{$t('Xem tất cả')}} >>
               </router-link>
             </v-col>
           </v-row>

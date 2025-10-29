@@ -106,5 +106,18 @@ export default
   "Hành Động": "动作",
   "Âu Mỹ": "欧美",
   "Việt Nam": "越南",
-  'TV Show': 'TV Show'
+  'TV Show': 'TV Show',
+
+  'Danh sách phim của bạn': '你的影片列表',
+'Bạn không có dữ liệu nào được lưu': '你没有保存任何数据',
+'Bạn muốn xem gì?': '你想看什么？',
+'Danh sách phim của bạn!': '你的影片列表！',
+'Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet': '请求超时，请检查网络连接',
+'⏳ Hết thời gian chờ. Vui lòng thử lại!': '⏳ 超时，请重试！',
+'Lọc': '筛选',
+'Danh sách phim:': '影片列表：',
+'Không tìm thấy phim nào với từ khóa': '未找到与关键词匹配的影片',
+"Không có dữ liệu được hiển thị, vui lòng tải lại trang": "没有可显示的数据，请重新加载页面",
+"Hết thời gian chờ, vui lòng tải lại trang": "请求超时，请重新加载页面"
+
 }
