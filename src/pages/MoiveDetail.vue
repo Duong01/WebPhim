@@ -24,7 +24,7 @@
             class="video-wrapper"
           >
           <video
-            :ref="movie.videoUrl"
+            ref="videoPlayer"
             controls
             autoplay
             preload="metadata"
@@ -790,6 +790,7 @@ export default {
     playVideo(url) {
       const video = this.$refs.videoPlayer;
       console.log(video)
+      console.log(url)
       if (!video) return;
 
       // Nếu là file .m3u8 → dùng HLS
@@ -797,9 +798,13 @@ export default {
         const hls = new Hls({ maxBufferLength: 5 });
         hls.loadSource(url);
         hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play();
+        });
       } else {
         // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
         video.src = url;
+        video.play();
       }
     },
     DownloadVideo(linkdown) {
