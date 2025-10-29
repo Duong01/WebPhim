@@ -28,7 +28,7 @@
             controls
             autoplay
             preload="metadata"
-            style="width: 100%; height: auto; background-color: black;"
+            style="width: 100%; height: 100%; background-color: black;"
           ></video>
     </div>
 
@@ -580,6 +580,7 @@ export default {
   watch: {
     async slug(newSlug) {
       await this.MoveInfor1(newSlug);
+      this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       //await this.GetComment();
     },
@@ -788,6 +789,7 @@ export default {
 
     playVideo(url) {
       const video = this.$refs.videoPlayer;
+      console.log(video)
       if (!video) return;
 
       // Nếu là file .m3u8 → dùng HLS
