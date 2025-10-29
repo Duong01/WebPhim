@@ -146,7 +146,7 @@
                   cover
                 >
                 <template #default>
-                  <v-card-subtitle class="text-left" style="margin-top: 5px;color: orange;">
+                  <v-card-subtitle class="text-left" style="margin-top: 5px;color: white;">
                   {{
                     movie.lang + " - " + movie.episode_current
                   }}
