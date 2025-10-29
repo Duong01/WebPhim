@@ -53,8 +53,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="getOptimizedImage(movie.poster_url)"
-                        :lazy-src="getOptimizedImage(movie.poster_url)"
+                        :src="getOptimizedImage(movie.thumb_url)"
+                        :lazy-src="getOptimizedImage(movie.thumb_url)"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
@@ -89,9 +89,9 @@
 
                       <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
                         {{
-                          movie.episode_current === "Tập 0"
+                          movie.slug === "Tập 0"
                             ? `Full - ${movie.lang}`
-                            : `${movie.episode_current} - ${movie.lang}`
+                            : `${movie.slug} - ${movie.lang}`
                         }}
                       </v-card-subtitle>
 
