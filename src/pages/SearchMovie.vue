@@ -184,14 +184,14 @@
                     {{ $t("Xem ngay") }}
                   </v-btn>
                   <v-btn
-                    @click.stop="shareMovie"
+                    @click.stop.prevent="shareMovie(movie)"
                     variant="outlined"
                     prepend-icon="mdi-share-variant"
                   >
                     {{ $t("Chia sẻ") }}
                   </v-btn>
                   <v-btn
-                    @click.stop="handleFavorite"
+                    @click.stop.prevent="handleFavorite(movie)"
                     variant="outlined"
                     prepend-icon="mdi-bookmark"
                   >
@@ -311,6 +311,7 @@ export default {
       path: "",
       link: "",
       shareDialog: false,
+      shareUrl: ""
     };
   },
   watch: {
@@ -450,18 +451,20 @@ export default {
       
     },
 
-    shareMovie() {
+    shareMovie(movie) {
+      const domain = window.location.origin;
+      this.shareUrl = `${domain}/search?keyword=/${movie.slug}` 
       this.shareDialog = true;
     },
 
-    handleFavorite(){
-      let aa = toggleFavorite(this.movie);
+    handleFavorite(movie){
+      let aa = toggleFavorite(movie);
       console.log(aa)
       // this.liked = !this.liked;
     },
     copyLink() {
-      const shareUrl = window.location.href;
-      navigator.clipboard.writeText(shareUrl).then(() => {
+      
+      navigator.clipboard.writeText(this.shareUrl).then(() => {
         alert(this.$t("Đã sao chép liên kết!"));
       });
     },
