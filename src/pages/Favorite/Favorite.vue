@@ -123,7 +123,7 @@
 </template>
   
   <script>
-import { urlImage1, ListMovieByCate1 } from "@/model/api";
+import { urlImage1 } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
 import { getFavorites } from "@/utils/favorite";
 export default {
@@ -152,9 +152,6 @@ export default {
 
       
     };
-  },
-  components:{
-    FilterMovie
   },
   mounted() {
     this.ListMovie();
