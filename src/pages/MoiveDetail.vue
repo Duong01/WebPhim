@@ -796,7 +796,7 @@ export default {
       }
       // Nếu là file .m3u8 → dùng HLS
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        const hls = new Hls({ maxBufferLength: 5, autoStartLoad: false });
+        const hls = new Hls({ maxBufferLength: 5 });
         hls.loadSource(url);
         hls.attachMedia(video);
         video.addEventListener("play", () => {
