@@ -184,7 +184,7 @@
                     {{ $t("Xem ngay") }}
                   </v-btn>
                   <v-btn
-                    @click="shareMovie"
+                    @click.stop="shareMovie"
                     color="secondary"
                     variant="outlined"
                     prepend-icon="mdi-share-variant"
@@ -192,7 +192,7 @@
                     {{ $t("Chia sẻ") }}
                   </v-btn>
                   <v-btn
-                    @click="handleFavorite"
+                    @click.stop="handleFavorite"
                     color="secondary"
                     variant="outlined"
                     prepend-icon="mdi-bookmark"
