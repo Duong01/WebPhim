@@ -45,7 +45,7 @@
             <v-col cols="auto">
               <h1 class="category-title">
                 <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
-                Danh sách film của bạn!
+                Danh sách phim của bạn!
               </h1>
             </v-col>
             <v-col cols="auto">

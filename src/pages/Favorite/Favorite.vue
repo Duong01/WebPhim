@@ -3,13 +3,13 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          Danh sách phim: {{ titlePage }}
+          Danh sách phim của bạn
         </h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
 
-    <FilterMovie @filter-changed="onFilterChanged" />
+    <!-- <FilterMovie @filter-changed="onFilterChanged" /> -->
 
 
 
@@ -19,23 +19,15 @@
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
-            $route.query.keyword
-          }}</strong
-          >".
+        <v-alert v-if="movies.length === 0" class="text-center">
+          <strong>{{ MessageErr }}</strong
+          >.
           <br />
           <router-link to="/home">
             <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
           </router-link>
         </v-alert>
 
-        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
-            MessageErr
-          }}</strong
-          >".
-        </v-alert>
 
         <v-row
                 no-gutters
@@ -72,22 +64,6 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
-                          >
-                            <v-icon>
-                              {{
-                                isFavorite(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn> -->
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -136,75 +112,6 @@
                 </v-col>
               </v-row>
 
-        <!-- <router-link
-          v-for="movie in movies"
-          :key="movie.id"
-          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
-          class="text-decoration-none"
-        >
-          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
-                  :alt="movie.name"
-                  spect-ratio="16/9"
-                  class="movie-image"
-                  transition="fade-transition"
-                  cover
-                />
-              </v-col>
-              <v-col cols="12" md="8" class="pa-6">
-                <h3 class="text-left title">{{ movie.name }}</h3>
-                <div class="genre-section mb-3">
-                  <v-chip
-                    v-for="(genre, index) in movie.category"
-                    :key="index"
-                    class="ma-1"
-                    label
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </div>
-
-                <div class="meta-info mb-2 d-flex align-center flex-wrap">
-                  <v-rating
-                    v-model="valueRate"
-                    active-color="orange"
-                    color="orange-lighten-1"
-                  ></v-rating>
-                  <v-icon size="18" class="me-1 text-grey">mdi-calendar</v-icon>
-                  <span class="me-4">{{ movie.year }}</span>
-                </div>
-
-                <p class="text-body-2 description-text">
-                  Miêu tả: {{ movie.origin_name }}
-                </p>
-
-                <div class="action-buttons mt-4">
-                  <v-btn
-                    variant="flat"
-                    color="primary"
-                    class="me-2"
-                    prepend-icon="mdi-play-circle"
-                  >
-                    {{ $t("Xem ngay") }}
-                  </v-btn>
-                  <v-btn
-                    v-bind="props"
-                    color="secondary"
-                    variant="outlined"
-                    prepend-icon="mdi-share-variant"
-                  >
-                    {{ $t("Chia sẻ") }}
-                  </v-btn>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </router-link> -->
-
         <v-pagination
           v-model="currentPage"
           :length="Math.ceil(totalMovies / moviesPerPage)"
@@ -217,7 +124,8 @@
   
   <script>
 import { urlImage1, ListMovieByCate1 } from "@/model/api";
-import FilterMovie from "@/pages/FilterMovie.vue"
+// import FilterMovie from "@/pages/FilterMovie.vue"
+import { getFavorites } from "@/utils/favorite";
 export default {
   name: "FavoritePage",
   data() {
@@ -227,7 +135,7 @@ export default {
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
-      path: "hoat-hinh",
+      path: "favorite",
       urlImage: urlImage1,
       titlePage: "",
       MessageErr: '',
@@ -261,46 +169,59 @@ export default {
 
     ListMovie() {
 
-      if(this.filters.year == null || this.filters.year == undefined){
-        this.filters.year = ''
-      }
-      if(this.filters.lang == null || this.filters.lang == undefined){
-        this.filters.lang = ''
-      }
-      if(this.filters.category == null || this.filters.category == undefined){
-        this.filters.category = ''
-      }
-      if(this.filters.country == null || this.filters.country == undefined){
-        this.filters.country = ''
-      }
+      // if(this.filters.year == null || this.filters.year == undefined){
+      //   this.filters.year = ''
+      // }
+      // if(this.filters.lang == null || this.filters.lang == undefined){
+      //   this.filters.lang = ''
+      // }
+      // if(this.filters.category == null || this.filters.category == undefined){
+      //   this.filters.category = ''
+      // }
+      // if(this.filters.country == null || this.filters.country == undefined){
+      //   this.filters.country = ''
+      // }
       this.loading = true;
       this.movies = [];
-      ListMovieByCate1(
-        
-        `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
-        (result) => {
-          if (result.status === "success" || result.status == true) {
-            this.movies = result.data.items;
-            this.titlePage = result.data.titlePage;
-            if (result.data.seoOnPage) {
-              this.updateMetaTags(result.data.seoOnPage);
-            }
-            this.loading = false;
-          }
-          else{
-            this.loading = false
-          this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
-          }
-        },
-        (err) => {
-          console.log(err);
-          this.loading = false
-          this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+
+      const favorites = getFavorites();
+
+        if (favorites && favorites.length > 0) {
+          this.movies = favorites
+          this.loading = false;
+          
+        } else {
+          this.MessageErr = "Bạn không có dữ liệu nào được lưu";
+          this.loading = false;
         }
-      );
+
+
+      // ListMovieByCate1(
+        
+      //   `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
+      //   (result) => {
+      //     if (result.status === "success" || result.status == true) {
+      //       this.movies = result.data.items;
+      //       this.titlePage = result.data.titlePage;
+      //       if (result.data.seoOnPage) {
+      //         this.updateMetaTags(result.data.seoOnPage);
+      //       }
+      //       this.loading = false;
+      //     }
+      //     else{
+      //       this.loading = false
+      //     this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+      //     }
+      //   },
+      //   (err) => {
+      //     console.log(err);
+      //     this.loading = false
+      //     this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+      //   }
+      // );
     },
     getOptimizedImage(imagePath) {
-      return `${ this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath) }`;
+      return `${ this.urlImage +  encodeURIComponent(imagePath) }`;
     },
 
 
