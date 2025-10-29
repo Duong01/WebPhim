@@ -792,7 +792,9 @@ export default {
       console.log(video)
       console.log(url)
       if (!video) return;
-
+      if (url.includes("player.phimapi.com/player/?url=")) {
+        url = url.split("player/?url=")[1];
+      }
       // Nếu là file .m3u8 → dùng HLS
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
         const hls = new Hls({ maxBufferLength: 5 });
