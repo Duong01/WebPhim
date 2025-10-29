@@ -142,6 +142,7 @@
                   :alt="movie.name"
                   spect-ratio="16/9"
                   class="movie-image"
+                  width="100%"
                   transition="fade-transition"
                   cover
                 />
@@ -185,7 +186,6 @@
                   </v-btn>
                   <v-btn
                     @click.stop="shareMovie"
-                    color="secondary"
                     variant="outlined"
                     prepend-icon="mdi-share-variant"
                   >
@@ -193,7 +193,6 @@
                   </v-btn>
                   <v-btn
                     @click.stop="handleFavorite"
-                    color="secondary"
                     variant="outlined"
                     prepend-icon="mdi-bookmark"
                   >
@@ -405,6 +404,7 @@ export default {
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
             if ( result.data.items != null && result.data.items.length != 0) {
+              console.log(result)
               this.link = "link1"
                 this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
