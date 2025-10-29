@@ -418,7 +418,7 @@
       <!-- dialog share -->
       <v-dialog v-model="shareDialog" max-width="500">
         <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
-          <v-card-title class="text-h6 justify-center">Chia sẻ</v-card-title>
+          <v-card-title class="text-h6 justify-center">{{$t('Chia sẻ')}}</v-card-title>
 
           <v-row class="justify-center mt-4" dense>
             <v-col cols="3" class="text-center">
