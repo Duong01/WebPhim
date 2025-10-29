@@ -195,7 +195,7 @@
                     @click="handleFavorite"
                     color="secondary"
                     variant="outlined"
-                    prepend-icon="mdi-share-variant"
+                    prepend-icon="mdi-bookmark"
                   >
                     {{ $t("Xem sau") }}
                   </v-btn>
