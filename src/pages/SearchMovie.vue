@@ -104,9 +104,7 @@
 
                       <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
                         {{
-                          movie.episode_current === "Tập 0"
-                            ? `Full - ${movie.lang}`
-                            : `${movie.episode_current} - ${movie.lang}`
+                          movie.lang + " - " + movie.episode_current
                         }}
                       </v-card-subtitle>
 
@@ -143,12 +141,13 @@
                   spect-ratio="16/9"
                   class="movie-image"
                   width="100%"
+                  eight="300"
                   transition="fade-transition"
                   cover
                 />
               </v-col>
               <v-col cols="12" md="8" class="pa-4">
-                <h3 class="text-left">{{ movie.name }}</h3>
+                <h3 class="text-left">{{ movie.name }} {{movie.lang + " - " + movie.episode_current}}</h3>
                 <div class="genre-section mb-3">
                   <v-chip
                     v-for="(genre, index) in movie.category"
