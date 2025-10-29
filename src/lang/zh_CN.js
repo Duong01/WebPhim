@@ -116,7 +116,6 @@ export default
 '⏳ Hết thời gian chờ. Vui lòng thử lại!': '⏳ 超时，请重试！',
 'Lọc': '筛选',
 'Danh sách phim:': '影片列表：',
-'Không tìm thấy phim nào với từ khóa': '未找到与关键词匹配的影片',
 "Không có dữ liệu được hiển thị, vui lòng tải lại trang": "没有可显示的数据，请重新加载页面",
 "Hết thời gian chờ, vui lòng tải lại trang": "请求超时，请重新加载页面"
 

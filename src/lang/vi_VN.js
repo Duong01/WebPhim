@@ -116,7 +116,6 @@ export default
   '⏳ Hết thời gian chờ. Vui lòng thử lại!': '⏳ Hết thời gian chờ. Vui lòng thử lại!',
   'Lọc':'Lọc',
   'Danh sách phim:': 'Danh sách phim:',
-  'Không tìm thấy phim nào với từ khóa': 'Không tìm thấy phim nào với từ khóa',
   "Không có dữ liệu được hiển thị, vui lòng tải lại trang": "Không có dữ liệu được hiển thị, vui lòng tải lại trang",
   "Hết thời gian chờ, vui lòng tải lại trang": "Hết thời gian chờ, vui lòng tải lại trang"
 
