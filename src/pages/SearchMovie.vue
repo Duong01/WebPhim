@@ -147,17 +147,13 @@
                 />
               </v-col>
               <v-col cols="12" md="8" class="pa-4">
-                <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
+                <v-card-subtitle class="text-left" style="margin-top: 5px;">
                   {{
                     movie.lang + " - " + movie.episode_current
                   }}
                 </v-card-subtitle>
-
-                      <v-card-title class="movie-title text-body-2 text-wrap">{{
-                        movie.name
-                      }}</v-card-title>
-                <!-- <h3 class="text-left">{{ movie.name }} </h3>
-                <h5 class="text-left">{{movie.lang + " - " + movie.episode_current}}</h5> -->
+                 <h3 class="text-left">{{ movie.name }} </h3>
+                <!--<h5 class="text-left">{{movie.lang + " - " + movie.episode_current}}</h5> -->
                 <div class="genre-section mb-3">
                   <v-chip
                     v-for="(genre, index) in movie.category"
