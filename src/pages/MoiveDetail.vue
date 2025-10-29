@@ -24,7 +24,7 @@
             class="video-wrapper"
           >
           <video
-            ref="videoPlayer"
+            :ref="movie.videoUrl"
             controls
             autoplay
             preload="metadata"
