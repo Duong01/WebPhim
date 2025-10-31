@@ -468,6 +468,7 @@ export default {
     },
 
     handleFavorite(movie){
+      this.movie.thumb_url = movie.thumb_url
       let aa = toggleFavorite(movie);
       console.log(aa)
       // this.liked = !this.liked;
