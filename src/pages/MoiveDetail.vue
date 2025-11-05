@@ -23,13 +23,13 @@
           <div
             class="video-wrapper"
           >
-          <video
-            ref="videoPlayer"
-            controls
-            preload="metadata"
-            style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
-          ></video>
-    </div>
+            <video
+              ref="videoPlayer"
+              controls
+              preload="metadata"
+              style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
+            ></video>
+          </div>
 
           <!-- nut next tap và back tap -->
            <div class="d-flex justify-center align-center my-3" style="gap: 12px">
@@ -1191,16 +1191,19 @@ export default {
 <style scoped>
 .video-wrapper {
   width: 100%;
+  max-height: 550px;
   aspect-ratio: 16 / 9;
   background: black;
   position: relative;
   overflow: hidden;
+  border-radius: 12px;
 }
 
 .video-wrapper iframe,
 .video-wrapper video {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 .suggested-item {
   cursor: pointer;
@@ -1459,5 +1462,12 @@ a {
   flex: 0 0 20% !important;  
   max-width: 20% !important; 
   padding: 4px;
+}
+.video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* hoặc 'cover' nếu bạn muốn full */
+  background-color: black;
+  cursor: pointer;
 }
 </style>
