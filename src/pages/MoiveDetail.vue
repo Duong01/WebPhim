@@ -1019,6 +1019,7 @@ export default {
     playEpisode(episode) {
       try{
         this.isLoading = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
           this.movie.title = episode.filename;
 
