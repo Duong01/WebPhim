@@ -17,7 +17,7 @@
       <!-- Bố cục hai cột -->
       <v-row dense>
         <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-        <v-col cols="12" md="10">
+        <v-col cols="12" md="9">
           <!-- VIDEO -->
           <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
           <div
@@ -332,54 +332,50 @@
 
         <!-- Cột bên phải: Gợi ý -->
         <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
-        <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
-          <v-card class="pa-0" color="grey-darken-4" flat>
-            <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-              <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
-              <v-tab value="2">{{ $t("Top phim") }}</v-tab>
-            </v-tabs>
+        <v-col cols="12" md="3" v-show="$vuetify.display.mdAndUp">
+  <v-card class="pa-0" color="grey-darken-4" flat>
+    <v-tabs v-model="tab" background-color="grey-darken-3" grow>
+      <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
+      <v-tab value="2">{{ $t("Top phim") }}</v-tab>
+    </v-tabs>
 
-            <v-card-text style="max-height: 87vh; overflow-y: auto">
-              <v-list dense nav>
-                <v-list-item
-                  v-for="suggested in suggestedMovies"
-                  :key="suggested.id"
-                  class="suggested-item"
-                >
-                  <router-link
-                    :to="{
-                      name: 'MovieDetail',
-                      params: { slug: suggested.slug },
-                    }"
-                    class="text-decoration-none"
-                  >
-                    <v-list-item-avatar size="80">
-                      <v-img
-                        :src="getOptimizedImage(suggested.poster_url)"
-                        :lazy-src="getOptimizedImage(suggested.poster_url)"
-                      />
-                    </v-list-item-avatar>
+    <v-card-text style="max-height: 87vh; overflow-y: auto; padding: 0">
+      <v-list dense nav class="pa-0">
+        <v-list-item
+          v-for="suggested in suggestedMovies"
+          :key="suggested.id"
+          class="suggested-item d-flex align-center"
+        >
+          <router-link
+            :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+            class="d-flex text-decoration-none align-center py-4"
+            style="width: 100%"
+          >
+            <v-img
+              :src="getOptimizedImage(suggested.poster_url)"
+              :lazy-src="getOptimizedImage(suggested.poster_url)"
+              width="150"
+              height="120"
+              class="rounded-lg"
+              cover
+            ></v-img>
 
-                    <v-list-item-content>
-                      <v-list-item-title
-                        class="text-white text-wrap text-body-2"
-                      >
-                        {{ suggested.name }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        class="text-grey-lighten-1 text-caption"
-                      >
-                        {{ suggested.episode_current }} | {{ suggested.lang
-                        }}<br />
-                        {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </router-link>
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
+            <div class="ml-3 text-truncate" >
+              <div class="text-white text-body-2 font-weight-medium text-truncate">
+                {{ suggested.name }}
+              </div>
+              <div class="text-grey-lighten-1 text-caption">
+                {{ suggested.episode_current }} | {{ suggested.lang }}<br />
+                {{ suggested.category[0]?.name }} • {{ suggested.year }}
+              </div>
+            </div>
+          </router-link>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
+</v-col>
+
 
         <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
 
@@ -404,15 +400,15 @@
                     aspect-ratio="16/9"
                     cover
                   ></v-img>
-                  <v-card-title class="text-white text-body-2 text-wrap">
-                    {{ suggested.name }}
-                  </v-card-title>
-                  <v-card-subtitle
-                    class="text-grey-lighten-1 text-caption px-4 pb-4"
-                  >
-                    {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                    {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                  </v-card-subtitle>
+                  <div class="ml-3 flex-grow-1">
+                    <div class="text-white text-body-2 font-weight-medium text-truncate">
+                      {{ suggested.name }}
+                    </div>
+                    <div class="text-grey-lighten-1 text-caption">
+                      {{ suggested.episode_current }} | {{ suggested.lang }}<br />
+                      {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                    </div>
+                  </div>
                 </v-card>
               </router-link>
             </v-col>
@@ -1207,15 +1203,22 @@ export default {
 </script>
 
 <style scoped>
-.video-wrapper {
-  width: 100%;
-  max-height: 550px;
-  aspect-ratio: 16 / 9;
-  background: black;
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
+@media (min-width: 956px) {
+  .search-page {
+    padding: 0 60px !important;
+  }
+  .video-wrapper {
+    width: 100%;
+    padding: 0 40px;
+    /* max-height: 800px; */
+    aspect-ratio: 16 / 9;
+    background: black;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+  }
 }
+
 
 .video-wrapper iframe,
 .video-wrapper video {
@@ -1487,5 +1490,17 @@ a {
   object-fit: cover; /* hoặc 'cover' nếu bạn muốn full */
   background-color: black;
   cursor: pointer;
+}
+.suggested-item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s;
+}
+.suggested-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.v-list-item {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 </style>
