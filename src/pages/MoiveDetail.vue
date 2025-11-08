@@ -626,7 +626,7 @@ export default {
               }
 
               if (
-                result.movie.status == "trailer" ||
+                result.movie.status == "trailer" &&
                 result.episodes[0].server_data[0].link_embed == ""
               ) {
                 this.movie.videoUrl = result.movie.trailer_url;
@@ -721,7 +721,7 @@ export default {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
               if (
-                result.movie.status == "trailer" ||
+                result.movie.status == "trailer" &&
                 result.episodes[0].server_data[0].link_embed == ""
               ) {
                 this.movie.videoUrl = result.movie.trailer_url;
@@ -870,25 +870,25 @@ export default {
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
-        if (this.link == "") {
-          ListMovieByCate(
-            this.movie.categoris,
+        // if (this.link == "") {
+        //   ListMovieByCate(
+        //     this.movie.categoris,
 
-            (data) => {
-              if (data.status == "success") {
-                this.suggestedMovies = data.data.items;
-                this.isLoading = false;
-                resolve(true);
-              } else {
-                reject("error");
-              }
-            },
-            (err) => {
-              console.log(err);
-              reject(err);
-            }
-          );
-        } else {
+        //     (data) => {
+        //       if (data.status == "success") {
+        //         this.suggestedMovies = data.data.items;
+        //         this.isLoading = false;
+        //         resolve(true);
+        //       } else {
+        //         reject("error");
+        //       }
+        //     },
+        //     (err) => {
+        //       console.log(err);
+        //       reject(err);
+        //     }
+        //   );
+        // } else {
           Categoris1(
             this.movie.categoris,
 
@@ -906,7 +906,7 @@ export default {
               reject(err);
             }
           );
-        }
+        // }
       });
     },
     shareMovie() {
