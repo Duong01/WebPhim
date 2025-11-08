@@ -800,11 +800,11 @@ export default {
         url = url.split("player/?url=")[1];
       }
       // ======== Nguồn opstream10.com (link share) ========
-      if (!url && fallbackUrl.includes("opstream10.com/share/")) {
+      if (url.includes("opstream10.com/share/")) {
         const iframe = this.$refs.videoIframe;
         if (iframe) {
           iframe.style.display = "block";
-          iframe.src = fallbackUrl;
+          iframe.src = url;
         }
         video.style.display = "none";
         return;
