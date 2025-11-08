@@ -29,6 +29,11 @@
               preload="metadata"
               style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
             ></video>
+            <iframe
+            ref="videoIframe"
+            style="width:100%;aspect-ratio:16/9;border:0;display:none;"
+            allowfullscreen
+          ></iframe>
           </div>
 
           <!-- nut next tap và back tap -->
@@ -788,15 +793,25 @@ export default {
 
     playVideo(url) {
       const video = this.$refs.videoPlayer;
-      console.log(video)
       console.log(url)
       if (!video) return;
+      // ======== Nguồn phimapi.com ========
       if (url.includes("player.phimapi.com/player/?url=")) {
         url = url.split("player/?url=")[1];
       }
+      // ======== Nguồn opstream10.com (link share) ========
+      if (!url && fallbackUrl.includes("opstream10.com/share/")) {
+        const iframe = this.$refs.videoIframe;
+        if (iframe) {
+          iframe.style.display = "block";
+          iframe.src = fallbackUrl;
+        }
+        video.style.display = "none";
+        return;
+      }
       // Nếu là file .m3u8 → dùng HLS
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        const hls = new Hls({ maxBufferLength: 5 });
+        const hls = new Hls({ maxBufferLength: 5,enableWorker: true, startLevel: -1,});
         hls.loadSource(url);
         hls.attachMedia(video);
         video.addEventListener("play", () => {
@@ -806,6 +821,9 @@ export default {
         video.addEventListener("pause", () => {
           hls.stopLoad();
         });
+        video.style.display = "block";
+        const iframe = this.$refs.videoIframe;
+        if (iframe) iframe.style.display = "none";
       } else {
         // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
         video.src = url;
@@ -822,15 +840,15 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      if (this.link == "") {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      } else {
+      // if (this.link == "") {
+      //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      // } else {
         return `${
           this.urlImage1 +
           "https://phimimg.com/" +
           encodeURIComponent(imagePath)
         }`;
-      }
+      // }
     },
     // Chuản SEO
     updateMetaTags(seo) {
