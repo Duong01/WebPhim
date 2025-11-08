@@ -505,7 +505,7 @@
 import {
   MoveInfor,
   MoveInfor1,
-  ListMovieByCate,
+  // ListMovieByCate,
   Categoris1,
   urlImage,
   urlImage1,
