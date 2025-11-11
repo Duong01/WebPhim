@@ -1100,6 +1100,8 @@ export default {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
         // this.currentEpisodeIndex++;
         this.currentEpisodeIndex = parseInt(this.movie.page.split("Tập ")[1].trim(),10) + 1
+        console.log(this.currentEpisodeIndex)
+
         const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(nextEp);
       }
@@ -1108,6 +1110,7 @@ export default {
       if (this.currentEpisodeIndex > 0) {
         // this.currentEpisodeIndex--;
         this.currentEpisodeIndex = parseInt(this.movie.page.split("Tập ")[1].trim(),10) - 1
+        console.log(this.currentEpisodeIndex)
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(prevEp);
       }
