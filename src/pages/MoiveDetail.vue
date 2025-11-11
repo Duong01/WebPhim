@@ -1041,6 +1041,7 @@ export default {
     },
     playEpisode(episode) {
       try{
+        console.log(episode)
         this.isLoading = true;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
@@ -1075,8 +1076,8 @@ export default {
         // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
         this.movie.page.includes("/")
       ) {
-        this.movie.videoUrl = server.server_data[0].link_embed;
-        this.movie.LinkDown = server.server_data[0].link_m3u8;
+        this.movie.videoUrl = server.server_data[server.server_data.length-1].link_embed;
+        this.movie.LinkDown = server.server_data[server.server_data.length-1].link_m3u8;
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
