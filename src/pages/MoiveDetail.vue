@@ -40,7 +40,7 @@
            <div class="d-flex justify-center align-center my-3" style="gap: 12px">
               <v-btn
                 color="grey-darken-2"
-                @click="prevEpisode"
+                @click="prevEpisode(currentEpisodeIndex)"
                 :disabled="currentEpisodeIndex <= 0"
               >
                 <v-icon start>mdi-chevron-left</v-icon>
@@ -53,7 +53,7 @@
 
               <v-btn
                 color="grey-darken-2"
-                @click="nextEpisode"
+                @click="nextEpisode(currentEpisodeIndex)"
                 :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
               >
                 {{ $t("Tập tiếp") }}
@@ -1096,22 +1096,21 @@ export default {
 
       }, 1000);
     },
-    nextEpisode() {
+    nextEpisode(currentEpisodeIndex) {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
         // this.currentEpisodeIndex++;
-        this.currentEpisodeIndex = parseInt(this.movie.page.split("Tập ")[1].trim(),10) + 1
-        console.log(this.currentEpisodeIndex)
+        
+        console.log(currentEpisodeIndex)
 
-        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
+        const nextEp = this.movie.pageMovie[currentEpisodeIndex+1];
         this.playEpisode(nextEp);
       }
     },
-    prevEpisode() {
+    prevEpisode(currentEpisodeIndex) {
       if (this.currentEpisodeIndex > 0) {
         // this.currentEpisodeIndex--;
-        this.currentEpisodeIndex = parseInt(this.movie.page.split("Tập ")[1].trim(),10) - 1
-        console.log(this.currentEpisodeIndex)
-        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
+        console.log(currentEpisodeIndex)
+        const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
         this.playEpisode(prevEp);
       }
     },
