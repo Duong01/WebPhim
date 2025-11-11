@@ -644,7 +644,8 @@ export default {
                   this.movie.page.includes("/")
                 ) {
                   this.movie.videoUrl =
-                    result.episodes[0].server_data[0].link_embed;
+                    result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
+                    this.currentEpisodeIndex = result.episodes[0].server_data.length-1;
                   // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
@@ -742,7 +743,8 @@ export default {
                   this.movie.page.includes("/")
                 ) {
                   this.movie.videoUrl =
-                    result.episodes[0].server_data[0].link_embed;
+                    result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
+                    this.currentEpisodeIndex = result.episodes[0].server_data.length-1
                   this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
