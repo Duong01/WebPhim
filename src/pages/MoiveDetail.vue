@@ -17,7 +17,7 @@
       <!-- Bố cục hai cột -->
       <v-row dense>
         <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-        <v-col cols="12" md="9">
+        <v-col cols="12" md="10">
           <!-- VIDEO -->
           <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
           <div
@@ -332,7 +332,7 @@
 
         <!-- Cột bên phải: Gợi ý -->
         <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
-        <v-col cols="12" md="3" v-show="$vuetify.display.mdAndUp">
+        <v-col cols="12" md="4" v-show="$vuetify.display.mdAndUp">
   <v-card class="pa-0" color="grey-darken-4" flat>
     <v-tabs v-model="tab" background-color="grey-darken-3" grow>
       <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
@@ -609,7 +609,14 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
-              this.movie.pageMovie = result.episodes[0].server_data;
+              let serverData = result.episodes[0].server_data;
+              serverData.sort((a, b) => {
+                const numA = parseInt(a.name.replace(/\D/g, '')); // Lấy số từ "Tập 01"
+                const numB = parseInt(b.name.replace(/\D/g, ''));
+                return numB - numA; // Sắp xếp giảm dần
+              });
+              this.movie.pageMovie = serverData;
+              // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
               this.movie.servers = result.episodes;
               this.movie.trailer_url = result.movie.trailer_url;
