@@ -609,13 +609,10 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
-              let serverData = result.episodes[0].server_data;
-              serverData.sort((a, b) => {
-                const numA = parseInt(a.name.replace(/\D/g, '')); // Lấy số từ "Tập 01"
-                const numB = parseInt(b.name.replace(/\D/g, ''));
-                return numB - numA; // Sắp xếp giảm dần
-              });
-              this.movie.pageMovie = serverData;
+              this.movie.pageMovie = result.episodes[0].server_data.sort(
+                (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+              );
+              // this.movie.pageMovie = serverData;
               // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
               this.movie.servers = result.episodes;
