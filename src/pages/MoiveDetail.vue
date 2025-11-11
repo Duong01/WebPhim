@@ -1064,7 +1064,10 @@ export default {
     switchServer(server) {
       this.isLoading = true;
       
-      this.movie.pageMovie = server.server_data;
+      // this.movie.pageMovie = server.server_data;
+      this.movie.pageMovie = server.server_data.sort(
+        (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+      );
       if (
         this.movie.page == "Full" ||
         // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
