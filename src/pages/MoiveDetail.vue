@@ -1101,21 +1101,22 @@ export default {
       }, 1000);
     },
     nextEpisode() {
+      
+      if (this.currentEpisodeIndex > 0) {
+        this.currentEpisodeIndex--;
+        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
+        this.playEpisode(prevEp);
+      }
+      
+    },
+    prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
         this.currentEpisodeIndex++;
         
         const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(nextEp);
       }
-
       
-    },
-    prevEpisode() {
-      if (this.currentEpisodeIndex > 0) {
-        this.currentEpisodeIndex--;
-        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
-        this.playEpisode(prevEp);
-      }
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
