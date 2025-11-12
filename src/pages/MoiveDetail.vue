@@ -650,30 +650,76 @@ export default {
                   // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
-                  var tap = this.movie.page.split("Tập ")[1].trim();
-                  const data = result.episodes[0].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //   var tap = this.movie.page.split("Tập ")[1].trim();
+                //   const data = result.episodes[0].server_data.find(
+                //     (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //   );
+                //   this.currentEpisodeIndex = parseInt(tap,10) -1;
+                //   if (data) {
+                //     this.movie.videoUrl = data.link_embed;
+                //     this.movie.LinkDown = data.link_m3u8;
+                //     // this.movie.title = data.filename;
+                //     this.isTrailer = false;
+                //   } else {
+                //     const data = result.episodes[1].server_data.find(
+                //       (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //     );
+                //     if (data) {
+                //       this.movie.videoUrl = data.link_embed;
+                //       this.movie.LinkDown = data.link_m3u8;
+                //       // this.movie.title = data.filename;
+                //       this.isTrailer = false;
+                //     }
+                //   }
+                //   // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                //   // this.isTrailer = false;
+                // }
+                // ✅ Tìm tập hiện tại (theo số hoặc slug)
+              const tap = this.movie.page.split("Tập ")[1]?.trim();
+              if (tap) {
+                const idx = this.movie.pageMovie.findIndex((ep) => {
+                  const num = ep.name.match(/\d+/)
+                    ? ep.name.match(/\d+/)[0]
+                    : null;
+                  return (
+                    ep.slug === tap ||
+                    (ep.slug && ep.slug.includes(tap)) ||
+                    num === tap
                   );
-                  this.currentEpisodeIndex = parseInt(tap,10) -1;
-                  if (data) {
-                    this.movie.videoUrl = data.link_embed;
-                    this.movie.LinkDown = data.link_m3u8;
-                    // this.movie.title = data.filename;
-                    this.isTrailer = false;
-                  } else {
-                    const data = result.episodes[1].server_data.find(
-                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                });
+
+                if (idx !== -1) {
+                  this.currentEpisodeIndex = idx;
+                  const data = this.movie.pageMovie[idx];
+                  this.movie.videoUrl = data.link_embed;
+                  this.movie.title = data.filename || data.name;
+                  this.isTrailer = false;
+                } else {
+                  // thử tìm ở server khác
+                  if (result.episodes[1] && result.episodes[1].server_data) {
+                    const idx2 = result.episodes[1].server_data.findIndex(
+                      (ep) => {
+                        const num = ep.name.match(/\d+/)
+                          ? ep.name.match(/\d+/)[0]
+                          : null;
+                        return (
+                          ep.slug === tap ||
+                          (ep.slug && ep.slug.includes(tap)) ||
+                          num === tap
+                        );
+                      }
                     );
-                    if (data) {
+                    if (idx2 !== -1) {
+                      const data = result.episodes[1].server_data[idx2];
                       this.movie.videoUrl = data.link_embed;
-                      this.movie.LinkDown = data.link_m3u8;
-                      // this.movie.title = data.filename;
+                      this.movie.title = data.filename || data.name;
                       this.isTrailer = false;
+                      // không đổi currentEpisodeIndex vì khác server
                     }
                   }
-                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                  // this.isTrailer = false;
                 }
+              }
+            }
               }
               this.movie.actors = result.movie.actor;
               for (var i = 0; i < result.movie.country.length; i++) {
@@ -749,29 +795,75 @@ export default {
                   this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
-                  var tap = this.movie.page.split("Tập ")[1].trim();
-                  const data = result.episodes[0].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
-                  );
-                  this.currentEpisodeIndex = parseInt(tap,10)-1;
+                //   var tap = this.movie.page.split("Tập ")[1].trim();
+                //   const data = result.episodes[0].server_data.find(
+                //     (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //   );
+                //   this.currentEpisodeIndex = parseInt(tap,10)-1;
 
-                  if (data) {
-                    this.movie.videoUrl = data.link_embed;
-                    this.movie.title = data.filename;
-                    this.isTrailer = false;
-                  } else {
-                    const data = result.episodes[1].server_data.find(
-                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //   if (data) {
+                //     this.movie.videoUrl = data.link_embed;
+                //     this.movie.title = data.filename;
+                //     this.isTrailer = false;
+                //   } else {
+                //     const data = result.episodes[1].server_data.find(
+                //       (ep) => ep.slug === tap || ep.slug.includes(tap)
+                //     );
+                //     if (data) {
+                //       this.movie.videoUrl = data.link_embed;
+                //       this.movie.title = data.filename;
+                //       this.isTrailer = false;
+                //     }
+                //   }
+                //   // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                //   // this.isTrailer = false;
+                // }
+                // ✅ Tìm tập hiện tại (theo số hoặc slug)
+              const tap = this.movie.page.split("Tập ")[1]?.trim();
+              if (tap) {
+                const idx = this.movie.pageMovie.findIndex((ep) => {
+                  const num = ep.name.match(/\d+/)
+                    ? ep.name.match(/\d+/)[0]
+                    : null;
+                  return (
+                    ep.slug === tap ||
+                    (ep.slug && ep.slug.includes(tap)) ||
+                    num === tap
+                  );
+                });
+
+                if (idx !== -1) {
+                  this.currentEpisodeIndex = idx;
+                  const data = this.movie.pageMovie[idx];
+                  this.movie.videoUrl = data.link_embed;
+                  this.movie.title = data.filename || data.name;
+                  this.isTrailer = false;
+                } else {
+                  // thử tìm ở server khác
+                  if (result.episodes[1] && result.episodes[1].server_data) {
+                    const idx2 = result.episodes[1].server_data.findIndex(
+                      (ep) => {
+                        const num = ep.name.match(/\d+/)
+                          ? ep.name.match(/\d+/)[0]
+                          : null;
+                        return (
+                          ep.slug === tap ||
+                          (ep.slug && ep.slug.includes(tap)) ||
+                          num === tap
+                        );
+                      }
                     );
-                    if (data) {
+                    if (idx2 !== -1) {
+                      const data = result.episodes[1].server_data[idx2];
                       this.movie.videoUrl = data.link_embed;
-                      this.movie.title = data.filename;
+                      this.movie.title = data.filename || data.name;
                       this.isTrailer = false;
+                      // không đổi currentEpisodeIndex vì khác server
                     }
                   }
-                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                  // this.isTrailer = false;
                 }
+              }
+            }
               }
               this.movie.actors = result.movie.actor;
               for (var i = 0; i < result.movie.country.length; i++) {
@@ -1052,9 +1144,9 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        const index = this.movie.pageMovie.findIndex(ep => ep.name === episode.name);
-        if (index !== -1) {
-          this.currentEpisodeIndex = index;
+        const idx = this.movie.pageMovie.findIndex(ep => ep.name === episode.name || ep.slug === episode.slug);
+        if (idx !== -1) {
+          this.currentEpisodeIndex = idx;
         }
         // this.currentEpisodeIndex = episode.name.split('Tập')[1].trim()
         this.movie.page = episode.name;
@@ -1103,7 +1195,7 @@ export default {
     nextEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
         this.currentEpisodeIndex++;
-        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex + 1];
+        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(nextEp);
       }
 
@@ -1112,7 +1204,7 @@ export default {
     prevEpisode() {
       if (this.currentEpisodeIndex > 0) {
         this.currentEpisodeIndex--;
-        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex - 1];
+        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(prevEp);
       }
     },
