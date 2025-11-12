@@ -1102,7 +1102,7 @@ export default {
         
         console.log(currentEpisodeIndex)
 
-        const nextEp = this.movie.pageMovie[currentEpisodeIndex+1];
+        const nextEp = this.movie.pageMovie[currentEpisodeIndex-1];
         this.playEpisode(nextEp);
       }
     },
@@ -1110,7 +1110,7 @@ export default {
       if (this.currentEpisodeIndex > 0) {
         // this.currentEpisodeIndex--;
         console.log(currentEpisodeIndex)
-        const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
+        const prevEp = this.movie.pageMovie[currentEpisodeIndex+1];
         this.playEpisode(prevEp);
       }
     },
