@@ -1052,10 +1052,11 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        // this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-        //   (ep) => ep.name === episode.name
-        // );
-        this.currentEpisodeIndex = episode.name.split('Tập')[1].trim()
+        const index = this.movie.pageMovie.findIndex(ep => ep.name === episode.name);
+        if (index !== -1) {
+          this.currentEpisodeIndex = index;
+        }
+        // this.currentEpisodeIndex = episode.name.split('Tập')[1].trim()
         this.movie.page = episode.name;
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
@@ -1101,27 +1102,18 @@ export default {
     },
     nextEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        // this.currentEpisodeIndex++;
-        // const nextEp = this.movie.pageMovie[currentEpisodeIndex+1];
-        
-        const currentIndex = this.movie.pageMovie.findIndex(
-        ep => ep.name === this.currentEpisode.name
-      );
-      const nextEp = this.movie.pageMovie[currentIndex + 1];
-      this.playEpisode(nextEp);
+        this.currentEpisodeIndex++;
+        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex + 1];
+        this.playEpisode(nextEp);
       }
 
       
     },
     prevEpisode() {
       if (this.currentEpisodeIndex > 0) {
-        // this.currentEpisodeIndex--;
-        // const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
-        const currentIndex = this.movie.pageMovie.findIndex(
-      ep => ep.name === this.currentEpisode.name
-    );
-      const prevEp = this.movie.pageMovie[currentIndex - 1];
-      this.playEpisode(prevEp);
+        this.currentEpisodeIndex--;
+        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex - 1];
+        this.playEpisode(prevEp);
       }
     },
     generateEmbedHtml(url) {
