@@ -1111,7 +1111,7 @@ export default {
 
       
     },
-    prevEpisode(currentEpisodeIndex) {
+    prevEpisode() {
       if (this.currentEpisodeIndex > 0) {
         // this.currentEpisodeIndex--;
         // const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
