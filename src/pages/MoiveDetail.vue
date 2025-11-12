@@ -1104,7 +1104,7 @@ export default {
         console.log(currentEpisodeIndex)
 
         // const nextEp = this.movie.pageMovie[currentEpisodeIndex+1];
-
+        const currentEp = this.movie.pageMovie[currentEpisodeIndex];
         const currentNumber = parseInt(currentEp.name.replace(/\D/g, ''), 10);
 
         // tìm phần tử có số tập lớn hơn 1 đơn vị (tập kế tiếp)
@@ -1121,6 +1121,7 @@ export default {
         console.log(currentEpisodeIndex)
         // const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
         // lấy số tập hiện tại
+        const currentEp = this.movie.pageMovie[currentEpisodeIndex];
         const currentNumber = parseInt(currentEp.name.replace(/\D/g, ''), 10);
 
         // tìm phần tử có số tập nhỏ hơn 1 đơn vị (tập trước)
