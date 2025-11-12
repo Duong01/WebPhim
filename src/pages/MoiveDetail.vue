@@ -1056,7 +1056,7 @@ export default {
         if (idx !== -1) {
           this.currentEpisodeIndex = idx;
         }
-        this.currentEpisodeIndex = episode.name.split('Tập')[1].trim()
+        this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
         this.movie.page = episode.name;
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
