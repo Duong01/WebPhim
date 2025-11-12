@@ -525,6 +525,7 @@ export default {
       shareUrl: window.location.href,
       tabserver: null,
       currentEpisodeIndex: 0,
+      currentEpisode: [],
       items: [
         {
           title: "Home",
@@ -1042,6 +1043,7 @@ export default {
     playEpisode(episode) {
       try{
         console.log(episode)
+        this.currentEpisode = episode;
         this.isLoading = true;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
