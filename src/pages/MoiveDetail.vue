@@ -1050,9 +1050,10 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-          (ep) => ep.name === episode.name
-        );
+        // this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+        //   (ep) => ep.name === episode.name
+        // );
+        this.currentEpisodeIndex = episode.name.split('Tập')[1].trim()
         this.movie.page = episode.name;
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
@@ -1102,7 +1103,15 @@ export default {
         
         console.log(currentEpisodeIndex)
 
-        const nextEp = this.movie.pageMovie[currentEpisodeIndex-1];
+        // const nextEp = this.movie.pageMovie[currentEpisodeIndex+1];
+
+        const currentNumber = parseInt(currentEp.name.replace(/\D/g, ''), 10);
+
+        // tìm phần tử có số tập lớn hơn 1 đơn vị (tập kế tiếp)
+        const nextEp = this.movie.pageMovie.find(ep => {
+          const num = parseInt(ep.name.replace(/\D/g, ''), 10);
+          return num === currentNumber + 1;
+        });
         this.playEpisode(nextEp);
       }
     },
@@ -1110,7 +1119,15 @@ export default {
       if (this.currentEpisodeIndex > 0) {
         // this.currentEpisodeIndex--;
         console.log(currentEpisodeIndex)
-        const prevEp = this.movie.pageMovie[currentEpisodeIndex+1];
+        // const prevEp = this.movie.pageMovie[currentEpisodeIndex-1];
+        // lấy số tập hiện tại
+        const currentNumber = parseInt(currentEp.name.replace(/\D/g, ''), 10);
+
+        // tìm phần tử có số tập nhỏ hơn 1 đơn vị (tập trước)
+        const prevEp = this.movie.pageMovie.find(ep => {
+          const num = parseInt(ep.name.replace(/\D/g, ''), 10);
+          return num === currentNumber - 1;
+        });
         this.playEpisode(prevEp);
       }
     },
