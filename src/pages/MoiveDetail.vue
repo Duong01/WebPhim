@@ -1230,7 +1230,7 @@ export default {
   }
   .video-wrapper {
     width: 100%;
-    padding: 0 40px;
+    /* padding: 0 40px; */
     /* max-height: 800px; */
     aspect-ratio: 16 / 9;
     background: black;
@@ -1245,7 +1245,7 @@ export default {
 .video-wrapper video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .suggested-item {
   cursor: pointer;
