@@ -17,7 +17,7 @@
       <!-- Bố cục hai cột -->
       <v-row dense>
         <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-        <v-col cols="12" md="9">
+        <v-col cols="12" md="10">
           <!-- VIDEO -->
           <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
           <div
@@ -332,7 +332,7 @@
 
         <!-- Cột bên phải: Gợi ý -->
         <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
-        <v-col cols="12" md="3" v-show="$vuetify.display.mdAndUp">
+        <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
           <v-card class="pa-0" color="grey-darken-4" flat>
             <v-tabs v-model="tab" background-color="grey-darken-3" grow>
               <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
