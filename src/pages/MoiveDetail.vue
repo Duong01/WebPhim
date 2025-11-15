@@ -120,22 +120,13 @@
             color="grey-darken-4"
             theme="dark"
           >
-            <v-card-title class="d-flex align-center">
-              <span class="text-h6">{{ movie.title }}</span>
-              <v-chip class="ml-2" color="red" text-color="white">{{
+            <v-card-title class="d-flex align-center custom-title">
+              <span class="text-h6 title-text">{{ movie.title }}
+              <v-chip class="ml-2 chip-limit" color="red" text-color="white">{{
                 movie.pageMovie[currentEpisodeIndex]?.name
               }}</v-chip>
-              <!-- <v-chip
-                class="ml-2"
-                color="red"
-                text-color="white"
-                v-if="
-                  typeof movie.page === 'string' &&
-                  movie.page.toUpperCase().includes('HOÀN TẤT')
-                "
-              >
-                {{ $t("Tập ") }}1
-              </v-chip> -->
+              </span>
+              
             </v-card-title>
             <v-card-text>
               <v-row class="episode-list">
@@ -1526,5 +1517,24 @@ a {
 .v-list-item {
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+.custom-title {
+  display: flex;
+  flex-wrap: wrap;     
+  gap: 8px;        
+  white-space: normal; 
+  width: 100%;
+}
+
+.title-text {
+  white-space: normal; 
+  word-break: break-word;
+}
+
+.chip-limit {
+  max-width: 140px;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;   
 }
 </style>
