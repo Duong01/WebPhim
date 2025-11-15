@@ -41,20 +41,20 @@
               <v-btn
                 color="grey-darken-2"
                 @click="prevEpisode()"
-                :disabled="currentEpisodeIndex <= 0"
+                :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
               >
                 <v-icon start>mdi-chevron-left</v-icon>
                 {{ $t("Tập trước") }}
               </v-btn>
 
               <v-chip color="blue-darken-2" text-color="white">
-                {{ $t("Tập") }} {{ currentEpisodeIndex +1}}
+                {{ movie.pageMovie[currentEpisodeIndex]?.name }}
               </v-chip>
 
               <v-btn
                 color="grey-darken-2"
                 @click="nextEpisode()"
-                :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
+                :disabled="currentEpisodeIndex <= 0"
               >
                 {{ $t("Tập tiếp") }}
                 <v-icon end>mdi-chevron-right</v-icon>
@@ -123,9 +123,9 @@
             <v-card-title class="d-flex align-center">
               <span class="text-h6">{{ movie.title }}</span>
               <v-chip class="ml-2" color="red" text-color="white">{{
-                movie.page
+                movie.pageMovie[currentEpisodeIndex]?.name
               }}</v-chip>
-              <v-chip
+              <!-- <v-chip
                 class="ml-2"
                 color="red"
                 text-color="white"
@@ -135,7 +135,7 @@
                 "
               >
                 {{ $t("Tập ") }}1
-              </v-chip>
+              </v-chip> -->
             </v-card-title>
             <v-card-text>
               <v-row class="episode-list">
@@ -745,7 +745,8 @@ export default {
                 ) {
                   this.movie.videoUrl =
                     result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
-                    this.currentEpisodeIndex = result.episodes[0].server_data.length-1
+                    // this.currentEpisodeIndex = result.episodes[0].server_data.length-1
+                    this.currentEpisodeIndex = 0
                   this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
@@ -1052,11 +1053,11 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        const idx = this.movie.pageMovie.findIndex(ep => ep.name === episode.name || ep.slug === episode.slug);
+        const idx = this.movie.pageMovie.findIndex(ep => ep.name === episode.name);
         if (idx !== -1) {
           this.currentEpisodeIndex = idx;
         }
-        this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
+        // this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
         this.movie.page = episode.name;
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
@@ -1103,18 +1104,20 @@ export default {
     nextEpisode() {
       
       if (this.currentEpisodeIndex > 0) {
+        console.log(this.currentEpisodeIndex)
         this.currentEpisodeIndex--;
-        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
-        this.playEpisode(prevEp);
+        
+        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
+        this.playEpisode(nextEp);
       }
       
     },
     prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
+        console.log(this.currentEpisodeIndex)
         this.currentEpisodeIndex++;
-        
-        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
-        this.playEpisode(nextEp);
+        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
+        this.playEpisode(prevEp);
       }
       
     },
