@@ -575,6 +575,8 @@ export default {
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       await this.GetComment();
+      console.log(this.currentEpisodeIndex);
+
     },
   },
   async mounted() {
@@ -583,6 +585,7 @@ export default {
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       await this.GetComment();
+      console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
     }
@@ -745,7 +748,11 @@ export default {
                   const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
-                  this.currentEpisodeIndex = parseInt(tap,10)-1;
+                  // this.currentEpisodeIndex = parseInt(tap,10)-1;
+                  const idx = this.movie.pageMovie.findIndex(ep => ep.name === result.movie.episode_current);
+                  if (idx !== -1) {
+                    this.currentEpisodeIndex = idx;
+                  }
 
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
