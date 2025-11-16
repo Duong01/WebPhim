@@ -640,7 +640,7 @@ export default {
                 ) {
                   this.movie.videoUrl =
                     result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
-                    this.currentEpisodeIndex = result.episodes[0].server_data.length-1;
+                    this.currentEpisodeIndex = 0
                   // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
@@ -648,7 +648,11 @@ export default {
                   const data = result.episodes[0].server_data.find(
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
-                  this.currentEpisodeIndex = parseInt(tap,10) -1;
+                  // this.currentEpisodeIndex = parseInt(tap,10) -1;
+                  const idx = this.movie.pageMovie.findIndex(ep => ep.name === result.movie.episode_current);
+                  if (idx !== -1) {
+                    this.currentEpisodeIndex = idx;
+                  }
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
                     this.movie.LinkDown = data.link_m3u8;
