@@ -325,17 +325,6 @@ export default {
       colorList: ["#e57373", "#81c784", "#64b5f6", "#ffb74d", "#ba68c8"],
       sections: [
         {
-          title: this.$t("PHIM ĐỀ CỬ"),
-          name: "HoatHinh",
-          link: { 
-            name: "HoatHinh",
-            params: {
-              path: "/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&limit=20",
-            },
-           },
-        },
-        
-        {
           title: this.$t("PHIM THỊNH HÀNH"),
           id: "danh-sach/tv-shows?page=1&sort_field=modified.time&sort_type=desc&limit=20",
           name: "PhimNew",
@@ -343,6 +332,16 @@ export default {
           content: "",
           loaded: false,
           link: { name: "PhimNew" },
+        },
+        {
+          title: this.$t("PHIM ĐỀ CỬ"),
+          name: "HoatHinh",
+          link: {
+            name: "HoatHinh",
+            params: {
+              path: "/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=20",
+            },
+          },
         },
         
         {
