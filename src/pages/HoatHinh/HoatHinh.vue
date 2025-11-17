@@ -169,7 +169,7 @@ export default {
         year: "",
         lang: "",
         category: "",
-        country: "trung-quoc",
+        country: "",
         sortOption: "modified.time"
       },
 
@@ -192,17 +192,17 @@ export default {
 
     ListMovie() {
 
-      if(this.filters.year == null || this.filters.year == undefined){
+      if(this.filters.year == null || this.filters.year == undefined || this.filters.year == ''){
         this.filters.year = ''
       }
-      if(this.filters.lang == null || this.filters.lang == undefined){
+      if(this.filters.lang == null || this.filters.lang == undefined|| this.filters.lang == ''){
         this.filters.lang = ''
       }
-      if(this.filters.category == null || this.filters.category == undefined){
-        this.filters.category = 'trung-quoc'
+      if(this.filters.category == null || this.filters.category == undefined ||  this.filters.category == ''){
+        this.filters.category = ''
       }
-      if(this.filters.country == null || this.filters.country == undefined){
-        this.filters.country = ''
+      if(this.filters.country == null || this.filters.country == undefined || this.filters.country == ''){
+        this.filters.country = 'trung-quoc'
       }
       this.loading = true;
       this.movies = [];
