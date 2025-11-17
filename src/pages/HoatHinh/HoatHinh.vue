@@ -169,7 +169,7 @@ export default {
         year: "",
         lang: "",
         category: "",
-        country: "",
+        country: "trung-quoc",
         sortOption: "modified.time"
       },
 
@@ -199,7 +199,7 @@ export default {
         this.filters.lang = ''
       }
       if(this.filters.category == null || this.filters.category == undefined){
-        this.filters.category = ''
+        this.filters.category = 'trung-quoc'
       }
       if(this.filters.country == null || this.filters.country == undefined){
         this.filters.country = ''
