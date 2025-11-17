@@ -68,15 +68,15 @@
 </template>
 
 <script>
-import { ListMovieByCate } from "@/model/api";
+import { ListMovieByCate,urlImage1 } from "@/model/api";
 
 export default {
   name: "CarouselPage",
   data() {
     return {
-      pathImage: "https://img.ophim.live/uploads/movies/",
+      pathImage: urlImage1 + "https://phimimg.com/",
       videoList: [],
-      path: "phim-moi-cap-nhat",
+      path: "hoat-hinh",
     };
   },
   async created() {
@@ -84,10 +84,10 @@ export default {
   },
   methods: {
     ListMovie() {
-      ListMovieByCate(`${this.path}?page=1`, (result) => {
-        if (result.status === "success") {
+      ListMovieByCate(`${this.path}?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=6`, (result) => {
+        if (result.status === "success" || result.status == true) {
           // Giả sử dữ liệu có rating, duration, short_description
-          this.videoList = result.data.items.slice(1, 6).map(item => ({
+          this.videoList = result.data.items.slice(0, 5).map(item => ({
             ...item,
             rating: item.rating || null,
             duration: item.duration || null,
