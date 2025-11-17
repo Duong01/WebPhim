@@ -327,9 +327,6 @@ export default {
         {
           title: this.$t("PHIM ĐỀ CỬ"),
           name: "HoatHinh",
-          listMovie: [],
-          content: "",
-          loaded: false,
           link: { 
             name: "HoatHinh",
             params: {
