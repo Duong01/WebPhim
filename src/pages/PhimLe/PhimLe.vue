@@ -236,7 +236,7 @@ export default {
         lang: "",
         category: "",
         country: "",
-        sortOption: "year"
+        sortOption: "modified.time"
       },
     }
   },
