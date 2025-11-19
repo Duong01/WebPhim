@@ -266,6 +266,7 @@ export default {
   },
   watch: {
     currentPage() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.loading = true;
       this.ListMovie();
     },

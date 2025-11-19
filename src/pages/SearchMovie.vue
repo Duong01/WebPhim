@@ -336,6 +336,7 @@ export default {
       },
     },
     async currentPage(newpage) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       this.loading = true;
       this.currentPage = newpage;
       await this.SearchMovie1(this.path);

@@ -26,13 +26,15 @@
             <video
               ref="videoPlayer"
               controls
+              playsinline
+              webkit-playsinline
               preload="metadata"
               style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
             ></video>
             <iframe
             ref="videoIframe"
             style="width:100%;aspect-ratio:16/9;border:0;display:none;"
-            allowfullscreen
+            allow="autoplay; encrypted-media"
           ></iframe>
           </div>
 
@@ -571,6 +573,7 @@ export default {
   props: ["slug"],
   watch: {
     async slug(newSlug) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
@@ -581,6 +584,7 @@ export default {
   },
   async mounted() {
     try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(this.slug);
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
