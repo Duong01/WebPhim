@@ -191,7 +191,7 @@
                 class="movie-list"
               >
                 <v-col
-                  v-for="(item, index) in isLoading
+                  v-for="(item, index) in section.loading
                     ? Array(12).fill({})
                     : section.listMovie.slice(0, 12)"
                   :key="item.slug || index"
@@ -202,7 +202,7 @@
                   style="padding: 10px"
                 >
                   <v-skeleton-loader
-                    v-if="isLoading"
+                    v-if="section.loading"
                     type="image"
                     height="250"
                   />
@@ -546,7 +546,9 @@ export default {
       });
     },
     ListMovie(sectionId, section) {
-      this.isLoading = true
+      section.loading = true;
+      section.loaded = false;
+      // this.isLoading = true
       if (section.id == "quoc-gia/viet-nam?page=1&limit=20") {
         return new Promise((resolve, reject) => {
           ListMovieByCateHome1(
@@ -558,14 +560,18 @@ export default {
                 if (result.data.seoOnPage) {
                   this.updateMetaTags(result.data.seoOnPage);
                 }
-                this.isLoading = false;
+                section.loading = false;
+                section.loaded = true;
+                // this.isLoading = false;
                 resolve(true);
               } else {
+                section.loading = false;
                 resolve(false);
               }
             },
             (err) => {
               console.error(err);
+              section.loading = false;
               reject(err);
             }
           );
@@ -582,14 +588,18 @@ export default {
                 if (result.data.seoOnPage) {
                   this.updateMetaTags(result.data.seoOnPage);
                 }
-                this.isLoading = false;
+                // this.isLoading = false;
+                section.loading = false;
+                section.loaded = true;
                 resolve(true);
               } else {
+                section.loading = false;
                 resolve(false);
               }
             },
             (err) => {
               console.error(err);
+              section.loading = false;
               reject(err);
             }
           );
@@ -870,5 +880,14 @@ a {
 .btnList:hover{
   
   transform: scale(1.05); 
+}
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>
