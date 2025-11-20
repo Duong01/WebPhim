@@ -8,6 +8,7 @@ export function saveFavorites(list) {
 }
 
 export function toggleFavorite(movie) {
+  console.log(movie)
   const list = getFavorites();
   const index = list.findIndex((m) => m._id === movie.idMovie);
   console.log(list)
