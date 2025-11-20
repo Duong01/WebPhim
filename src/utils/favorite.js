@@ -15,7 +15,7 @@ export function toggleFavorite(movie) {
     list.push({
       _id: movie.idMovie,
       name: movie.name,
-      page: movie.page,
+      page: movie.page || movie.episode_current,
       slug: movie.slug,
       thumb_url: movie.thumb_url,
       lang: movie.lang,
