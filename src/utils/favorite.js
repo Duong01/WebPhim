@@ -13,7 +13,7 @@ export function toggleFavorite(movie) {
   console.log(list)
   if (index === -1) {
     list.push({
-      _id: movie.idMovie,
+      _id: movie.idMovie || movie._id,
       name: movie.name,
       page: movie.page || movie.episode_current,
       slug: movie.slug,
