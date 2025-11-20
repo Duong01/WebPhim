@@ -40,6 +40,22 @@
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
       <template #default>
+                          <v-btn
+                            icon
+                            size="small"
+                            color="red"
+                            variant="flat"
+                            class="favorite-btn"
+                            @click.stop="handleFavorite(item)"
+                          >
+                            <v-icon>
+                              {{
+                                handleFavorite(item)
+                                  ? "mdi-heart"
+                                  : "mdi-heart-outline"
+                              }}
+                            </v-icon>
+                          </v-btn>
         <div>
           <v-row class="category-header" align="center" no-gutters>
             <v-col cols="auto">
