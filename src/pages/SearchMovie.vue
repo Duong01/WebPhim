@@ -731,4 +731,17 @@ export default {
   font-size: 14px;
   
 }
+@media (max-width: 600px) {
+  .action-buttons {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 10px;
+    scrollbar-width: thin; /* Firefox */
+  }
+
+  .action-buttons::-webkit-scrollbar {
+    height: 6px;
+  }
+}
 </style>
