@@ -471,7 +471,6 @@ export default {
     handleFavorite(movie){
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
-      movie.thumb_url = movie.thumb_url
       toggleFavorite(movie);
       // this.liked = !this.liked;
     },
