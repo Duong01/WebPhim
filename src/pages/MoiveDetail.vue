@@ -1088,6 +1088,13 @@ export default {
         }
         // this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
         this.movie.page = episode.name;
+
+        const normalized = episode.name.replace('Tập ', 'tap').trim()
+        this.$router.replace({
+          name: "MovieDetail",
+          params: { slug: this.slug },
+          query: { page: normalized }
+        });
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
         this.isLoading = false;
