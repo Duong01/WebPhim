@@ -74,19 +74,7 @@
                 md="2"
                 style="padding: 10px"
               >
-              <v-btn
-                icon
-                size="small"
-                variant="flat"
-                class="favorite-btn"
-                @click.stop.prevent="handleFavorite(item)"
-              >
-             
-                <v-icon>
-                  {{ isFavoriteMovie(item) ? "mdi-heart" : "mdi-heart-outline" }}
-                </v-icon>
-                
-              </v-btn>
+              
                 <router-link
                   :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
                 >
@@ -94,13 +82,28 @@
                     class="mx-auto bg-dark text-white movie-card"
                     max-width="344"
                   >
+                  
                     <v-img
                       :src="`https://phimapi.com/image.php?url=`+item.thumb_url"
                       :lazy-src="`https://phimapi.com/image.php?url=`+item.thumb_url"
                       height="250"
                       cover
                     >
+
                       <template #default>
+                        <v-btn
+                          icon
+                          size="small"
+                          variant="flat"
+                          class="favorite-btn"
+                          @click.stop.prevent="handleFavorite(item)"
+                        >
+                      
+                          <v-icon>
+                            {{ isFavoriteMovie(item) ? "mdi-heart" : "mdi-heart-outline" }}
+                          </v-icon>
+                          
+                        </v-btn>
                         <div class="movie-overlay"></div>
                         <div class="movie-play">
                           <svg width="64" height="64" viewBox="0 0 64 64">
