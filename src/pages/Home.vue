@@ -48,8 +48,11 @@
             class="favorite-btn"
             @click.stop.prevent="handleFavorite(section)"
           >
-            <v-icon>
+            <!-- <v-icon>
               {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
+            </v-icon> -->
+            <v-icon icon="mdi-heart-outline">
+                        
             </v-icon>
           </v-btn>
         <div>
@@ -245,12 +248,15 @@
                             class="favorite-btn"
                             @click.stop.prevent="toggleFavorite(item)"
                           >
-                            <v-icon>
+                            <!-- <v-icon>
                               {{
                                 isFavorite(section)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline"
                               }}
+                            </v-icon> -->
+                            <v-icon icon="mdi-heart-outline">
+                                
                             </v-icon>
                           </v-btn>
 
