@@ -243,11 +243,11 @@
                             color="red"
                             variant="flat"
                             class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
+                            @click.stop.prevent="toggleFavorite(item)"
                           >
                             <v-icon>
                               {{
-                                isFavorite(item)
+                                isFavorite(section)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline"
                               }}
@@ -490,11 +490,7 @@ export default {
     });
   },
   methods: {
-    isFavoriteMovie(movie) {
-      const favorites = getFavorites() || [];
-      return favorites.some(f => f._id === movie._id);
-    },
-
+    
     handleFavorite(movie){
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
@@ -687,13 +683,13 @@ export default {
       });
     },
     isFavorite(movie) {
-      return this.favoriteMovies.some((fav) => fav.slug === movie.slug);
+      return this.favoriteMovies.some((fav) => fav._id === movie.id);
     },
     
     // Thêm/bỏ yêu thích
     toggleFavorite(movie) {
       const index = this.favoriteMovies.findIndex(
-        (fav) => fav.slug === movie.slug
+        (fav) => fav._id === movie.id
       );
       if (index !== -1) {
         this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
