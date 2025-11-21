@@ -175,7 +175,14 @@ const router = createRouter({
     return { top: 0, behavior: 'smooth' };
   }
   })
-
+  router.onError((error) => {
+    const chunkFailed = /Loading chunk [\d]+ failed/;
+  
+    if (chunkFailed.test(error.message)) {
+      console.warn("Chunk failed → Reload");
+      window.location.reload();
+    }
+  });
   router.beforeEach((to, from, next) => {
     const defaultTitle = "Web Phim Online - Xem phim miễn phí";
   const defaultDesc = "Xem phim mới nhất, phim hot, phim bộ, phim lẻ online miễn phí.";
@@ -221,6 +228,14 @@ let descTag = document.querySelector('meta[name="description"]');
     // Cập nhật lại thời gian hoạt động gần nhất
     sessionStorage.setItem('sessionStart', now);
   }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      fetch(window.location.href, { method: "HEAD" })
+        .then(() => {})
+        .catch(() => window.location.reload());
+    }
+  });
   
 
     if (to.matched.length === 0) {
