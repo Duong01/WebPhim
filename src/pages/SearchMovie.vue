@@ -72,11 +72,7 @@
                             @click.stop.prevent="handleFavorite(movie)"
                           >
                             <v-icon>
-                              {{
-                                handleFavorite(movie)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
+                              {{ isFavoriteMovie(movie) ? "mdi-heart" : "mdi-heart-outline" }}
                             </v-icon>
                           </v-btn>
 
@@ -305,7 +301,7 @@
 
 <script>
 import { Search, Search1, urlImage, urlImage1 } from "@/model/api";
-import {  toggleFavorite } from "@/utils/favorite";
+import {  toggleFavorite,getFavorites } from "@/utils/favorite";
 export default {
   name: "SearchMovie",
   data() {
@@ -343,6 +339,10 @@ export default {
     },
   },
   methods: {
+    isFavoriteMovie(movie) {
+      const favorites = getFavorites() || [];
+      return favorites.some(f => f._id === movie._id);
+    },
     SearchMovie(query) {
       return new Promise((resolve,reject) => {
         const timer = setTimeout(() => {

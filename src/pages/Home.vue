@@ -49,11 +49,7 @@
             @click.stop.prevent="handleFavorite(section)"
           >
             <v-icon>
-              {{
-                handleFavorite(section)
-                  ? "mdi-heart"
-                  : "mdi-heart-outline"
-              }}
+              {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
             </v-icon>
           </v-btn>
         <div>
@@ -494,6 +490,10 @@ export default {
     });
   },
   methods: {
+    isFavoriteMovie(movie) {
+      const favorites = getFavorites() || [];
+      return favorites.some(f => f._id === movie._id);
+    },
 
     handleFavorite(movie){
       console.log(movie)
