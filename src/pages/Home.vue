@@ -43,17 +43,15 @@
           <v-btn
             icon
             size="small"
-            color="red"
             variant="flat"
             class="favorite-btn"
             @click.stop.prevent="handleFavorite(section)"
+            :color="isFavoriteMovie(section) ? 'red' : ''"
           >
-            <!-- <v-icon>
+            <v-icon>
               {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon> -->
-            <v-icon icon="mdi-heart-outline">
-                        
             </v-icon>
+            
           </v-btn>
         <div>
           <v-row class="category-header" align="center" no-gutters>
@@ -688,8 +686,9 @@ export default {
         }
       });
     },
-    isFavorite(movie) {
-      return this.favoriteMovies.some((fav) => fav._id === movie.id);
+    isFavoriteMovie(movie) {
+      const favorites = getFavorites() || [];
+      return favorites.some(f => f._id === movie._id);
     },
     
     // Thêm/bỏ yêu thích
