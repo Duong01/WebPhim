@@ -40,20 +40,7 @@
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
       <template #default>
-      <p>{{section}}</p>
-          <v-btn
-            icon
-            size="small"
-            variant="flat"
-            class="favorite-btn"
-            
-          >
-          <v-icon icon="mdi-heart"></v-icon>
-            <!-- <v-icon>
-              {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon> -->
-            
-          </v-btn>
+          
         <div>
           <v-row class="category-header" align="center" no-gutters>
             <v-col cols="auto">
@@ -87,6 +74,19 @@
                 md="2"
                 style="padding: 10px"
               >
+              <v-btn
+                icon
+                size="small"
+                variant="flat"
+                class="favorite-btn"
+                @click.stop.prevent="handleFavorite(item)"
+              >
+             
+                <v-icon>
+                  {{ isFavoriteMovie(item) ? "mdi-heart" : "mdi-heart-outline" }}
+                </v-icon>
+                
+              </v-btn>
                 <router-link
                   :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
                 >
