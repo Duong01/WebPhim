@@ -69,12 +69,12 @@
                           size="small"
                           variant="flat"
                           class="favorite-btn"
-                          @click.stop.prevent="handleFavorite(item)"
-                          :color="isFavoriteMovie(item) ? 'red' : ''"
+                          @click.stop.prevent="handleFavorite(movie)"
+                          :color="isFavoriteMovie(movie) ? 'red' : ''"
                         >
                       
                           <v-icon>
-                            {{ isFavoriteMovie(item)
+                            {{ isFavoriteMovie(movie)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline" }}
                           </v-icon>
