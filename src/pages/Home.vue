@@ -40,7 +40,7 @@
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
       <template #default>
-          <v-btn
+          <!-- <v-btn
             icon
             size="small"
             variant="flat"
@@ -51,7 +51,7 @@
               {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
             </v-icon>
             
-          </v-btn>
+          </v-btn> -->
         <div>
           <v-row class="category-header" align="center" no-gutters>
             <v-col cols="auto">
