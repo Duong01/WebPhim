@@ -47,9 +47,10 @@
             class="favorite-btn"
             @click.stop.prevent="handleFavorite(section)"
           >
-            <v-icon>
+          <v-icon icon="mdi-heart"></v-icon>
+            <!-- <v-icon>
               {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
-            </v-icon>
+            </v-icon> -->
             
           </v-btn>
         <div>
