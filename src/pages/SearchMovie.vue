@@ -63,22 +63,22 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
+                          <v-btn
                             icon
                             size="small"
                             color="red"
                             variant="flat"
                             class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
+                            @click.stop.prevent="handleFavorite(movie)"
                           >
                             <v-icon>
                               {{
-                                isFavorite(item)
+                                handleFavorite(movie)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline"
                               }}
                             </v-icon>
-                          </v-btn> -->
+                          </v-btn>
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -730,6 +730,17 @@ export default {
 .movie-title{
   font-size: 14px;
   
+}
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.favorite-btn {
+  /* position: relative; */
+  z-index: 4;
 }
 @media (max-width: 600px) {
   .action-buttons {

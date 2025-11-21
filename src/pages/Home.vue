@@ -40,22 +40,22 @@
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
       <template #default>
-                          <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="handleFavorite(item)"
-                          >
-                            <v-icon>
-                              {{
-                                handleFavorite(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn>
+          <v-btn
+            icon
+            size="small"
+            color="red"
+            variant="flat"
+            class="favorite-btn"
+            @click.stop.prevent="handleFavorite(section)"
+          >
+            <v-icon>
+              {{
+                handleFavorite(section)
+                  ? "mdi-heart"
+                  : "mdi-heart-outline"
+              }}
+            </v-icon>
+          </v-btn>
         <div>
           <v-row class="category-header" align="center" no-gutters>
             <v-col cols="auto">
@@ -241,7 +241,7 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
+                          <v-btn
                             icon
                             size="small"
                             color="red"
@@ -256,7 +256,7 @@
                                   : "mdi-heart-outline"
                               }}
                             </v-icon>
-                          </v-btn> -->
+                          </v-btn>
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -494,6 +494,14 @@ export default {
   },
   methods: {
 
+    handleFavorite(movie){
+      console.log(movie)
+      // this.movie.thumb_url = movie.thumb_url
+      movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
+      let aa = toggleFavorite(movie);
+      console.log(aa)
+      // this.liked = !this.liked;
+    },
 
     loadFavorites() {
       this.isLoading = true;
