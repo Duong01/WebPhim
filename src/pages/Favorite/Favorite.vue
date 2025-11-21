@@ -64,7 +64,22 @@
                         cover
                       >
                         <template #default>
-
+                          <v-btn
+                          icon
+                          size="small"
+                          variant="flat"
+                          class="favorite-btn"
+                          @click.stop.prevent="handleFavorite(item)"
+                          :color="isFavoriteMovie(item) ? 'red' : ''"
+                        >
+                      
+                          <v-icon>
+                            {{ isFavoriteMovie(item)
+                                  ? "mdi-heart"
+                                  : "mdi-heart-outline" }}
+                          </v-icon>
+                          
+                        </v-btn>
                           <div class="movie-overlay" aria-hidden="true"></div>
 
                           <div class="movie-play" aria-hidden="true">
@@ -158,6 +173,29 @@ export default {
   },
   methods: {
 
+
+    handleFavorite(movie){
+      console.log(movie)
+      // this.movie.thumb_url = movie.thumb_url
+      movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
+      let aa = toggleFavorite(movie);
+      // this.liked = !this.liked;
+    },
+    isFavoriteMovie(movie) {
+      const favorites = getFavorites();
+      return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+    },
+
+    toggleFavorite(movie) {
+      const index = this.favoriteMovies.findIndex(
+        (fav) => fav._id === movie.id
+      );
+      if (index !== -1) {
+        this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
+      } else {
+        this.favoriteMovies.push(movie); // Thêm yêu thích
+      }
+    },
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;

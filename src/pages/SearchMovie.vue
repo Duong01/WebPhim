@@ -63,18 +63,22 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop.prevent="handleFavorite(movie)"
-                          >
-                            <v-icon>
-                              {{ isFavoriteMovie(movie) ? "mdi-heart" : "mdi-heart-outline" }}
-                            </v-icon>
-                          </v-btn> -->
+                          <v-btn
+                          icon
+                          size="small"
+                          variant="flat"
+                          class="favorite-btn"
+                          @click.stop.prevent="handleFavorite(item)"
+                          :color="isFavoriteMovie(item) ? 'red' : ''"
+                        >
+                      
+                          <v-icon>
+                            {{ isFavoriteMovie(item)
+                                  ? "mdi-heart"
+                                  : "mdi-heart-outline" }}
+                          </v-icon>
+                          
+                        </v-btn>
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -339,10 +343,6 @@ export default {
     },
   },
   methods: {
-    isFavoriteMovie(movie) {
-      const favorites = getFavorites() || [];
-      return favorites.some(f => f._id === movie._id);
-    },
     SearchMovie(query) {
       return new Promise((resolve,reject) => {
         const timer = setTimeout(() => {
@@ -473,8 +473,23 @@ export default {
       // this.movie.thumb_url = movie.thumb_url
       movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
       let aa = toggleFavorite(movie);
-      console.log(aa)
       // this.liked = !this.liked;
+    },
+
+    isFavoriteMovie(movie) {
+      const favorites = getFavorites();
+      return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+    },
+
+    toggleFavorite(movie) {
+      const index = this.favoriteMovies.findIndex(
+        (fav) => fav._id === movie.id
+      );
+      if (index !== -1) {
+        this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
+      } else {
+        this.favoriteMovies.push(movie); // Thêm yêu thích
+      }
     },
     copyLink() {
       
