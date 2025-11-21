@@ -141,6 +141,7 @@
 import { urlImage1 } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
 import { getFavorites } from "@/utils/favorite";
+import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "FavoritePage",
   data() {
@@ -178,7 +179,7 @@ export default {
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
       movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
-      let aa = toggleFavorite(movie);
+      toggleFavorite(movie);
       // this.liked = !this.liked;
     },
     isFavoriteMovie(movie) {

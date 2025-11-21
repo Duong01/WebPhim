@@ -68,12 +68,12 @@
                           size="small"
                           variant="flat"
                           class="favorite-btn"
-                          @click.stop.prevent="handleFavorite(item)"
-                          :color="isFavoriteMovie(item) ? 'red' : ''"
+                          @click.stop.prevent="handleFavorite(movie)"
+                          :color="isFavoriteMovie(movie) ? 'red' : ''"
                         >
                       
                           <v-icon>
-                            {{ isFavoriteMovie(item)
+                            {{ isFavoriteMovie(movie)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline" }}
                           </v-icon>
@@ -472,7 +472,7 @@ export default {
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
       movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
-      let aa = toggleFavorite(movie);
+      toggleFavorite(movie);
       // this.liked = !this.liked;
     },
 

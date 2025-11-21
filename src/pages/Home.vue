@@ -503,7 +503,7 @@ export default {
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
       movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
-      let aa = toggleFavorite(movie);
+      toggleFavorite(movie);
       // this.liked = !this.liked;
     },
 
