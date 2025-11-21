@@ -39,8 +39,8 @@
 
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
-      <p>{{section}}</p>
       <template #default>
+      <p>{{section}}</p>
           <v-btn
             icon
             size="small"
