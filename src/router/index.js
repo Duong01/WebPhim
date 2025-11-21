@@ -49,7 +49,10 @@ const routes =[
             path: '/movie/:slug',
             name: "MovieDetail",
             component: () => import("@/pages/MoiveDetail.vue"),
-            props: true,
+            props: route => ({
+              slug: route.params.slug,
+              page: route.query.page
+            }),
             meta: {
           title: "Chi tiết phim - Web Phim Online",
           description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí."

@@ -570,11 +570,19 @@ export default {
       liked: false
     };
   },
-  props: ["slug"],
+  props: ["slug", "page"],
   watch: {
     async slug(newSlug) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
+      if (this.page) {
+        const index = this.movie.pageMovie.findIndex(ep => ep.page == this.page);
+
+        if (index !== -1) {
+          this.currentEpisodeIndex = index;
+          this.currentEpisode = this.movie.pageMovie[index];
+        }
+      }
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       await this.GetComment();
@@ -586,6 +594,20 @@ export default {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(this.slug);
+
+      if (this.page) {
+      const index = this.movie.pageMovie.findIndex(
+        ep => ep.page == this.page
+      );
+
+      if (index !== -1) {
+        this.currentEpisodeIndex = index;
+        this.currentEpisode = this.movie.pageMovie[index];
+      }
+    }
+
+
+
       this.playVideo(this.movie.videoUrl);
       await this.ListMovieByCate();
       await this.GetComment();
