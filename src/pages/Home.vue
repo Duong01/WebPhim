@@ -324,6 +324,7 @@ import {
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 import { getFavorites } from "@/utils/favorite";
+import {  toggleFavorite } from "@/utils/favorite";
 
 export default {
   name: "HomePage",
