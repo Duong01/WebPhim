@@ -63,7 +63,7 @@
                         cover
                       >
                         <template #default>
-                          <v-btn
+                          <!-- <v-btn
                             icon
                             size="small"
                             color="red"
@@ -74,7 +74,7 @@
                             <v-icon>
                               {{ isFavoriteMovie(movie) ? "mdi-heart" : "mdi-heart-outline" }}
                             </v-icon>
-                          </v-btn>
+                          </v-btn> -->
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 

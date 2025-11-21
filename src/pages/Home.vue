@@ -46,7 +46,6 @@
             variant="flat"
             class="favorite-btn"
             @click.stop.prevent="handleFavorite(section)"
-            :color="isFavoriteMovie(section) ? 'red' : ''"
           >
             <v-icon>
               {{ isFavoriteMovie(section) ? "mdi-heart" : "mdi-heart-outline" }}
@@ -238,7 +237,7 @@
                         cover
                       >
                         <template #default>
-                          <v-btn
+                          <!-- <v-btn
                             icon
                             size="small"
                             color="red"
@@ -246,17 +245,14 @@
                             class="favorite-btn"
                             @click.stop.prevent="toggleFavorite(item)"
                           >
-                            <!-- <v-icon>
+                            <v-icon>
                               {{
                                 isFavorite(section)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline"
                               }}
-                            </v-icon> -->
-                            <v-icon icon="mdi-heart-outline">
-                                
                             </v-icon>
-                          </v-btn>
+                          </v-btn> -->
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -687,7 +683,8 @@ export default {
       });
     },
     isFavoriteMovie(movie) {
-      const favorites = getFavorites() || [];
+      console.log(movie)
+      const favorites = getFavorites();
       return favorites.some(f => f._id === movie._id);
     },
     
