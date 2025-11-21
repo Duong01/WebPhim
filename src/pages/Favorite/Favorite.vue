@@ -178,7 +178,7 @@ export default {
     handleFavorite(movie){
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
-      movie.thumb_url = "https://phimimg.com/"+ movie.thumb_url
+      movie.thumb_url =  movie.thumb_url
       toggleFavorite(movie);
       // this.liked = !this.liked;
     },
@@ -523,6 +523,17 @@ export default {
 }
 .movie-title{
   font-size: 14px;
+}
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.favorite-btn {
+  /* position: relative; */
+  z-index: 4;
 }
 </style>
   
