@@ -172,7 +172,7 @@
             density="comfortable"
           />
         </template>
-
+        {{movieSuggestions}}
         <v-list
           v-if="movieSuggestions.length"
           style="
