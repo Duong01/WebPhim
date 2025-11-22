@@ -163,6 +163,7 @@
             :placeholder="$t('Tên phim')"
             append-inner-icon="mdi-magnify"
             @keyup.enter="searchMovie"
+            @click="openSearchHistory"
             @click:append-inner="searchMovie"
             @update:model-value="onInput"
             clearable
@@ -482,6 +483,15 @@ export default {
     console.log(this.movieSuggestions)
   },
   methods: {
+    openSearchHistory() {
+    this.menuVisible = true;
+
+    // Load lịch sử
+    const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+
+    // Gán vào gợi ý
+    this.movieSuggestions = history;
+  },
     changeTheme() {
       const newTheme = this.currentTheme() === "dark" ? "light" : "dark";
       this.setTheme(newTheme);
@@ -596,6 +606,9 @@ export default {
         // this.movieSuggestions = [];
         this.menuVisible = false;
         return;
+      }
+      else{
+        this.openSearchHistory();
       }
 
       this.fetchMovieSuggestions(value.trim());
