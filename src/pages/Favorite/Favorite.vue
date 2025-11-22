@@ -53,8 +53,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="getOptimizedImage(movie.thumb_url)"
-                        :lazy-src="getOptimizedImage(movie.thumb_url)"
+                        :src="movie.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.thumb_url"
+                        :lazy-src="movie.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.thumb_url"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
