@@ -139,7 +139,7 @@
   <script>
 import { urlImage1 } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
-import { getFavorites } from "@/utils/favorite";
+import { getFavorites,isFavorite } from "@/utils/favorite";
 import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "FavoritePage",
@@ -178,11 +178,13 @@ export default {
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
       toggleFavorite(movie);
+      this.$forceUpdate();
       // this.liked = !this.liked;
     },
     isFavoriteMovie(movie) {
-      const favorites = getFavorites();
-      return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+      // const favorites = getFavorites();
+      // return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+      return isFavorite(movie.idMovie || movie._id);
     },
 
     toggleFavorite(movie) {
