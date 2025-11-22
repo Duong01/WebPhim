@@ -478,6 +478,8 @@ export default {
   inject: ["currentTheme", "setTheme"],
   mounted() {
     this.account = localStorage.getItem("name");
+    const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+    this.movieSuggestions = history;
   },
   methods: {
     changeTheme() {
