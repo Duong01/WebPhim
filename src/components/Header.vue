@@ -539,6 +539,11 @@ export default {
           name: "SearchMovie",
           query: { keyword: this.searchQuery },
         });
+        let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+        history = history.filter(h => h.name !== this.searchQuery);
+        history.unshift({ name: this.searchQuery});
+        history = history.slice(0, 5);
+        localStorage.setItem("HisSearch", JSON.stringify(history));
         this.searchQuery = "";
         this.menuVisible = false;
       }
@@ -650,7 +655,7 @@ export default {
       this.searchQuery = item.name;
       let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
       history = history.filter(h => h.name !== item.name);
-      history.unshift({ name: item.name, slug: item.slug });
+      history.unshift({ name: item.name });
       history = history.slice(0, 5);
       localStorage.setItem("HisSearch", JSON.stringify(history));
       this.menuVisible = false;
