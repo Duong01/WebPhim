@@ -10,15 +10,7 @@ export function saveFavorites(list) {
 export function toggleFavorite(movie) {
   const list = getFavorites();
   const index = list.findIndex((m) => m._id === movie.idMovie || m._id ===  movie._id);
-  let linkUrl = "";
-  if(movie.thumb_url){
-    if(movie.thumb_url.includes("https://phimapi.com")){
-      linkUrl = movie.thumb_url
-    }
-    else{
-      linkUrl = "https://phimapi.com/"+ movie.thumb_url
-    }
-  }
+  
   console.log(list)
   if (index === -1) {
     list.push({
@@ -26,7 +18,7 @@ export function toggleFavorite(movie) {
       name: movie.name,
       page: movie.page || movie.episode_current,
       slug: movie.slug,
-      thumb_url: linkUrl,
+      thumb_url: movie.thumb_url,
       lang: movie.lang,
       origin_name: movie.origin_name,
       year: movie.year

@@ -84,8 +84,8 @@
                   >
                   
                     <v-img
-                      :src="`https://phimapi.com/image.php?url=`+encodeURIComponent(item.thumb_url)"
-                      :lazy-src="`https://phimapi.com/image.php?url=`+encodeURIComponent(item.thumb_url)"
+                      :src=" item.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + item.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ item.thumb_url"
+                      :lazy-src="item.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + item.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ item.thumb_url"
                       height="250"
                       cover
                     >
