@@ -99,7 +99,7 @@
                           @click.stop.prevent="handleFavorite(item)"
                         >
                       
-                          <v-icon>
+                          <v-icon :color="isFavoriteMovie(item) ? 'red' : 'white'">
                             {{ isFavoriteMovie(item)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline" }}
