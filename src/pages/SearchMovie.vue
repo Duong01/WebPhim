@@ -52,8 +52,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="getOptimizedImage(movie.poster_url)"
-                        :lazy-src="getOptimizedImage(movie.poster_url)"
+                        :src="getOptimizedImage(movie.thumb_url)"
+                        :lazy-src="getOptimizedImage(movie.thumb_url)"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
@@ -135,8 +135,8 @@
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
+                  :src="getOptimizedImage(movie.thumb_url)"
+                  :lazy-src="getOptimizedImage(movie.thumb_url)"
                   :alt="movie.name"
                   spect-ratio="16/9"
                   class="movie-image"
