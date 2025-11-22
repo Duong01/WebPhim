@@ -148,7 +148,6 @@
 
       <!-- Search + Language + Profile -->
       <v-spacer />
-      {{movieSuggestions}}
       <v-menu
         v-model="menuVisible"
         :close-on-content-click="false"
@@ -174,7 +173,7 @@
         </template>
         
         <v-list
-          v-if="movieSuggestions.length"
+          v-if="movieSuggestions.length > 0"
           style="
             min-width: 100%;
             max-height: 250px;
@@ -184,6 +183,7 @@
             border-radius: 8px;
           "
         >
+          <v-list-item>ddddd</v-list-item>
           <v-list-item
             v-for="(item, index) in movieSuggestions"
             :key="index"
