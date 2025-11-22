@@ -29,7 +29,7 @@
                   controls
                   playsinline
                   webkit-playsinline
-                  preload="metadata"
+                  preload="none"
                   style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
                 ></video>
                 <iframe
@@ -573,26 +573,7 @@ export default {
     };
   },
   props: ["slug", "page"],
-  beforeUnmount() {
-    // Hủy video HTML5
-    if (this.$refs.videoPlayer) {
-      this.$refs.videoPlayer.pause();
-      this.$refs.videoPlayer.src = "";
-      this.$refs.videoPlayer.load();
-    }
-
-    // Hủy iframe
-    if (this.$refs.videoIframe) {
-      this.$refs.videoIframe.src = "";
-    }
-
-    // Hủy HLS nếu có
-    if (this.hls) {
-      this.hls.destroy();
-      this.hls = null;
-    }
-
-  },
+  
   watch: {
     async slug(newSlug) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
