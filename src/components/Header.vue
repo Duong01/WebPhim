@@ -183,7 +183,6 @@
             border-radius: 8px;
           "
         >
-          <v-list-item>ddddd</v-list-item>
           <v-list-item
             v-for="(item, index) in movieSuggestions"
             :key="index"
@@ -460,7 +459,7 @@ export default {
       curElLang: "",
       curLang: "",
       searchInput: "",
-      movieSuggestions: [],
+      movieSuggestions: JSON.parse(localStorage.getItem("HisSearch")) ? JSON.parse(localStorage.getItem("HisSearch")) : [],
       menuVisible: false,
       genres: [],
       countries: [],
