@@ -460,7 +460,7 @@ export default {
       curElLang: "",
       curLang: "",
       searchInput: "",
-      movieSuggestions: [],
+      movieSuggestions: [] || localStorage.getItem("HisSearch"),
       menuVisible: false,
       genres: [],
       countries: [],
@@ -634,8 +634,8 @@ export default {
     selectSuggestion(item) {
       this.searchQuery = item.name;
       let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-      history = history.filter(h => h !== item.name);
-      history.unshift(item.name);
+      history = history.filter(h => h.name !== item.name);
+      history.unshift({ name: item.name });
       history = history.slice(0, 5);
       localStorage.setItem("HisSearch", JSON.stringify(history));
       this.menuVisible = false;
