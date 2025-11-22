@@ -148,7 +148,7 @@
 
       <!-- Search + Language + Profile -->
       <v-spacer />
-
+      {{movieSuggestions}}
       <v-menu
         v-model="menuVisible"
         :close-on-content-click="false"
@@ -172,7 +172,7 @@
             density="comfortable"
           />
         </template>
-        {{movieSuggestions}}
+        
         <v-list
           v-if="movieSuggestions.length"
           style="
