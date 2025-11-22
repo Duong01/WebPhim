@@ -84,8 +84,8 @@
                   >
                   
                     <v-img
-                      :src="getOptimizedImage(item.thumb_url)"
-                      :lazy-src="getOptimizedImage(item.thumb_url)"
+                      :src="`https://phimapi.com/image.php?url=`+encodeURIComponent(item.thumb_url)"
+                      :lazy-src="`https://phimapi.com/image.php?url=`+encodeURIComponent(item.thumb_url)"
                       height="250"
                       cover
                     >
