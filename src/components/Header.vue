@@ -584,7 +584,14 @@ export default {
     },
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {
-        this.movieSuggestions = [];
+
+        const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+
+          // Nếu người dùng chưa nhập gì → hiển thị lịch sử trong movieSuggestions
+        if (!this.searchQuery) {
+          this.movieSuggestions = history.map(h => ({ name: h }));
+        }
+        // this.movieSuggestions = [];
         this.menuVisible = false;
         return;
       }
@@ -626,6 +633,11 @@ export default {
     },
     selectSuggestion(item) {
       this.searchQuery = item.name;
+      let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+      history = history.filter(h => h !== item.name);
+      history.unshift(item.name);
+      history = history.slice(0, 5);
+      localStorage.setItem("HisSearch", JSON.stringify(history));
       this.menuVisible = false;
       this.searchMovie();
     },
