@@ -478,8 +478,9 @@ export default {
   inject: ["currentTheme", "setTheme"],
   mounted() {
     this.account = localStorage.getItem("name");
-    const history = localStorage.getItem("HisSearch") || [];
-    this.movieSuggestions = history;
+    const history = JSON.parse(localStorage.getItem("HisSearch"));
+    this.movieSuggestions = history ? history : [];
+    console.log(this.movieSuggestions)
   },
   methods: {
     changeTheme() {
@@ -637,7 +638,7 @@ export default {
       this.searchQuery = item.name;
       let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
       history = history.filter(h => h.name !== item.name);
-      history.unshift({ name: item.name });
+      history.unshift({ name: item.name, slug: item.slug });
       history = history.slice(0, 5);
       localStorage.setItem("HisSearch", JSON.stringify(history));
       this.menuVisible = false;
