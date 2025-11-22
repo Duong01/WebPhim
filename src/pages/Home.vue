@@ -97,9 +97,10 @@
                           variant="flat"
                           class="favorite-btn"
                           @click.stop.prevent="handleFavorite(item)"
+                          :color="isFavoriteMovie(item) ? 'red' : ''"
                         >
                       
-                          <v-icon :color="isFavoriteMovie(item) ? 'red' : 'white'">
+                          <v-icon>
                             {{ isFavoriteMovie(item)
                                   ? "mdi-heart"
                                   : "mdi-heart-outline" }}
@@ -326,7 +327,7 @@ import {
   urlImage1,
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
-import { getFavorites } from "@/utils/favorite";
+import { getFavorites,isFavorite } from "@/utils/favorite";
 import {  toggleFavorite } from "@/utils/favorite";
 
 export default {
@@ -502,7 +503,7 @@ export default {
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
       toggleFavorite(movie);
-      this.isFavoriteMovie(movie)
+      this.$forceUpdate();
       // this.liked = !this.liked;
     },
 
@@ -689,21 +690,22 @@ export default {
       });
     },
     isFavoriteMovie(movie) {
-      const favorites = getFavorites();
-      return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+      // const favorites = getFavorites();
+      // return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+      return isFavorite(movie.idMovie || movie._id);
     },
     
-    // Thêm/bỏ yêu thích
-    toggleFavorite(movie) {
-      const index = this.favoriteMovies.findIndex(
-        (fav) => fav._id === movie.id
-      );
-      if (index !== -1) {
-        this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-      } else {
-        this.favoriteMovies.push(movie); // Thêm yêu thích
-      }
-    },
+    // // Thêm/bỏ yêu thích
+    // toggleFavorite(movie) {
+    //   const index = this.favoriteMovies.findIndex(
+    //     (fav) => fav._id === movie.id
+    //   );
+    //   if (index !== -1) {
+    //     this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
+    //   } else {
+    //     this.favoriteMovies.push(movie); // Thêm yêu thích
+    //   }
+    // },
   },
 };
 </script>
