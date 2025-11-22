@@ -97,7 +97,6 @@
                           variant="flat"
                           class="favorite-btn"
                           @click.stop.prevent="handleFavorite(item)"
-                          :color="isFavoriteMovie(item) ? 'red' : ''"
                         >
                       
                           <v-icon>
