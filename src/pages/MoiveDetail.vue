@@ -23,21 +23,19 @@
           <div
             class="video-wrapper"
           >
-            <v-lazy :options="{ rootMargin: '0px' }">
-                <video
-                  ref="videoPlayer"
-                  controls
-                  playsinline
-                  webkit-playsinline
-                  preload="metadata"
-                  style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
-                ></video>
-                <iframe
-                ref="videoIframe"
-                style="width:100%;aspect-ratio:16/9;border:0;display:none;"
-                allow="autoplay; encrypted-media"
-              ></iframe>
-            </v-lazy>
+              <video
+                ref="videoPlayer"
+                controls
+                playsinline
+                webkit-playsinline
+                preload="none"
+                style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
+              ></video>
+              <iframe
+              ref="videoIframe"
+              style="width:100%;aspect-ratio:16/9;border:0;display:none;"
+              allow="autoplay; encrypted-media"
+            ></iframe>
           </div>
 
           <!-- nut next tap và back tap -->
@@ -573,7 +571,26 @@ export default {
     };
   },
   props: ["slug", "page"],
-  
+  beforeUnmount() {
+    // Hủy video HTML5
+    if (this.$refs.videoPlayer) {
+      this.$refs.videoPlayer.pause();
+      this.$refs.videoPlayer.src = "";
+      this.$refs.videoPlayer.load();
+    }
+
+    // Hủy iframe
+    if (this.$refs.videoIframe) {
+      this.$refs.videoIframe.src = "";
+    }
+
+    // Hủy HLS nếu có
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = null;
+    }
+
+  },
   watch: {
     async slug(newSlug) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
