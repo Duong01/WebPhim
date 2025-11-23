@@ -232,13 +232,13 @@ let descTag = document.querySelector('meta[name="description"]');
     sessionStorage.setItem('sessionStart', now);
   }
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      fetch(window.location.href, { method: "HEAD" })
-        .then(() => {})
-        .catch(() => window.location.reload());
-    }
-  });
+  // document.addEventListener("visibilitychange", () => {
+  //   if (document.visibilityState === "visible") {
+  //     fetch(window.location.href, { method: "HEAD" })
+  //       .then(() => {})
+  //       .catch(() => window.location.reload());
+  //   }
+  // });
   
 
     if (to.matched.length === 0) {

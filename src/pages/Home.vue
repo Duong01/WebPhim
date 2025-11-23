@@ -79,7 +79,7 @@
                   :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
                 >
                   <v-card
-                    class="mx-auto bg-dark text-white movie-card"
+                    class="mx-auto  movie-card"
                     max-width="344"
                   >
                   
@@ -116,7 +116,6 @@
                         </div>
                       </template>
                     </v-img>
-                    
                     <v-card-subtitle class="episode-lang">
                       {{
                         item.page === "Tập 0"
@@ -216,9 +215,9 @@
                     : section.listMovie.slice(0, 12)"
                   :key="item.slug || index"
                   
-                  cols="6"
-                  sm="4"
-                  md="2"
+                  cols="12"
+                  sm="6"
+                  md="3"
                   style="padding: 10px"
                 >
                   <v-skeleton-loader
@@ -231,8 +230,8 @@
                     v-else
                   >
                     <v-card
-                      class="mx-auto bg-dark text-white movie-card"
-                      max-width="344"
+                      class="mx-auto  movie-card"
+                      
                     >
                       <v-img
                         :src="getOptimizedImage(item.poster_url, section.id)"
@@ -245,22 +244,48 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
+                           <div class="badge-container">
+                          <!-- hiển thị bên trái -->
+                          <v-btn
                             icon
                             size="small"
-                            color="red"
                             variant="flat"
-                            class="favorite-btn"
-                            @click.stop.prevent="toggleFavorite(item)"
+                            class="badge-top-left"
                           >
-                            <v-icon>
-                              {{
-                                isFavorite(section)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn> -->
+                            {{item.episode_current}}
+                          </v-btn>
+
+                          <!-- hiển thị bên phải -->
+                          <v-btn
+                            icon
+                            size="small"
+                            variant="flat"
+                            class="badge-top-right"
+                          >
+                            {{item.quality}}
+                          </v-btn>
+                          
+
+                          <!-- hiển thị dưới cùng bên phải -->
+                          <v-btn
+                            icon
+                            size="small"
+                            variant="flat"
+                            class="badge-bottom-right"
+                          >
+                            {{item.time}}
+                          </v-btn>
+
+                          <!-- hiển thị dưới cùng bên trái -->
+                          <v-btn
+                            icon
+                            size="small"
+                            variant="flat"
+                            class="badge-bottom-left"
+                          >
+                            {{item.country[0].name}}
+                          </v-btn>
+                           </div>
 
                           <div class="movie-overlay" aria-hidden="true"></div>
 
@@ -284,26 +309,23 @@
                         </template>
                       </v-img>
 
-                      <v-card-subtitle class="episode-lang">
-                        {{
-                          item.episode_current === "Tập 0"
-                            ? `Full - ${item.lang}`
-                            : `${item.episode_current} - ${item.lang}`
-                        }}
-                      </v-card-subtitle>
-
-                      <v-card-title class="movie-title">{{
+                      <div style="margin: 10px 0;">
+                        <v-card-title class="movie-title text-left">{{
                         item.name
                       }}</v-card-title>
 
-                      <v-card-text class="movie-info">
-                        <div class="text-grey text-truncate">
-                          <v-icon size="14" class="mr-1" color="grey"
-                            >mdi-tag</v-icon
-                          >
-                          {{ item.origin_name }} ({{ item.year }})
+                      <v-card-text class="movie-info text-left">
+                        
+                        <div class="text-grey text-truncate" v-for="(cate, ind) in item.category" :key="ind">
+                          <!-- khong xuong dong -->
+                          {{ cate.name }} 
                         </div>
+                        <div>{{ item.year }}</div>
+                        <div></div>
                       </v-card-text>
+                        <div class="text-grey text-truncate text-left" style="font-size: 13px">Thời gian chiếu: {{timeAgo(item.modified.time)}}</div>
+                      </div>
+                      
                     </v-card>
                   </router-link>
                 </v-col>
@@ -491,6 +513,7 @@ export default {
     //   await Promise.all(
     //     this.sections.map(item => this.ListMovie(item.id, item))
     // );
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadFavorites();
     
     this.$nextTick(() => {
@@ -499,6 +522,20 @@ export default {
   },
   methods: {
     
+    timeAgo(timestamp) {
+    const diff = Date.now() - new Date(timestamp).getTime();
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours   = Math.floor(minutes / 60);
+    const days    = Math.floor(hours / 24);
+
+    if (days > 0) return `${days} ngày trước`;
+    if (hours > 0) return `${hours} giờ trước`;
+    if (minutes > 0) return `${minutes} phút trước`;
+    return `${seconds} giây trước`;
+  },
+
     handleFavorite(movie){
       console.log(movie)
       // this.movie.thumb_url = movie.thumb_url
@@ -609,6 +646,8 @@ export default {
           ListMovieByCateHome1(
             sectionId,
             (result) => {
+              console.log(result);
+
               if (result.status === "success" || result.status == true) {
                 this.link = "link1";
                 section.listMovie = result.data.items;
@@ -759,6 +798,11 @@ a {
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.5);
 }
+.episode-btn{
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
 .fade-scale-enter-active,
 .fade-scale-leave-active {
   transition: all 0.4s ease;
@@ -835,6 +879,8 @@ a {
 
 /* container card */
 .movie-card {
+  position: relative;
+
   overflow: hidden;
   border-radius: 8px;
 }
@@ -919,5 +965,48 @@ a {
 .fade-scale-leave-to {
   opacity: 0;
   transform: scale(0.95);
+}
+.badge-top-left,
+.badge-top-right,
+.badge-bottom-left,
+.badge-bottom-right {
+  position: absolute !important;
+  background: rgba(56, 56, 56, 0.6) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  padding: 2px 10px !important;
+  border-radius: 8px;
+  z-index: 10;
+  width: auto;
+  font-weight: 600 !important;
+}
+
+/* 4 góc */
+.badge-top-left {
+  top: 8px;
+  left: 8px;
+}
+
+.badge-top-right {
+  top: 8px;
+  right: 8px;
+}
+
+.badge-bottom-left {
+  bottom: 8px;
+  left: 8px;
+}
+
+.badge-bottom-right {
+  bottom: 8px;
+  right: 8px;
+}
+.movie-info {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap; /* Không cho xuống dòng */
+}
+.text-left {
+  text-align: left !important;
 }
 </style>
