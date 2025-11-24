@@ -215,7 +215,7 @@
                     : section.listMovie.slice(0, 12)"
                   :key="item.slug || index"
                   
-                  cols="12"
+                  cols="6"
                   sm="6"
                   md="3"
                   style="padding: 10px"
@@ -310,19 +310,17 @@
                       </v-img>
 
                       <div style="margin: 10px 0;">
-                        <v-card-title class="movie-title text-left">{{
-                        item.name
-                      }}</v-card-title>
+                          <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
-                      <v-card-text class="movie-info text-left">
-                        
-                        <div class="text-grey text-truncate" v-for="(cate, ind) in item.category" :key="ind">
-                          <!-- khong xuong dong -->
-                          {{ cate.name }} 
-                        </div>
-                        <div>{{ item.year }}</div>
-                        <div></div>
-                      </v-card-text>
+                          <v-card-text class="movie-info text-left">
+                            <div class="movie-meta">
+                              <div class="text-grey text-truncate" v-for="(cate, ind) in item.category" :key="ind">
+                                <!-- khong xuong dong -->
+                                {{ cate.name }} 
+                              </div>
+                              <span> • {{ item.year }}</span>
+                            </div>
+                          </v-card-text>
                         <div class="text-grey text-truncate text-left" style="font-size: 13px">Thời gian chiếu: {{timeAgo(item.modified.time)}}</div>
                       </div>
                       
@@ -855,9 +853,7 @@ a {
     height: 180px !important;
   }
 
-  .movie-title {
-    font-size: 12px;
-  }
+
 
   .movie-info {
     font-size: 11px;
@@ -971,9 +967,9 @@ a {
 .badge-bottom-left,
 .badge-bottom-right {
   position: absolute !important;
-  background: rgba(56, 56, 56, 0.6) !important;
-  color: #fff !important;
-  font-size: 12px !important;
+  background: rgba(105, 105, 105, 0.6) !important;
+  /* color: #fff !important; */
+  font-size: 11px !important;
   padding: 2px 10px !important;
   border-radius: 8px;
   z-index: 10;
@@ -990,6 +986,7 @@ a {
 .badge-top-right {
   top: 8px;
   right: 8px;
+  background-color: rgb(204, 35, 35);
 }
 
 .badge-bottom-left {
@@ -1002,11 +999,20 @@ a {
   right: 8px;
 }
 .movie-info {
+  text-align: left;
   display: flex;
   gap: 6px;
   flex-wrap: nowrap; /* Không cho xuống dòng */
 }
 .text-left {
   text-align: left !important;
+}
+.movie-meta {
+  white-space: nowrap;       /* Không xuống dòng */
+  overflow: hidden;          /* Bị dài thì ẩn */
+  text-overflow: ellipsis;   /* Hiện ... */
+  display: block;
+  color: #999;
+  font-size: 14px;
 }
 </style>
