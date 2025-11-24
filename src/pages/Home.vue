@@ -316,7 +316,7 @@
                               <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
                                 <!-- khong xuong dong -->
                                 {{ cate.name }} 
-                                <span  v-if="ind < item.category.length -1">
+                                <span  v-if="ind < getCategoriesToShow(item.category).length -1">
                                   ,
                                 </span>
                               </div>
