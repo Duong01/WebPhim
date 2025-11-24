@@ -531,7 +531,7 @@ export default {
     if (days > 0) return `${days} ngày trước`;
     if (hours > 0) return `${hours} giờ trước`;
     if (minutes > 0) return `${minutes} phút trước`;
-    return `${seconds} giây trước`;
+    return "Sắp chiếu";
   },
 
     handleFavorite(movie){
@@ -974,29 +974,30 @@ a {
   border-radius: 8px;
   z-index: 10;
   width: auto;
+  height: auto;
   font-weight: 600 !important;
 }
 
 /* 4 góc */
 .badge-top-left {
-  top: 8px;
-  left: 8px;
+  top: 6px;
+  left: 6px;
 }
 
 .badge-top-right {
-  top: 8px;
-  right: 8px;
-  background-color: rgb(204, 35, 35);
+  top: 6px;
+  right: 6px;
+  background-color: rgb(204, 35, 35) !important;
 }
 
 .badge-bottom-left {
-  bottom: 8px;
-  left: 8px;
+  bottom: 6px;
+  left: 6px;
 }
 
 .badge-bottom-right {
-  bottom: 8px;
-  right: 8px;
+  bottom: 6px;
+  right: 6px;
 }
 .movie-info {
   text-align: left;
@@ -1007,12 +1008,5 @@ a {
 .text-left {
   text-align: left !important;
 }
-.movie-meta {
-  white-space: nowrap;       /* Không xuống dòng */
-  overflow: hidden;          /* Bị dài thì ẩn */
-  text-overflow: ellipsis;   /* Hiện ... */
-  display: block;
-  color: #999;
-  font-size: 14px;
-}
+
 </style>
