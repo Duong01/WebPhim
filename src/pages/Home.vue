@@ -313,7 +313,7 @@
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
-                              <div class="category-wrap" v-for="(cate, ind) in item.category" :key="ind">
+                              <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
                                 <!-- khong xuong dong -->
                                 {{ cate.name }} 
                                 <span  v-if="ind < cate.length -1">
@@ -520,19 +520,31 @@ export default {
     });
   },
   methods: {
-    
+    getCategoriesToShow(item){
+      const isMobile = this.$vuetify.display.xs;
+      if (isMobile) {
+        return item.slice(0, 2);  // Mobile → 2 item
+      } else {
+        return item.slice(0, 4);  // Desktop → 4 item
+      }
+    },
     timeAgo(timestamp) {
     const diff = Date.now() - new Date(timestamp).getTime();
-
+if (diff < 0) return "Đang chiếu";
     const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours   = Math.floor(minutes / 60);
-    const days    = Math.floor(hours / 24);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
 
-    if (days > 0) return `${days} ngày ${hours} giờ trước`;
-    if (hours > 0) return `${hours} giờ ${minutes} phút trước`;
-    if (minutes > 0) return `${minutes} phút trước`;
-    return "Sắp chiếu";
+    const d = days;
+  const h = hours % 24;      // số giờ dư
+  const m = minutes % 60;    // số phút dư
+  const s = seconds % 60; 
+  let result = "";
+  if (d > 0) result += `${d} ngày `;
+  if (h > 0) result += `${h} giờ `;
+  if (m > 0) result += `${m} phút `;
+    return result.trim() + " trước";
   },
 
     handleFavorite(movie){
