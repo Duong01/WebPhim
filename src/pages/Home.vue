@@ -309,17 +309,17 @@
                         </template>
                       </v-img>
 
-                      <div style="margin: 10px 0;">
+                      <div>
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
-                              <div class="text-grey text-truncate" v-for="(cate, ind) in item.category" :key="ind">
+                              <div class="category-wrap" v-for="(cate, ind) in item.category" :key="ind">
                                 <!-- khong xuong dong -->
-                                {{ cate.name }} 
+                                {{ cate.name + ind < cate.length -1 ? ",": "" }} 
                               </div>
                               <span> • {{ item.year }}</span>
                           </v-card-text>
-                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px">Thời gian chiếu: {{timeAgo(item.modified.time)}}</v-card-text>
+                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding: 0 0 10px 0; margin-top: 0;">{{$t('Thời gian chiếu')}}: {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
                       
                     </v-card>
@@ -842,7 +842,7 @@ a {
   font-weight: bold;
   line-height: 1.2;
   color: white;
-  margin-top: -8px;
+  margin-top: 10px;
   text-overflow: ellipsis;
   white-space: normal;
 }
@@ -997,11 +997,15 @@ a {
   bottom: 6px;
   right: 6px;
 }
-.movie-info {
+.movie-info .category-wrap{
   text-align: left;
   display: flex;
-  gap: 6px;
-  flex-wrap: nowrap; /* Không cho xuống dòng */
+  gap: 4px;
+  flex-wrap: wrap; 
+}
+.category-item {
+  white-space: nowrap; /* Không tách từ */
+  color: grey;
 }
 .text-left {
   text-align: left !important;
