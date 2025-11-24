@@ -1,6 +1,6 @@
 <template>
   <v-container class="search-page" fluid>
-    <v-parallax :src="movie.poster_url">
+    <v-parallax :src="getOptimizedImage(movie.poster_url)">
     <v-container class="fill-height">
       <v-row
         class="justify-center align-center flex-column-reverse flex-md-row"
@@ -12,20 +12,32 @@
             Contact Me
           </v-btn>
         </v-col>
-        <v-col class="text-center" cols="12" md="6">
-          <v-avatar :size="300" class="elevation-12 mx-auto mb-8">
-            <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
-          </v-avatar>
-        </v-col>
+        
       </v-row>
     </v-container>
   </v-parallax>
     <div>
-      <!-- Breadcrumb -->
-      
       <!-- Bố cục hai cột -->
       <v-row dense>
-        <!-- Cột bên trái: Video + nút + danh sách tập + info -->
+        <!-- Cột bên trai: video -->
+        <v-col cols="12" md="4">
+          <v-card class="pa-0" color="grey-darken-4" flat>
+            <v-card-text style="overflow-y: auto; padding: 0">
+              <v-list dense nav class="pa-0">
+                
+                    <v-img
+                      :src="getOptimizedImage(movie.poster_url)"
+                      :lazy-src="getOptimizedImage(movie.poster_url)"
+                      width="auto"
+                      height="auto"
+                      class="rounded-lg"
+                      cover
+                    ></v-img>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <!-- Cột bên phai: Video info -->
         <v-col cols="12" md="8">
           <!-- VIDEO -->
 
@@ -46,7 +58,7 @@
                   aria-label="Play trailer"
                 >
                   <img
-                    :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
+                    :src="getOptimizedImage(movie.poster_url)"
                     :alt="`Trailer ${movie.name}`"
                     loading="lazy"
                   />
@@ -152,102 +164,10 @@
             </v-card-text>
           </v-card>
 
-          <!-- Bình luận -->
-          <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-            <h2 class="text-white mb-6 text-h5 font-weight-bold">
-              🗨️ {{ $t("Bình luận") }}
-            </h2>
-            <v-text-field
-              v-model="newComment"
-              :placeholder="$t('Thêm bình luận...')"
-              variant="outlined"
-              color="blue"
-              class="rounded-xl mb-4"
-              density="comfortable"
-              hide-details
-              append-inner-icon="mdi-send"
-              @click:append-inner="addComment"
-              :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
-            ></v-text-field>
-            <v-divider class="mb-4" color="grey darken-3"></v-divider>
-            <div
-              v-for="(comment, index) in comments"
-              :key="index"
-              class="d-flex align-start mb-5"
-            >
-              <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
-                <v-icon color="white">mdi-account</v-icon>
-              </v-avatar>
-              <div class="flex-grow-1">
-                <div class="d-flex align-center mb-1">
-                  <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-                    comment.username
-                  }}</span>
-                  <v-chip
-                    size="x-small"
-                    color="grey-darken-4"
-                    text-color="grey-lighten-1"
-                    variant="flat"
-                  >
-                    {{ comment.time }}
-                  </v-chip>
-                </div>
-                <div class="text-white text-body-2">{{ comment.content }}</div>
-                <div
-                  class="text-caption mt-2 text-grey-lighten-1"
-                  style="cursor: pointer"
-                >
-                  {{ $t("Phản hồi") }}
-                </div>
-              </div>
-            </div>
-          </v-card>
+          
         </v-col>
 
-        <!-- Cột bên phải: trailer -->
-        <v-col cols="12" md="4">
-          <v-card class="pa-0" color="grey-darken-4" flat>
-            <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-              <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
-              <v-tab value="2">{{ $t("Top phim") }}</v-tab>
-            </v-tabs>
-
-            <v-card-text style="max-height: 87vh; overflow-y: auto; padding: 0">
-              <v-list dense nav class="pa-0">
-                <v-list-item
-                  v-for="suggested in suggestedMovies"
-                  :key="suggested.id"
-                  class="suggested-item d-flex align-center"
-                >
-                  <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-                    class="d-flex text-decoration-none align-center py-4"
-                    style="width: 100%"
-                  >
-                    <v-img
-                      :src="getOptimizedImage(suggested.poster_url)"
-                      :lazy-src="getOptimizedImage(suggested.poster_url)"
-                      width="150"
-                      height="120"
-                      class="rounded-lg"
-                      cover
-                    ></v-img>
-
-                    <div class="ml-3 text-truncate" >
-                      <div class="text-white text-body-2 font-weight-medium text-truncate">
-                        {{ suggested.name }}
-                      </div>
-                      <div class="text-grey-lighten-1 text-caption">
-                        {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                        {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                      </div>
-                    </div>
-                  </router-link>
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
+        
 
         <!-- Danh sach tap phim -->
         <v-card
@@ -285,43 +205,6 @@
             </v-card-text>
           </v-card>
 
-        <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
-
-        <div class="suggested-movies my-8">
-          <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
-          <v-row>
-            <v-col
-              v-for="suggested in suggestedMovies"
-              :key="suggested._id"
-              cols="6"
-              sm="4"
-              md="2"
-            >
-              <router-link
-                :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-                class="text-decoration-none"
-              >
-                <v-card elevation="2" class="bg-grey-darken-4" hover>
-                  <v-img
-                    :lazy-src="getOptimizedImage(suggested.poster_url)"
-                    :src="getOptimizedImage(suggested.poster_url)"
-                    aspect-ratio="16/9"
-                    cover
-                  ></v-img>
-                  <div class="ml-3 flex-grow-1">
-                    <div class="text-white text-body-2 font-weight-medium text-truncate">
-                      {{ suggested.name }}
-                    </div>
-                    <div class="text-grey-lighten-1 text-caption">
-                      {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                      {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                    </div>
-                  </div>
-                </v-card>
-              </router-link>
-            </v-col>
-          </v-row>
-        </div>
       </v-row>
 
       <!-- dialog share -->
