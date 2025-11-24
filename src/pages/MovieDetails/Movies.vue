@@ -1,297 +1,125 @@
 <template>
   <v-container class="search-page" fluid>
+
+    <!-- ========================= -->
+    <!--  PHẦN 1: PARALLAX + BUTTON -->
+    <!-- ========================= -->
     <v-parallax :src="getOptimizedImage(movie.poster_url)">
-    <v-container class="fill-height">
-      <v-row
-        class="justify-center align-center flex-column-reverse flex-md-row"
-      >
-        <v-col cols="12" md="6">
-          <h1 class="text-h1 mb-8">John Doe</h1>
-          <h3 class="text-h3 mb-8 font-weight-thin">Web Developer</h3>
-          <v-btn class="elevation-4 rounded-xl mb-4" color="primary">
-            Contact Me
-          </v-btn>
-        </v-col>
-        
-      </v-row>
-    </v-container>
-  </v-parallax>
-    <div>
-      <!-- Bố cục hai cột -->
-      <v-row dense>
-        <!-- Cột bên trai: video -->
-        <v-col cols="12" md="4">
-          <v-card class="pa-0" color="grey-darken-4" flat>
-            <v-card-text style="overflow-y: auto; padding: 0">
-              <v-list dense nav class="pa-0">
-                
-                    <v-img
-                      :src="getOptimizedImage(movie.poster_url)"
-                      :lazy-src="getOptimizedImage(movie.poster_url)"
-                      width="auto"
-                      height="auto"
-                      class="rounded-lg"
-                      cover
-                    ></v-img>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <!-- Cột bên phai: Video info -->
-        <v-col cols="12" md="8">
-          <!-- VIDEO -->
+      <v-container class="fill-height">
+        <v-row class="justify-center align-center text-center">
+          <v-col cols="12" md="8">
+            <h1 class="text-h2 text-white mb-4">{{ movie.title }}</h1>
+            <h3 class="text-h5 text-grey-lighten-2 mb-6">
+              {{ movie.name }}
+            </h3>
 
-          <!-- Danh sách tập -->
-          
+            <v-btn color="primary" class="mr-3">Xem ngay</v-btn>
+            <v-btn color="red">Chia sẻ</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-parallax>
 
-          <!-- TRAILER -->
-          <div class="mb-4">
-            <v-row>
-              <v-col cols="12" sm="6" md="3">
-                <h3 class="text-white mb-2">TRAILER</h3>
+    <!-- ========================= -->
+    <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
+    <!-- ========================= -->
+    <v-row class="mt-6">
 
-                <!-- Thumb container -->
-                <div
-                  class="trailer-thumb"
-                  @click="dialogTrailer = true"
-                  role="button"
-                  aria-label="Play trailer"
-                >
-                  <img
-                    :src="getOptimizedImage(movie.poster_url)"
-                    :alt="`Trailer ${movie.name}`"
-                    loading="lazy"
-                  />
+      <!-- CỘT TRÁI: VIDEO -->
+      <v-col cols="12" md="7">
+        <v-card color="black" flat>
+          <iframe
+            v-if="currentEpisode"
+            width="100%"
+            height="420"
+            :src="currentEpisode.video_url"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </v-card>
+      </v-col>
 
-                  <!-- dark overlay khi hover -->
-                  <div class="trailer-overlay" />
+      <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
+      <v-col cols="12" md="5">
 
-                  <!-- nút Play (SVG) ở giữa -->
-                  <div class="trailer-play" aria-hidden="true">
-                    <svg
-                      width="64"
-                      height="64"
-                      viewBox="0 0 64 64"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <!-- nền tròn tối để làm nổi tam giác -->
-                      <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)" />
-                      <!-- tam giác play màu trắng -->
-                      <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                    </svg>
-                  </div>
-                </div>
-              </v-col>
+        <!-- TRAILER -->
+        <v-card color="grey-darken-4" flat class="mb-4 pa-4">
+          <h3 class="text-white mb-2">Trailer</h3>
 
-              <v-col cols="12" sm="6" md="6" class="d-flex align-center">
-                <p class="text-grey-lighten-1">
-                  {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
-                </p>
-              </v-col>
-            </v-row>
+          <div class="trailer-thumb" @click="dialogTrailer = true">
+            <img
+              :src="getOptimizedImage(movie.poster_url)"
+              class="rounded-lg"
+            />
+            <div class="trailer-overlay"></div>
+            <div class="trailer-play">
+              ▶
+            </div>
+          </div>
+        </v-card>
+
+        <!-- THÔNG TIN PHIM -->
+        <v-card color="grey-darken-4" flat class="pa-4">
+          <h3 class="text-white mb-3">{{ movie.title }}</h3>
+
+          <div class="text-white mb-2">
+            <strong>Mô tả:</strong>
+            <div v-html="movie.description"></div>
           </div>
 
-          <!-- Dialog trailer -->
-          <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
-            <v-card class="bg-black relative">
-              <!-- Nút đóng -->
-              <v-btn
-                icon="mdi-close"
-                class="absolute top-2 right-2 z-10"
-                variant="text"
-                @click="dialogTrailer = false"
-              ></v-btn>
+          <p class="text-white"><strong>Diễn viên:</strong> {{ movie.actors.join(', ') }}</p>
+          <p class="text-white"><strong>Đạo diễn:</strong> {{ movie.director.join(', ') }}</p>
+          <p class="text-white"><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
 
-              <!-- Video -->
-              <iframe
-                width="100%"
-                height="600"
-                :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                loading="lazy"
-              >
-              </iframe>
-
-              <!-- <iframe
-      width="100%"
-      height="500"
-      :src="movie.trailer_url"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe> -->
-            </v-card>
-          </v-dialog>
-
-          <!-- Thông tin phim -->
-          <v-card
-            class="pa-6 text-left"
-            color="grey-darken-4"
-            variant="flat"
-            rounded="lg"
-            theme="dark"
-          >
-            <v-card-title class="text-white mb-4"
-              >{{ movie.title }} ( {{ movie.name }})</v-card-title
-            >
-            <v-card-text class="text-white">
-              <div v-html="movie.description"></div>
-            </v-card-text>
-            <v-card-text class="text-white">
-              <p>
-                <strong>{{ $t("Diễn viên") }}:</strong>
-                {{ movie.actors.join(", ") }}
-              </p>
-              <p>
-                <strong>{{ $t("Đạo diễn") }}:</strong>
-                {{ movie.director.join(", ") }}
-              </p>
-              <p>
-                <strong>{{ $t("Thể loại") }}:</strong> {{ movie.genre.name }}
-              </p>
-              <div class="d-flex align-center">
-                <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
-                <v-rating
-                  readonly
-                  :length="5"
-                  :size="28"
-                  :model-value="movie.rating"
-                  active-color="yellow-darken-2"
-                />
-              </div>
-            </v-card-text>
-          </v-card>
-
-          
-        </v-col>
-
-        
-
-        <!-- Danh sach tap phim -->
-        <v-card
-            class="my-4"
-            variant="flat"
-            color="grey-darken-4"
-            theme="dark"
-          >
-            <v-card-title class="d-flex align-center custom-title">
-              <span class="text-h6 title-text">{{ movie.title }}
-              <v-chip class="ml-2 chip-limit" color="red" text-color="white">{{
-                movie.pageMovie[currentEpisodeIndex]?.name
-              }}</v-chip>
-              </span>
-              
-            </v-card-title>
-            <v-card-text>
-              <v-row class="episode-list">
-                <v-col
-                  v-for="(episode, index) in movie.pageMovie"
-                  :key="index"
-                  class="episode-col"
-                >
-                  <v-btn color="primary" block size="small" @click="playEpisode(episode)">
-                    {{
-                      episode.name
-                        ? episode.name.includes("Tập")
-                          ? episode.name
-                          : $t("Tập ") + episode.name
-                        : "Trailer"
-                    }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-
-      </v-row>
-
-      <!-- dialog share -->
-      <v-dialog v-model="shareDialog" max-width="500">
-        <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
-          <v-card-title class="text-h6 justify-center">{{$t('Chia sẻ')}}</v-card-title>
-
-          <v-row class="justify-center mt-4" dense>
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('facebook')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-facebook" />
-              </v-btn>
-              <div class="mt-1 text-caption">Facebook</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('youtube')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-youtube" />
-              </v-btn>
-              <div class="mt-1 text-caption">YouTube</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="copyLink"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-link-variant" />
-              </v-btn>
-              <div class="mt-1 text-caption">Copy link</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('twitter')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-twitter" />
-              </v-btn>
-              <div class="mt-1 text-caption">Twitter</div>
-            </v-col>
-          </v-row>
-
-          <v-card
-            class="mt-4 px-3 py-2 d-flex align-center"
-            style="background-color: #2a2a2a; border-radius: 8px"
-          >
-            <span class="text-truncate" style="color: #facc15; max-width: 100%">
-              {{ shareUrl }}
-            </span>
-            <v-spacer />
-            <v-btn icon @click="copyLink" size="small">
-              <v-icon icon="mdi-content-copy" />
-            </v-btn>
-          </v-card>
-
-          <v-btn
-            icon
-            class="position-absolute"
-            style="top: 8px; right: 8px"
-            @click="shareDialog = false"
-          >
-            <v-icon icon="mdi-close" />
-          </v-btn>
+          <div class="d-flex align-center">
+            <strong class="text-white mr-2">Đánh giá:</strong>
+            <v-rating readonly :model-value="movie.rating" color="yellow" />
+          </div>
         </v-card>
-      </v-dialog>
-      <!-- Snackbar -->
-      <v-snackbar v-model="mess" :timeout="3000" :color="color">
-        {{ Message }}
-      </v-snackbar>
-    </div>
+
+      </v-col>
+
+    </v-row>
+
+    <!-- ========================= -->
+    <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
+    <!-- ========================= -->
+    <v-card class="my-6 pa-4" color="grey-darken-4" flat>
+      <h3 class="text-white mb-3">Danh sách tập</h3>
+
+      <v-row>
+        <v-col
+          v-for="(ep, i) in movie.pageMovie"
+          :key="i"
+          cols="6"
+          sm="4"
+          md="2"
+        >
+          <v-btn block color="primary" @click="playEpisode(ep)">
+            {{ ep.name }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+
+    <!-- Dialog Trailer -->
+    <v-dialog v-model="dialogTrailer" max-width="900">
+      <v-card color="black">
+        <v-btn icon="mdi-close" class="position-absolute right-2 top-2" @click="dialogTrailer = false"></v-btn>
+
+        <iframe
+          width="100%"
+          height="500"
+          :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
+
 
 <script>
 import {
