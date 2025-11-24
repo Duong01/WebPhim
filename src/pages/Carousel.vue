@@ -25,8 +25,8 @@
         :key="item._id"
       >
         <v-img
-          :src="pathImage + item.poster_url"
-          :lazy-src="pathImage + item.poster_url"
+          :src="pathImage + item.thumb_url"
+          :lazy-src="pathImage + item.thumb_url"
           cover
           height="100%"
           class="carousel-image"

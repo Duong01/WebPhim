@@ -319,7 +319,7 @@
                               </div>
                               <span> • {{ item.year }}</span>
                           </v-card-text>
-                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding: 0 0 10px 0; margin-top: 0;">{{$t('Thời gian chiếu')}}: {{timeAgo(item.modified.time)}}</v-card-text>
+                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px;">{{$t('Thời gian chiếu')}}: {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
                       
                     </v-card>
@@ -997,15 +997,16 @@ a {
   bottom: 6px;
   right: 6px;
 }
-.movie-info .category-wrap{
+.movie-info{
   text-align: left;
   display: flex;
   gap: 4px;
-  flex-wrap: wrap; 
+  flex-wrap: nowrap; 
 }
 .category-item {
   white-space: nowrap; /* Không tách từ */
   color: grey;
+  flex-wrap: wrap; 
 }
 .text-left {
   text-align: left !important;
