@@ -340,7 +340,7 @@
                   class="suggested-item d-flex align-center"
                 >
                   <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+                    :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                     class="d-flex text-decoration-none align-center py-4"
                     style="width: 100%"
                   >
@@ -383,7 +383,7 @@
               md="2"
             >
               <router-link
-                :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+                :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                 class="text-decoration-none"
               >
                 <v-card elevation="2" class="bg-grey-darken-4" hover>

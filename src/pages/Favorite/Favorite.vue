@@ -45,7 +45,7 @@
                 >
                   
                   <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
                     class="text-decoration-none"
                   >
                     <v-card

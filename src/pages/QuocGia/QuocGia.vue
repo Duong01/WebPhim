@@ -44,7 +44,7 @@
                 >
                   
                   <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
                     class="text-decoration-none"
                   >
                     <v-card
@@ -132,7 +132,7 @@
         <!-- <router-link
           v-for="movie in movies"
           :key="movie.id"
-          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+          :to="{ name: 'Movies', params: { slug: movie.slug } }"
           class="text-decoration-none"
         >
           <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>

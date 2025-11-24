@@ -99,7 +99,7 @@ export default {
       });
     },
     goToDetail(slug) {
-      this.$router.push({ name: "MovieDetail", params: { slug } });
+      this.$router.push({ name: "Movies", params: { slug } });
     },
   },
 };

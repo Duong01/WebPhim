@@ -76,7 +76,7 @@
               >
               
                 <router-link
-                  :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+                  :to="{ name: 'Movies', params: { slug: item.slug } }"
                 >
                   <v-card
                     class="mx-auto  movie-card"
@@ -226,7 +226,7 @@
                     height="250"
                   />
                   <router-link
-                    :to="{ name: 'MovieDetail', params: { slug: item.slug } }"
+                    :to="{ name: 'Movies', params: { slug: item.slug } }"
                     v-else
                   >
                     <v-card

@@ -1,20 +1,65 @@
 <template>
   <v-container class="search-page" fluid>
-    <v-parallax :src="getOptimizedImage(movie.poster_url)">
-      <v-container class="fill-height">
-        <v-row class="justify-center align-center text-center">
-          <v-col cols="12" md="8">
-            <h1 class="text-h2 text-white mb-4">{{ movie.title }}</h1>
-            <h3 class="text-h5 text-grey-lighten-2 mb-6">
-              {{ movie.name }}
-            </h3>
+    <v-col cols="12" class="text-center" v-if="isLoading">
+      <v-progress-circular indeterminate color="primary" size="50" />
+    </v-col>
+    <div v-else>
+      <div class="poster-wrapper">
 
-            <v-btn color="primary" class="mr-3">Xem ngay</v-btn>
-            <v-btn color="red">Chia sẻ</v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-parallax>
+    <!-- Background image -->
+    <v-img
+      :src="getOptimizedImage(movie.poster_url)"
+      class="poster-img"
+      cover
+    />
+
+    <!-- Overlay effects -->
+    <div class="overlay-dark"></div>
+    <div class="overlay-gradient-1"></div>
+    <div class="overlay-gradient-2"></div>
+
+    <!-- Content -->
+    <div class="poster-content">
+      <h1 class="poster-title">
+        {{ movie.name }}
+      </h1>
+
+      <p class="poster-sub">{{ movie.origin_name }}</p>
+
+      <!-- Badges -->
+      <div class="poster-badges">
+
+        <v-chip size="small" class="chip-custom">
+          ⭐ TMDB {{ movie.tmdb || 0 }}
+        </v-chip>
+
+        <v-chip size="small" class="chip-custom">
+          TV
+        </v-chip>
+
+        <v-chip size="small" class="chip-custom">
+          {{ movie.year }}
+        </v-chip>
+
+        <v-chip size="small" class="chip-custom">
+          {{ movie.quality }}
+        </v-chip>
+
+        <v-chip size="small" class="chip-custom">
+          {{ movie.lang }}
+        </v-chip>
+
+      </div>
+      <v-btn
+      color="primary"
+      size="large"
+      class="mt-4 xem-ngay-btn"
+      @click="goToWatch()"
+    >
+      ▶ Xem ngay
+    </v-btn>
+    </div>
+  </div>
 
     <!-- ========================= -->
     <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
@@ -22,53 +67,55 @@
     <v-row class="mt-6">
 
       <!-- CỘT TRÁI: VIDEO -->
-      <v-col cols="12" md="7">
+      <v-col cols="12" md="4">
         <v-card color="black" flat>
-          <iframe
-            v-if="currentEpisode"
+          <v-img
             width="100%"
-            height="420"
-            :src="currentEpisode.video_url"
+            height="100%"
+            :src="getOptimizedImage(movie.poster_url)"
             frameborder="0"
             allowfullscreen
-          ></iframe>
+          />
+          <!-- Overlay khi hover -->
+    <div class="poster-overlay"></div>
+
+    <!-- Nút Xem Ngay -->
+    <div class="poster-play-btn">
+      ▶ Xem ngay
+    </div>
         </v-card>
       </v-col>
 
       <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="8">
 
         <!-- TRAILER -->
-        <v-card color="grey-darken-4" flat class="mb-4 pa-4">
-          <h3 class="text-white mb-2">Trailer</h3>
+        <v-card color="grey-darken-4" flat class="mb-4 pa-4" v-if="movie.trailer_id">
 
           <div class="trailer-thumb" @click="dialogTrailer = true">
-            <img
-              :src="getOptimizedImage(movie.poster_url)"
-              class="rounded-lg"
-            />
-            <div class="trailer-overlay"></div>
-            <div class="trailer-play">
-              ▶
-            </div>
+            <iframe
+              width="100%"
+              height="500"
+              :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+            
           </div>
-        </v-card>
 
         <!-- THÔNG TIN PHIM -->
-        <v-card color="grey-darken-4" flat class="pa-4">
-          <h3 class="text-white mb-3">{{ movie.title }}</h3>
+          <h3 class="text-left mb-3">{{ movie.title }}</h3>
 
-          <div class="text-white mb-2">
-            <strong>Mô tả:</strong>
+          <div class="text-left mb-2">
             <div v-html="movie.description"></div>
           </div>
 
-          <p class="text-white"><strong>Diễn viên:</strong> {{ movie.actors.join(', ') }}</p>
-          <p class="text-white"><strong>Đạo diễn:</strong> {{ movie.director.join(', ') }}</p>
-          <p class="text-white"><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
+          <p class="text-left"><strong style="color: orange;">Diễn viên:</strong> {{ movie.actors.join(', ') }}</p>
+          <p class="text-left"><strong style="color: orange;">Đạo diễn:</strong> {{ movie.director.join(', ') }}</p>
+          <p class="text-left"><strong style="color: orange;">Thể loại:</strong> {{ movie.genre.name }}</p>
 
           <div class="d-flex align-center">
-            <strong class="text-white mr-2">Đánh giá:</strong>
+            <strong class="text-left mr-2">Đánh giá:</strong>
             <v-rating readonly :model-value="movie.rating" color="yellow" />
           </div>
         </v-card>
@@ -113,6 +160,8 @@
       </v-card>
     </v-dialog>
 
+    </div>
+    
   </v-container>
 </template>
 
@@ -180,6 +229,9 @@ export default {
         origin_name: "",
         year: "",
         slug: "",
+        poster_url: "",
+        quality: ""
+
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -233,6 +285,11 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
+              this.movie.poster_url = result.movie.poster_url;
+              this.movie.thumb_url = result.movie.thumb_url;
+              this.movie.quality = result.movie.quality;
+
+              
               this.movie.pageMovie = result.episodes[0].server_data.sort(
                 (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
               );
@@ -336,6 +393,10 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
+              this.movie.poster_url = result.movie.poster_url;
+              this.movie.thumb_url = result.movie.thumb_url;
+              this.movie.quality = result.movie.quality;
+
               this.movie.pageMovie = result.episodes[0].server_data.sort(
                 (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
               );
@@ -428,7 +489,11 @@ export default {
       });
     },
 
-
+    goToWatch() {
+    this.$router.push(`/movie/${this.movie.slug}`);
+    // hoặc:
+    // this.$router.push(`/watch/${this.movie.slug}`);
+  },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
       console.log(url)
@@ -478,13 +543,9 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      // if (this.link == "") {
-      //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      // } else {
         return `${
           this.urlImage1 +
-          "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
+          imagePath
         }`;
       // }
     },
@@ -865,323 +926,166 @@ export default {
 </script>
 
 <style scoped>
-@media (min-width: 956px) {
-  .search-page {
-    padding: 0 60px !important;
-  }
-  .video-wrapper {
-    width: 100%;
-    /* padding: 0 40px; */
-    /* max-height: 800px; */
-    aspect-ratio: 16 / 9;
-    background: black;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-  }
+.poster-wrapper {
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  overflow: hidden;
+  border-radius: 20px ;
 }
 
-
-.video-wrapper iframe,
-.video-wrapper video {
+.poster-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-.suggested-item {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-radius: 8px;
+  transform: scale(1.15);
+  filter: brightness(0.9);
 }
 
-.text-wrap {
-  white-space: normal !important;
-  overflow-wrap: break-word;
-}
-
-.suggested-item:hover {
-  background-color: #2e2e2e;
-}
-
-.movie-detail {
-  padding: 12px 0;
-}
-a {
-  color: #fff;
-}
-.custom-tabs .v-tab {
-  color: white;
-  background-color: transparent;
-  border-radius: 8px;
-  transition: all 0.3s;
-}
-.custom-tabs .v-tab.active-tab {
-  color: #000;
-  background-color: #f8b230;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.movie-info p {
-  margin-bottom: 8px;
-}
-
-.scroll-container {
-  scroll-behavior: smooth;
-  gap: 16px;
-}
-
-.movie-card-link {
-  text-decoration: none;
-  color: inherit;
-  flex-shrink: 0;
-}
-
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.position-absolute {
+.overlay-dark {
   position: absolute;
-}
-
-.top-0 {
-  top: 0;
-}
-
-.left-0 {
-  left: 0;
-}
-.suggested-slide-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;
-}
-
-.suggested-slide {
-  display: flex;
-  gap: 16px;
-  transition: transform 0.3s ease-in-out;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.movie-card {
-  flex: 0 0 auto;
-  width: 200px;
-  background-color: #2e2e2e;
-  border-radius: 12px;
-  overflow: hidden;
-  scroll-snap-align: start;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.movie-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
-
-.card-inner {
-  position: relative;
-}
-
-.card-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  height: 300px;
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.movie-card:hover .card-image {
-  transform: scale(1.05);
-}
-
-.card-hover-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.6);
+}
+
+.overlay-gradient-1 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, black, transparent);
+}
+
+.overlay-gradient-2 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right, rgba(0,0,0,0.5), transparent);
+}
+
+.poster-content {
+  position: absolute;
+  bottom: 40px;
+  left: 20px;
+  max-width: 600px;
   color: white;
-  text-align: center;
-  padding: 8px;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
 }
 
-.movie-card:hover .card-hover-overlay {
-  transform: translateY(0);
+.poster-title {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  background: linear-gradient(to bottom, #ddd, #fff);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
-.card-title {
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.poster-sub {
+  font-size: 14px;
+  opacity: 0.8;
 }
 
-.card-info {
-  padding: 12px;
-  color: #ccc;
+.poster-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
 }
 
-.episode-chip {
-  display: inline-block;
-  background-color: #ffd600;
-  color: black;
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-bottom: 6px;
+.chip-custom {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  text-transform: uppercase;
+}
+.poster-card {
+  background: transparent !important;
 }
 
-.origin {
-  font-weight: bold;
-  color: #fff;
-}
-
-.meta {
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
-/* Nút điều hướng trái phải */
-.nav-btn {
-  background-color: rgba(0, 0, 0, 0.6);
-  border: none;
-  color: white;
-  font-size: 24px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 50%;
-  user-select: none;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-  flex-shrink: 0;
-}
-
-.nav-btn:hover {
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
-.nav-btn.left {
-  margin-right: 8px;
-}
-
-.nav-btn.right {
-  margin-left: 8px;
-}
-
-.trailer-thumb {
-  width: 222px;
-  height: 125px;
+.poster-wrapper {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
-  transition: transform 0.25s ease;
 }
 
-/* Ảnh */
-.trailer-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.poster-img {
   transition: transform 0.35s ease;
 }
 
-/* overlay (mặc định trong suốt) */
-.trailer-overlay {
-  position: absolute;
-  inset: 0; /* top:0;right:0;bottom:0;left:0; */
-  background: rgba(0, 0, 0, 0);
-  transition: background 0.25s ease;
-  pointer-events: none; /* để click qua overlay */
+.poster-wrapper:hover .poster-img {
+  transform: scale(1.07);
 }
 
-/* nút play (ẩn mặc định) */
-.trailer-play {
+/* Lớp mờ */
+.poster-overlay {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.95);
+  inset: 0;
+  background: rgba(0,0,0,0.35);
   opacity: 0;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none; /* cho phép click container */
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
+  transition: opacity 0.3s ease;
 }
 
-/* khi hover -> làm nổi ảnh, hiện overlay + play */
-.trailer-thumb:hover img {
-  transform: scale(1.03);
-}
-
-.trailer-thumb:hover .trailer-overlay {
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid yellow;
-}
-
-.trailer-thumb:hover .trailer-play {
+.poster-wrapper:hover .poster-overlay {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-.episode-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-.episode-col {
-  flex: 0 0 20% !important;  
-  max-width: 20% !important; 
-  padding: 4px;
-}
-.video-player {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* hoặc 'cover' nếu bạn muốn full */
-  background-color: black;
-  cursor: pointer;
-}
-.suggested-item {
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background-color 0.2s;
-}
-.suggested-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-.v-list-item {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-.custom-title {
-  display: flex;
-  flex-wrap: wrap;     
-  gap: 8px;        
-  white-space: normal; 
-  width: 100%;
 }
 
-.title-text {
-  white-space: normal; 
-  word-break: break-word;
+/* Nút xem ngay */
+.poster-play-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.chip-limit {
-  max-width: 140px;  
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;   
+.poster-wrapper:hover .poster-play-btn {
+  opacity: 1;
+}
+
+/* 📱 MOBILE: nút luôn hiển thị */
+@media (max-width: 768px) {
+  .poster-play-btn {
+    opacity: 1 !important;
+    font-size: 22px;
+  }
+  .poster-overlay {
+    opacity: 1 !important;
+  }
+}
+.text-left{
+  font-size: 14px;
+}
+.poster-content {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 10;
+  color: white;
+}
+
+.xem-ngay-btn {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 10px 26px;
+  border-radius: 12px;
+}
+
+/* Mobile chỉnh lại vị trí nút */
+@media (max-width: 768px) {
+  .poster-content {
+    bottom: 20px;
+    left: 20px;
+  }
+
+  .xem-ngay-btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
