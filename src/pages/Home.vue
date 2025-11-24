@@ -313,15 +313,13 @@
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
-                            <div class="movie-meta">
                               <div class="text-grey text-truncate" v-for="(cate, ind) in item.category" :key="ind">
                                 <!-- khong xuong dong -->
                                 {{ cate.name }} 
                               </div>
                               <span> • {{ item.year }}</span>
-                            </div>
                           </v-card-text>
-                        <div class="text-grey text-truncate text-left" style="font-size: 13px">Thời gian chiếu: {{timeAgo(item.modified.time)}}</div>
+                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px">Thời gian chiếu: {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
                       
                     </v-card>
@@ -971,7 +969,7 @@ a {
   /* color: #fff !important; */
   font-size: 11px !important;
   padding: 2px 10px !important;
-  border-radius: 8px;
+  border-radius: 10px;
   z-index: 10;
   width: auto;
   height: auto;
