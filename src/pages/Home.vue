@@ -315,6 +315,7 @@
                           <v-card-text class="movie-info text-left">
                               <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
                                 <!-- khong xuong dong -->
+                                {{cate}}
                                 {{ cate.name }} 
                                 <span  v-if="ind < cate.length -1">
                                   ,
@@ -322,7 +323,7 @@
                               </div>
                               <span> • {{ item.year }}</span>
                           </v-card-text>
-                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px;"> {{timeAgo(item.modified.time)}}</v-card-text>
+                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px; padding-top: 0;margin-top: 0;"> {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
                       
                     </v-card>
