@@ -322,7 +322,7 @@
                               </div>
                               <span> • {{ item.year }}</span>
                           </v-card-text>
-                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px;">{{$t('Thời gian chiếu')}}: {{timeAgo(item.modified.time)}}</v-card-text>
+                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px;"> {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
                       
                     </v-card>
