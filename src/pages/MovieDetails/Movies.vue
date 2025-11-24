@@ -1,9 +1,5 @@
 <template>
   <v-container class="search-page" fluid>
-
-    <!-- ========================= -->
-    <!--  PHẦN 1: PARALLAX + BUTTON -->
-    <!-- ========================= -->
     <v-parallax :src="getOptimizedImage(movie.poster_url)">
       <v-container class="fill-height">
         <v-row class="justify-center align-center text-center">

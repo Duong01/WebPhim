@@ -277,14 +277,14 @@
                           </v-btn>
 
                           <!-- hiển thị dưới cùng bên trái -->
-                          <v-btn
+                          <!-- <v-btn
                             icon
                             size="small"
                             variant="flat"
                             class="badge-bottom-left"
                           >
                             {{item.country[0].name}}
-                          </v-btn>
+                          </v-btn> -->
                            </div>
 
                           <div class="movie-overlay" aria-hidden="true"></div>
