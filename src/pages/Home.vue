@@ -315,9 +315,8 @@
                           <v-card-text class="movie-info text-left">
                               <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
                                 <!-- khong xuong dong -->
-                                {{cate}}
                                 {{ cate.name }} 
-                                <span  v-if="ind < cate.length -1">
+                                <span  v-if="ind < item.category.length -1">
                                   ,
                                 </span>
                               </div>
