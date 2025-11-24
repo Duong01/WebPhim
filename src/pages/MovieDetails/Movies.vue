@@ -492,17 +492,7 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
       this.playVideo(this.movie.videoUrl);
-      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
 
-      if (epName) {
-        const normalized = epName.replace('Tập ', 'tap');
-
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: newSlug },
-          query: { page: normalized }
-        });
-      }
       await this.ListMovieByCate();
       await this.GetComment();
       console.log(this.currentEpisodeIndex);
@@ -514,18 +504,7 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(this.slug);
       this.playVideo(this.movie.videoUrl);
-      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
 
-      if (epName) {
-        const normalized = epName.replace('Tập ', 'tap');
-
-        // Cập nhật URL
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: this.slug },
-          query: { page: normalized }
-        });
-      }
       await this.ListMovieByCate();
       await this.GetComment();
       console.log(this.currentEpisodeIndex);
