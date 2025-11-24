@@ -234,9 +234,9 @@
                       
                     >
                       <v-img
-                        :src="getOptimizedImage(item.poster_url, section.id)"
+                        :src="getOptimizedImage(item.thumb_url, section.id)"
                         :lazy-src="
-                          getOptimizedImage(item.poster_url, section.id)
+                          getOptimizedImage(item.thumb_url, section.id)
                         "
                         :alt="`Poster phim ${item.name}`"
                         class="movie-img"
@@ -982,7 +982,7 @@ a {
   position: absolute !important;
   background: rgba(105, 105, 105, 0.6) !important;
   /* color: #fff !important; */
-  font-size: 11px !important;
+  font-size: 12px !important;
   padding: 2px 10px !important;
   border-radius: 10px;
   z-index: 10;

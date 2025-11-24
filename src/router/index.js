@@ -48,7 +48,7 @@ const routes =[
         {
             path: '/movie/:slug',
             name: "MovieDetail",
-            component: () => import("@/pages/MoiveDetail.vue"),
+            component: () => import("@/pages/MovieDetails/MoiveDetail.vue"),
             props: route => ({
               slug: route.params.slug,
               page: route.query.page
@@ -58,6 +58,16 @@ const routes =[
           description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí."
         }
         },
+        {
+          path: '/movies/:slug',
+          name: "Movies",
+          component: () => import("@/pages/MovieDetails/Movies.vue"),
+          props: true,
+          meta: {
+        title: "Chi tiết phim - Web Phim Online",
+        description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí."
+      }
+      },
         {
             path: '/favorite',
             name: "FavoritePage",
