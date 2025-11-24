@@ -267,14 +267,14 @@
                           
 
                           <!-- hiển thị dưới cùng bên phải -->
-                          <v-btn
+                          <!-- <v-btn
                             icon
                             size="small"
                             variant="flat"
                             class="badge-bottom-right"
                           >
                             {{item.time}}
-                          </v-btn>
+                          </v-btn> -->
 
                           <!-- hiển thị dưới cùng bên trái -->
                           <!-- <v-btn
