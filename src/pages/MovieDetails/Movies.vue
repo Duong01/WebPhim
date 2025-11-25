@@ -767,8 +767,8 @@ export default {
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 8px;
-  background: linear-gradient(to bottom, #ddd, #fff);
-  color: transparent;
+  /* background: linear-gradient(to bottom, #ddd, #fff); */
+  color: white;
 }
 
 .poster-sub {
