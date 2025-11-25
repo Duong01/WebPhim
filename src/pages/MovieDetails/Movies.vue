@@ -90,19 +90,20 @@
         <!-- TRAILER -->
         <v-card color="grey-darken-4" flat class="mb-4 pa-4" >
 
-          <div class="trailer-thumb" @click="dialogTrailer = true" v-if="movie.trailer_id">
-            <iframe
+          <div class="trailer-thumb" @click="dialogTrailer = true" v-if="movie.trailer_id != ''">
+            <video
               width="100%"
               height="500"
+              controls
               :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
               frameborder="0"
               allowfullscreen
-            ></iframe>
+            ></video>
             
           </div>
 
         <!-- THÔNG TIN PHIM -->
-          <h3 class="text-left mb-3">{{ movie.title }}</h3>
+          <h3 class="mb-3" style="float: left;">{{ movie.title }}</h3>
 
           <div class="text-left mb-2">
             <div v-html="movie.description"></div>
@@ -132,10 +133,11 @@
         <v-col
           v-for="(ep, i) in visibleEpisodes"
           :key="i"
-          cols="12"
-          sm="12"
+          cols="4"
+          sm="4"
           md="2"
           lg="2"
+          xl="2"
         >
           <v-btn block color="primary">
             {{ ep.name }}
@@ -594,25 +596,7 @@ export default {
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
-        // if (this.link == "") {
-        //   ListMovieByCate(
-        //     this.movie.categoris,
-
-        //     (data) => {
-        //       if (data.status == "success") {
-        //         this.suggestedMovies = data.data.items;
-        //         this.isLoading = false;
-        //         resolve(true);
-        //       } else {
-        //         reject("error");
-        //       }
-        //     },
-        //     (err) => {
-        //       console.log(err);
-        //       reject(err);
-        //     }
-        //   );
-        // } else {
+        
           Categoris1(
             this.movie.categoris,
 
@@ -724,154 +708,6 @@ export default {
       });
     },
 
-    scrollLeft() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: -220, behavior: "smooth" });
-      }
-    },
-    scrollRight() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: 220, behavior: "smooth" });
-      }
-    },
-    getTrailer() {
-      this.movie.videoUrl = this.movie.trailer_url;
-      this.isTrailer = true;
-    },
-    playEpisode(episode) {
-      try{
-        console.log(episode)
-        this.currentEpisode = episode;
-        this.isLoading = true;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
-          this.movie.title = episode.filename;
-
-        }
-        this.movie.videoUrl = episode.link_embed;
-        this.movie.LinkDown = episode.link_m3u8;
-        const idx = this.movie.pageMovie.findIndex(ep => ep.name === episode.name);
-        if (idx !== -1) {
-          this.currentEpisodeIndex = idx;
-        }
-        // this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
-        this.movie.page = episode.name;
-
-        const normalized = episode.name.replace('Tập ', 'tap').trim()
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: this.slug },
-          query: { page: normalized }
-        });
-        this.playVideo(this.movie.videoUrl);
-        this.GetComment();
-        this.isLoading = false;
-      }
-      catch{
-        this.isLoading = false;
-        
-      }
-      
-    },
-    switchServer(server) {
-      this.isLoading = true;
-      
-      // this.movie.pageMovie = server.server_data;
-      this.movie.pageMovie = server.server_data.sort(
-        (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
-      );
-      if (
-        this.movie.page == "Full" ||
-        // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-        this.movie.page.includes("/")
-      ) {
-        this.movie.videoUrl = server.server_data[server.server_data.length-1].link_embed;
-        this.movie.LinkDown = server.server_data[server.server_data.length-1].link_m3u8;
-        this.isTrailer = false;
-      } else {
-        var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.includes(tap);
-        if (data) {
-          this.movie.videoUrl = data.link_embed;
-          this.movie.LinkDown = data.link_m3u8;
-          this.isTrailer = false;
-        }
-      }
-      
-
-      this.GetComment();
-      setTimeout(() => {
-        this.isLoading = false;
-
-      }, 1000);
-    },
-    nextEpisode() {
-      
-      if (this.currentEpisodeIndex > 0) {
-        console.log(this.currentEpisodeIndex)
-        this.currentEpisodeIndex--;
-        
-        const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
-        this.playEpisode(nextEp);
-      }
-      
-    },
-    prevEpisode() {
-      if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        console.log(this.currentEpisodeIndex)
-        this.currentEpisodeIndex++;
-        const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
-        this.playEpisode(prevEp);
-      }
-      
-    },
-    generateEmbedHtml(url) {
-      if (this.isTrailer) {
-        const youtubeMatch = this.movie.trailer_url.split("?v=");
-        // const youtubeMatch = url.match(
-        //   /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        // );
-        if (youtubeMatch.length > 0) {
-          const videoId = youtubeMatch[1];
-
-          return `
-            <iframe width="100%" height="100%"
-              src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-              >
-            </iframe>
-          `;
-        } else {
-          // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
-          return `
-            <video width="100%" height="100%" controls preload="none" style="touch-action: manipulation;">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-        //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
-      } else {
-        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
-      <iframe
-        src="${url}"
-        frameborder="0"
-        class="w-full h-full"
-        webkit-playsinline
-        loading="lazy"
-        allowfullscreen
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-      ></iframe>
-    </div>`;
-      }
-    },
   },
   computed: {
     visibleEpisodes() {
@@ -880,60 +716,7 @@ export default {
         ? this.movie.pageMovie           // Hiện tất cả tập
         : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
     },
-    thumbnailUrl() {
-      const match = this.movie.videoUrl.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-      );
-      return match
-        ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`
-        : "/placeholder.jpg"; // fallback ảnh tĩnh nếu không phải YouTube
-    },
-
-    embedHtml() {
-      const url = this.movie.videoUrl;
-      if (this.isTrailer) {
-        const youtubeMatch = url.match(
-          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        );
-        if (youtubeMatch) {
-          const videoId = youtubeMatch[1];
-          return `
-            <iframe width="100%" height="600"
-              src="https://www.youtube.com/embed/${videoId}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-              
-              >
-            </iframe>
-          `;
-        } else {
-          return `
-            <video width="100%" height="600" controls preload="none" style="touch-action: manipulation;">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-      } else {
-        return `
-          <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
-            <iframe
-              src="${url}"
-              frameborder="0"
-              class="w-full h-full"
-              webkit-playsinline
-              loading="lazy"
-              allowfullscreen
-              allow=" fullscreen"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-            ></iframe>
-          </div>
-        `;
-      }
-    },
+    
   },
 };
 </script>
@@ -986,7 +769,6 @@ export default {
   line-height: 1.2;
   margin-bottom: 8px;
   background: linear-gradient(to bottom, #ddd, #fff);
-  -webkit-background-clip: text;
   color: transparent;
 }
 
