@@ -70,7 +70,7 @@
             class="poster-img"
             width="100%"
             height="100%"
-            :src="getOptimizedImage(movie.poster_url)"
+            :src="getOptimizedImage(movie.thumb_url)"
             frameborder="0"
             allowfullscreen
           />
@@ -100,40 +100,45 @@
     </div>
 
     <!-- TITLE -->
-    <h2 class="movie-title text-left">{{ movies.title }}</h2>
+    <h2 class="movie-title text-left">{{ movies.name }}</h2>
 
     <!-- DESCRIPTION -->
-    <div class="movie-description text-left" v-html="movies.description"></div>
+    <div class="movie-description text-left" v-html="movies.content"></div>
 
     <!-- INFO GRID -->
     <div class="movie-info-grid text-left">
 
       
       <div><strong>Thể loại:</strong> 
-          <div class="category-wrap" v-for="(cate, ind) in movies.category" :key="ind">
-          <!-- khong xuong dong -->
-          {{ cate.name }} 
-          <span  v-if="ind < movies.category.length -1">
-            ,
+          <span class="inline-list">
+            <span v-for="(cate, ind) in movies.category" :key="ind">
+              {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
+            </span>
           </span>
-        </div>
       </div>
 
-      <p><strong>Quốc gia:</strong> {{ movies.country[0].name || 'Đang cập nhật' }}</p>
+      <div class="info-row">
+        <strong>Quốc gia:</strong>
+        <span>{{ movies.country[0].name || "Đang cập nhật" }}</span>
+      </div>
 
-      <p><strong>Số tập:</strong> {{ movies.episode_total }} tập</p>
+      <div class="info-row">
+        <strong>Số tập:</strong>
+        <span>{{ movies.episode_total }} tập</span>
+      </div>
 
-      <p><strong>Thời lượng:</strong> {{ movies.time }}</p>
+      <div class="info-row">
+        <strong>Thời lượng:</strong>
+        <span>{{ movies.time }}</span>
+      </div>
 
-      <div><strong>Diễn viên:</strong> 
-        <div class="category-wrap" v-for="(actor, ind) in movies.actor" :key="ind">
-          <!-- khong xuong dong -->
-          {{ actor }} 
-          <span  v-if="ind < movies.actor.length -1">
-            ,
+      <div class="info-row">
+        <strong>Diễn viên:</strong>
+        <span class="inline-list">
+          <span v-for="(actor, ind) in movies.actor" :key="ind">
+            {{ actor }}<span v-if="ind < movies.actor.length - 1">, </span>
           </span>
-        </div>
-      
+        </span>
       </div>
 
     </div>
@@ -1007,6 +1012,27 @@ export default {
   font-size: 20px;
   font-weight: 600;
   text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+}
+.movie-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-row {
+  display: flex;
+  flex-wrap: nowrap; /* Không cho xuống dòng */
+  gap: 6px;
+}
+
+.inline-list {
+  display: flex;
+  flex-wrap: nowrap; /* Không xuống dòng */
+  gap: 4px;
+}
+
+.inline-list span {
+  white-space: nowrap; /* Không cho từng mục tự xuống dòng */
 }
 
 </style>
