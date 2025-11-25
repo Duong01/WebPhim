@@ -9,7 +9,7 @@
         <v-img
           :src="getOptimizedImage(movie.thumb_url)"
           cover
-          class="relative w-full h-[70vh] overflow-hidden rounded-t-2xl"
+          class="w-full h-70vh overflow-hidden rounded-t-2xl poster-wrapper"
         />
 
         <!-- Overlay effects -->
@@ -61,7 +61,7 @@
         <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10 ">
           <!-- CỘT TRÁI: VIDEO -->
         <v-col cols="12" md="4">
-          <v-card color="black" flat class="poster-wrapper">
+          <v-card color="black" flat >
             <v-img
               class="poster-img"
               width="100%"
@@ -204,7 +204,7 @@
 
           <iframe
             width="100%"
-            height="500"
+            height="700"
             :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
             frameborder="0"
             allowfullscreen

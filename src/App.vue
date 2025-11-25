@@ -2,7 +2,9 @@
   <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
         <div v-if="isLoading" class="overlay">
           <div class="loader"></div>
           <p>Đang tải dữ liệu...</p>
