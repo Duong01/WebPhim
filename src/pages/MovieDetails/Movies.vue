@@ -7,9 +7,10 @@
       <div>
         <!-- Background image -->
         <v-img
+
           :src="getOptimizedImage(movie.thumb_url)"
           cover
-          class="w-full h-70vh overflow-hidden rounded-t-2xl poster-wrapper"
+          class="poster-wrapper"
         />
 
         <!-- Overlay effects -->
@@ -57,27 +58,19 @@
       </div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-      <v-row class="mt-6">
+      <v-row>
         <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10 ">
           <!-- CỘT TRÁI: VIDEO -->
         <v-col cols="12" md="4">
-          <v-card color="black" flat >
+          <div class="poster-wrapper">
             <v-img
               class="poster-img"
-              width="100%"
-              height="100%"
               :src="getOptimizedImage(movie.poster_url)"
-              frameborder="0"
-              allowfullscreen
             />
-            <!-- Overlay khi hover -->
-            <!-- <div class="poster-overlay"></div> -->
-
-            <!-- Nút Xem Ngay -->
             <div class="poster-overlay">
               <span class="overlay-text">Xem ngay</span>
             </div>
-          </v-card>
+          </div>
         </v-col>
 
         <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
@@ -775,246 +768,34 @@ export default {
 </script>
 
 <style scoped>
+/* Poster hover */
 .poster-wrapper {
   position: relative;
   width: 100%;
-  height: 75vh;
+  height: 100%;
   overflow: hidden;
-  border-radius: 20px;
 }
 
 .poster-img {
   width: 100%;
   height: 100%;
-  transform: scale(1.15);
-  filter: brightness(0.9);
+  object-fit: cover;
+  transition: opacity 0.3s ease;
 }
 
-.overlay-dark {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.overlay-gradient-1 {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, black, transparent);
-}
-
-.overlay-gradient-2 {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top right, rgba(0, 0, 0, 0.5), transparent);
-}
-
-.poster-content {
-  position: absolute;
-  bottom: 40px;
-  left: 20px;
-  max-width: 600px;
-  color: white;
-}
-
-.poster-title {
-  font-size: 42px;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 8px;
-  /* background: linear-gradient(to bottom, #ddd, #fff); */
-  color: white;
-}
-
-.poster-sub {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.poster-badges {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.chip-custom {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  text-transform: uppercase;
-}
-.poster-card {
-  background: transparent !important;
-}
-
-.poster-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-.poster-img {
-  transition: transform 0.35s ease;
-}
-
-.poster-wrapper:hover .poster-img {
-  transform: scale(1.07);
-}
-
-/* Lớp mờ */
 .poster-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.poster-wrapper:hover .poster-overlay {
-  opacity: 1;
-}
-
-/* Nút xem ngay */
-.poster-play-btn {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.poster-wrapper:hover .poster-play-btn {
-  opacity: 1;
-}
-
-/* 📱 MOBILE: nút luôn hiển thị */
-@media (max-width: 768px) {
-  .poster-play-btn {
-    opacity: 1 !important;
-    font-size: 22px;
-  }
-  .poster-overlay {
-    opacity: 1 !important;
-  }
-}
-.text-left {
-  font-size: 14px;
-}
-.poster-content {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  z-index: 10;
-  color: white;
-}
-
-.xem-ngay-btn {
-  font-size: 20px;
-  font-weight: 600;
-  padding: 10px 26px;
-  border-radius: 12px;
-}
-
-/* Mobile chỉnh lại vị trí nút */
-@media (max-width: 768px) {
-  .poster-content {
-    bottom: 20px;
-    left: 20px;
-  }
-
-  .xem-ngay-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-.trailer-box {
-  width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.trailer-iframe {
-  width: 100%;
-  height: 460px;
-  border-radius: 10px;
-}
-
-.movie-title {
-  color: white;
-  margin: 15px 0 10px 0;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.movie-description {
-  color: #bbb;
-  font-size: 15px;
-  line-height: 1.6;
-  margin-bottom: 15px;
-}
-
-.movie-info-grid p {
-  color: #ccc;
-  font-size: 15px;
-  margin: 4px 0;
-}
-
-.movie-info-grid strong {
-  color: orange;
-}
-
-.rating-row {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .trailer-iframe {
-    height: 260px;
-  }
-}
-.btnNext {
-  border-radius: 10px;
-}
-.poster-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.poster-img {
-  transition: transform 0.3s ease;
-}
-
 .poster-wrapper:hover .poster-img {
-  transform: scale(1.05); /* phóng nhẹ ảnh */
-}
-
-/* Overlay */
-.poster-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s ease;
+  opacity: 0.4;
 }
 
 .poster-wrapper:hover .poster-overlay {
@@ -1023,29 +804,47 @@ export default {
 
 .overlay-text {
   color: white;
-  font-size: 20px;
-  font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  font-size: 1.4rem;
+  font-weight: bold;
 }
+
+
+/* Movie info layout */
 .movie-info-grid {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
+/* Một dòng: nhãn + nội dung */
 .info-row {
   display: flex;
-  flex-wrap: nowrap; /* Không cho xuống dòng */
+  flex-wrap: nowrap;
   gap: 6px;
+  line-height: 1.4;
 }
 
+/* Danh sách không xuống dòng */
 .inline-list {
   display: flex;
-  flex-wrap: nowrap; /* Không xuống dòng */
+  flex-wrap: nowrap;
   gap: 4px;
 }
 
 .inline-list span {
-  white-space: nowrap; /* Không cho từng mục tự xuống dòng */
+  white-space: nowrap;
 }
+
+
+/* Title + Description */
+.movie-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.movie-description {
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
 </style>

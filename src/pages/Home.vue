@@ -512,7 +512,7 @@ export default {
     //   await Promise.all(
     //     this.sections.map(item => this.ListMovie(item.id, item))
     // );
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadFavorites();
     
     this.$nextTick(() => {
