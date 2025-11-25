@@ -16,7 +16,7 @@
     <!-- Overlay effects -->
     <!-- <div class="overlay-dark"></div> -->
     <div class="overlay-gradient-1"></div>
-    <div class="overlay-gradient-2"></div>
+    <!-- <div class="overlay-gradient-2"></div> -->
 
     <!-- Content -->
     <div class="poster-content">
@@ -75,7 +75,7 @@
             allowfullscreen
           />
           <!-- Overlay khi hover -->
-    <div class="poster-overlay"></div>
+    <!-- <div class="poster-overlay"></div> -->
 
     <!-- Nút Xem Ngay -->
     <!-- <div class="poster-play-btn">
@@ -91,14 +91,13 @@
         <v-card color="grey-darken-4" flat class="mb-4 pa-4" >
 
           <div class="trailer-thumb" @click="dialogTrailer = true" v-if="movie.trailer_id != ''">
-            <video
+            <iframe
               width="100%"
               height="500"
-              controls
               :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
               frameborder="0"
               allowfullscreen
-            ></video>
+            ></iframe>
             
           </div>
 
