@@ -4,11 +4,12 @@
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else>
-      <div>
+      <div class="poster-wrapper">
 
     <!-- Background image -->
     <v-img
       :src="getOptimizedImage(movie.thumb_url)"
+      class="poster-img"
       cover
     />
 
@@ -65,9 +66,9 @@
 
       <!-- CỘT TRÁI: VIDEO -->
       <v-col cols="12" md="4">
-        <v-card color="black" flat class="poster-wrapper">
+        <v-card color="black" flat>
           <v-img
-            class="poster-img"
+          
             width="100%"
             height="100%"
             :src="getOptimizedImage(movie.poster_url)"
@@ -78,9 +79,9 @@
     <!-- <div class="poster-overlay"></div> -->
 
     <!-- Nút Xem Ngay -->
-        <div class="poster-overlay">
-          <span class="overlay-text">Xem ngay</span>
-        </div>
+    <!-- <div class="poster-play-btn">
+      ▶ Xem ngay
+    </div> -->
         </v-card>
       </v-col>
 
@@ -100,45 +101,40 @@
     </div>
 
     <!-- TITLE -->
-    <h2 class="movie-title text-left">{{ movies.name }}</h2>
+    <h2 class="movie-title text-left">{{ movies.title }}</h2>
 
     <!-- DESCRIPTION -->
-    <div class="movie-description text-left" v-html="movies.content"></div>
+    <div class="movie-description text-left" v-html="movies.description"></div>
 
     <!-- INFO GRID -->
     <div class="movie-info-grid text-left">
 
       
       <div><strong>Thể loại:</strong> 
-          <span class="inline-list">
-            <span v-for="(cate, ind) in movies.category" :key="ind">
-              {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
-            </span>
+          <div class="category-wrap" v-for="(cate, ind) in movies.category" :key="ind">
+          <!-- khong xuong dong -->
+          {{ cate.name }} 
+          <span  v-if="ind < movies.category.length -1">
+            ,
           </span>
+        </div>
       </div>
 
-      <div class="info-row">
-        <strong>Quốc gia:</strong>
-        <span>{{ movies.country[0].name || "Đang cập nhật" }}</span>
-      </div>
+      <p><strong>Quốc gia:</strong> {{ movies.country[0].name || 'Đang cập nhật' }}</p>
 
-      <div class="info-row">
-        <strong>Số tập:</strong>
-        <span>{{ movies.episode_total }} tập</span>
-      </div>
+      <p><strong>Số tập:</strong> {{ movies.episode_total }} tập</p>
 
-      <div class="info-row">
-        <strong>Thời lượng:</strong>
-        <span>{{ movies.time }}</span>
-      </div>
+      <p><strong>Thời lượng:</strong> {{ movies.time }}</p>
 
-      <div class="info-row">
-        <strong>Diễn viên:</strong>
-        <span class="inline-list">
-          <span v-for="(actor, ind) in movies.actor" :key="ind">
-            {{ actor }}<span v-if="ind < movies.actor.length - 1">, </span>
+      <div><strong>Diễn viên:</strong> 
+        <div class="category-wrap" v-for="(actor, ind) in movies.actor" :key="ind">
+          <!-- khong xuong dong -->
+          {{ actor }} 
+          <span  v-if="ind < movies.actor.length -1">
+            ,
           </span>
-        </span>
+        </div>
+      
       </div>
 
     </div>
@@ -972,67 +968,4 @@ export default {
 .btnNext{
   border-radius: 10px;
 }
-.poster-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.poster-img {
-  transition: transform 0.3s ease;
-}
-
-.poster-wrapper:hover .poster-img {
-  transform: scale(1.05); /* phóng nhẹ ảnh */
-}
-
-/* Overlay */
-.poster-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s ease;
-}
-
-.poster-wrapper:hover .poster-overlay {
-  opacity: 1;
-}
-
-.overlay-text {
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.7);
-}
-.movie-info-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.info-row {
-  display: flex;
-  flex-wrap: nowrap; /* Không cho xuống dòng */
-  gap: 6px;
-}
-
-.inline-list {
-  display: flex;
-  flex-wrap: nowrap; /* Không xuống dòng */
-  gap: 4px;
-}
-
-.inline-list span {
-  white-space: nowrap; /* Không cho từng mục tự xuống dòng */
-}
-
 </style>
