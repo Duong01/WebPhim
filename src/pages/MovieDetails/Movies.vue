@@ -113,7 +113,7 @@
           <div class="category-wrap" v-for="(cate, ind) in movies.category" :key="ind">
           <!-- khong xuong dong -->
           {{ cate.name }} 
-          <span  v-if="ind < movies.category.category.length -1">
+          <span  v-if="ind < movies.category.length -1">
             ,
           </span>
         </div>
