@@ -14,7 +14,7 @@
     />
 
     <!-- Overlay effects -->
-    <div class="overlay-dark"></div>
+    <!-- <div class="overlay-dark"></div> -->
     <div class="overlay-gradient-1"></div>
     <div class="overlay-gradient-2"></div>
 
@@ -61,9 +61,7 @@
     </div>
   </div>
 
-    <!-- ========================= -->
     <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-    <!-- ========================= -->
     <v-row class="mt-6">
 
       <!-- CỘT TRÁI: VIDEO -->
@@ -80,9 +78,9 @@
     <div class="poster-overlay"></div>
 
     <!-- Nút Xem Ngay -->
-    <div class="poster-play-btn">
+    <!-- <div class="poster-play-btn">
       ▶ Xem ngay
-    </div>
+    </div> -->
         </v-card>
       </v-col>
 
@@ -90,9 +88,9 @@
       <v-col cols="12" md="8">
 
         <!-- TRAILER -->
-        <v-card color="grey-darken-4" flat class="mb-4 pa-4" v-if="movie.trailer_id">
+        <v-card color="grey-darken-4" flat class="mb-4 pa-4" >
 
-          <div class="trailer-thumb" @click="dialogTrailer = true">
+          <div class="trailer-thumb" @click="dialogTrailer = true" v-if="movie.trailer_id">
             <iframe
               width="100%"
               height="500"
@@ -132,17 +130,23 @@
 
       <v-row>
         <v-col
-          v-for="(ep, i) in movie.pageMovie"
+          v-for="(ep, i) in visibleEpisodes"
           :key="i"
-          cols="6"
-          sm="4"
+          cols="12"
+          sm="12"
           md="2"
+          lg="2"
         >
-          <v-btn block color="primary" @click="playEpisode(ep)">
+          <v-btn block color="primary">
             {{ ep.name }}
           </v-btn>
         </v-col>
       </v-row>
+      <div class="text-center mt-4">
+        <v-btn color="pink" variant="tonal" @click="toggleEpisodes">
+          {{ showAllEpisodes ? "Thu gọn" : "Xem thêm" }}
+        </v-btn>
+      </div>
     </v-card>
 
     <!-- Dialog Trailer -->
@@ -183,6 +187,7 @@ export default {
   name: "MoviesPage",
   data() {
     return {
+      showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
       tab: "",
@@ -488,7 +493,9 @@ export default {
         );
       });
     },
-
+    toggleEpisodes() {
+      this.showAllEpisodes = !this.showAllEpisodes;
+    },
     goToWatch() {
     this.$router.push(`/movie/${this.movie.slug}`);
     // hoặc:
@@ -867,6 +874,12 @@ export default {
     },
   },
   computed: {
+    visibleEpisodes() {
+      if (!this.movie?.pageMovie) return [];
+      return this.showAllEpisodes
+        ? this.movie.pageMovie           // Hiện tất cả tập
+        : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+    },
     thumbnailUrl() {
       const match = this.movie.videoUrl.match(
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
