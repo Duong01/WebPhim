@@ -61,7 +61,7 @@
         <v-row class="mt-6">
         <!-- CỘT TRÁI: VIDEO -->
         <v-col cols="12" md="4">
-          <v-card color="black" flat>
+          <v-card color="black" flat class="img-left">
             <v-img
               width="100%"
               height="100%"
@@ -107,7 +107,7 @@
               <div>
                 <strong>Thể loại:</strong>
                 <div
-                  class="category-wrap"
+                  class="category-nowrap"
                   v-for="(cate, ind) in movies.category"
                   :key="ind"
                 >
@@ -129,7 +129,7 @@
               <div>
                 <strong>Diễn viên:</strong>
                 <div
-                  class="category-wrap"
+                  class="category-nowrap"
                   v-for="(actor, ind) in movies.actor"
                   :key="ind"
                 >
@@ -179,10 +179,10 @@
         </v-row>
         <div class="text-center mt-4">
           <v-btn
-            color="pink"
+            color="gray"
             variant="tonal"
             @click="toggleEpisodes"
-            class="mt-4 px-4 py-2 rounded-full text-sm flex items-center gap-2 transition cursor-pointer bg-white/10 hover:bg-white/20 text-gray-200"
+            class="btnnext"
           >
             {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
             <v-icon size="18" class="mr-1">
@@ -788,6 +788,11 @@ export default {
   transform: scale(1.15);
   filter: brightness(0.9);
 }
+.img-left:hover{
+  transform: scale(1.07);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
 
 .overlay-dark {
   position: absolute;
@@ -858,7 +863,7 @@ export default {
 }
 
 .poster-wrapper:hover .poster-img {
-  transform: scale(1.07);
+  /* transform: scale(1.07); */
 }
 
 /* Lớp mờ */
@@ -982,7 +987,9 @@ export default {
     height: 260px;
   }
 }
-.btnNext {
+.btnnext {
   border-radius: 10px;
+  color: #fff;
+  color: #757575;
 }
 </style>
