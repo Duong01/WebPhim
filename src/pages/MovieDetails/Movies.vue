@@ -4,11 +4,11 @@
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else>
-      <div class="poster-wrapper">
+      <div>
 
     <!-- Background image -->
     <v-img
-      :src="getOptimizedImage(movie.poster_url)"
+      :src="getOptimizedImage(movie.thumb_url)"
       cover
     />
 
@@ -70,7 +70,7 @@
             class="poster-img"
             width="100%"
             height="100%"
-            :src="getOptimizedImage(movie.thumb_url)"
+            :src="getOptimizedImage(movie.poster_url)"
             frameborder="0"
             allowfullscreen
           />
@@ -109,7 +109,8 @@
     <div class="movie-info-grid text-left">
 
       
-      <div><strong>Thể loại:</strong> 
+      <div class="info-row">
+        <strong>Thể loại:</strong> 
           <span class="inline-list">
             <span v-for="(cate, ind) in movies.category" :key="ind">
               {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
