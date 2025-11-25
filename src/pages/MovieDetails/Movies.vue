@@ -87,38 +87,48 @@
       <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
       <v-col cols="12" md="8">
 
-        <!-- TRAILER -->
-        <v-card color="grey-darken-4" flat class="mb-4 pa-4" >
+  <!-- TRAILER -->
+  <v-card color="grey-darken-4" flat class="mb-4 pa-4">
 
-          <div class="trailer-thumb" @click="dialogTrailer = true" v-if="movie.trailer_id != ''">
-            <iframe
-              width="100%"
-              height="500"
-              :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
-              frameborder="0"
-              allowfullscreen
-            ></iframe>
-            
-          </div>
+    <div class="trailer-box" v-if="movie.trailer_id">
+      <iframe
+        class="trailer-iframe"
+        :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
 
-        <!-- THÔNG TIN PHIM -->
-          <h3 class="mb-3" style="float: left;">{{ movie.title }}</h3>
+    <!-- TITLE -->
+    <h2 class="movie-title">{{ movie.title }}</h2>
 
-          <div class="text-left mb-2">
-            <div v-html="movie.description"></div>
-          </div>
+    <!-- DESCRIPTION -->
+    <div class="movie-description" v-html="movie.description"></div>
 
-          <p class="text-left"><strong style="color: orange;">Diễn viên:</strong> {{ movie.actors.join(', ') }}</p>
-          <p class="text-left"><strong style="color: orange;">Đạo diễn:</strong> {{ movie.director.join(', ') }}</p>
-          <p class="text-left"><strong style="color: orange;">Thể loại:</strong> {{ movie.genre.name }}</p>
+    <!-- INFO GRID -->
+    <div class="movie-info-grid">
 
-          <div class="d-flex align-center">
-            <strong class="text-left mr-2">Đánh giá:</strong>
-            <v-rating readonly :model-value="movie.rating" color="yellow" />
-          </div>
-        </v-card>
+      <p><strong>Thể loại:</strong> {{ movie.genre?.name }}</p>
 
-      </v-col>
+      <p><strong>Quốc gia:</strong> {{ movie.country || 'Đang cập nhật' }}</p>
+
+      <p><strong>Số tập:</strong> {{ movie.total_episodes }} tập</p>
+
+      <p><strong>Thời lượng:</strong> {{ movie.time_per_ep }}</p>
+
+      <p><strong>Diễn viên:</strong> {{ movie.actors.join(', ') }}</p>
+
+    </div>
+
+    <!-- RATING -->
+    <div class="rating-row">
+      <strong class="mr-2">Đánh giá:</strong>
+      <v-rating readonly :model-value="movie.rating" color="yellow" density="compact" />
+    </div>
+
+  </v-card>
+
+</v-col>
 
     </v-row>
 
@@ -880,6 +890,53 @@ export default {
   .xem-ngay-btn {
     width: 100%;
     text-align: center;
+  }
+}
+.trailer-box {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.trailer-iframe {
+  width: 100%;
+  height: 460px;
+  border-radius: 10px;
+}
+
+.movie-title {
+  color: white;
+  margin: 15px 0 10px 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.movie-description {
+  color: #bbb;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.movie-info-grid p {
+  color: #ccc;
+  font-size: 15px;
+  margin: 4px 0;
+}
+
+.movie-info-grid strong {
+  color: orange;
+}
+
+.rating-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .trailer-iframe {
+    height: 260px;
   }
 }
 </style>
