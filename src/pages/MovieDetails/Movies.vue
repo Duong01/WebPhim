@@ -57,7 +57,8 @@
       </div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-      <v-row class="mt-6">
+      <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
+        <v-row class="mt-6">
         <!-- CỘT TRÁI: VIDEO -->
         <v-col cols="12" md="4">
           <v-card color="black" flat>
@@ -73,8 +74,8 @@
 
             <!-- Nút Xem Ngay -->
             <!-- <div class="poster-play-btn">
-      ▶ Xem ngay
-    </div> -->
+              ▶ Xem ngay
+            </div> -->
           </v-card>
         </v-col>
 
@@ -152,6 +153,8 @@
           </v-card>
         </v-col>
       </v-row>
+      </div>
+      
 
       <!-- ========================= -->
       <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
