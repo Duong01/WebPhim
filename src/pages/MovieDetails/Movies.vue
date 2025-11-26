@@ -985,10 +985,5 @@ export default {
   display: flex;
 }
 
-@media (max-width: 768px) {
-  .no-wrap-row {
-    flex-wrap: wrap !important; /* chỉ xuống dòng khi mobile */
-  }
-}
 </style>
 
