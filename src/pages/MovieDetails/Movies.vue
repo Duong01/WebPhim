@@ -58,30 +58,35 @@
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
       <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
+        
         <v-row class="mt-6 no-wrap-row">
         <!-- CỘT TRÁI: VIDEO -->
-        <v-col cols="12" md="4">
-          <v-card color="black" flat class="img-left">
-            <v-img
-              width="100%"
-              height="100%"
-              :src="getOptimizedImage(movie.poster_url)"
-              frameborder="0"
-              allowfullscreen
-              class="img-poster"
-            />
-            <!-- Overlay khi hover -->
-            <!-- <div class="poster-overlay"></div> -->
+        <div class="lg:w-1/3 w-full relative group">
+          <v-col md="4">
+            <v-card color="black" flat class="img-left">
+              <v-img
+                width="100%"
+                height="100%"
+                :src="getOptimizedImage(movie.poster_url)"
+                frameborder="0"
+                allowfullscreen
+                class="img-poster"
+              />
+              <!-- Overlay khi hover -->
+              <!-- <div class="poster-overlay"></div> -->
 
-            <!-- Nút Xem Ngay -->
-            <!-- <div class="poster-play-btn">
-              ▶ Xem ngay
-            </div> -->
-          </v-card>
-        </v-col>
+              <!-- Nút Xem Ngay -->
+              <!-- <div class="poster-play-btn">
+                ▶ Xem ngay
+              </div> -->
+            </v-card>
+          </v-col>
+        </div>
+          
 
         <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-        <v-col cols="12" md="8">
+        <div class="flex-1 space-y-4">
+           <v-col md="8">
           <!-- TRAILER -->
           <v-card color="grey-darken-4" flat class="mb-4 pa-4">
             <div class="trailer-box" v-if="movie.trailer_id">
@@ -153,6 +158,8 @@
             </div>
           </v-card>
         </v-col>
+        </div>
+       
       </v-row>
       </div>
       
@@ -908,7 +915,6 @@ export default {
 .trailer-box {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 */
   border-radius: 10px;
   overflow: hidden;
 }
