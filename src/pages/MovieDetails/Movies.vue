@@ -975,11 +975,6 @@ export default {
   flex-wrap: nowrap; /* không cho xuống dòng */
 }
 
-@media (max-width: 768px) {
-  .container {
-    flex-wrap: wrap; /* cho xuống dòng khi mobile */
-  }
-}
 .no-wrap-row {
   flex-wrap: nowrap !important; /* không cho xuống dòng */
   display: flex;
