@@ -525,7 +525,7 @@ export default {
       if (isMobile) {
         return item.slice(0, 2);  // Mobile → 2 item
       } else {
-        return item.slice(0, 4);  // Desktop → 4 item
+        return item.slice(0, 3);  // Desktop → 4 item
       }
     },
     timeAgo(timestamp) {
