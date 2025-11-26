@@ -185,7 +185,7 @@
               <v-col cols="auto">
                 <router-link
                   :to="
-                    section.name === 'QuocGia' || section.name === 'PhimNew'
+                    section.name === 'QuocGia' 
                       ? {
                           name: section.name,
                           params: { path: section.id.split('/')[1].split('?')[0] },
@@ -343,7 +343,7 @@
 <script>
 import {
   // ListMovieByCateHome,
-  ListMovieByCateHome1,
+  //ListMovieByCateHome1,
   urlImage,
   urlImage1,
 } from "@/model/api";
@@ -368,7 +368,7 @@ export default {
       sections: [
       {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=20",
           name: "HoatHinh",
           listMovie: [],
           content: "",
@@ -377,7 +377,7 @@ export default {
         },
         {
           title: this.$t("PHIM THỊNH HÀNH"),
-          id: "danh-sach/tv-shows?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -387,7 +387,7 @@ export default {
         
         {
           title: this.$t("PHIM VIỆT NAM"),
-          id: "quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -399,7 +399,7 @@ export default {
         },
         {
           title: this.$t("PHIM TRUNG QUỐC"),
-          id: "quoc-gia/trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -411,7 +411,7 @@ export default {
         },
         {
           title: this.$t("PHIM BỘ"),
-          id: "danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "PhimBo",
           listMovie: [],
           content: "",
@@ -420,7 +420,7 @@ export default {
         },
         {
           title: this.$t("PHIM LẺ"),
-          id: "danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "PhimLe",
           listMovie: [],
           content: "",
@@ -429,7 +429,7 @@ export default {
         },
         {
           title: this.$t("PHIM HÀN QUỐC"),
-          id: "quoc-gia/han-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -621,43 +621,66 @@ export default {
         if (el) observer.observe(el);
       });
     },
-    ListMovie(sectionId, section) {
+    async ListMovie(sectionId, section) {
       section.loading = true;
       section.loaded = false;
       // this.isLoading = true
-      if (section.id == "quoc-gia/viet-nam?page=1&limit=20") {
-        return new Promise((resolve, reject) => {
-          ListMovieByCateHome1(
-            sectionId,
-            (result) => {
+      if (section.id.includes("danh-sach/phim-moi-cap-nhat-v3")) {
+        try{
+            const response = await  fetch(sectionId);
+            const result = await response.json();
+            console.log(result);
+
               if (result.status === "success" || result.status == true) {
-                section.listMovie = result.data.items;
                 this.link = "link1";
-                if (result.data.seoOnPage) {
-                  this.updateMetaTags(result.data.seoOnPage);
-                }
+                section.listMovie = result.items;
+
+                // this.isLoading = false;
                 section.loading = false;
                 section.loaded = true;
-                // this.isLoading = false;
-                resolve(true);
+                //resolve(true);
               } else {
                 section.loading = false;
-                resolve(false);
+                //resolve(false);
               }
-            },
-            (err) => {
-              console.error(err);
+          }
+          catch(error){
+            console.error(error);
               section.loading = false;
-              reject(err);
-            }
-          );
-        });
+              //reject(error);
+          }
+        // return new Promise((resolve, reject) => {
+        //   ListMovieByCateHome1(
+        //     sectionId,
+        //     (result) => {
+        //       if (result.status === "success" || result.status == true) {
+        //         section.listMovie = result.data.items;
+        //         this.link = "link1";
+        //         if (result.data.seoOnPage) {
+        //           this.updateMetaTags(result.data.seoOnPage);
+        //         }
+        //         section.loading = false;
+        //         section.loaded = true;
+        //         // this.isLoading = false;
+        //         resolve(true);
+        //       } else {
+        //         section.loading = false;
+        //         resolve(false);
+        //       }
+        //     },
+        //     (err) => {
+        //       console.error(err);
+        //       section.loading = false;
+        //       reject(err);
+        //     }
+        //   );
+        // });
       } else {
-        return new Promise((resolve, reject) => {
-          ListMovieByCateHome1(
-            sectionId,
-            (result) => {
-              console.log(result);
+        
+          try{
+            const response = await  fetch(sectionId);
+            const result = await response.json();
+            console.log(result);
 
               if (result.status === "success" || result.status == true) {
                 this.link = "link1";
@@ -669,31 +692,48 @@ export default {
                 // this.isLoading = false;
                 section.loading = false;
                 section.loaded = true;
-                resolve(true);
+                //resolve(true);
               } else {
                 section.loading = false;
-                resolve(false);
+                //resolve(false);
               }
-            },
-            (err) => {
-              console.error(err);
+          }
+          catch(error){
+            console.error(error);
               section.loading = false;
-              reject(err);
-            }
-          );
-        });
+              //reject(error);
+          }
+          
+          // ListMovieByCateHome1(
+          //   sectionId,
+          //   (result) => {
+              
+          //   },
+          //   (err) => {
+          //     console.error(err);
+          //     section.loading = false;
+          //     reject(err);
+          //   }
+          // );
+        
       }
     },
     getOptimizedImage(imagePath) {
-      if (this.link != "link1") {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      } else {
+      if(imagePath.includes("https://phimimg.com/upload")){
+        return `${
+          this.urlImage1 +
+          encodeURIComponent(imagePath)
+        }`;
+      }
+      else{
         return `${
           this.urlImage1 +
           "https://phimimg.com/" +
           encodeURIComponent(imagePath)
         }`;
       }
+        
+      
     },
     // Chuan SEO
     updateMetaTags(seo) {
@@ -849,7 +889,6 @@ a {
 
 .movie-title {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* hiện 2 dòng */
   -webkit-box-orient: vertical;
   overflow: hidden;
   height: 40px;

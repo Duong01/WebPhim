@@ -4,7 +4,15 @@
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else>
-      <div class="poster-wrapper">
+      <div v-if="isLoading || !movie.thumb_url" class="default-placeholder">
+      <v-skeleton-loader
+        type="image, article"
+        height="auto"
+        class="rounded-lg"
+      />
+      
+    </div>
+      <div v-else class="poster-wrapper">
         <!-- Background image -->
         <v-img :src="getOptimizedImage(movie.thumb_url)" class="poster-img" cover />
 
@@ -55,11 +63,16 @@
           <v-col cols="12" md="4">
 
             <v-card flat class="poster-card">
-
-              <!-- Skeleton loader khi ảnh chưa load -->
-              
+              <div v-if="isLoading || !movie.poster_url" class="default-placeholder">
+                    <v-skeleton-loader
+                      type="image, article"
+                      height="420"
+                      class="rounded-lg"
+                    />
+                    
+                  </div>
               <!-- Ảnh + hiệu ứng hover -->
-              <div
+              <div v-else
                 class="poster-wrapper"
                 @click="goToWatch(movie.slug)"
               >
