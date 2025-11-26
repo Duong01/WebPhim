@@ -61,7 +61,6 @@
         
         <v-row class="mt-6 no-wrap-row">
         <!-- CỘT TRÁI: VIDEO -->
-        <div class="lg:w-1/3 w-full relative group">
           <v-col md="4">
             <v-card color="black" flat class="img-left">
               <v-img
@@ -81,12 +80,9 @@
               </div> -->
             </v-card>
           </v-col>
-        </div>
-          
 
         <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-        <div class="flex-1 space-y-4">
-           <v-col md="8">
+        <v-col md="8">
           <!-- TRAILER -->
           <v-card color="grey-darken-4" flat class="mb-4 pa-4">
             <div class="trailer-box" v-if="movie.trailer_id">
@@ -158,8 +154,6 @@
             </div>
           </v-card>
         </v-col>
-        </div>
-       
       </v-row>
       </div>
       
@@ -915,6 +909,7 @@ export default {
 .trailer-box {
   position: relative;
   width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
   border-radius: 10px;
   overflow: hidden;
 }
