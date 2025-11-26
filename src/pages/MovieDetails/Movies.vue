@@ -6,11 +6,7 @@
     <div v-else>
       <div class="poster-wrapper">
         <!-- Background image -->
-        <v-img
-          :src="getOptimizedImage(movie.thumb_url)"
-          class="poster-img"
-          cover
-        />
+        <v-img :src="getOptimizedImage(movie.thumb_url)" class="poster-img" cover />
 
         <!-- Overlay effects -->
         <!-- <div class="overlay-dark"></div> -->
@@ -45,12 +41,7 @@
               {{ movie.lang }}
             </v-chip>
           </div>
-          <v-btn
-            color="primary"
-            size="large"
-            class="mt-4 xem-ngay-btn text-center"
-            @click="goToWatch()"
-          >
+          <v-btn color="primary" size="large" class="mt-4 xem-ngay-btn text-center" @click="goToWatch()">
             ▶ Xem ngay
           </v-btn>
         </div>
@@ -58,134 +49,115 @@
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
       <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
-        
-        <v-row class="mt-6 no-wrap-row">
-        <!-- CỘT TRÁI: VIDEO -->
-          <v-col md="4">
-            <v-card color="black" flat class="img-left">
-              <v-img
-                width="100%"
-                height="100%"
-                :src="getOptimizedImage(movie.poster_url)"
-                frameborder="0"
-                allowfullscreen
-                class="img-poster"
-              />
-              <!-- Overlay khi hover -->
-              <!-- <div class="poster-overlay"></div> -->
 
-              <!-- Nút Xem Ngay -->
-              <!-- <div class="poster-play-btn">
-                ▶ Xem ngay
-              </div> -->
+        <v-row class="mt-6">
+          <!-- CỘT TRÁI: VIDEO -->
+          <v-col cols="12" md="4">
+
+            <v-card flat class="poster-card">
+
+              <!-- Skeleton loader khi ảnh chưa load -->
+              
+              <!-- Ảnh + hiệu ứng hover -->
+              <div
+                class="poster-wrapper"
+                @click="goToWatch(movie.slug)"
+              >
+                <v-img
+                  :src="getOptimizedImage(movie.poster_url)"
+                  class="poster-img"
+                  height="420"
+                  cover
+                ></v-img>
+
+                <!-- Overlay mờ khi hover -->
+                <div class="poster-overlay"></div>
+
+                <!-- Nút xem ngay -->
+                <div class="poster-btn">▶ Xem ngay</div>
+              </div>
+
             </v-card>
+
           </v-col>
 
-        <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-        <v-col md="8">
-          <!-- TRAILER -->
-          <v-card color="grey-darken-4" flat class="mb-4 pa-4">
-            <div class="trailer-box" v-if="movie.trailer_id">
-              <iframe
-                class="trailer-iframe"
-                :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
-                frameborder="0"
-                allowfullscreen
-              >
-              </iframe>
-            </div>
 
-            <!-- TITLE -->
-            <h2 class="movie-title text-left">{{ movies.name }}</h2>
-
-            <!-- DESCRIPTION -->
-            <div
-              class="movie-description text-left"
-              v-html="movies.content"
-            ></div>
-
-            <!-- INFO GRID -->
-            <div class="movie-info-grid text-left">
-              <div>
-                <strong>Thể loại:</strong>
-                <div
-                  class="category-nowrap"
-                  v-for="(cate, ind) in movies.category"
-                  :key="ind"
-                >
-                  <!-- khong xuong dong -->
-                  {{ cate.name }}
-                  <span v-if="ind < movies.category.length - 1"> , </span>
-                </div>
+          <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
+          <v-col cols="12" md="8">
+            <!-- TRAILER -->
+            <v-card color="grey-darken-4" flat class="mb-4 pa-4">
+              <div class="trailer-box" v-if="movie.trailer_id">
+                <iframe class="trailer-iframe" :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
+                  frameborder="0" allowfullscreen>
+                </iframe>
               </div>
 
-              <p>
-                <strong>Quốc gia:</strong>
-                {{ movies.country[0].name || "Đang cập nhật" }}
-              </p>
+              <!-- TITLE -->
+              <h1 class="text-left mt-3" style="color: cadetblue;">Giới thiệu</h1>
+              <v-divider />
+              <h2 class="movie-title text-left">{{ movies.name }}</h2>
 
-              <p><strong>Số tập:</strong> {{ movies.episode_total }} tập</p>
+              <!-- DESCRIPTION -->
+              <div class="movie-description text-left" style="font-size: 14px;" v-html="movies.content"></div>
 
-              <p><strong>Thời lượng:</strong> {{ movies.time }}</p>
-
-              <div>
-                <strong>Diễn viên:</strong>
-                <div
-                  class="category-nowrap"
-                  v-for="(actor, ind) in movies.actor"
-                  :key="ind"
-                >
-                  <!-- khong xuong dong -->
-                  {{ actor }}
-                  <span v-if="ind < movies.actor.length - 1"> , </span>
+              <!-- INFO GRID -->
+              <div class="movie-info-grid  text-left">
+                <div>
+                  <strong>Thể loại:</strong>
+                  <div class="category-nowrap" v-for="(cate, ind) in movies.category" :key="ind">
+                    <!-- khong xuong dong -->
+                    {{ cate.name }}
+                    <span v-if="ind < movies.category.length - 1"> , </span>
+                  </div>
                 </div>
-              </div>
-            </div>
+                <div>
+                  <strong>Quốc gia:</strong>
+                  {{ movies.country[0].name || "Đang cập nhật" }}
+                  </div>
 
-            <!-- RATING -->
-            <div class="rating-row text-left">
-              <strong class="mr-2">Đánh giá:</strong>
-              <v-rating
-                readonly
-                :model-value="movie.rating"
-                color="yellow"
-                density="compact"
-              />
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
+                  <div>
+                    <strong>Số tập:</strong> {{ movies.episode_total }} tập
+                  </div>
+                  <div>
+                    <strong>Thời lượng:</strong> {{ movies.time }}
+                  </div>
+                  <div>
+                    <strong>Diễn viên:</strong>
+                    <div class="category-nowrap" v-for="(actor, ind) in movies.actor" :key="ind">
+                      <!-- khong xuong dong -->
+                      {{ actor }}
+                      <span v-if="ind < movies.actor.length - 1"> , </span>
+                    </div>
+                  </div>
+                
+              </div>
+
+              <!-- RATING -->
+              <div class="rating-row text-left">
+                <strong class="mr-2">Đánh giá:</strong>
+                <v-rating readonly :model-value="movie.rating" color="yellow" size="small" density="compact" />
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
       </div>
-      
+
 
       <!-- ========================= -->
       <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
       <!-- ========================= -->
       <v-card class="my-6 pa-4" color="grey-darken-4" flat>
-        <h3 class="text-white mb-3">Danh sách tập</h3>
-
+        <h1 class="text-left" style="color: cadetblue;">Danh sách tập phim</h1>
+        <v-divider />
         <v-row>
-          <v-col
-            v-for="(ep, i) in visibleEpisodes"
-            :key="i"
-            cols="4"
-            sm="4"
-            md="2"
-            lg="2"
-            xl="2"
-          >
-            <v-btn block color="primary">
+          <v-col v-for="(ep, i) in visibleEpisodes" :key="i" cols="4" sm="4" md="2" lg="2" xl="2">
+            <v-btn block color="primary" @click="goToWatch()">
               {{ ep.name }}
             </v-btn>
           </v-col>
         </v-row>
         <div class="text-center mt-4">
-          <v-btn
-            color="gray"
-            variant="tonal"
-            @click="toggleEpisodes"
-            class="btnnext"
-          >
+          <v-btn color="gray" variant="tonal" @click="toggleEpisodes" class="btnnext">
             {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
             <v-icon size="18" class="mr-1">
               {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
@@ -197,19 +169,10 @@
       <!-- Dialog Trailer -->
       <v-dialog v-model="dialogTrailer" max-width="900">
         <v-card color="black">
-          <v-btn
-            icon="mdi-close"
-            class="position-absolute right-2 top-2"
-            @click="dialogTrailer = false"
-          ></v-btn>
+          <v-btn icon="mdi-close" class="position-absolute right-2 top-2" @click="dialogTrailer = false"></v-btn>
 
-          <iframe
-            width="100%"
-            height="500"
-            :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
+          <iframe width="100%" height="500" :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+            frameborder="0" allowfullscreen></iframe>
         </v-card>
       </v-dialog>
     </div>
@@ -234,6 +197,7 @@ export default {
   name: "MoviesPage",
   data() {
     return {
+      imageLoaded: false, 
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
@@ -776,12 +740,12 @@ export default {
 </script>
 
 <style scoped>
-
 .poster-wrapper {
   position: relative;
   width: 100%;
   overflow: hidden;
   border-radius: 20px;
+  cursor: pointer;
   height: auto;
 }
 
@@ -855,6 +819,7 @@ export default {
   opacity: 1;
 }
 
+
 /* Nút xem ngay */
 .poster-play-btn {
   position: absolute;
@@ -908,10 +873,13 @@ export default {
 
 .trailer-box {
   position: relative;
+  min-height: 300px;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
+  /* 16:9 */
   border-radius: 10px;
   overflow: hidden;
+  object-fit: contain;
 }
 
 .trailer-iframe {
@@ -938,12 +906,13 @@ export default {
 
 /* Thông tin phim */
 .movie-info-grid p,
+.movie-description,
 .movie-info-grid div {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   color: #ccc;
-  font-size: 15px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -965,21 +934,49 @@ export default {
   border-radius: 10px;
   color: #757575;
 }
-.img-poster{
+
+.img-poster {
   width: auto;
   height: auto !important;
   display: block;
   object-fit: contain;
 }
-.container {
+.poster-card {
+  background: transparent !important;
+  position: relative;
+}
+.poster-wrapper:hover .poster-img {
+  transform: scale(1.06);
+}
+.poster-btn {
+  position: absolute;
+  inset: 0;
+
   display: flex;
-  flex-wrap: nowrap; /* không cho xuống dòng */
+  justify-content: center;
+  align-items: center;
+
+  /* background-color: rgba(255, 0, 0, 0.9); */
+  color: rgb(250, 250, 250);
+  font-size: 22px;
+  font-weight: 600;
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  border-radius: 14px;
 }
 
-.no-wrap-row {
-  flex-wrap: nowrap !important; /* không cho xuống dòng */
-  display: flex;
+/* Hover → hiện nút */
+.poster-wrapper:hover .poster-btn {
+  opacity: 1;
+  transform: translateY(0);
 }
-
+@media (max-width: 768px) {
+  .poster-btn {
+    opacity: 1 !important;
+    /* background: rgba(255, 0, 0, 0.8); */
+    font-size: 18px;
+  }
+}
 </style>
-

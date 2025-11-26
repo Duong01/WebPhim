@@ -133,7 +133,7 @@
             <v-card-text>
               <v-row class="episode-list">
                 <v-col
-                  v-for="(episode, index) in movie.pageMovie"
+                  v-for="(episode, index) in visibleEpisodes"
                   :key="index"
                   class="episode-col"
                 >
@@ -148,6 +148,19 @@
                   </v-btn>
                 </v-col>
               </v-row>
+              <div class="text-center mt-4">
+          <v-btn
+            color="gray"
+            variant="tonal"
+            @click="toggleEpisodes"
+            class="btnnext"
+          >
+            {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
+            <v-icon size="18" class="mr-1">
+              {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
+            </v-icon>
+          </v-btn>
+        </div>
             </v-card-text>
           </v-card>
 
@@ -512,6 +525,7 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
       tab: "",
@@ -846,7 +860,10 @@ export default {
       });
     },
 
-
+    toggleEpisodes(){
+      this.showAllEpisodes = !this.showAllEpisodes;
+      
+    },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
       console.log(url)
@@ -1224,6 +1241,12 @@ export default {
     },
   },
   computed: {
+    visibleEpisodes() {
+      if (!this.movie?.pageMovie) return [];
+      return this.showAllEpisodes
+        ? this.movie.pageMovie // Hiện tất cả tập
+        : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+    },
     thumbnailUrl() {
       const match = this.movie.videoUrl.match(
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
@@ -1601,5 +1624,9 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;   
+}
+.btnnext {
+  border-radius: 10px;
+  color: #757575;
 }
 </style>
