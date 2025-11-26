@@ -81,59 +81,56 @@
 
         <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
         <v-col cols="12" md="8">
-          <!-- TRAILER -->
+
           <v-card color="grey-darken-4" flat class="mb-4 pa-4">
-            <div class="trailer-box" v-if="movie.trailer_id">
-              <iframe
-                class="trailer-iframe"
-                :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
-                frameborder="0"
-                allowfullscreen
-              >
-              </iframe>
+
+            <!-- WRAPPER: POSTER + TRAILER TRÊN 1 HÀNG -->
+            <div class="detail-flex">
+
+              <!-- POSTER -->
+              <div class="detail-poster">
+                <v-img
+                  :src="movies.poster_url"
+                  class="poster-img"
+                  cover
+                ></v-img>
+              </div>
+
+              <!-- TRAILER -->
+              <div class="detail-trailer" v-if="movie.trailer_id">
+                <iframe
+                  class="trailer-iframe"
+                  :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
+                  frameborder="0"
+                  allowfullscreen
+                ></iframe>
+              </div>
+
             </div>
 
             <!-- TITLE -->
             <h2 class="movie-title text-left">{{ movies.name }}</h2>
 
             <!-- DESCRIPTION -->
-            <div
-              class="movie-description text-left"
-              v-html="movies.content"
-            ></div>
+            <div class="movie-description text-left" v-html="movies.content"></div>
 
             <!-- INFO GRID -->
             <div class="movie-info-grid text-left">
               <div>
                 <strong>Thể loại:</strong>
-                <div
-                  class="category-nowrap"
-                  v-for="(cate, ind) in movies.category"
-                  :key="ind"
-                >
-                  <!-- khong xuong dong -->
+                <div class="category-nowrap" v-for="(cate, ind) in movies.category" :key="ind">
                   {{ cate.name }}
                   <span v-if="ind < movies.category.length - 1"> , </span>
                 </div>
               </div>
 
-              <p>
-                <strong>Quốc gia:</strong>
-                {{ movies.country[0].name || "Đang cập nhật" }}
-              </p>
-
+              <p><strong>Quốc gia:</strong> {{ movies.country[0].name || "Đang cập nhật" }}</p>
               <p><strong>Số tập:</strong> {{ movies.episode_total }} tập</p>
-
               <p><strong>Thời lượng:</strong> {{ movies.time }}</p>
 
               <div>
                 <strong>Diễn viên:</strong>
-                <div
-                  class="category-nowrap"
-                  v-for="(actor, ind) in movies.actor"
-                  :key="ind"
-                >
-                  <!-- khong xuong dong -->
+                <div class="category-nowrap" v-for="(actor, ind) in movies.actor" :key="ind">
                   {{ actor }}
                   <span v-if="ind < movies.actor.length - 1"> , </span>
                 </div>
@@ -143,15 +140,13 @@
             <!-- RATING -->
             <div class="rating-row text-left">
               <strong class="mr-2">Đánh giá:</strong>
-              <v-rating
-                readonly
-                :model-value="movie.rating"
-                color="yellow"
-                density="compact"
-              />
+              <v-rating readonly :model-value="movie.rating" color="yellow" density="compact"/>
             </div>
+
           </v-card>
+
         </v-col>
+
       </v-row>
       </div>
       
@@ -963,6 +958,56 @@ export default {
   border-radius: 10px;
   color: #757575;
 }
+.detail-flex {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
 
+/* POSTER */
+.detail-poster {
+  flex: 0 0 240px;
+  min-width: 240px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* TRAILER */
+.detail-trailer {
+  flex: 0 0 480px;
+  min-width: 480px;
+}
+
+.trailer-iframe {
+  width: 100%;
+  height: 280px;
+  border-radius: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .detail-poster {
+    flex: 0 0 180px;
+    min-width: 180px;
+  }
+
+  .detail-trailer {
+    flex: 0 0 320px;
+    min-width: 320px;
+  }
+
+  .trailer-iframe {
+    height: 220px;
+  }
+}
+
+/* Không xuống dòng trong info */
+.category-nowrap {
+  display: inline;
+  white-space: nowrap;
+}
 </style>
 
