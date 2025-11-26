@@ -774,30 +774,30 @@ export default {
 </script>
 
 <style scoped>
+
 .poster-wrapper {
   position: relative;
   width: 100%;
-  height: 75vh;
   overflow: hidden;
   border-radius: 20px;
+  height: auto;
 }
 
+/* Ảnh nền poster */
 .poster-img {
   width: 100%;
-  height: 100%;
-  transform: scale(1.15);
+  height: auto !important;
+  max-height: 75vh;
+  object-fit: cover;
+  transform: scale(1.12);
   filter: brightness(0.9);
-}
-.img-left:hover{
-  transform: scale(1.07);
-  opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: transform 0.35s ease;
 }
 
-.overlay-dark {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+/* Hover phóng nhẹ */
+.img-left:hover {
+  transform: scale(1.07);
+  transition: transform 0.3s ease;
 }
 
 .overlay-gradient-1 {
@@ -806,31 +806,24 @@ export default {
   background: linear-gradient(to top, black, transparent);
 }
 
-.overlay-gradient-2 {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top right, rgba(0, 0, 0, 0.5), transparent);
-}
-
 .poster-content {
   position: absolute;
   bottom: 40px;
-  left: 20px;
-  max-width: 600px;
+  left: 40px;
+  z-index: 10;
+  max-width: 90%;
   color: white;
 }
 
 .poster-title {
-  font-size: 42px;
+  font-size: clamp(24px, 6vw, 42px);
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 8px;
-  /* background: linear-gradient(to bottom, #ddd, #fff); */
-  color: white;
 }
 
 .poster-sub {
-  font-size: 14px;
+  font-size: clamp(12px, 3vw, 16px);
   opacity: 0.8;
 }
 
@@ -847,26 +840,7 @@ export default {
   color: white !important;
   text-transform: uppercase;
 }
-.poster-card {
-  background: transparent !important;
-}
 
-.poster-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  cursor: pointer;
-}
-
-.poster-img {
-  transition: transform 0.35s ease;
-}
-
-.poster-wrapper:hover .poster-img {
-  /* transform: scale(1.07); */
-}
-
-/* Lớp mờ */
 .poster-overlay {
   position: absolute;
   inset: 0;
@@ -890,7 +864,6 @@ export default {
   font-size: 28px;
   font-weight: 700;
   color: white;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -900,35 +873,7 @@ export default {
   opacity: 1;
 }
 
-/* 📱 MOBILE: nút luôn hiển thị */
-@media (max-width: 768px) {
-  .poster-play-btn {
-    opacity: 1 !important;
-    font-size: 22px;
-  }
-  .poster-overlay {
-    opacity: 1 !important;
-  }
-}
-.text-left {
-  font-size: 14px;
-}
-.poster-content {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  z-index: 10;
-  color: white;
-}
-
-.xem-ngay-btn {
-  font-size: 20px;
-  font-weight: 600;
-  padding: 10px 26px;
-  border-radius: 12px;
-}
-
-/* Mobile chỉnh lại vị trí nút */
+/* Mobile: nút luôn hiện */
 @media (max-width: 768px) {
   .poster-content {
     bottom: 20px;
@@ -939,17 +884,40 @@ export default {
     width: 100%;
     text-align: center;
   }
+
+  .poster-play-btn {
+    opacity: 1 !important;
+    font-size: 22px;
+  }
+
+  .poster-overlay {
+    opacity: 1 !important;
+  }
 }
+
+/* Nút xem ngay */
+.xem-ngay-btn {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 10px 26px;
+  border-radius: 12px;
+}
+
+
 .trailer-box {
+  position: relative;
   width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
   border-radius: 10px;
   overflow: hidden;
 }
 
 .trailer-iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 460px;
-  border-radius: 10px;
+  height: 100%;
+  border: none;
 }
 
 .movie-title {
@@ -966,14 +934,23 @@ export default {
   margin-bottom: 15px;
 }
 
-.movie-info-grid p {
+/* Thông tin phim */
+.movie-info-grid p,
+.movie-info-grid div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
   color: #ccc;
   font-size: 15px;
-  margin: 4px 0;
+  line-height: 1.4;
 }
 
 .movie-info-grid strong {
   color: orange;
+}
+
+.category-nowrap {
+  white-space: nowrap;
 }
 
 .rating-row {
@@ -982,14 +959,10 @@ export default {
   align-items: center;
 }
 
-@media (max-width: 768px) {
-  .trailer-iframe {
-    height: 260px;
-  }
-}
 .btnnext {
   border-radius: 10px;
-  color: #fff;
   color: #757575;
 }
+
 </style>
+
