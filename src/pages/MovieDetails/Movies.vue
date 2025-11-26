@@ -58,7 +58,7 @@
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
       <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
-        <v-row class="mt-6">
+        <v-row class="mt-6 no-wrap-row">
         <!-- CỘT TRÁI: VIDEO -->
         <v-col cols="12" md="4">
           <v-card color="black" flat class="img-left">
@@ -68,6 +68,7 @@
               :src="getOptimizedImage(movie.poster_url)"
               frameborder="0"
               allowfullscreen
+              class="img-poster"
             />
             <!-- Overlay khi hover -->
             <!-- <div class="poster-overlay"></div> -->
@@ -963,6 +964,31 @@ export default {
   border-radius: 10px;
   color: #757575;
 }
+.img-poster{
+  width: auto;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
+}
+.container {
+  display: flex;
+  flex-wrap: nowrap; /* không cho xuống dòng */
+}
 
+@media (max-width: 768px) {
+  .container {
+    flex-wrap: wrap; /* cho xuống dòng khi mobile */
+  }
+}
+.no-wrap-row {
+  flex-wrap: nowrap !important; /* không cho xuống dòng */
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .no-wrap-row {
+    flex-wrap: wrap !important; /* chỉ xuống dòng khi mobile */
+  }
+}
 </style>
 
