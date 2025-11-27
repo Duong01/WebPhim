@@ -40,7 +40,7 @@
       <p class="movie-sub">{{ movie.origin_name }}</p>
       <!-- Thông tin nhỏ -->
       <div class="movie-meta">
-        ⭐ TMDB: {{ movies.tmdb }} • {{ movies.year }} • {{ movies.quality }} • {{ movies.lang }}
+        ⭐ TMDB: {{ movies.tmdb.season }} • {{ movies.year }} • {{ movies.quality }} • {{ movies.lang }}
       </div>
       <!-- Hai nút giống hình bạn gửi -->
       <div class="banner-buttons">
@@ -974,7 +974,7 @@ export default {
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 
   /* background-color: rgba(255, 0, 0, 0.9); */
   color: rgb(250, 250, 250);
