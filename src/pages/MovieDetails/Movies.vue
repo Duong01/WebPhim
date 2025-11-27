@@ -1023,6 +1023,7 @@ export default {
   position: absolute;
   inset: 0;
   display: flex;
+  align-items: flex-end;
   flex-direction: column;
   gap: 20px;
   padding: 20px;
