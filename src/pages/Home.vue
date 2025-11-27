@@ -313,14 +313,15 @@
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
-                              <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
-                                <!-- khong xuong dong -->
+                              <!-- <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
                                 {{ cate.name }} 
                                 <span  v-if="ind < getCategoriesToShow(item.category).length -1">
                                   ,
                                 </span>
-                              </div>
-                              <span> • {{ item.year }}</span>
+                              </div> -->
+                              
+                              <span>{{ item.lang }}</span>
+                              <span> - {{ item.year }}</span>
                           </v-card-text>
                         <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px; padding-top: 0;margin-top: 0;"> {{timeAgo(item.modified.time)}}</v-card-text>
                       </div>
