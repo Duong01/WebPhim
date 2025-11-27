@@ -15,7 +15,7 @@
       <div class="movie-banner">
 
   <!-- Ảnh nền mờ -->
-  <v-img :src="getOptimizedImage(movie.thumb_url)" class="banner-bg"></v-img>
+  <v-img :src="getOptimizedImage(movie.thumb_url)" class="banner-bg" cover></v-img>
 
   <!-- Lớp tối -->
   <div class="banner-overlay"></div>
@@ -27,7 +27,7 @@
       <v-img
         :src="getOptimizedImage(movie.poster_url)"
         class="banner-poster"
-        
+        height="240"
         cover
       />
     </div>
@@ -38,6 +38,7 @@
       <h1 class="movie-title">{{ movie.name }}</h1>
 
       <p class="movie-sub">{{ movie.origin_name }}</p>
+
       <!-- Thông tin nhỏ -->
       <div class="movie-meta">
         ⭐ TMDB: {{ movies.tmdb.season }} • {{ movies.year }} • {{ movies.quality }} • {{ movies.lang }}
@@ -974,7 +975,7 @@ export default {
 
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 
   /* background-color: rgba(255, 0, 0, 0.9); */
   color: rgb(250, 250, 250);
@@ -1024,7 +1025,6 @@ export default {
   inset: 0;
   display: flex;
   align-items: flex-end;
-  flex-direction: column;
   gap: 20px;
   padding: 20px;
   color: white;
@@ -1038,9 +1038,6 @@ export default {
 .banner-poster {
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.6);
-  height: auto;
-  min-height: 220px;
-
 }
 
 .banner-right {
