@@ -1012,6 +1012,8 @@ export default {
 .banner-bg {
   filter: brightness(0.5);
   transform: scale(1.1);
+  width: 100%;
+  height: auto !important;
 }
 
 .banner-overlay {
