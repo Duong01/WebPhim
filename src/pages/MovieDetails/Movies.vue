@@ -15,7 +15,7 @@
       <div class="movie-banner">
 
   <!-- Ảnh nền mờ -->
-  <v-img :src="getOptimizedImage(movie.thumb_url)" class="banner-bg" cover></v-img>
+  <v-img :src="getOptimizedImage(movie.thumb_url)" class="banner-bg"></v-img>
 
   <!-- Lớp tối -->
   <div class="banner-overlay"></div>
@@ -27,7 +27,7 @@
       <v-img
         :src="getOptimizedImage(movie.poster_url)"
         class="banner-poster"
-        height="260"
+        
         cover
       />
     </div>
@@ -38,7 +38,10 @@
       <h1 class="movie-title">{{ movie.name }}</h1>
 
       <p class="movie-sub">{{ movie.origin_name }}</p>
-
+      <!-- Thông tin nhỏ -->
+      <div class="movie-meta">
+        ⭐ TMDB: {{ movies.tmdb }} • {{ movies.year }} • {{ movies.quality }} • {{ movies.lang }}
+      </div>
       <!-- Hai nút giống hình bạn gửi -->
       <div class="banner-buttons">
         
@@ -52,10 +55,7 @@
 
       </div>
 
-      <!-- Thông tin nhỏ -->
-      <div class="movie-meta">
-        ⭐ TMDB: {{ movie.tmdb }} • {{ movie.year }} • {{ movie.quality }} • {{ movie.lang }}
-      </div>
+      
 
     </div>
 
@@ -1003,7 +1003,7 @@ export default {
 .movie-banner {
   position: relative;
   width: 100%;
-  height: 350px;
+  height: 450px;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -1023,6 +1023,7 @@ export default {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   gap: 20px;
   padding: 20px;
   color: white;
@@ -1036,6 +1037,9 @@ export default {
 .banner-poster {
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  height: auto;
+  min-height: 220px;
+
 }
 
 .banner-right {
