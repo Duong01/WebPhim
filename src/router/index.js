@@ -9,6 +9,7 @@ const routes =[
         meta: {
             title: "Đăng nhập - Web Phim Online",
             description: "Đăng nhập để trải nghiệm xem phim miễn phí chất lượng cao."
+            
         }
     },
     {
@@ -41,9 +42,10 @@ const routes =[
             name: "HomePage",
             component: () => import("@/pages/Home"),
             meta: {
-          title: "Xem phim online miễn phí - Web Phim Online",
-          description: "Kho phim mới nhất, hot nhất, cập nhật liên tục, xem online miễn phí."
-        }
+              title: "Xem phim online miễn phí - Web Phim Online",
+              description: "Kho phim mới nhất, hot nhất, cập nhật liên tục, xem online miễn phí.",
+              keepAlive: true
+            }
         },
         {
             path: '/movie/:slug',
@@ -54,9 +56,10 @@ const routes =[
               page: route.query.page
             }),
             meta: {
-          title: "Chi tiết phim - Web Phim Online",
-          description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí."
-        }
+              title: "Chi tiết phim - Web Phim Online",
+              description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
+              keepAlive: true
+            }
         },
         {
           path: '/movies/:slug',
@@ -64,18 +67,20 @@ const routes =[
           component: () => import("@/pages/MovieDetails/Movies.vue"),
           props: true,
           meta: {
-        title: "Chi tiết phim - Web Phim Online",
-        description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí."
-      }
+            title: "Chi tiết phim - Web Phim Online",
+            description: "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
+            keepAlive: true
+          }
       },
         {
             path: '/favorite',
             name: "FavoritePage",
             component: () => import("@/pages/Favorite/Favorite.vue"),
             meta: {
-          title: "Phim bộ hay nhất - Web Phim Online",
-          description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục."
-        }
+              title: "Phim bộ hay nhất - Web Phim Online",
+              description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
+              keepAlive: true
+            }
         },
         {
             path: 'search',
@@ -83,9 +88,10 @@ const routes =[
             component: () => import("@/pages/SearchMovie.vue"),
             props: true,
             meta: {
-          title: "Tìm kiếm phim - Web Phim Online",
-          description: "Tìm kiếm phim nhanh chóng theo tên, thể loại, quốc gia."
-        }
+              title: "Tìm kiếm phim - Web Phim Online",
+              description: "Tìm kiếm phim nhanh chóng theo tên, thể loại, quốc gia.",
+              keepAlive: true
+            }
         },
 
         {
@@ -93,36 +99,40 @@ const routes =[
             name: "PhimBo",
             component: () => import("@/pages/PhimBo/PhimBo.vue"),
             meta: {
-          title: "Phim bộ hay nhất - Web Phim Online",
-          description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục."
-        }
+              title: "Phim bộ hay nhất - Web Phim Online",
+              description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
+              keepAlive: true
+            }
         },
         {
             path: '/phim-le',
             name: "PhimLe",
             component: () => import("@/pages/PhimLe/PhimLe.vue"),
             meta: {
-          title: "Phim lẻ mới nhất - Web Phim Online",
-          description: "Danh sách phim lẻ hot nhất, xem online chất lượng cao."
-        }
+              title: "Phim lẻ mới nhất - Web Phim Online",
+              description: "Danh sách phim lẻ hot nhất, xem online chất lượng cao.",
+              keepAlive: true
+            }
         },
         {
             path: '/tv-shows',
             name: "TVShow",
             component: () => import("@/pages/TVShow/TVShow.vue"),
             meta: {
-          title: "Phim sắp chiếu - Web Phim Online",
-          description: "Khám phá những bộ phim bom tấn sắp ra mắt."
-        }
+              title: "Phim sắp chiếu - Web Phim Online",
+              description: "Khám phá những bộ phim bom tấn sắp ra mắt.",
+              keepAlive: true
+            }
         },
         {
             path: '/hoat-hinh',
             name: "HoatHinh",
             component: () => import("@/pages/HoatHinh/HoatHinh.vue"),
             meta: {
-          title: "Phim hoạt hình - Web Phim Online",
-          description: "Phim hoạt hình cho thiếu nhi và người lớn, đa dạng thể loại."
-        }
+              title: "Phim hoạt hình - Web Phim Online",
+              description: "Phim hoạt hình cho thiếu nhi và người lớn, đa dạng thể loại.",
+              keepAlive: true
+            }
         },
         {
             path: '/the-loai/:path',
@@ -130,9 +140,10 @@ const routes =[
             component: () => import("@/pages/TheLoai/TheLoai.vue"),
             props: true,
             meta: {
-          title: "Phim theo thể loại - Web Phim Online",
-          description: "Xem danh sách phim theo từng thể loại được yêu thích."
-        }
+              title: "Phim theo thể loại - Web Phim Online",
+              description: "Xem danh sách phim theo từng thể loại được yêu thích.",
+              keepAlive: true
+            }
         },
         {
             path: '/danh-sach/:path',
@@ -140,9 +151,10 @@ const routes =[
             component: () => import("@/pages/PhimNew/PhimNew.vue"),
             props: true,
             meta: {
-          title: "Phim mới & phim hot - Web Phim Online",
-          description: "Cập nhật nhanh các bộ phim mới nhất và được xem nhiều nhất."
-        }
+              title: "Phim mới & phim hot - Web Phim Online",
+              description: "Cập nhật nhanh các bộ phim mới nhất và được xem nhiều nhất.",
+              keepAlive: true
+            }
         },
         {
             path: '/quoc-gia/:path',
@@ -150,9 +162,10 @@ const routes =[
             component: () => import("@/pages/QuocGia/QuocGia.vue"),
             props: true,
             meta: {
-          title: "Phim theo quốc gia - Web Phim Online",
-          description: "Khám phá phim từ nhiều quốc gia: Hàn, Trung, Mỹ, Việt Nam."
-        }
+              title: "Phim theo quốc gia - Web Phim Online",
+              description: "Khám phá phim từ nhiều quốc gia: Hàn, Trung, Mỹ, Việt Nam.",
+              keepAlive: true
+            }
         },
         {
             path: '/:catchAll(.*)',

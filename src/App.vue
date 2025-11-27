@@ -2,9 +2,21 @@
   <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
-        <keep-alive>
-          <router-view />
-        </keep-alive>
+        <router-view v-slot="{ Component, route }">
+          <!-- Component cần cache -->
+          <keep-alive>
+            <component
+              v-if="route.meta.keepAlive"
+              :is="Component"
+            />
+          </keep-alive>
+
+          <!-- Component không cache -->
+          <component
+            v-if="!route.meta.keepAlive"
+            :is="Component"
+          />
+        </router-view>
         <div v-if="isLoading" class="overlay">
           <div class="loader"></div>
           <p>Đang tải dữ liệu...</p>
