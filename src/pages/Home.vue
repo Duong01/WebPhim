@@ -1,6 +1,8 @@
 <template>
   <div style="width: 100%">
-    <CarouselPage />
+    <keep-alive include="CarouselPage">
+      <CarouselPage />
+    </keep-alive>
     <div style="overflow-x: auto; white-space: nowrap; margin-top: 10px;">
       <v-row no-gutters class="align-center mb-2">
         <v-col cols="12">
@@ -36,7 +38,7 @@
         
       </div>
     </div>
-
+<!-- 
     <div v-if="isFavo" >
     <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
       <template #default>
@@ -58,7 +60,6 @@
               </router-link>
             </v-col>
           </v-row>
-          <!-- Khi đã load -->
           <div v-if="!isLoading">
             <v-row
               no-gutters
@@ -138,7 +139,6 @@
             </v-row>
           </div>
 
-          <!-- Khi đang load -->
           <div v-else style="height: 400px">
             <v-row>
               <v-col
@@ -156,7 +156,7 @@
         </div>
       </template>
     </v-lazy>
-  </div>
+  </div> -->
 
 
 
@@ -218,7 +218,7 @@
                   cols="6"
                   sm="6"
                   md="3"
-                  style="padding: 10px"
+                  style="padding: 5px"
                 >
                   <v-skeleton-loader
                     v-if="section.loading"

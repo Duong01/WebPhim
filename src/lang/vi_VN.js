@@ -118,7 +118,8 @@ export default
   'Danh sách phim:': 'Danh sách phim:',
   "Không có dữ liệu được hiển thị, vui lòng tải lại trang": "Không có dữ liệu được hiển thị, vui lòng tải lại trang",
   "Hết thời gian chờ, vui lòng tải lại trang": "Hết thời gian chờ, vui lòng tải lại trang",
-  "Thời gian chiếu": "Thời gian chiếu"
+  "Thời gian chiếu": "Thời gian chiếu",
+  "Đã lưu": "Đã lưu",
 
 
 }

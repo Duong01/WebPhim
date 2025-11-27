@@ -132,17 +132,17 @@
 
         <v-btn
           text
-          :to="{ path: '/tv-shows' }"
-          :class="{ 'text-green': $route.path === '/tv-shows' }"
-        >
-          {{ $t("TV Show") }}
-        </v-btn>
-        <v-btn
-          text
           :to="{ path: '/hoat-hinh' }"
           :class="{ 'text-green': $route.path === '/hoat-hinh' }"
         >
           {{ $t("Hoạt hình") }}
+        </v-btn>
+        <v-btn
+          text
+          :to="{ path: '/favorite' }"
+          :class="{ 'text-green': $route.path === '/favorite' }"
+        >
+          {{ $t("Đã lưu") }}
         </v-btn>
       </v-toolbar-items>
 
@@ -237,13 +237,16 @@
       </v-menu>
 
       <!-- Tài khoản -->
-      <v-menu offset-y v-if="!account && $vuetify.display.mdAndUp">
+      <v-menu offset-y v-if="!account">
         <template #activator="{ props }">
           <v-btn icon v-bind="props" :title="$t('Tài khoản')">
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
         <v-list>
+          <v-list-item @click="NextRouter()">
+            <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="Login()">
             <v-list-item-title>{{ $t("Đăng nhập") }}</v-list-item-title>
           </v-list-item>
@@ -252,7 +255,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu offset-y v-else-if="$vuetify.display.mdAndUp">
+      <v-menu offset-y v-else>
         <template #activator="{ props }">
           <v-btn v-bind="props" variant="text">
             <span>
@@ -261,6 +264,9 @@
           </v-btn>
         </template>
         <v-list>
+          <v-list-item @click="NextRouter()">
+            <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="Logout()">
             <v-list-item-title>{{ $t("Đăng xuất") }}</v-list-item-title>
           </v-list-item>
@@ -388,7 +394,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <!-- Profile -->
-        <v-expansion-panels multiple v-if="!account">
+        <!-- <v-expansion-panels multiple v-if="!account">
           <v-expansion-panel>
             <v-expansion-panel-title>
               <v-list-item-icon
@@ -426,7 +432,7 @@
               </v-list>
             </v-expansion-panel-text>
           </v-expansion-panel>
-        </v-expansion-panels>
+        </v-expansion-panels> -->
       </v-list>
     </v-navigation-drawer>
 
@@ -582,6 +588,9 @@ export default {
     },
     Login() {
       this.$router.push("/login");
+    },
+    NextRouter(){
+      this.$router.push("/favorite");
     },
     Register() {
       this.$router.push("/register");

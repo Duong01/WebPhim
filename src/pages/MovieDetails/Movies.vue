@@ -12,48 +12,55 @@
       />
       
     </div>
-      <div v-else class="poster-wrapper">
-        <!-- Background image -->
-        <v-img :src="getOptimizedImage(movie.thumb_url)" class="poster-img" cover />
+      <div class="movie-banner">
 
-        <!-- Overlay effects -->
-        <!-- <div class="overlay-dark"></div> -->
-        <div class="overlay-gradient-1"></div>
-        <!-- <div class="overlay-gradient-2"></div> -->
+  <!-- Ảnh nền mờ -->
+  <v-img :src="getOptimizedImage(movie.thumb_url)" class="banner-bg" cover></v-img>
 
-        <!-- Content -->
-        <div class="poster-content">
-          <h1 class="poster-title">
-            {{ movie.name }}
-          </h1>
+  <!-- Lớp tối -->
+  <div class="banner-overlay"></div>
 
-          <p class="poster-sub">{{ movie.origin_name }}</p>
+  <div class="banner-content">
+    
+    <!-- Poster bên trái -->
+    <div class="banner-left">
+      <v-img
+        :src="getOptimizedImage(movie.poster_url)"
+        class="banner-poster"
+        height="260"
+        cover
+      />
+    </div>
 
-          <!-- Badges -->
-          <div class="poster-badges">
-            <v-chip size="small" class="chip-custom">
-              ⭐ TMDB {{ movie.tmdb || 0 }}
-            </v-chip>
+    <!-- Nội dung bên phải -->
+    <div class="banner-right">
 
-            <v-chip size="small" class="chip-custom"> TV </v-chip>
+      <h1 class="movie-title">{{ movie.name }}</h1>
 
-            <v-chip size="small" class="chip-custom">
-              {{ movie.year }}
-            </v-chip>
+      <p class="movie-sub">{{ movie.origin_name }}</p>
 
-            <v-chip size="small" class="chip-custom">
-              {{ movie.quality }}
-            </v-chip>
+      <!-- Hai nút giống hình bạn gửi -->
+      <div class="banner-buttons">
+        
+        <v-btn color="primary" size="large" @click="dialogTrailer = true">
+          ▶ Trailer
+        </v-btn>
 
-            <v-chip size="small" class="chip-custom">
-              {{ movie.lang }}
-            </v-chip>
-          </div>
-          <v-btn color="primary" size="large" class="mt-4 xem-ngay-btn text-center" @click="goToWatch()">
-            ▶ Xem ngay
-          </v-btn>
-        </div>
+        <v-btn color="red" size="large" @click="goToWatch()">
+          ▶ Xem phim
+        </v-btn>
+
       </div>
+
+      <!-- Thông tin nhỏ -->
+      <div class="movie-meta">
+        ⭐ TMDB: {{ movie.tmdb }} • {{ movie.year }} • {{ movie.quality }} • {{ movie.lang }}
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
       <div class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
@@ -164,7 +171,7 @@
         <v-divider />
         <v-row>
           <v-col v-for="(ep, i) in visibleEpisodes" :key="i" cols="4" sm="4" md="2" lg="2" xl="2">
-            <v-btn block color="primary" @click="goToWatch()">
+            <v-btn class="episode-btn" block color="primary" @click="goToWatch()">
               {{ ep.name }}
             </v-btn>
           </v-col>
@@ -991,5 +998,75 @@ export default {
     /* background: rgba(255, 0, 0, 0.8); */
     font-size: 18px;
   }
+}
+
+.movie-banner {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.banner-bg {
+  filter: brightness(0.5);
+  transform: scale(1.1);
+}
+
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, black 20%, transparent 80%);
+}
+
+.banner-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  color: white;
+}
+
+.banner-left {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.banner-poster {
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+
+.banner-right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie-title {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.movie-sub {
+  opacity: 0.7;
+  margin-top: -4px;
+}
+
+.banner-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.movie-meta {
+  font-size: 14px;
+  opacity: 0.8;
+}
+.episode-btn {
+  border-radius: 8px;
+  font-weight: 600;
 }
 </style>
