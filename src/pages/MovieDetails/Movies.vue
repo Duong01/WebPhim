@@ -6,66 +6,39 @@
     <div v-else>
       <div class="movie-banner">
         <!-- Ảnh nền mờ -->
-        <div class="img-porter">
-          <v-img :src="getOptimizedImage(movie.thumb_url)"  
+        <div
+          class="d-flex flex-column fill-height justify-center align-center text-white"
+        >
+          <v-img
+            :src="getOptimizedImage(movie.thumb_url)"
             :alt="`Poster phim ${movie.name}`"
             class="movie-img"
             width="100%"
-            height="100%"
-            cover/>
-          <div class="banner-overlay"></div>
+            height="70vh"
+            cover
+          />
+          <!-- <div class="banner-overlay"></div>
 
           <div class="banner-content">
-            <!-- Poster bên trái -->
             <div class="banner-left">
               <v-img
                 :src="getOptimizedImage(movie.poster_url)"
-                class="banner-poster"
+                class="banner-poster mx-auto"
+                width="auto"
+                height="auto"
                 cover
               />
             </div>
 
-            <!-- Nội dung bên phải -->
-            <div class="banner-right">
-
-              <div class="info-row mb-1 white--text">
-              <h1 class="movie-title">{{ movie.name }}</h1>
-
-              <p class="movie-sub">{{ movie.origin_name }}</p>
-              <strong>{{$t('Năm')}}:</strong> {{ movies.year }}
-              <span class="divider">|</span>
-              <strong>{{$t('Thể loại')}}:</strong> {{ movies.category.map(cat => cat.name).join(', ') }}
-              <span class="divider">|</span>
-              <strong>{{$t('Đánh giá')}}:</strong> {{ movies.rating || 'Chưa có' }}
-              <span class="divider">|</span>
-              <strong>{{$t('Thời lượng')}}:</strong> {{ movies.time || 'N/A' }}
-              <div class="banner-buttons">
-                <v-btn
-                  color="primary"
-                  size="small"
-                  @click="dialogTrailer = true"
-                >
-                  ▶ Trailer
-                </v-btn>
-
-                <v-btn color="red" size="small" @click="goToWatch()">
-                  ▶ Xem phim
-                </v-btn>
-              </div>
-            </div>
-              
-            </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Lớp tối -->
       </div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-      <div
-        class="h-full container mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10"
-      >
-        <v-row class="mt-6">
+      <div class="h-full container mx-auto flex flex-col lg:flex-row gap-10">
+        <v-row class="mt-0 pt-0" dense>
           <!-- CỘT TRÁI: VIDEO -->
           <v-col cols="12" md="4">
             <v-card flat class="poster-card">
@@ -75,58 +48,50 @@
               >
                 <v-skeleton-loader
                   type="image, article"
-                  height="420"
+                  height="220"
                   class="rounded-lg"
                 />
               </div>
               <!-- Ảnh + hiệu ứng hover -->
-              <div v-else class="poster-wrapper" @click="goToWatch(movie.slug)">
+              <div v-else class="poster-wrapper">
                 <v-img
                   :src="getOptimizedImage(movie.poster_url)"
                   class="poster-img"
-                  height="420"
+                  height="220"
+                  width="30%"
                   cover
+                  @click="goToWatch(movie.slug)"
+                  v-show="$vuetify.display.mdAndUp"
                 ></v-img>
 
                 <!-- Overlay mờ khi hover -->
-                <div class="poster-overlay"></div>
+                <!-- <div class="poster-overlay"></div> -->
 
                 <!-- Nút xem ngay -->
-                <div class="poster-btn">▶ Xem ngay</div>
-              </div>
-            </v-card>
-          </v-col>
+                <!-- <div class="poster-btn">▶ Xem ngay</div> -->
 
-          <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-          <v-col cols="12" md="8">
-            <!-- TRAILER -->
-            <v-card color="grey-darken-4" flat class="mb-4 pa-4">
-              <div class="trailer-box" v-if="movie.trailer_id">
-                <iframe
-                  class="trailer-iframe"
-                  :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
-                  frameborder="0"
-                  allowfullscreen
-                >
-                </iframe>
-              </div>
-
-              <!-- TITLE -->
-              <h1 class="text-left mt-3" style="color: cadetblue">
-                Giới thiệu
-              </h1>
-              <v-divider />
-              <h2 class="movie-title text-left">{{ movies.name }}</h2>
-
-              <!-- DESCRIPTION -->
-              <div
-                class="movie-description text-left"
-                style="font-size: 14px"
-                v-html="movies.content"
-              ></div>
-
-              <!-- INFO GRID -->
-              <div class="movie-info-grid text-left">
+                <div class="banner-right text-left">
+                  <div class="info-row mb-1 white--text">
+                    <h5 class="movie-title">{{ movies.name }}</h5>
+                    <p class="movie-sub">{{ movies.origin_name }}</p>
+                    <div class="d-flex justify-center ga-2 pb-2 pt-0">
+                      <v-chip variant="flat" size="small">
+                      {{movies.year}}
+                      </v-chip>
+                      <v-chip variant="flat" size="small">
+                        {{movies.episode_current}}
+                      </v-chip>
+                      <v-chip variant="flat" size="small">
+                        {{movies.quality}}
+                      </v-chip>
+                    </div>
+                    <p class="movie-sub">Giới thiệu: </p>
+                    <div
+                      class="movie-description text-left"
+                      style="font-size: 11px"
+                      v-html="movies.content"
+                    ></div>
+                    <div class="movie-info-grid text-left">
                 <div>
                   <strong>Thể loại:</strong>
                   <div
@@ -161,63 +126,121 @@
                   </div>
                 </div>
               </div>
+                    <!-- <div class="banner-buttons">
+                      <v-btn
+                        color="primary"
+                        size="small"
+                        @click="dialogTrailer = true"
+                      >
+                        ▶ Trailer
+                      </v-btn>
 
-              <!-- RATING -->
-              <div class="rating-row text-left">
-                <strong class="mr-2">Đánh giá:</strong>
-                <v-rating
-                  readonly
-                  :model-value="movie.rating"
-                  color="yellow"
-                  size="small"
-                  density="compact"
-                />
+                      <v-btn color="red" size="small" @click="goToWatch()">
+                        ▶ Xem phim
+                      </v-btn>
+                    </div> -->
+                  </div>
+                </div>
               </div>
             </v-card>
+          </v-col>
+
+          <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
+          <v-col cols="12" md="8">
+            <div class="center-buttons">
+              <v-btn class="watch-now" size="large" @click="goToWatch()">
+              ▶ Xem Ngay
+              </v-btn>
+
+
+              <div class="hero-actions">
+                <div class="action-item"><v-icon>mdi-heart-outline</v-icon> Yêu thích</div>
+                <div class="action-item"><v-icon>mdi-plus</v-icon> Thêm vào</div>
+                <div class="action-item"><v-icon>mdi-send</v-icon> Chia sẻ</div>
+                <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
+                <div class="rating-box">
+                <v-icon color="white">mdi-star</v-icon> 0.0 Đánh giá
+                </div>
+                </div>
+            </div>
+            <v-sheet elevation="4">
+              <v-tabs color="primary" v-model="tab">
+                <v-tab value="one">Tập phim</v-tab>
+                <v-tab value="two">Trailer</v-tab>
+                <v-tab value="three">Diễn viên</v-tab>
+                <v-tab value="four">Đề xuất</v-tab>
+              </v-tabs>
+
+              <v-divider></v-divider>
+
+              <v-tabs-window v-model="tab">
+                <v-tabs-window-item value="one">
+                  
+                  <!-- ========================= -->
+                  <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
+                  <!-- ========================= -->
+                  <v-card class="my-6 pa-4" color="grey-darken-4" flat>
+                    <h1 class="text-left" style="color: cadetblue">Danh sách tập phim</h1>
+                    <v-divider />
+                    <v-row>
+                      <v-col
+                        v-for="(ep, i) in visibleEpisodes"
+                        :key="i"
+                        cols="4"
+                        sm="4"
+                        md="2"
+                        lg="2"
+                        xl="2"
+                      >
+                        <v-btn
+                          class="episode-btn"
+                          block
+                          color="primary"
+                          @click="goToWatch()"
+                        >
+                          {{ ep.name }}
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                    <div class="text-center mt-4">
+                      <v-btn
+                        color="gray"
+                        variant="tonal"
+                        @click="toggleEpisodes"
+                        class="btnnext"
+                      >
+                        {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
+                        <v-icon size="18" class="mr-1">
+                          {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
+                        </v-icon>
+                      </v-btn>
+                    </div>
+                  </v-card>
+                </v-tabs-window-item>
+                <v-tabs-window-item value="two">
+                  <div class="trailer-box" v-if="movie.trailer_id">
+                    <iframe
+                      class="trailer-iframe"
+                      :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
+                      frameborder="0"
+                      allowfullscreen
+                    >
+                    </iframe>
+                  </div>
+                  
+                </v-tabs-window-item>
+                <v-tabs-window-item value="three">
+                  <v-sheet class="pa-5" color="brown">Three</v-sheet>
+                </v-tabs-window-item>
+              </v-tabs-window>
+            </v-sheet>
+            <!-- TRAILER -->
+            
           </v-col>
         </v-row>
       </div>
 
-      <!-- ========================= -->
-      <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
-      <!-- ========================= -->
-      <v-card class="my-6 pa-4" color="grey-darken-4" flat>
-        <h1 class="text-left" style="color: cadetblue">Danh sách tập phim</h1>
-        <v-divider />
-        <v-row>
-          <v-col
-            v-for="(ep, i) in visibleEpisodes"
-            :key="i"
-            cols="4"
-            sm="4"
-            md="2"
-            lg="2"
-            xl="2"
-          >
-            <v-btn
-              class="episode-btn"
-              block
-              color="primary"
-              @click="goToWatch()"
-            >
-              {{ ep.name }}
-            </v-btn>
-          </v-col>
-        </v-row>
-        <div class="text-center mt-4">
-          <v-btn
-            color="gray"
-            variant="tonal"
-            @click="toggleEpisodes"
-            class="btnnext"
-          >
-            {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
-            <v-icon size="18" class="mr-1">
-              {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
-            </v-icon>
-          </v-btn>
-        </div>
-      </v-card>
+      
 
       <!-- Dialog Trailer -->
       <v-dialog v-model="dialogTrailer" max-width="900">
@@ -259,11 +282,11 @@ export default {
   name: "MoviesPage",
   data() {
     return {
+      tab: "one",
       imageLoaded: false,
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
-      tab: "",
       shareUrl: window.location.href,
       tabserver: null,
       currentEpisodeIndex: 0,
@@ -812,7 +835,7 @@ export default {
 }
 
 /* Ảnh nền poster */
-.poster-img,
+
 .banner-poster {
   width: 100%;
   height: auto !important;
@@ -954,7 +977,6 @@ export default {
 .movie-title {
   color: white;
   margin: 15px 0 10px 0;
-  font-size: 22px;
   font-weight: 700;
 }
 
@@ -1038,26 +1060,26 @@ export default {
     opacity: 1 !important;
     /* background: rgba(255, 0, 0, 0.8); */
     font-size: 18px;
-    
   }
   .divider {
-  font-size: 9px;
-  margin: 0 8px;
-  color: rgba(255, 255, 255, 0.5);
-}
+    font-size: 9px;
+    margin: 0 8px;
+    color: rgba(255, 255, 255, 0.5);
+  }
   .info-row {
-  font-size: 0.6rem;
-  color: #ddd;
-}
-.banner-buttons {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-
-}
+    font-size: 0.6rem;
+    color: #ddd;
+  }
+  .banner-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+  }
 }
 
 .movie-banner {
+  padding-bottom: 0;
+  margin-bottom: 0;
   position: relative;
   width: 100%;
   height: 450px;
@@ -1075,7 +1097,7 @@ export default {
 .banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, black 20%, transparent 80%);
+  background: linear-gradient(to top, rgb(58, 57, 57) 30%, transparent 80%);
 }
 
 .banner-content {
@@ -1103,6 +1125,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 20px;
 }
 
 .movie-title {
@@ -1137,5 +1160,45 @@ export default {
 .info-row {
   font-size: 0.9rem;
   color: #ddd;
+}
+.action-item {
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.center-buttons {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 20px;
+}
+.hero-actions {
+display: flex;
+gap: 26px;
+font-size: 14px;
+opacity: 0.85;
+}
+.watch-now {
+background: #ffd76b !important;
+color: black !important;
+font-weight: 700;
+padding: 10px 26px;
+border-radius: 30px;
+}
+.tab.active {
+font-weight: 700;
+border-bottom: 2px solid #ffd76b;
+}
+.section-tabs {
+margin-top: 35px;
+display: flex;
+gap: 35px;
+font-size: 16px;
+color: #ccc;
+}
+.section-tabs .active {
+font-weight: bold;
+color: #ffd76b;
+border-bottom: 2px solid #ffd76b;
 }
 </style>
