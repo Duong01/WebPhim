@@ -169,11 +169,11 @@
                   <v-btn variant="text" @click="shareMovie()">
                     <v-icon>mdi-send</v-icon> Chia sẻ
                   </v-btn>
-                  </div>
-                <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
+                </div>
+                <!-- <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
                 <div class="rating-box">
                 <v-icon color="white">mdi-star</v-icon> 0.0 Đánh giá
-                </div>
+                </div> -->
               </div>
             </div>
             <v-sheet elevation="4">
@@ -404,6 +404,7 @@ import {
 } from "@/model/api";
 import { toggleFavorite, isFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
+import { includes } from 'vuetify/lib/util';
 export default {
   name: "MoviesPage",
   data() {
@@ -788,7 +789,7 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      return `${this.urlImage1 + imagePath}`;
+      return `${imagePath.includes("https://phimimg.com/upload") ? this.urlImage1 + imagePath : this.urlImage1 + "https://phimimg.com/upload/" + imagePath}`;
       // }
     },
     // Chuản SEO
