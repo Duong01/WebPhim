@@ -154,9 +154,22 @@
 
 
               <div class="hero-actions">
-                <div class="action-item"><v-icon>mdi-heart-outline</v-icon> Yêu thích</div>
-                <div class="action-item"><v-icon>mdi-plus</v-icon> Thêm vào</div>
-                <div class="action-item"><v-icon>mdi-send</v-icon> Chia sẻ</div>
+                <div class="action-item">
+                  <v-btn variant="text" @click="handleFavorite()">
+                    <v-icon>mdi-heart-outline</v-icon> Yêu thích
+                  </v-btn>
+                  
+                </div>
+                <div class="action-item">
+                  <v-btn variant="text" @click="handleFavorite()">
+                    <v-icon>mdi-plus</v-icon> Thêm vào
+                  </v-btn>
+                </div>
+                <div class="action-item">
+                  <v-btn variant="text" @click="shareMovie()">
+                    <v-icon>mdi-send</v-icon> Chia sẻ
+                  </v-btn>
+                  </div>
                 <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
                 <div class="rating-box">
                 <v-icon color="white">mdi-star</v-icon> 0.0 Đánh giá
@@ -276,7 +289,84 @@
         </v-row>
       </div>
 
-      
+      <!-- dialog share -->
+      <v-dialog v-model="shareDialog" max-width="500">
+        <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
+          <v-card-title class="text-h6 justify-center">{{$t('Chia sẻ')}}</v-card-title>
+
+          <v-row class="justify-center mt-4" dense>
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('facebook')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-facebook" />
+              </v-btn>
+              <div class="mt-1 text-caption">Facebook</div>
+            </v-col>
+
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('youtube')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-youtube" />
+              </v-btn>
+              <div class="mt-1 text-caption">YouTube</div>
+            </v-col>
+
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="copyLink"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-link-variant" />
+              </v-btn>
+              <div class="mt-1 text-caption">Copy link</div>
+            </v-col>
+
+            <v-col cols="3" class="text-center">
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('twitter')"
+                class="bg-grey-darken-4"
+              >
+                <v-icon icon="mdi-twitter" />
+              </v-btn>
+              <div class="mt-1 text-caption">Twitter</div>
+            </v-col>
+          </v-row>
+
+          <v-card
+            class="mt-4 px-3 py-2 d-flex align-center"
+            style="background-color: #2a2a2a; border-radius: 8px"
+          >
+            <span class="text-truncate" style="color: #facc15; max-width: 100%">
+              {{ shareUrl }}
+            </span>
+            <v-spacer />
+            <v-btn icon @click="copyLink" size="small">
+              <v-icon icon="mdi-content-copy" />
+            </v-btn>
+          </v-card>
+
+          <v-btn
+            icon
+            class="position-absolute"
+            style="top: 8px; right: 8px"
+            @click="shareDialog = false"
+          >
+            <v-icon icon="mdi-close" />
+          </v-btn>
+        </v-card>
+      </v-dialog>
 
       <!-- Dialog Trailer -->
       <v-dialog v-model="dialogTrailer" max-width="900">
@@ -636,6 +726,7 @@ export default {
         );
       });
     },
+
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
@@ -1205,7 +1296,7 @@ gap: 4px;
 .center-buttons {
 display: flex;
 flex-direction: column;
-align-items: center;
+/* align-items: center; */
 gap: 20px;
 padding: 10px 0;
 }
