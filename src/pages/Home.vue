@@ -264,27 +264,6 @@
                           >
                             {{item.quality}}
                           </v-btn>
-                          
-
-                          <!-- hiển thị dưới cùng bên phải -->
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-bottom-right"
-                          >
-                            {{item.time}}
-                          </v-btn> -->
-
-                          <!-- hiển thị dưới cùng bên trái -->
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-bottom-left"
-                          >
-                            {{item.country[0].name}}
-                          </v-btn> -->
                            </div>
 
                           <div class="movie-overlay" aria-hidden="true"></div>

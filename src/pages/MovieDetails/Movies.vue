@@ -161,7 +161,7 @@
                 <div class="rating-box">
                 <v-icon color="white">mdi-star</v-icon> 0.0 Đánh giá
                 </div>
-                </div>
+              </div>
             </div>
             <v-sheet elevation="4">
               <v-tabs color="primary" v-model="tab">
@@ -218,7 +218,7 @@
                   </v-card>
                 </v-tabs-window-item>
                 <v-tabs-window-item value="two">
-                  <div class="trailer-box" v-if="movie.trailer_id">
+                  <div class="trailer-box">
                     <iframe
                       class="trailer-iframe"
                       :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
@@ -231,6 +231,42 @@
                 </v-tabs-window-item>
                 <v-tabs-window-item value="three">
                   <v-sheet class="pa-5" color="brown">Three</v-sheet>
+                </v-tabs-window-item>
+                <v-tabs-window-item value="four">
+                  <div class="suggested-movies my-8">
+                    <v-row>
+                      <v-col
+                        v-for="suggested in suggestedMovies"
+                        :key="suggested._id"
+                        cols="6"
+                        sm="4"
+                        md="2"
+                      >
+                        <router-link
+                          :to="{ name: 'Movies', params: { slug: suggested.slug } }"
+                          class="text-decoration-none"
+                        >
+                          <v-card elevation="2" class="bg-grey-darken-4" hover>
+                            <v-img
+                              :lazy-src="getOptimizedImage(suggested.thumb_url)"
+                              :src="getOptimizedImage(suggested.thumb_url)"
+                              aspect-ratio="16/9"
+                              cover
+                            ></v-img>
+                            <div class="ml-3 flex-grow-1">
+                              <div class="text-white text-body-2 font-weight-medium text-truncate">
+                                {{ suggested.name }}
+                              </div>
+                              <div class="text-grey-lighten-1 text-caption">
+                                {{ suggested.episode_current }} | {{ suggested.lang }}<br />
+                                {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                              </div>
+                            </div>
+                          </v-card>
+                        </router-link>
+                      </v-col>
+                    </v-row>
+                  </div>
                 </v-tabs-window-item>
               </v-tabs-window>
             </v-sheet>
@@ -1163,7 +1199,7 @@ export default {
 }
 .action-item {
 display: flex;
-align-items: center;
+/* align-items: center; */
 gap: 4px;
 }
 .center-buttons {
@@ -1171,6 +1207,7 @@ display: flex;
 flex-direction: column;
 align-items: center;
 gap: 20px;
+padding: 10px 0;
 }
 .hero-actions {
 display: flex;
