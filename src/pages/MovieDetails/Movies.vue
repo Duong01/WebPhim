@@ -404,7 +404,6 @@ import {
 } from "@/model/api";
 import { toggleFavorite, isFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
-import { includes } from 'vuetify/lib/util';
 export default {
   name: "MoviesPage",
   data() {
