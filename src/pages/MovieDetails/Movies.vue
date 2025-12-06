@@ -88,7 +88,7 @@
                     <p class="movie-sub">Giới thiệu: </p>
                     <div
                       class="movie-description text-left"
-                      style="font-size: 11px"
+                      style="font-size: 12px"
                       v-html="movies.content"
                     ></div>
                     <div class="movie-info-grid text-left">
@@ -217,16 +217,26 @@
                     </v-row>
                     <div class="text-center mt-4">
                       <v-btn
-                        color="gray"
-                        variant="tonal"
-                        @click="toggleEpisodes"
-                        class="btnnext"
-                      >
-                        {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
-                        <v-icon size="18" class="mr-1">
-                          {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
-                        </v-icon>
-                      </v-btn>
+                          color="gray"
+                          variant="tonal"
+                          @click="loadMore"
+                          class="btnnext"
+                          v-if="episodeLimit < movie.pageMovie.length"
+                        >
+                          Xem thêm
+                          <v-icon size="12" class="mr-1">mdi-chevron-down</v-icon>
+                        </v-btn>
+
+                        <v-btn
+                          color="gray"
+                          variant="tonal"
+                          @click="episodeLimit = 20"
+                          class="btnnext"
+                          v-else
+                        >
+                          Thu gọn
+                          <v-icon size="12" class="mr-1">mdi-chevron-up</v-icon>
+                        </v-btn>
                     </div>
                   </v-card>
                 </v-tabs-window-item>
@@ -253,7 +263,7 @@
                         :key="suggested._id"
                         cols="6"
                         sm="4"
-                        md="2"
+                        md="4"
                       >
                         <router-link
                           :to="{ name: 'Movies', params: { slug: suggested.slug } }"
@@ -470,6 +480,7 @@ export default {
       shareDialog: false,
       link: "",
       liked: false,
+      episodeLimit: 20,
     };
   },
   props: ["slug"],
@@ -727,6 +738,10 @@ export default {
       });
     },
 
+    loadMore() {
+    if (!this.movie?.pageMovie) return;
+    this.episodeLimit += 20;
+    },
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
@@ -788,7 +803,7 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      return `${imagePath.includes("https://phimimg.com/upload") ? this.urlImage1 + imagePath : this.urlImage1 + "https://phimimg.com/upload/" + imagePath}`;
+      return `${imagePath.includes("https://phimimg.com/upload") ? this.urlImage1 + imagePath : this.urlImage1 + "https://phimimg.com/" + imagePath}`;
       // }
     },
     // Chuản SEO
@@ -945,7 +960,7 @@ export default {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
         ? this.movie.pageMovie // Hiện tất cả tập
-        : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+        : this.movie.pageMovie.slice(0, this.episodeLimit); // Chỉ 20 tập đầu
     },
   },
 };

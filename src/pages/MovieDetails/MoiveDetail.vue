@@ -360,8 +360,8 @@
                     <v-img
                       :src="getOptimizedImage(suggested.poster_url)"
                       :lazy-src="getOptimizedImage(suggested.poster_url)"
-                      width="150"
-                      height="120"
+                      width="100"
+                      height="80"
                       class="rounded-lg"
                       cover
                     ></v-img>
