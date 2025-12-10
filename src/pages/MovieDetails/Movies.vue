@@ -1366,4 +1366,8 @@ font-weight: bold;
 color: #ffd76b;
 border-bottom: 2px solid #ffd76b;
 }
+.icon-ele {
+  margin: 0 10px ;
+  color: #409eff;
+}
 </style>
