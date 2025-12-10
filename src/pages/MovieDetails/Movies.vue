@@ -85,12 +85,33 @@
                         {{movies.quality}}
                       </v-chip>
                     </div>
-                    <p class="movie-sub">Giới thiệu: </p>
-                    <div
-                      class="movie-description text-left"
-                      style="font-size: 12px"
-                      v-html="movies.content"
-                    ></div>
+                    <el-collapse v-model="activeNames" v-if="$vuetify.display.smAndDown">
+      
+                      <el-collapse-item title="Giới thiệu" name="1" >
+                        <template #icon="{ isActive }">
+                          <span class="icon-ele">
+                            {{ isActive ? 'Thu gọn' : 'Xem thêm' }}
+                          </span>
+                        </template>
+                        <div
+                          class="movie-description text-left"
+                          style="font-size: 12px"
+                          v-html="movies.content"
+                        ></div>
+                        
+                      </el-collapse-item>
+                      
+                    </el-collapse>
+                    <div v-else>
+                      <p class="movie-sub">Giới thiệu: </p>
+                      <div
+                        class="movie-description text-left"
+                        style="font-size: 12px"
+                        v-html="movies.content"
+                      ></div>
+                    </div>
+                    
+                    
                     <div class="movie-info-grid text-left">
                 <div>
                   <strong>Thể loại:</strong>
@@ -418,6 +439,7 @@ export default {
   name: "MoviesPage",
   data() {
     return {
+      isActive: "1",
       tab: "one",
       imageLoaded: false,
       showAllEpisodes: false,
