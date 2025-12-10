@@ -85,7 +85,7 @@
                         {{movies.quality}}
                       </v-chip>
                     </div>
-                    <el-collapse v-model="activeNames" v-if="$vuetify.display.smAndDown">
+                    <!-- <el-collapse v-model="activeNames" v-if="$vuetify.display.smAndDown">
       
                       <el-collapse-item title="Giới thiệu" name="1" >
                         <template #icon="{ isActive }">
@@ -101,8 +101,8 @@
                         
                       </el-collapse-item>
                       
-                    </el-collapse>
-                    <div v-else>
+                    </el-collapse> -->
+                    <div>
                       <p class="movie-sub">Giới thiệu: </p>
                       <div
                         class="movie-description text-left"
