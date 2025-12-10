@@ -439,7 +439,7 @@ export default {
   name: "MoviesPage",
   data() {
     return {
-      isActive: "1",
+      activeNames: "1",
       tab: "one",
       imageLoaded: false,
       showAllEpisodes: false,
@@ -1145,7 +1145,6 @@ export default {
 }
 
 .movie-description {
-  color: #bbb;
   font-size: 15px;
   line-height: 1.6;
   margin-bottom: 15px;
