@@ -216,7 +216,75 @@
                   <!-- ========================= -->
                   <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
                   <!-- ========================= -->
-                  <v-card class="my-6 pa-4" color="grey-darken-4" flat>
+                      <v-tabs
+                        v-model="currentServer"
+                        color="orange"
+                        show-arrows
+                      >
+                        <v-tab
+                          v-for="(server, i) in movie.servers"
+                          :key="i"
+                          :value="server.server_name"
+                        >
+                          {{ server.server_name }}
+                        </v-tab>
+                      </v-tabs>
+
+                      <!-- NỘI DUNG THEO SERVER -->
+                      <v-tabs-window v-model="currentServer">
+                        <v-tabs-window-item
+                          v-for="(server, i) in movie.servers"
+                          :key="i"
+                          :value="server.server_name"
+                        >
+
+                          <!-- DANH SÁCH TẬP -->
+                          <v-row class="mt-4">
+                            <v-col
+                              v-for="(ep, idx) in server.server_data.slice(0,20)"
+                              :key="idx"
+                              cols="4"
+                              sm="4"
+                              md="2"
+                              lg="2"
+                            >
+                              <v-btn
+                                block
+                                color="primary"
+                                class="episode-btn"
+                                @click="goToWatch(ep)"
+                              >
+                                {{ ep.name }}
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                          <div class="text-center mt-4">
+                          <v-btn
+                              color="gray"
+                              variant="tonal"
+                              @click="goToWatch('first')"
+                              class="btnnext"
+                              v-if="episodeLimit < movie.pageMovie.length"
+                            >
+                              Xem thêm
+                              <v-icon size="12" class="mr-1">mdi-chevron-down</v-icon>
+                            </v-btn>
+
+                            <v-btn
+                              color="gray"
+                              variant="tonal"
+                              @click="goToWatch('first')"
+                              class="btnnext"
+                              v-else
+                            >
+                              Thu gọn
+                              <v-icon size="12" class="mr-1">mdi-chevron-up</v-icon>
+                            </v-btn>
+                        </div>
+
+                        </v-tabs-window-item>
+                      </v-tabs-window>
+                  <!-- <v-card class="my-6 pa-4" color="grey-darken-4" flat>
                     <h1 class="text-left" style="color: cadetblue">Danh sách tập phim</h1>
                     <v-divider />
                     <v-row>
@@ -262,7 +330,7 @@
                           <v-icon size="12" class="mr-1">mdi-chevron-up</v-icon>
                         </v-btn>
                     </div>
-                  </v-card>
+                  </v-card> -->
                 </v-tabs-window-item>
                 <v-tabs-window-item value="two">
                   <div class="trailer-box">
@@ -444,6 +512,7 @@ export default {
     return {
       activeNames: "1",
       tab: "one",
+      currentServer: null,
       imageLoaded: false,
       showAllEpisodes: false,
       dialogTrailer: false,
@@ -506,6 +575,7 @@ export default {
       link: "",
       liked: false,
       episodeLimit: 20,
+      episodeLimitMap: {}
     };
   },
   props: ["slug"],
@@ -525,6 +595,10 @@ export default {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(this.slug);
+      if (this.movie?.servers?.length) {
+        this.currentServer = this.movie.servers[0].server_name;
+      }
+      
       this.playVideo(this.movie.videoUrl);
 
       await this.ListMovieByCate();

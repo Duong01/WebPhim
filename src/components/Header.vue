@@ -155,6 +155,7 @@
         :open-on-focus="false"
         @keyup.enter="searchMovie"
         offset-y
+        width='300'
       >
         <template #activator="{ props: activatorProps }">
           <v-text-field
