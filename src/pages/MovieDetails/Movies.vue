@@ -176,19 +176,22 @@
 
               <div class="hero-actions">
                 <div class="action-item">
+                  <v-btn variant="text" @click="goToWatch()">
+                    <span class="flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg></span>
+                    Xem từ đầu
+                  </v-btn>
+                </div>
+                <div class="action-item">
                   <v-btn variant="text" @click="handleFavorite()">
-                    <v-icon>mdi-heart-outline</v-icon> Yêu thích
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>
+                     Xem sau
                   </v-btn>
                   
                 </div>
                 <div class="action-item">
-                  <v-btn variant="text" @click="handleFavorite()">
-                    <v-icon>mdi-plus</v-icon> Thêm vào
-                  </v-btn>
-                </div>
-                <div class="action-item">
                   <v-btn variant="text" @click="shareMovie()">
-                    <v-icon>mdi-send</v-icon> Chia sẻ
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share" aria-hidden="true"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg>
+                     Chia sẻ
                   </v-btn>
                 </div>
                 <!-- <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
@@ -230,7 +233,7 @@
                           class="episode-btn"
                           block
                           color="primary"
-                          @click="goToWatch()"
+                          @click="goToWatch(ep)"
                         >
                           {{ ep.name }}
                         </v-btn>
@@ -767,8 +770,14 @@ export default {
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
-    goToWatch() {
-      this.$router.push(`/movie/${this.movie.slug}`);
+    goToWatch(ep) {
+      const page = ep.name.replace('Tập ', 'tap');
+      this.$router.push({
+      name: "MovieDetail",
+      params: { slug: this.movie.slug },
+      query: { page }
+    });
+      //this.$router.push(`/movie/${this.movie.slug}`);
       // hoặc:
       // this.$router.push(`/watch/${this.movie.slug}`);
     },
