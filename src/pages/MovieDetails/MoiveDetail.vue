@@ -610,6 +610,17 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
       this.playVideo(this.movie.videoUrl);
+      if (this.page) {
+        
+        if(this.page == '01'){
+          this.currentEpisodeIndex = this.movie.pageMovie.length -1
+        }
+        else{
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(ep =>
+            ep.name.replace('Tập ', 'tap') === this.page
+          );
+        }
+      }
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
@@ -629,16 +640,20 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      console.log(this.page)
       await this.MoveInfor1(this.slug);
       this.playVideo(this.movie.videoUrl);
       if (this.page) {
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex(ep =>
-          ep.name.replace('Tập ', 'tap') === this.page
-        );
+        
+        if(this.page == '01'){
+          this.currentEpisodeIndex = this.movie.pageMovie.length -1
+        }
+        else{
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(ep =>
+            ep.name.replace('Tập ', 'tap') === this.page
+          );
+        }
       }
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      console.log("epName", epName);
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
 

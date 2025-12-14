@@ -176,7 +176,7 @@
 
               <div class="hero-actions">
                 <div class="action-item">
-                  <v-btn variant="text" @click="goToWatch()">
+                  <v-btn variant="text" @click="goToWatch('first')">
                     <span class="flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg></span>
                     Xem từ đầu
                   </v-btn>
@@ -771,7 +771,14 @@ export default {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     goToWatch(ep) {
-      const page = ep.name.replace('Tập ', 'tap');
+      var page= ""
+      if(ep == 'first'){
+        page= '01'
+      }
+      else{
+        page = ep.name.replace('Tập ', 'tap');
+
+      }
       this.$router.push({
       name: "MovieDetail",
       params: { slug: this.movie.slug },
