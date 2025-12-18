@@ -12,6 +12,8 @@
         contain
         class="mx-4"
         cover
+        :max-width="smAndDown ? 180 : 140"
+        :max-height="smAndDown ? 60 : 40"
         style="cursor: pointer"
         @click="goHome"
       ></v-img>
@@ -148,6 +150,7 @@
 
       <!-- Search + Language + Profile -->
       <v-spacer />
+      <div style="padding: 0 20px;"></div>
       <v-menu
         v-model="menuVisible"
         :close-on-content-click="false"
@@ -155,7 +158,6 @@
         :open-on-focus="false"
         @keyup.enter="searchMovie"
         offset-y
-        width='300'
       >
         <template #activator="{ props: activatorProps }">
           <v-text-field
@@ -170,7 +172,9 @@
             clearable
             solo
             hide-details
+            width="auto"
             density="comfortable"
+            rounded="pill"
           />
         </template>
         
@@ -260,11 +264,14 @@
         <template #activator="{ props }">
           <v-btn v-bind="props" variant="text">
             <span>
-              {{ account }}
+              <v-icon>mdi-account-circle</v-icon>
             </span>
           </v-btn>
         </template>
         <v-list>
+          <v-list-item>
+            <v-list-item-title>{{ account }}</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="NextRouter()">
             <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
           </v-list-item>
@@ -699,5 +706,8 @@ a.router-link-exact-active,
 a.router-link-active,
 a:hover {
   color: #00e165 !important;
+}
+.v-spacer{
+  flex-grow: 0 !important;
 }
 </style>

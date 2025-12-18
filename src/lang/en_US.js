@@ -119,7 +119,7 @@ export default
 "Không có dữ liệu được hiển thị, vui lòng tải lại trang": "No data to display, please reload the page",
 "Hết thời gian chờ, vui lòng tải lại trang": "Timeout, please reload the page",
     "Thời gian chiếu": "Show time",
-    "Đã lưu": "Film Saves",
+    "Đã lưu": "Films Saves",
 
 
 }
