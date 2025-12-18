@@ -262,15 +262,13 @@
       </v-menu>
       <v-menu offset-y v-else>
         <template #activator="{ props }">
-          <v-btn v-bind="props" variant="text">
-            <span>
-              <v-icon>mdi-account-circle</v-icon>
-            </span>
+          <v-btn v-bind="props" :title="$t('Tài khoản')">
+            <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title>{{ account }}</v-list-item-title>
+            <v-list-item-title><v-icon>mdi-account-circle</v-icon> {{ account }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="NextRouter()">
             <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
