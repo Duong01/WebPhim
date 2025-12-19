@@ -509,22 +509,22 @@ export default {
       }
     },
     timeAgo(timestamp) {
-      const diff = Date.now() - new Date(timestamp).getTime();
-      if (diff < 0) return "Đang chiếu";
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+       const time = new Date(timestamp).getTime();
+      const now = Date.now();
 
-        const d = days;
-        const h = hours % 24;      // số giờ dư
-        const m = minutes % 60;    // số phút dư
-        
+      if (time > now) {
+        return 'Vừa xong';
+      }
+      const diff = now - time;
         let result = "";
-        if (d > 0) result += `${d} ngày `;
-        if (h > 0) result += `${h} giờ `;
-        if (m > 0) result += `${m} phút `;
-      return result.trim() + " trước";
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 1) return 'Vừa xong';
+        if (minutes < 60) return  `${minutes} phút trước`;
+        
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} giờ trước`;
+        const days = Math.floor(hours / 24);
+        return `${days} ngày trước`;
   },
 
     handleFavorite(movie){
