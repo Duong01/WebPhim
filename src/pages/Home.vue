@@ -184,7 +184,7 @@
               </v-col>
               <v-col cols="auto">
                 <router-link
-                  :to="{name: section.name, params: {  }}"
+                  :to="section.link"
                   class="view-all"
                 >
                   {{ $t("Xem tất cả") }} >>
