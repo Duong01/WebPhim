@@ -184,17 +184,7 @@
               </v-col>
               <v-col cols="auto">
                 <router-link
-                  :to="
-                    section.name === 'QuocGia' 
-                      ? {
-                          name: section.name,
-                          params: { path: section.id.split('/')[1].split('?')[0] },
-                        }
-                      : { 
-                          name: section.name,
-                          params: { path: section.id.split('/')[1].split('?')[0] },
-                        }
-                  "
+                  :to="{name: section.name, params: {  }}"
                   class="view-all"
                 >
                   {{ $t("Xem tất cả") }} >>
