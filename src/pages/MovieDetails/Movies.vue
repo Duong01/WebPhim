@@ -785,22 +785,21 @@ export default {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     goToWatch(ep) {
-      var page= ""
-      if(ep == 'first'){
-        page= '01'
-      }
-      else{
-        page = ep.name.replace('Tập ', 'tap');
+      var page= "01"
+        if(ep == 'first'){
+          page= '01'
+        }
+        else{
+          page = ep.includes('Tập') ? ep.replace('Tập', 'tap').trim() : ep.name.replace('Tập', 'tap').trim();
 
-      }
+        }
+      
+      
       this.$router.push({
       name: "MovieDetail",
       params: { slug: this.movie.slug },
       query: { page }
     });
-      //this.$router.push(`/movie/${this.movie.slug}`);
-      // hoặc:
-      // this.$router.push(`/watch/${this.movie.slug}`);
     },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
