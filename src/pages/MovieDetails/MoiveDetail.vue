@@ -652,7 +652,6 @@ export default {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(this.slug);
-      this.playVideo(this.movie.videoUrl);
       if (this.page) {
         
         if(this.page == '01'){
@@ -665,6 +664,9 @@ export default {
         }
       }
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
+
+      this.playVideo(this.movie.videoUrl);
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
 
