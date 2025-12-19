@@ -1,5 +1,7 @@
 <template>
-  <v-container class="search-page" fluid>
+<v-fade-transition appear>
+  <div class="watch-page">
+    <v-container class="search-page" fluid>
     <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
@@ -338,6 +340,7 @@
 
         <!-- Cột bên phải: Gợi ý -->
         <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
+        
         <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
           <v-card class="pa-0" color="grey-darken-4" flat>
             <v-tabs v-model="tab" background-color="grey-darken-3" grow>
@@ -352,6 +355,7 @@
                   :key="suggested.id"
                   class="suggested-item d-flex align-center"
                 >
+                <v-lazy min-height="300" transition="fade-transition">
                   <router-link
                     :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                     class="d-flex text-decoration-none align-center py-4"
@@ -376,15 +380,16 @@
                       </div>
                     </div>
                   </router-link>
+                </v-lazy>
+
                 </v-list-item>
               </v-list>
             </v-card-text>
           </v-card>
         </v-col>
 
-
         <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
-
+        
         <div class="suggested-movies my-8">
           <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
           <v-row>
@@ -395,6 +400,7 @@
               sm="4"
               md="2"
             >
+            <v-lazy min-height="300" transition="fade-transition">
               <router-link
                 :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                 class="text-decoration-none"
@@ -417,6 +423,8 @@
                   </div>
                 </v-card>
               </router-link>
+        </v-lazy>
+
             </v-col>
           </v-row>
         </div>
@@ -506,6 +514,9 @@
       </v-snackbar>
     </div>
   </v-container>
+  </div>
+</v-fade-transition>
+  
 </template>
 
 <script>
@@ -1339,9 +1350,19 @@ export default {
     position: relative;
     overflow: hidden;
     border-radius: 12px;
+    animation: videoFade 0.4s ease;
   }
 }
-
+@keyframes videoFade {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
 .video-wrapper iframe,
 .video-wrapper video {
@@ -1648,5 +1669,30 @@ a {
 .btnnext {
   border-radius: 10px;
   color: #757575;
+}
+.watch-page {
+  animation: watchEnter 0.5s ease-out;
+}
+
+@keyframes watchEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.v-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.v-btn:hover {
+  transform: translateY(-2px);
+}
+
+.v-btn:active {
+  transform: scale(0.96);
 }
 </style>

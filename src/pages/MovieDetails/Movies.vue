@@ -1,5 +1,7 @@
 <template>
-  <v-container class="search-page" fluid>
+<v-fade-transition appear>
+  <div class="detail-page">
+    <v-container class="search-page" fluid>
     <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
@@ -12,25 +14,13 @@
           <v-img
             :src="getOptimizedImage(movie.thumb_url)"
             :alt="`Poster phim ${movie.name}`"
-            class="movie-img"
+            class="banner-img"
             width="100%"
             height="70vh"
+            loading="lazy"
             cover
           />
-          <!-- <div class="banner-overlay"></div>
-
-          <div class="banner-content">
-            <div class="banner-left">
-              <v-img
-                :src="getOptimizedImage(movie.poster_url)"
-                class="banner-poster mx-auto"
-                width="auto"
-                height="auto"
-                cover
-              />
-            </div>
-
-          </div> -->
+          
         </div>
 
         <!-- Lớp tối -->
@@ -147,19 +137,7 @@
                   </div>
                 </div>
               </div>
-                    <!-- <div class="banner-buttons">
-                      <v-btn
-                        color="primary"
-                        size="small"
-                        @click="dialogTrailer = true"
-                      >
-                        ▶ Trailer
-                      </v-btn>
-
-                      <v-btn color="red" size="small" @click="goToWatch()">
-                        ▶ Xem phim
-                      </v-btn>
-                    </div> -->
+                    
                   </div>
                 </div>
               </div>
@@ -284,63 +262,20 @@
 
                         </v-tabs-window-item>
                       </v-tabs-window>
-                  <!-- <v-card class="my-6 pa-4" color="grey-darken-4" flat>
-                    <h1 class="text-left" style="color: cadetblue">Danh sách tập phim</h1>
-                    <v-divider />
-                    <v-row>
-                      <v-col
-                        v-for="(ep, i) in visibleEpisodes"
-                        :key="i"
-                        cols="4"
-                        sm="4"
-                        md="2"
-                        lg="2"
-                        xl="2"
-                      >
-                        <v-btn
-                          class="episode-btn"
-                          block
-                          color="primary"
-                          @click="goToWatch(ep)"
-                        >
-                          {{ ep.name }}
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                    <div class="text-center mt-4">
-                      <v-btn
-                          color="gray"
-                          variant="tonal"
-                          @click="loadMore"
-                          class="btnnext"
-                          v-if="episodeLimit < movie.pageMovie.length"
-                        >
-                          Xem thêm
-                          <v-icon size="12" class="mr-1">mdi-chevron-down</v-icon>
-                        </v-btn>
-
-                        <v-btn
-                          color="gray"
-                          variant="tonal"
-                          @click="episodeLimit = 20"
-                          class="btnnext"
-                          v-else
-                        >
-                          Thu gọn
-                          <v-icon size="12" class="mr-1">mdi-chevron-up</v-icon>
-                        </v-btn>
-                    </div>
-                  </v-card> -->
+                  
                 </v-tabs-window-item>
                 <v-tabs-window-item value="two">
                   <div class="trailer-box">
+                    <v-lazy min-height="300">
                     <iframe
                       class="trailer-iframe"
                       :src="`https://www.youtube.com/embed/${movie.trailer_id}`"
                       frameborder="0"
+                      loading="lazy"
                       allowfullscreen
                     >
                     </iframe>
+                    </v-lazy>
                   </div>
                   
                 </v-tabs-window-item>
@@ -357,6 +292,7 @@
                         sm="4"
                         md="4"
                       >
+                      <v-lazy min-height="300" transition="fade-transition">
                         <router-link
                           :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                           class="text-decoration-none"
@@ -379,6 +315,7 @@
                             </div>
                           </v-card>
                         </router-link>
+                        </v-lazy>
                       </v-col>
                     </v-row>
                   </div>
@@ -490,6 +427,9 @@
       </v-dialog>
     </div>
   </v-container>
+  </div>
+</v-fade-transition>
+  
 </template>
 
 
@@ -1458,5 +1398,63 @@ border-bottom: 2px solid #ffd76b;
 .icon-ele {
   margin: 0 10px ;
   color: #409eff;
+}
+.detail-page {
+  animation: detailEnter 0.45s ease-out;
+}
+
+@keyframes detailEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.banner-img {
+  filter: brightness(0.75);
+  animation: bannerFade 0.6s ease;
+}
+
+@keyframes bannerFade {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.poster-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.poster-img {
+  transition: transform 0.35s ease;
+}
+
+.poster-wrapper:hover .poster-img {
+  transform: scale(1.06);
+}
+.watch-now {
+  font-weight: 700;
+  font-size: 18px;
+  padding: 14px 36px;
+  border-radius: 999px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.watch-now:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(255, 180, 0, 0.4);
+}
+
+.watch-now:active {
+  transform: scale(0.95);
 }
 </style>
