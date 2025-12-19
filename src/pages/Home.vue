@@ -516,7 +516,6 @@ export default {
         return 'Vừa xong';
       }
       const diff = now - time;
-        let result = "";
         const minutes = Math.floor(diff / 60000);
         if (minutes < 1) return 'Vừa xong';
         if (minutes < 60) return  `${minutes} phút trước`;
