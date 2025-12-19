@@ -147,7 +147,7 @@
           <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
           <v-col cols="12" md="8">
             <div class="center-buttons">
-              <v-btn class="watch-now" size="large" @click="goToWatch()">
+              <v-btn class="watch-now" size="large" @click="goToWatch(movie.page)">
               ▶ Xem Ngay
               </v-btn>
 
@@ -1444,7 +1444,6 @@ border-bottom: 2px solid #ffd76b;
 .watch-now {
   font-weight: 700;
   font-size: 18px;
-  padding: 14px 36px;
   border-radius: 999px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
