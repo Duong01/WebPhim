@@ -1,5 +1,7 @@
 <template>
-  <div style="width: 100%">
+<v-fade-transition appear>
+    <div class="page-enter">
+      <div style="width: 100%">
     <keep-alive include="CarouselPage">
       <CarouselPage />
     </keep-alive>
@@ -38,128 +40,6 @@
         
       </div>
     </div>
-<!-- 
-    <div v-if="isFavo" >
-    <v-lazy :options="{ threshold: 0.5 }" min-height="300" transition="fade-transition" v-for="(section, index) in ListMovieFavo" :key="index">
-      <template #default>
-          
-        <div>
-          <v-row class="category-header" align="center" no-gutters>
-            <v-col cols="auto">
-              <h1 class="category-title">
-                <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
-                {{$t('Danh sách phim của bạn!')}}
-              </h1>
-            </v-col>
-            <v-col cols="auto">
-              <router-link
-                :to="{ name: 'FavoritePage', params: {  } }"
-                class="view-all"
-              >
-                {{$t('Xem tất cả')}} >>
-              </router-link>
-            </v-col>
-          </v-row>
-          <div v-if="!isLoading">
-            <v-row
-              no-gutters
-              tag="transition-group"
-              name="fade-scale"
-              class="movie-list"
-            >
-              <v-col
-                v-for="(item, index1) in section.listMovie.slice(0, 12)"
-                :key="item.slug || index1"
-                cols="6"
-                sm="4"
-                md="2"
-                style="padding: 10px"
-              >
-              
-                <router-link
-                  :to="{ name: 'Movies', params: { slug: item.slug } }"
-                >
-                  <v-card
-                    class="mx-auto  movie-card"
-                    max-width="344"
-                  >
-                  
-                    <v-img
-                      :src=" item.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + item.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ item.thumb_url"
-                      :lazy-src="item.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + item.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ item.thumb_url"
-                      height="250"
-                      cover
-                    >
-
-                      <template #default>
-                        <v-btn
-                          icon
-                          size="small"
-                          variant="flat"
-                          class="favorite-btn"
-                          @click.stop.prevent="handleFavorite(item)"
-                          :color="isFavoriteMovie(item) ? 'red' : ''"
-                        >
-                      
-                          <v-icon>
-                            {{ isFavoriteMovie(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline" }}
-                          </v-icon>
-                          
-                        </v-btn>
-                        <div class="movie-overlay"></div>
-                        <div class="movie-play">
-                          <svg width="64" height="64" viewBox="0 0 64 64">
-                            <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)" />
-                            <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                          </svg>
-                        </div>
-                      </template>
-                    </v-img>
-                    <v-card-subtitle class="episode-lang">
-                      {{
-                        item.page === "Tập 0"
-                          ? `Full - ${item.lang}`
-                          : `${item.page} - ${item.lang}`
-                      }}
-                    </v-card-subtitle>
-
-                    <v-card-title class="movie-title">{{ item.name }}</v-card-title>
-
-                    <v-card-text class="movie-info">
-                      <div class="text-grey text-truncate">
-                        <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
-                        {{ item.origin_name }} ({{ item.year }})
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </router-link>
-              </v-col>
-            </v-row>
-          </div>
-
-          <div v-else style="height: 400px">
-            <v-row>
-              <v-col
-                v-for="n in 6"
-                :key="n"
-                cols="6"
-                sm="4"
-                md="2"
-                style="padding: 10px"
-              >
-                <v-skeleton-loader type="image" height="250" />
-              </v-col>
-            </v-row>
-          </div>
-        </div>
-      </template>
-    </v-lazy>
-  </div> -->
-
-
-
 
     <div
       v-for="(section, sectionIndex) in sections"
@@ -308,6 +188,9 @@
       </v-lazy>
     </div>
   </div>
+    </div>
+  </v-fade-transition>
+  
 </template>
 
 <script>
@@ -900,7 +783,7 @@ a {
 /* container card */
 .movie-card {
   position: relative;
-
+  will-change: transform;
   overflow: hidden;
   border-radius: 8px;
 }
@@ -971,17 +854,33 @@ a {
   border-radius: 12px;
   font-weight: 500;
   text-transform: none;
-  transition: all 0.3s ease;
+  transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
 }
 .btnList:hover{
-  
-  transform: scale(1.05); 
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  filter: brightness(1.1); 
 }
-.fade-scale-enter-active,
+.btnList:active {
+  transform: scale(0.96);
+}
+.fade-scale-enter-active {
+  transition: all 0.35s ease;
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.94) translateY(12px);
+}
+
 .fade-scale-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: all 0.2s ease;
+  position: absolute;
 }
-.fade-scale-enter-from,
+
 .fade-scale-leave-to {
   opacity: 0;
   transform: scale(0.95);
@@ -1037,5 +936,21 @@ a {
 .text-left {
   text-align: left !important;
 }
+.page-enter {
+  animation: pageEnter 0.6s ease-out;
+}
 
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.v-skeleton-loader__image {
+  border-radius: 12px;
+}
 </style>
