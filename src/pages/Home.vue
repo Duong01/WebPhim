@@ -352,7 +352,10 @@ export default {
           listMovie: [],
           content: "",
           loaded: false,
-          link: { name: "PhimNew" },
+          link: { 
+            name: "PhimNew",
+            params: { path: "phim-moi-cap-nhat-v3" },
+          },
         },
         
         {
