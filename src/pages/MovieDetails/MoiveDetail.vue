@@ -620,7 +620,6 @@ export default {
     async slug(newSlug) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
-      this.playVideo(this.movie.videoUrl);
       if (this.page) {
         
         if(this.page == '01'){
@@ -632,7 +631,12 @@ export default {
           );
         }
       }
+      this.movie.title = this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
+
+      this.playVideo(this.movie.videoUrl);
+      console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
 
@@ -644,7 +648,6 @@ export default {
       }
       await this.ListMovieByCate();
       await this.GetComment();
-      console.log(this.currentEpisodeIndex);
 
     },
   },
@@ -663,10 +666,13 @@ export default {
           );
         }
       }
+      this.movie.title = this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
+
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
       this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
 
       this.playVideo(this.movie.videoUrl);
+      console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
 
@@ -679,7 +685,6 @@ export default {
       }
       await this.ListMovieByCate();
       await this.GetComment();
-      console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
     }

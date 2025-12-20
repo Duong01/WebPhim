@@ -798,7 +798,8 @@ export default {
           page = 'Trailer'
         }
         else{
-          page = ep.includes('Tập') ? ep.replace('Tập ', 'tap').trim() : ep.name.replace('Tập ', 'tap').trim();
+
+          page = ep.name.includes('Tập') ?  ep.name.replace('Tập ', 'tap').trim()  : ep.replace('Tập ', 'tap').trim();
 
         }
       
