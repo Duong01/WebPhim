@@ -355,7 +355,7 @@
                   :key="suggested.id"
                   class="suggested-item d-flex align-center"
                 >
-                <v-lazy min-height="300" transition="fade-transition">
+                <v-lazy transition="fade-transition">
                   <router-link
                     :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                     class="d-flex text-decoration-none align-center py-4"
