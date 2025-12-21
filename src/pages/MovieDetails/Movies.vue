@@ -50,7 +50,7 @@
                   height="220"
                   width="30%"
                   cover
-                  @click="goToWatch(movie.slug)"
+                  @click="goToWatch('first')"
                   v-show="$vuetify.display.mdAndUp"
                 ></v-img>
 
@@ -147,7 +147,7 @@
           <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
           <v-col cols="12" md="8">
             <div class="center-buttons">
-              <v-btn class="watch-now" size="large" @click="goToWatch(movie.page)">
+              <v-btn class="watch-now" size="large" @click="goToWatch('now')">
               ▶ Xem Ngay
               </v-btn>
 
@@ -797,8 +797,12 @@ export default {
         else if(ep == "trailer" || ep == "Trailer"){
           page = 'Trailer'
         }
+        else if(ep == 'movie.page'){
+          page =this.movie.page.replace('Tập ', 'tap').trim();
+
+        }
         else{
-          page =ep.replace('Tập ', 'tap').trim();
+          page =ep.name.replace('Tập ', 'tap').trim();
 
         }
       

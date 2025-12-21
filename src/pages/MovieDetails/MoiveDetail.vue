@@ -2,10 +2,10 @@
 <v-fade-transition appear>
   <div class="watch-page">
     <v-container class="search-page" fluid>
-    <v-col cols="12" class="text-center" v-if="isLoading">
+    <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
-    </v-col>
-    <div v-else-if="isLoadingData">
+    </v-col> -->
+    <div v-if="isLoadingData">
       <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
     </div>
     <div v-else>
