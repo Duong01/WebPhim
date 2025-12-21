@@ -798,8 +798,7 @@ export default {
           page = 'Trailer'
         }
         else{
-
-          page = ep.name.includes('Tập') ?  ep.name.replace('Tập ', 'tap').trim()  : ep.replace('Tập ', 'tap').trim();
+          page =ep.replace('Tập ', 'tap').trim();
 
         }
       
@@ -1027,6 +1026,7 @@ export default {
 </script>
 
 <style scoped>
+
 .poster-wrapper {
   position: relative;
   width: 100%;
