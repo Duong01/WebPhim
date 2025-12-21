@@ -797,7 +797,7 @@ export default {
         else if(ep == "trailer" || ep == "Trailer"){
           page = 'Trailer'
         }
-        else if(ep == 'movie.page'){
+        else if(ep == 'now'){
           page =this.movie.page.replace('Tập ', 'tap').trim();
 
         }
