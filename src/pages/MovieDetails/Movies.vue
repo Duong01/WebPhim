@@ -1030,7 +1030,11 @@ export default {
 </script>
 
 <style scoped>
-
+.search-page {
+  min-height: 100vh;
+  padding: 2rem 0;
+  padding: 3rem 1rem;
+}
 .poster-wrapper {
   position: relative;
   width: 100%;
