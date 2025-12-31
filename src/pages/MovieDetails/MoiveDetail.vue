@@ -1178,8 +1178,12 @@ export default {
     GetComment() {
       return new Promise((resolve, reject) => {
         if (!this.movie.idMovie) reject("error");
+        var movie = {
+          idMovies: this.movie.idMovie,
+          page: 1
+        }
         GetComments(
-          { idMovies: this.movie.idMovie },
+          movie,
           (res) => {
             if (Array.isArray(res)) {
               this.comments = res.map((c) => ({
