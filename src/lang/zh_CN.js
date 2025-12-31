@@ -120,4 +120,5 @@ export default
 "Hết thời gian chờ, vui lòng tải lại trang": "请求超时，请重新加载页面",
 "Thời gian chiếu": "播放时间",
 "Đã lưu": "你的电影",
+'Bạn không có phim nào đã được lưu': '您沒有保存任何電影'
 }

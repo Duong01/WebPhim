@@ -19,7 +19,7 @@
           <v-form ref="loginFormRef">
             <!-- Email -->
             <v-text-field
-              v-model="loginForm.email"
+              v-model="loginForm.Email"
               label="Email"
               prepend-inner-icon="mdi-email"
               :placeholder="$t('Nhập email')"
@@ -32,7 +32,7 @@
 
             <!-- Password -->
             <v-text-field
-              v-model="loginForm.password"
+              v-model="loginForm.Password"
               label="Mật khẩu"
               prepend-inner-icon="mdi-lock"
               :placeholder="$t('Nhập mật khẩu')"
@@ -89,7 +89,7 @@ export default {
   name: "LoginPage",
   data() {
     return {
-      loginForm: { email: "", password: "" },
+      loginForm: { Email: "", Password: "" },
       Message: "",
       color: "",
       mess: false,
@@ -107,9 +107,9 @@ export default {
     },
 
     handleLogin() {
-      const { email, password } = this.loginForm;
+      const { Email, Password } = this.loginForm;
 
-      if (!email || !password) {
+      if (!Email || !Password) {
         this.Message = this.$t('Vui lòng nhập đầy đủ email và mật khẩu');
         this.color = "error";
         this.mess = true;
@@ -119,9 +119,10 @@ export default {
       this.loading = true;
 
       Login(this.loginForm, (dat) => {
-        if (dat.status === 200) {
-          this.$store.commit("setEmpInfor", dat.data.user);
-          localStorage.setItem("name", dat.data.user.username);
+        if (dat.data.status == "success" && dat.status == 200) {
+          this.$store.commit("empInfor", dat.data.data);
+          localStorage.setItem("name", dat.data.data.ID);
+          localStorage.setItem("nameShow", dat.data.data.EmpName);
           localStorage.setItem("loginTimestamp", Date.now());
 
 
@@ -132,13 +133,13 @@ export default {
 
           this.$router.push("/home");
         } else {
-          this.Message = dat.response?.data?.message || this.$t('Đăng nhập thất bại');
+          this.Message = dat.message || this.$t('Đăng nhập thất bại');
           this.color = "error";
           this.mess = true;
           this.loading = false;
         }
       }, (err) => {
-        this.Message = err.response?.data?.message || this.$t('Có lỗi xảy ra');
+        this.Message = err?.message || this.$t('Có lỗi xảy ra');
         this.color = "error";
         this.mess = true;
         this.loading = false;

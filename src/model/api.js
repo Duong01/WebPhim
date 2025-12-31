@@ -47,7 +47,9 @@ let urlSearch1 = "https://phimapi.com/v1/api/tim-kiem"
 
 
 // api login
-let urlAccount = "https://apiwebphim.onrender.com/api/auth"
+//let urlAccount = "https://apiwebphim.onrender.com/api/auth"
+
+let urlApi = "http://apiwebphim.somee.com/api"
 
 export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
 export const urlImage1 = "https://phimapi.com/image.php?url="
@@ -100,13 +102,20 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  
 
 // api login
- export const Login = (params, success, error) => http.Post(`${urlAccount}/login`, params,success, error)
+ export const Login = (params, success, error) => http.Post(`${urlApi}/AccountApi/Login`, params,success, error)
 
  // api login
- export const Register = (params, success, error) => http.Post(`${urlAccount}/register`, params,success, error)
+ export const Register = (params, success, error) => http.Post(`${urlApi}/AccountApi/Register`, params,success, error)
 
  // add comment
- export const AddComment = (params, success, error) => http.Post(`${urlAccount}/addcomment`, params,success, error)
+ export const AddComment = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertCommnet`, params,success, error)
 
  // get comment
- export const GetComments = (params, success, error) => http.GetNew(`${urlAccount}/getcomments`, params,success, error)
+ export const GetComments = (params, success, error) => http.GetNew(`${urlApi}/AccountApi/GetComment`, params,success, error)
+
+ // get movies Favorite
+ export const GetMoviesFavorite = (params, success, error) => http.GetNew(`${urlApi}/AccountApi/GetFavoriteMovies`, params,success, error)
+
+ // insert movies favorite
+ export const PostMoviesFavorite = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertFavoriteMovies`, params,success, error)
+

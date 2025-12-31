@@ -120,6 +120,6 @@ export default
 "Hết thời gian chờ, vui lòng tải lại trang": "Timeout, please reload the page",
     "Thời gian chiếu": "Show time",
     "Đã lưu": "Films Saves",
-
+'Bạn không có phim nào đã được lưu': 'You do not have any movies saved',
 
 }

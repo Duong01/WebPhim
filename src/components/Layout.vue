@@ -6,7 +6,7 @@
     </header>
 
     <div class="main">
-      <div class="row">
+      <div class="content">
         <router-view />
       </div>
     </div>
@@ -48,8 +48,22 @@ export default {
   background-color: rgb(2, 2, 2);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
-.main{
+
+.main {
   padding: 0 15px 0 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  width: 80%;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .content {
+    width: 100%;
+  }
 }
 
 </style>

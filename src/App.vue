@@ -43,6 +43,10 @@ export default {
   computed: {
     ...mapState("loading", ["isLoading"]),
   },
+  beforeRouteLeave(to, from, next) {
+  from.meta.keepAlive = true;
+  next();
+},
    provide() {
     return {
       currentTheme: () => this.theme,

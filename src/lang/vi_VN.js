@@ -120,6 +120,7 @@ export default
   "Hết thời gian chờ, vui lòng tải lại trang": "Hết thời gian chờ, vui lòng tải lại trang",
   "Thời gian chiếu": "Thời gian chiếu",
   "Đã lưu": "Phim đã lưu",
+  'Bạn không có phim nào đã được lưu': 'Bạn không có phim nào đã được lưu',
 
 
 }

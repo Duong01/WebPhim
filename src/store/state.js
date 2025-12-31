@@ -1,9 +1,15 @@
 export default function state() {
     return {
       empInfor: {
-        username: "",
-        email: "",
-        id: "",
+        ID: "",
+        FirstName: "",
+        LastName: "",
+        BirthDay: "",
+        EmpName:"",
+        Email: "",
+        Password: "",
+        Phone: "",
+        TimeLogin: ""
         
       },
       curi18n: {

@@ -1,39 +1,95 @@
-export function getFavorites() {
-  const data = localStorage.getItem("favoriteMovies");
-  return data ? JSON.parse(data) : [];
-}
+// export function getFavorites() {
+//   const data = localStorage.getItem("favoriteMovies");
+//   return data ? JSON.parse(data) : [];
+// }
 
-export function saveFavorites(list) {
-  localStorage.setItem("favoriteMovies", JSON.stringify(list));
-}
+// export function saveFavorites(list) {
+//   localStorage.setItem("favoriteMovies", JSON.stringify(list));
+// }
 
-export function toggleFavorite(movie) {
-  const list = getFavorites();
-  const index = list.findIndex((m) => m._id === movie.idMovie || m._id ===  movie._id);
+// export function toggleFavorite(movie) {
+//   const list = getFavorites();
+//   const index = list.findIndex((m) => m._id === movie.idMovie || m._id ===  movie._id);
   
-  console.log(list)
-  if (index === -1) {
-    list.push({
-      _id: movie.idMovie || movie._id,
-      name: movie.name,
-      page: movie.page || movie.episode_current,
-      slug: movie.slug,
-      thumb_url: movie.thumb_url,
-      lang: movie.lang,
-      origin_name: movie.origin_name,
-      year: movie.year
-    });
-    alert("🎬 Lưu vào danh sách thành công!")
-  } else {
-    list.splice(index, 1);
-    alert("❌ Đã xóa khỏi danh sách!")
-  }
+//   console.log(list)
+//   if (index === -1) {
+//     list.push({
+//       _id: movie.idMovie || movie._id,
+//       name: movie.name,
+//       page: movie.page || movie.episode_current,
+//       slug: movie.slug,
+//       thumb_url: movie.thumb_url,
+//       lang: movie.lang,
+//       origin_name: movie.origin_name,
+//       year: movie.year
+//     });
+//     alert("🎬 Lưu vào danh sách thành công!")
+//   } else {
+//     list.splice(index, 1);
+//     alert("❌ Đã xóa khỏi danh sách!")
+//   }
 
-  saveFavorites(list);
-  return list;
+//   saveFavorites(list);
+//   return list;
+// }
+
+// export function isFavorite(movieId) {
+//   const list = getFavorites();
+//   return list.some((m) => m._id === movieId);
+// }
+
+
+
+import {
+  GetMoviesFavorite,
+  PostMoviesFavorite
+} from "@/model/api";
+
+
+// Lấy danh sách dữ liệu phim yêu thích
+export function getFavorites(movie,success, error) {
+  console.log(movie)
+  GetMoviesFavorite({idAccount: movie.idAccount, page: movie.page}, (res) => {
+    success(res || []);
+  }, error);
 }
 
-export function isFavorite(movieId) {
-  const list = getFavorites();
-  return list.some((m) => m._id === movieId);
+// Lưu/Xóa dữ liệu danh sách yêu thích
+export function toggleFavorite(movie, success, error) {
+  const data = {
+    IDAccount: movie.IDAccount,
+    IDMovies: movie.idMovie || movie._id,
+    name: movie.name,
+    page: movie.page || movie.episode_current,
+    slug: movie.slug,
+    UrlMovies: movie.thumb_url,
+    lang: movie.lang,
+    origin_name: movie.origin_name,
+    year: movie.year
+  };
+
+  PostMoviesFavorite(data, (res) => {
+    success(res);
+  }, error);
 }
+
+// Kiểm tra phim yêu thích
+export function isFavorite(movie, success, error) {
+  getFavorites(
+    {
+      idAccount: movie.IDAccount,
+      currentPage: 1
+    },
+    (res) => {
+      const list = res.data || [];
+      const exists = list.some(
+        m => m.IDMovies === movie.IDMovies
+      );
+      success(exists);
+    },
+    error
+  );
+}
+
+
+

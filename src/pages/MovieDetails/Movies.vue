@@ -2,21 +2,32 @@
 <v-fade-transition appear>
   <div class="detail-page">
     <v-container class="search-page" fluid>
-    <v-col cols="12" class="text-center" v-if="isLoading">
+    <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
-    </v-col>
-    <div v-else>
+    </v-col> -->
+    <div>
       <div class="movie-banner">
         <!-- Ảnh nền mờ -->
         <div
-          class="d-flex flex-column fill-height justify-center align-center text-white"
+                v-if="isLoading"
+                class="default-placeholder"
+              >
+                <v-skeleton-loader
+                  type="image, article"
+                  height="80vh"
+                  width="100%"
+                  class="rounded-lg"
+                />
+              </div>
+        <div
+          class=""
         >
           <v-img
             :src="getOptimizedImage(movie.thumb_url)"
             :alt="`Poster phim ${movie.name}`"
             class="banner-img"
             width="100%"
-            height="70vh"
+            height="80vh"
             loading="lazy"
             cover
           />
@@ -182,7 +193,7 @@
               <v-tabs color="primary" v-model="tab">
                 <v-tab value="one">Tập phim</v-tab>
                 <v-tab value="two">Trailer</v-tab>
-                <v-tab value="three">Diễn viên</v-tab>
+                <v-tab value="three">{{ $t("Bình luận") }}</v-tab>
                 <v-tab value="four">Đề xuất</v-tab>
               </v-tabs>
 
@@ -280,7 +291,34 @@
                   
                 </v-tabs-window-item>
                 <v-tabs-window-item value="three">
-                  <v-sheet class="pa-5" color="brown">Three</v-sheet>
+                  <v-sheet class="pa-5">
+                    <div
+                      v-for="(comment, index) in comments"
+                      :key="index"
+                      class="d-flex align-start mb-5"
+                    >
+                      <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+                        <v-icon color="white">mdi-account</v-icon>
+                      </v-avatar>
+                      <div class="flex-grow-1">
+                        <div class="d-flex align-center mb-1">
+                          <span class="text-blue-lighten-3 font-weight-medium me-2">{{
+                            comment.username
+                          }}</span>
+                          <v-chip
+                            size="x-small"
+                            color="grey-darken-4"
+                            text-color="grey-lighten-1"
+                            variant="flat"
+                          >
+                            {{ comment.time }}
+                          </v-chip>
+                        </div>
+                        <div class="text-white text-body-2">{{ comment.content }}</div>
+                        
+                      </div>
+                    </div>
+                  </v-sheet>
                 </v-tabs-window-item>
                 <v-tabs-window-item value="four">
                   <div class="suggested-movies my-8">
@@ -442,9 +480,9 @@ import {
   urlImage,
   urlImage1,
   GetComments,
-  AddComment,
+  PostMoviesFavorite
 } from "@/model/api";
-import { toggleFavorite, isFavorite } from "@/utils/favorite";
+//import { toggleFavorite, isFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
 export default {
   name: "MoviesPage",
@@ -477,7 +515,6 @@ export default {
       Message: "",
       color: "",
       mess: false,
-
       movies: [],
       movie: {
         title: "",
@@ -515,7 +552,19 @@ export default {
       link: "",
       liked: false,
       episodeLimit: 20,
-      episodeLimitMap: {}
+      episodeLimitMap: {},
+
+      movieFavorite:{
+        IDAccount :this.$store.state.empInfor.ID || localStorage.getItem("name"),
+        IDMovies: '',
+        slug: '',
+        currentPage: '',
+        UrlMovies: '',
+        origin_name: '',
+        name: '',
+        year: '',
+        lang:''
+      }
     };
   },
   props: ["slug"],
@@ -524,10 +573,10 @@ export default {
     async slug(newSlug) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(newSlug);
-      this.playVideo(this.movie.videoUrl);
+      //this.playVideo(this.movie.videoUrl);
 
-      await this.ListMovieByCate();
-      await this.GetComment();
+      //await this.ListMovieByCate();
+      //await this.GetComment();
       console.log(this.currentEpisodeIndex);
     },
   },
@@ -539,10 +588,10 @@ export default {
         this.currentServer = this.movie.servers[0].server_name;
       }
       
-      this.playVideo(this.movie.videoUrl);
+      //this.playVideo(this.movie.videoUrl);
 
       await this.ListMovieByCate();
-      await this.GetComment();
+      //await this.GetComment();
       console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
@@ -647,8 +696,8 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              this.GetComment();
-              this.liked = isFavorite(this.movie.idMovie);
+              //this.GetComment();
+              //this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
             } else {
               reject("error");
@@ -760,8 +809,8 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              this.GetComment();
-              this.liked = isFavorite(this.movie._id);
+              //this.GetComment();
+              //this.liked = isFavorite(this.movie._id);
               resolve(true);
             } else {
               this.MoveInfor(slug).then(resolve).catch(reject);
@@ -798,11 +847,10 @@ export default {
           page = 'Trailer'
         }
         else if(ep == 'now'){
-          page =this.movie.page.replace('Tập ', 'tap').trim();
-
+          page = this.formatEpisode(this.movie.page);
         }
         else{
-          page =ep.name.replace('Tập ', 'tap').trim();
+          page = this.formatEpisode(ep.name);
 
         }
       
@@ -812,6 +860,15 @@ export default {
       params: { slug: this.movie.slug },
       query: { page }
     });
+    },
+    formatEpisode(text) {
+      // Ví dụ: "Tập 1" → "tap01"
+      const num = parseInt(text.replace(/\D/g, ""), 10);
+
+      if (isNaN(num)) return text;
+
+      const padded = num < 10 ? `0${num}` : `${num}`;
+      return `tap${padded}`;
     },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
@@ -860,9 +917,30 @@ export default {
       window.open(linkdown);
     },
     handleFavorite() {
-      let aa = toggleFavorite(this.movie);
-      console.log(aa);
+      // let aa = toggleFavorite(this.movie);
+      // console.log(aa);
       this.liked = !this.liked;
+      this.movieFavorite.IDMovies = this.movie.idMovie
+      this.movieFavorite.slug = this.movie.slug
+      this.movieFavorite.currentPage = this.movie.page
+      this.movieFavorite.UrlMovies = this.movie.thumb_url
+      this.movieFavorite.origin_name = this.movie.origin_name
+      this.movieFavorite.name = this.movie.name
+      this.movieFavorite.year = this.movie.year
+      this.movieFavorite.lang = this.movie.lang
+      PostMoviesFavorite(this.movieFavorite, (dat) =>{
+        if(dat.data.status == "success"){
+          alert("🎬 Lưu vào danh sách thành công!")
+          
+        }
+        else{
+          alert(dat.data.message)
+        }
+
+      }, (err) =>{
+        console.log(err)
+      })
+    
     },
 
     getOptimizedImage(imagePath) {
@@ -962,48 +1040,18 @@ export default {
         alert(this.$t("Đã sao chép liên kết!"));
       });
     },
-    addComment() {
-      var account = localStorage.getItem("name");
-      var data = {
-        movieId: this.movie.idMovie,
-        userId: this.$store.state.empInfor.id,
-        username: account,
-        content: this.newComment,
-      };
-      if (account == null || account == "") {
-        this.$router.push("/login");
-      }
-      if (this.newComment.trim()) {
-        AddComment(
-          data,
-          (dat) => {
-            if (dat.status == 201) {
-              this.Message = dat.data.message;
-              this.color = "success";
-              this.mess = true;
-              this.GetComment();
-            }
-          },
-          (err) => {
-            this.Message = err.response.data.message;
-            this.color = "error";
-            this.mess = true;
-          }
-        );
-        this.newComment = "";
-      }
-    },
+    
     GetComment() {
       return new Promise((resolve, reject) => {
         if (!this.movie.idMovie) reject("error");
         GetComments(
-          { movieId: this.movie.idMovie },
+          { idMovies: this.movie.idMovie },
           (res) => {
             if (Array.isArray(res)) {
               this.comments = res.map((c) => ({
-                username: c.username,
-                content: c.content,
-                createdAt: c.createdAt,
+                username: c.NameCreate,
+                content: c.Comments,
+                createdAt: c.DayCreate,
               }));
               resolve(true);
             } else {
@@ -1032,8 +1080,7 @@ export default {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  padding: 2rem 0;
-  padding: 3rem 1rem;
+  padding: 0  !important;
 }
 .poster-wrapper {
   position: relative;
@@ -1049,7 +1096,6 @@ export default {
 .banner-poster {
   width: 100%;
   height: auto !important;
-  max-height: 75vh;
   object-fit: cover;
   transform: scale(1.12);
   filter: brightness(0.9);

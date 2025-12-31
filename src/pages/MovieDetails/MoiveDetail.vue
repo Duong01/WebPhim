@@ -2,24 +2,25 @@
 <v-fade-transition appear>
   <div class="watch-page">
     <v-container class="search-page" fluid>
-    <v-col cols="12" class="text-center" v-if="isLoading">
+    <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else-if="isLoadingData">
       <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
-    </div>
-    <div v-else>
+    </div> -->
+    <div >
+      
       <!-- Breadcrumb -->
       <v-breadcrumbs :items="items">
         <template v-slot:divider>
           <v-icon icon="mdi-chevron-right"></v-icon>
         </template>
       </v-breadcrumbs>
-
+      
       <!-- Bố cục hai cột -->
       <v-row dense>
         <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-        <v-col cols="12" md="10">
+        <v-col cols="12" md="12">
           <!-- VIDEO -->
           <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
           <div
@@ -85,7 +86,7 @@
                 ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
               >
               <v-btn variant="text" @click="handleFavorite"
-                ><v-icon start :icon="isFavorited ? 'mdi-bookmark' : 'mdi-bookmark-outline'" />{{
+                ><v-icon start :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'" />{{
                   $t("Xem sau")
                 }}</v-btn
               >
@@ -285,13 +286,26 @@
               </div>
             </v-card-text>
           </v-card>
-
+          <div ref="lazyComment"></div>
           <!-- Bình luận -->
           <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
             <h2 class="text-white mb-6 text-h5 font-weight-bold">
               🗨️ {{ $t("Bình luận") }}
             </h2>
+            <div v-if="idAccount== '' || idAccount == null || idAccount == undefined">
+              <v-btn
+                color="primary"
+                variant="tonal"
+                @click="Login"
+                class="btnnext"
+              >
+                <v-icon icon="mdi-play" />
+                Đăng nhập để bình luận
+
+              </v-btn>
+            </div>
             <v-text-field
+              v-else
               v-model="newComment"
               :placeholder="$t('Thêm bình luận...')"
               variant="outlined"
@@ -327,12 +341,7 @@
                   </v-chip>
                 </div>
                 <div class="text-white text-body-2">{{ comment.content }}</div>
-                <div
-                  class="text-caption mt-2 text-grey-lighten-1"
-                  style="cursor: pointer"
-                >
-                  {{ $t("Phản hồi") }}
-                </div>
+                
               </div>
             </div>
           </v-card>
@@ -341,7 +350,7 @@
         <!-- Cột bên phải: Gợi ý -->
         <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
         
-        <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
+        <!-- <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
           <v-card class="pa-0" color="grey-darken-4" flat>
             <v-tabs v-model="tab" background-color="grey-darken-3" grow>
               <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
@@ -386,9 +395,10 @@
               </v-list>
             </v-card-text>
           </v-card>
-        </v-col>
+        </v-col> -->
 
         <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+          <div ref="lazyCate"></div>
         
         <div class="suggested-movies my-8">
           <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
@@ -536,6 +546,8 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      hasLoadedCate: false,
+      hasLoadedComment: false,
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
@@ -592,7 +604,8 @@ export default {
       newComment: "",
       shareDialog: false,
       link: "",
-      liked: false
+      liked: false,
+      videoKey: ""
     };
   },
   props: ["slug", "page"],
@@ -621,7 +634,7 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(newSlug);
       if (this.page) {
-        
+        console.log(this.page)
         if(this.page == '01'){
           this.currentEpisodeIndex = this.movie.pageMovie.length -1
         }
@@ -646,8 +659,8 @@ export default {
           query: { page: normalized }
         });
       }
-      await this.ListMovieByCate();
-      await this.GetComment();
+      // await this.ListMovieByCate();
+      // await this.GetComment();
 
     },
   },
@@ -656,6 +669,7 @@ export default {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       await this.MoveInfor1(this.slug);
       if (this.page) {
+        console.log(this.page)
         
         if(this.page == '01'){
           this.currentEpisodeIndex = this.movie.pageMovie.length -1
@@ -670,8 +684,10 @@ export default {
 
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
       this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
-
+      this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
       this.playVideo(this.movie.videoUrl);
+
+      this.bindVideoEvents()
       console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace('Tập ', 'tap');
@@ -683,8 +699,9 @@ export default {
           query: { page: normalized }
         });
       }
-      await this.ListMovieByCate();
-      await this.GetComment();
+      this.initLazyLoad();
+      // await this.ListMovieByCate();
+      // await this.GetComment();
     } catch (err) {
       console.log(err);
     }
@@ -778,7 +795,6 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-               this.GetComment()
               this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
             } else {
@@ -881,8 +897,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-               this.GetComment()
-              this.liked = isFavorite(this.movie._id);
+              this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
             } else {
               this.MoveInfor(slug).then(resolve).catch(reject);
@@ -897,7 +912,60 @@ export default {
         );
       });
     },
+    initLazyLoad() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(async (entry) => {
+            if (!entry.isIntersecting) return;
 
+            if (entry.target === this.$refs.lazyCate && !this.hasLoadedCate) {
+              this.hasLoadedCate = true;
+              await this.ListMovieByCate();
+            }
+
+            if (entry.target === this.$refs.lazyComment && !this.hasLoadedComment) {
+              this.hasLoadedComment = true;
+              await this.GetComment();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      if (this.$refs.lazyCate) observer.observe(this.$refs.lazyCate);
+      if (this.$refs.lazyComment) observer.observe(this.$refs.lazyComment);
+    },
+
+    bindVideoEvents() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+
+      // khi video load xong metadata → mới set currentTime
+      video.addEventListener("loadedmetadata", this.restoreTime);
+
+      // lưu vị trí xem
+      video.addEventListener("timeupdate", this.saveTime);
+    },
+    saveTime() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+
+      const current = Math.floor(video.currentTime);
+
+      if (!this.lastSavedTime || current - this.lastSavedTime >= 5) {
+        localStorage.setItem(this.videoKey, current);
+        this.lastSavedTime = current;
+      }
+    },
+
+      restoreTime() {
+        const video = this.$refs.videoPlayer;
+        const savedTime = localStorage.getItem(this.videoKey);
+
+        if (video && savedTime) {
+          video.currentTime = parseFloat(savedTime);
+        }
+      },
     toggleEpisodes(){
       this.showAllEpisodes = !this.showAllEpisodes;
       
@@ -1073,13 +1141,16 @@ export default {
         alert(this.$t("Đã sao chép liên kết!"));
       });
     },
+    Login(){
+      this.$router.push("/login");
+    },
     addComment() {
-      var account = localStorage.getItem("name");
+      var account = this.idAccount();
       var data = {
-        movieId: this.movie.idMovie,
-        userId: this.$store.state.empInfor.id,
-        username: account,
-        content: this.newComment,
+        IDAccount: account,
+        IDMovies: this.movie.idMovie,
+        NameCreate: localStorage.getItem("nameShow") || "",
+        Comments: this.newComment,
       };
       if (account == null || account == "") {
         this.$router.push("/login");
@@ -1108,13 +1179,13 @@ export default {
       return new Promise((resolve, reject) => {
         if (!this.movie.idMovie) reject("error");
         GetComments(
-          { movieId: this.movie.idMovie },
+          { idMovies: this.movie.idMovie },
           (res) => {
             if (Array.isArray(res)) {
               this.comments = res.map((c) => ({
-                username: c.username,
-                content: c.content,
-                createdAt: c.createdAt,
+                username: c.NameCreate,
+                content: c.Comments,
+                createdAt: c.DayCreate,
               }));
               resolve(true);
             } else {
@@ -1170,6 +1241,23 @@ export default {
           params: { slug: this.slug },
           query: { page: normalized }
         });
+        this.playVideo(this.movie.videoUrl);
+
+        if (this.videoKey) {
+          localStorage.removeItem(this.videoKey);
+        }
+
+        // cập nhật tập mới
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+          e => e.name === episode.name
+        );
+
+        // tạo key mới cho tập mới
+        this.videoKey = `movie_${this.slug}_${this.page}`;
+
+        // load video mới
+        this.movie.videoUrl = episode.link_m3u8;
+
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
         this.isLoading = false;
@@ -1279,6 +1367,14 @@ export default {
     },
   },
   computed: {
+    idAccount(){
+      return (
+        this.$store.state.empInfor.ID || localStorage.getItem("name")
+
+      )
+
+    },
+
     visibleEpisodes() {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
@@ -1351,7 +1447,7 @@ export default {
   .video-wrapper {
     width: 100%;
     /* padding: 0 40px; */
-    /* max-height: 800px; */
+    max-height: 800px;
     aspect-ratio: 16 / 9;
     background: black;
     position: relative;
@@ -1376,6 +1472,16 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+@media (max-width: 768px) {
+  .video-wrapper {
+    aspect-ratio: 16 / 9;
+  }
+  .content,
+  .container {
+    width: 100% !important;
+    padding: 0 !important;
+  }
 }
 .suggested-item {
   cursor: pointer;

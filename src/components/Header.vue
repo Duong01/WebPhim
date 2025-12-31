@@ -489,7 +489,7 @@ export default {
   },
   inject: ["currentTheme", "setTheme"],
   mounted() {
-    this.account = localStorage.getItem("name");
+    this.account = localStorage.getItem("nameShow");
     const history = JSON.parse(localStorage.getItem("HisSearch"));
     this.movieSuggestions = history ? history : [];
     console.log(this.movieSuggestions)
@@ -612,6 +612,8 @@ export default {
     },
     Logout() {
       localStorage.removeItem("name");
+      localStorage.removeItem("nameShow");
+      localStorage.removeItem("loginTimestamp");
       this.account = "";
     },
     onInput(value) {
@@ -678,7 +680,7 @@ export default {
     },
   },
   created() {
-    this.account = localStorage.getItem("name") || "";
+    this.account = localStorage.getItem("nameShow");
     this.InitLang();
   },
 };

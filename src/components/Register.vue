@@ -19,15 +19,24 @@
 
           <v-form ref="form" @submit.prevent="submitRegister">
             <v-text-field
-              v-model="registerForm.username"
+              v-model="registerForm.EmpName"
               :label="$t('Tên hiển thị')"
               prepend-inner-icon="mdi-account"
               required
               class="mb-3"
             />
+            
+            <v-text-field
+              v-model="registerForm.BirthDay"
+              :label="$t('Ngày sinh')"
+              prepend-inner-icon="mdi-account"
+              required
+              type="date"
+              class="mb-3"
+            />
 
             <v-text-field
-              v-model="registerForm.email"
+              v-model="registerForm.Email"
               label="Email"
               prepend-inner-icon="mdi-email"
               type="email"
@@ -37,7 +46,7 @@
             />
 
             <v-text-field
-              v-model="registerForm.password"
+              v-model="registerForm.Password"
               :label="$t('Mật khẩu')"
               prepend-inner-icon="mdi-lock"
               type="password"
@@ -54,6 +63,13 @@
             :error-messages="confirmPassword && confirmPassword !== registerForm.password ? $t('Mật khẩu không khớp') : ''"
             required
             class="mb-3"
+            />
+            <v-text-field
+              v-model="registerForm.Phone"
+              :label="$t('Số điện thoại')"
+              prepend-inner-icon="mdi-lock"
+              required
+              class="mb-3"
             />
 
             <v-checkbox
@@ -98,9 +114,13 @@ export default {
   data() {
     return {
       registerForm: {
-        username: '',
-        email: '',
-        password: '',
+        FirstName: 'test',
+        LastName: 'test',
+        BirthDay: '',
+        EmpName: '',
+        Email: '',
+        Password: '',
+        Phone: ''
       },
       confirmPassword: '',
       agree: false,
@@ -118,11 +138,13 @@ export default {
     isValid() {
       const f = this.registerForm;
       return (
-        f.username &&
-        f.email &&
-        f.password &&
-        this.confirmPassword === f.password &&
+        f.BirthDay &&
+        f.EmpName &&
+        f.Password &&
+        f.Phone &&
+        this.confirmPassword === f.Password &&
         this.agree
+
       );
     },
     
@@ -133,7 +155,7 @@ export default {
       if (!this.isValid) return;
         Register(this.registerForm,(dat) =>{
             console.log(dat)
-            if(dat.status == 201){
+            if(dat.status == 200 && dat.data.status == true){
                 this.snackbar = true;
                 this.snackbarMessage = this.$t('Đăng ký thành công! Bạn sẽ được chuyển đến trang đăng nhập.');
                 this.snackbarColor = "success";
@@ -144,14 +166,14 @@ export default {
 
             }
             else{
-                this.snackbarMessage = dat.response.data.message;
+                this.snackbarMessage = dat.data.message;
                 this.snackbarColor = "error";
                 this.snackbar = true;
                 this.loading = false;
             }
 
         },(err) =>{
-            this.snackbarMessage = err.response.data.message;
+            this.snackbarMessage = err.data.message;
             this.snackbarColor = "error";
             this.snackbar = true;
             this.loading = false;

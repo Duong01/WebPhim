@@ -20,8 +20,7 @@
 
       <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0" class="text-center">
-          <strong>{{ MessageErr }}</strong
-          >.
+          <strong>{{$t('Bạn không có phim nào đã được lưu')}} {{ MessageErr }}</strong>
           <br />
           <router-link to="/home">
             <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
@@ -53,8 +52,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="movie.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.thumb_url"
-                        :lazy-src="movie.thumb_url.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.thumb_url : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.thumb_url"
+                        :src="movie.UrlMovies.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.UrlMovies : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.UrlMovies"
+                        :lazy-src="movie.UrlMovies.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.UrlMovies : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.UrlMovies"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
@@ -70,11 +69,11 @@
                           variant="flat"
                           class="favorite-btn"
                           @click.stop.prevent="handleFavorite(movie)"
-                          :color="isFavoriteMovie(movie) ? 'red' : ''"
+                          :color="movie.isFavorite ? 'red' : ''"
                         >
                       
                           <v-icon>
-                            {{ isFavoriteMovie(movie)
+                            {{ movie.isFavorite 
                                   ? "mdi-heart"
                                   : "mdi-heart-outline" }}
                           </v-icon>
@@ -140,8 +139,8 @@
   <script>
 import { urlImage1 } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
-import { getFavorites,isFavorite } from "@/utils/favorite";
-import {  toggleFavorite } from "@/utils/favorite";
+import { getFavorites,toggleFavorite } from "@/utils/favorite";
+
 export default {
   name: "FavoritePage",
   data() {
@@ -155,7 +154,7 @@ export default {
       urlImage: urlImage1,
       titlePage: "",
       MessageErr: '',
-
+      
       // Bộ lọc
       
       filters: {
@@ -166,6 +165,18 @@ export default {
         sortOption: "year"
       },
 
+      movieFavorite:{
+        IDAccount :'',
+        IDMovies: '',
+        slug: '',
+        currentPage: 1,
+        UrlMovies: '',
+        origin_name: '',
+        name: '',
+        year: '',
+        lang:''
+      }
+
       
     };
   },
@@ -173,89 +184,83 @@ export default {
     this.ListMovie();
   },
   methods: {
-
-
     handleFavorite(movie){
-      console.log(movie)
-      // this.movie.thumb_url = movie.thumb_url
-      toggleFavorite(movie);
-      this.$forceUpdate();
-      // this.liked = !this.liked;
+      this.movieFavorite.IDAccount = this.idAccount
+      this.movieFavorite.IDMovies = movie.IDMovies
+      this.movieFavorite.slug = movie.slug
+      this.movieFavorite.currentPage = movie.currentPage
+      this.movieFavorite.UrlMovies = movie.UrlMovies
+      this.movieFavorite.origin_name = movie.origin_name
+      this.movieFavorite.name = movie.name
+      this.movieFavorite.year = movie.year
+      this.movieFavorite.lang = movie.lang
+      toggleFavorite(this.movieFavorite, (dat) =>{
+        if(dat.data.status == "success"){
+          this.movies = dat.data.data
+          movie.isFavorite = !movie.isFavorite;
+          
+        }
+      }, (err) =>{
+        console.log(err)
+      })
+      // console.log(movie)
+      // toggleFavorite(movie);
+      // this.$forceUpdate();
     },
-    isFavoriteMovie(movie) {
-      // const favorites = getFavorites();
-      // return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
-      return isFavorite(movie.idMovie || movie._id);
-    },
-
-    toggleFavorite(movie) {
-      const index = this.favoriteMovies.findIndex(
-        (fav) => fav._id === movie.id
-      );
-      if (index !== -1) {
-        this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-      } else {
-        this.favoriteMovies.push(movie); // Thêm yêu thích
-      }
-    },
-    onFilterChanged(newFilters) {
-      this.filters = { ...newFilters };
-      this.currentPage = 1;
-      this.ListMovie();
-    },
+    
+    // toggleFavorite(movie) {
+    //   const index = this.favoriteMovies.findIndex(
+    //     (fav) => fav._id === movie.id
+    //   );
+    //   if (index !== -1) {
+    //     this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
+    //   } else {
+    //     this.favoriteMovies.push(movie); // Thêm yêu thích
+    //   }
+    // },
+    // onFilterChanged(newFilters) {
+    //   this.filters = { ...newFilters };
+    //   this.currentPage = 1;
+    //   this.ListMovie();
+    // },
 
     ListMovie() {
-
-      // if(this.filters.year == null || this.filters.year == undefined){
-      //   this.filters.year = ''
-      // }
-      // if(this.filters.lang == null || this.filters.lang == undefined){
-      //   this.filters.lang = ''
-      // }
-      // if(this.filters.category == null || this.filters.category == undefined){
-      //   this.filters.category = ''
-      // }
-      // if(this.filters.country == null || this.filters.country == undefined){
-      //   this.filters.country = ''
-      // }
       this.loading = true;
       this.movies = [];
-
-      const favorites = getFavorites();
-
-        if (favorites && favorites.length > 0) {
-          this.movies = favorites
+      var movie ={
+        idAccount: this.idAccount, 
+        page: this.currentPage
+      }
+      getFavorites(
+        movie,
+        (dat) => {
+          if (dat.status === "success") {
+            this.movies = dat.data;
+            this.movies = dat.data.map(m => ({
+            ...m,
+            isFavorite: true // vì đang ở trang favorite
+          }));
+          } else {
+            this.MessageErr = dat.message;
+          }
           this.loading = false;
-          
-        } else {
-          this.MessageErr = this.$t("Bạn không có dữ liệu nào được lưu");
+        },
+        (err) => {
+          console.log(err);
           this.loading = false;
         }
+      );
+      // const favorites = getFavorites();
 
-
-      // ListMovieByCate1(
-        
-      //   `${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
-      //   (result) => {
-      //     if (result.status === "success" || result.status == true) {
-      //       this.movies = result.data.items;
-      //       this.titlePage = result.data.titlePage;
-      //       if (result.data.seoOnPage) {
-      //         this.updateMetaTags(result.data.seoOnPage);
-      //       }
-      //       this.loading = false;
-      //     }
-      //     else{
-      //       this.loading = false
-      //     this.MessageErr = "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
-      //     }
-      //   },
-      //   (err) => {
-      //     console.log(err);
-      //     this.loading = false
-      //     this.MessageErr = "Hết thời gian chờ, vui lòng tải lại trang"
+      //   if (favorites && favorites.length > 0) {
+      //     this.movies = favorites
+      //     this.loading = false;
+          
+      //   } else {
+      //     this.MessageErr = this.$t("Bạn không có dữ liệu nào được lưu");
+      //     this.loading = false;
       //   }
-      // );
+
     },
     getOptimizedImage(imagePath) {
       return `${ this.urlImage +  encodeURIComponent(imagePath) }`;
@@ -268,7 +273,6 @@ export default {
       this.showFilter= false
       
     },
-    //return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}&w=384&q=100`;
     // Chuan SEO
     updateMetaTags(seo) {
       document.title = seo.titleHead || "Phim hay";
@@ -306,12 +310,21 @@ export default {
       }
     },
   },
-  watch: {
-    currentPage() {
-      this.loading = true;
-      this.ListMovie();
-    },
-  },
+  computed: {
+    idAccount(){
+      return (
+        this.$store.state.empInfor.ID || localStorage.getItem("name")
+
+      )
+
+    }
+  }
+  // watch: {
+  //   currentPage() {
+  //     this.loading = true;
+  //     this.ListMovie();
+  //   },
+  // },
 };
 </script>
   

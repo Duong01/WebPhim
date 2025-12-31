@@ -71,6 +71,15 @@
                 </router-link>
               </v-col>
             </v-row>
+            <div v-if="section.state === 'loading'">
+              <v-row>
+                <v-col v-for="i in 12" :key="i">
+                  <v-skeleton-loader type="image" height="250" />
+                </v-col>
+              </v-row>
+            </div>
+
+
 
             <div v-if="section.loaded">
               <v-row
@@ -80,24 +89,21 @@
                 class="movie-list"
               >
                 <v-col
-                  v-for="(item, index) in section.loading
-                    ? Array(12).fill({})
-                    : section.listMovie.slice(0, 12)"
-                  :key="item.slug || index"
-                  
+                   v-for="item in section.listMovie.slice(0,12)"
+                   :key="item.slug"
                   cols="6"
                   sm="6"
                   md="3"
                   style="padding: 5px"
                 >
-                  <v-skeleton-loader
+                  <!-- <v-skeleton-loader
                     v-if="section.loading"
                     type="image"
                     height="250"
-                  />
+                  /> -->
                   <router-link
                     :to="{ name: 'Movies', params: { slug: item.slug } }"
-                    v-else
+                    
                   >
                     <v-card
                       class="mx-auto  movie-card"
@@ -111,6 +117,9 @@
                         :alt="`Poster phim ${item.name}`"
                         class="movie-img"
                         height="250"
+                        loading="lazy"
+                        eager="false"
+                        aspect-ratio="2/3"
                         cover
                       >
                         <template #default>
@@ -195,14 +204,10 @@
 
 <script>
 import {
-  // ListMovieByCateHome,
-  //ListMovieByCateHome1,
   urlImage,
   urlImage1,
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
-import { getFavorites,isFavorite } from "@/utils/favorite";
-import {  toggleFavorite } from "@/utils/favorite";
 
 export default {
   name: "HomePage",
@@ -213,9 +218,7 @@ export default {
       urlImage1: urlImage1,
       isLoading: true,
       loaded: false,
-      loading: false,
       favoriteMovies: [],
-      ListMovieFavo: [],
       isFavo: false,
       colorList: ["#e57373", "#81c784", "#64b5f6", "#ffb74d", "#ba68c8"],
       sections: [
@@ -365,11 +368,6 @@ export default {
     CarouselPage,
   },
   async mounted() {
-    //   await Promise.all(
-    //     this.sections.map(item => this.ListMovie(item.id, item))
-    // );
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.loadFavorites();
     
     this.$nextTick(() => {
       this.observeSections();
@@ -402,37 +400,7 @@ export default {
         return `${days} ngày trước`;
   },
 
-    handleFavorite(movie){
-      console.log(movie)
-      // this.movie.thumb_url = movie.thumb_url
-      toggleFavorite(movie);
-      this.$forceUpdate();
-      // this.liked = !this.liked;
-    },
-
-    loadFavorites() {
-      this.isLoading = true;
-      setTimeout(() => {
-        const favorites = getFavorites();
-
-        if (favorites && favorites.length > 0) {
-          this.isFavo = true;
-          this.ListMovieFavo = [
-            {
-              loaded: true,
-              listMovie: favorites,
-            },
-          ];
-        } else {
-          this.isFavo = false;
-        }
-
-        this.isLoading = false;
-      }, 800); // Delay 0.8s cho hiệu ứng loading
-
-      
-    },
-
+    
 
     getColor(index) {
       return this.colorList[index % this.colorList.length];
@@ -441,18 +409,14 @@ export default {
     observeSections() {
       const observer = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const sectionIndex = [...this.$refs.sectionRefs].indexOf(
-                entry.target
-              );
-              const section = this.sections[sectionIndex];
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
 
-              if (section && !section.loaded) {
-                section.loaded = true; // bật render skeleton
-                section.loading = true; // loading riêng cho section
+            const index = this.$refs.sectionRefs.indexOf(entry.target);
+            const section = this.sections[index];
 
-                this.ListMovie(section.id, section)
+            if (section) {
+              this.ListMovie(section.id, section)
                   .then(() => {
                     section.loading = false;
                   })
@@ -460,21 +424,17 @@ export default {
                     console.error(err);
                     section.loading = false;
                   });
-              }
-
-              observer.unobserve(entry.target); // chỉ quan sát 1 lần
+              observer.unobserve(entry.target);
             }
           });
         },
         {
-          rootMargin: "0px 0px 0px 0px", // bỏ preload, chỉ khi chạm vào mới load
-          threshold: 0.25, // ít nhất 25% section visible mới load
+          rootMargin: "200px",
+          threshold: 0.3
         }
       );
 
-      this.$refs.sectionRefs.forEach((el) => {
-        if (el) observer.observe(el);
-      });
+      this.$refs.sectionRefs.forEach(el => el && observer.observe(el));
     },
     async ListMovie(sectionId, section) {
       section.loading = true;
@@ -634,23 +594,9 @@ export default {
         }
       });
     },
-    isFavoriteMovie(movie) {
-      // const favorites = getFavorites();
-      // return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
-      return isFavorite(movie.idMovie || movie._id);
-    },
     
-    // // Thêm/bỏ yêu thích
-    // toggleFavorite(movie) {
-    //   const index = this.favoriteMovies.findIndex(
-    //     (fav) => fav._id === movie.id
-    //   );
-    //   if (index !== -1) {
-    //     this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-    //   } else {
-    //     this.favoriteMovies.push(movie); // Thêm yêu thích
-    //   }
-    // },
+    
+    
   },
 };
 </script>
