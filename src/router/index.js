@@ -215,6 +215,16 @@ router.beforeEach((to, from, next) => {
       next('/login')
     }
   }
+  const isLogin = !!localStorage.getItem("name");
+
+  if (to.meta.auth && !isLogin) {
+    next({
+      path: "/login",
+      query: { redirect: to.fullPath } // 👈 LƯU TRANG TRƯỚC
+    });
+  } else {
+    next();
+  }
   const defaultTitle = "Web Phim Online - Xem phim miễn phí";
   const defaultDesc =
     "Xem phim mới nhất, phim hot, phim bộ, phim lẻ online miễn phí.";

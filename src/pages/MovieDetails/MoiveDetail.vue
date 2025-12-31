@@ -540,7 +540,7 @@ import {
   GetComments,
   AddComment,
 } from "@/model/api";
-import {  toggleFavorite, isFavorite } from "@/utils/favorite";
+import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
 export default {
   name: "MovieDetail",
@@ -795,7 +795,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              this.liked = isFavorite(this.movie.idMovie);
+              
               resolve(true);
             } else {
               reject("error");
@@ -897,7 +897,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              this.liked = isFavorite(this.movie.idMovie);
+              
               resolve(true);
             } else {
               this.MoveInfor(slug).then(resolve).catch(reject);
@@ -1013,7 +1013,18 @@ export default {
       window.open(linkdown);
     },
     handleFavorite(){
-      let aa = toggleFavorite(this.movie);
+      const  idaccount = this.idAccount
+      console.log(idaccount)
+      if(idaccount == "" || idaccount== null || idaccount == undefined){
+        alert("Bạn vui lòng đăng nhập")
+        this.$router.push("/login");
+        return;
+      }
+      let aa = toggleFavorite(this.movie, (dat)=>{
+        console.log(dat)
+      }, (err)=>{
+        console.log(err)
+      });
       console.log(aa)
       this.liked = !this.liked;
     },

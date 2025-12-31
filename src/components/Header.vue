@@ -242,7 +242,7 @@
       </v-menu>
 
       <!-- Tài khoản -->
-      <v-menu offset-y v-if="!account">
+      <v-menu offset-y v-if="!isLogin">
         <template #activator="{ props }">
           <v-btn icon v-bind="props" :title="$t('Tài khoản')">
             <v-icon>mdi-account-circle</v-icon>
@@ -262,7 +262,7 @@
       </v-menu>
       <v-menu offset-y v-else>
         <template #activator="{ props }">
-          <v-btn v-bind="props" :title="$t('Tài khoản')">
+          <v-btn icon v-bind="props" :title="$t('Tài khoản')">
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -467,7 +467,7 @@ export default {
       mess: false,
       Message: "",
       color: "",
-      account: "",
+      // account: "",
       searchQuery: "",
       curElLang: "",
       curLang: "",
@@ -489,10 +489,18 @@ export default {
   },
   inject: ["currentTheme", "setTheme"],
   mounted() {
-    this.account = localStorage.getItem("nameShow");
+    this.account = this.$store.state.EmpName ||  localStorage.getItem("nameShow");
     const history = JSON.parse(localStorage.getItem("HisSearch"));
     this.movieSuggestions = history ? history : [];
     console.log(this.movieSuggestions)
+  },
+  computed: {
+    account() {
+      return this.$store.state.empInfor?.EmpName || "";
+    },
+    isLogin() {
+      return !!this.$store.state.empInfor?.ID;
+    }
   },
   methods: {
     openSearchHistory() {
@@ -614,7 +622,8 @@ export default {
       localStorage.removeItem("name");
       localStorage.removeItem("nameShow");
       localStorage.removeItem("loginTimestamp");
-      this.account = "";
+      this.$store.commit("LOGOUT");
+      this.$router.push("/login");
     },
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {
@@ -680,7 +689,7 @@ export default {
     },
   },
   created() {
-    this.account = localStorage.getItem("nameShow");
+    this.account = localStorage.getItem("nameShow") || this.$store.state.empInfor.EmpName;
     this.InitLang();
   },
 };

@@ -16,7 +16,7 @@
             {{ $t('Chào mừng bạn quay lại! Vui lòng đăng nhập.') }}
           </v-card-subtitle>
 
-          <v-form ref="loginFormRef">
+          <v-form ref="loginFormRef" @submit.prevent="handleLogin">
             <!-- Email -->
             <v-text-field
               v-model="loginForm.Email"
@@ -51,6 +51,7 @@
 
             <!-- Login button -->
             <v-btn
+              type="submit"
               color="primary"
               block
               class="mb-4"
@@ -119,8 +120,9 @@ export default {
       this.loading = true;
 
       Login(this.loginForm, (dat) => {
+        console.log(dat)
         if (dat.data.status == "success" && dat.status == 200) {
-          this.$store.commit("empInfor", dat.data.data);
+          this.$store.commit("setEmpInfor", dat.data.data);
           localStorage.setItem("name", dat.data.data.ID);
           localStorage.setItem("nameShow", dat.data.data.EmpName);
           localStorage.setItem("loginTimestamp", Date.now());
@@ -131,9 +133,10 @@ export default {
           this.mess = true;
           this.loading = false;
 
-          this.$router.push("/home");
+          const redirect = this.$route.query.redirect || "/home";
+          this.$router.replace(redirect);
         } else {
-          this.Message = dat.message || this.$t('Đăng nhập thất bại');
+          this.Message = dat.data.message || this.$t('Đăng nhập thất bại');
           this.color = "error";
           this.mess = true;
           this.loading = false;

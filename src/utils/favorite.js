@@ -75,11 +75,12 @@ export function toggleFavorite(movie, success, error) {
 
 // Kiểm tra phim yêu thích
 export function isFavorite(movie, success, error) {
+  var data = {
+    idAccount: movie.IDAccount,
+    page: 1
+  }
   getFavorites(
-    {
-      idAccount: movie.IDAccount,
-      currentPage: 1
-    },
+    data,
     (res) => {
       const list = res.data || [];
       const exists = list.some(

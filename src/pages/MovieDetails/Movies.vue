@@ -292,7 +292,12 @@
                 </v-tabs-window-item>
                 <v-tabs-window-item value="three">
                   <v-sheet class="pa-5">
+                    <div v-if="comments.length == 0">
+                      <span class="text-black-lighten-3 font-weight-medium me-2">Chưa có bình luận nào</span>
+                    </div>
+
                     <div
+                      v-else
                       v-for="(comment, index) in comments"
                       :key="index"
                       class="d-flex align-start mb-5"
@@ -1057,6 +1062,7 @@ export default {
                 content: c.Comments,
                 createdAt: c.DayCreate,
               }));
+
               resolve(true);
             } else {
               reject("error");
