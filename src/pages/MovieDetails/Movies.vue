@@ -591,7 +591,7 @@ export default {
       //this.playVideo(this.movie.videoUrl);
 
       await this.ListMovieByCate();
-      //await this.GetComment();
+      await this.GetComment();
       console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
