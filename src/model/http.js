@@ -2,9 +2,12 @@ import axios from "axios";
 //import store from "@/store"
 
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL|| "/api", // /api
-  timeout: 10000,
-  headers: { "Content-Type": "application/json" },
+  baseURL: process.env.VUE_APP_API_BASE_URL || "/api",
+  timeout: 300000,
+  headers: {
+    "Content-Type": "application/json;charset=UTF-8",
+  },
+  withCredentials: true,
 });
 
 function InitAxiosForSession()  
