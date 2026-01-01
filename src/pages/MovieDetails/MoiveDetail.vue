@@ -1366,18 +1366,18 @@ export default {
         //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
       } else {
         return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
-      <iframe
-        src="${url}"
-        frameborder="0"
-        class="w-full h-full"
-        webkit-playsinline
-        loading="lazy"
-        allowfullscreen
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-      ></iframe>
-    </div>`;
+        <iframe
+          src="${url}"
+          frameborder="0"
+          class="w-full h-full"
+          webkit-playsinline
+          loading="lazy"
+          allowfullscreen
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
+        ></iframe>
+      </div>`;
       }
     },
   },
