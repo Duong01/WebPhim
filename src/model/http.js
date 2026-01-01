@@ -10,7 +10,7 @@ import axios from "axios";
 //   withCredentials: true,
 // });
 const api = axios.create({
-  baseURL: "/api", // 👈 QUAN TRỌNG
+  baseURL: "/api", 
   timeout: 300000,
   headers: {
     "Content-Type": "application/json;charset=UTF-8",

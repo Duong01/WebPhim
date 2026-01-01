@@ -49,7 +49,7 @@ let urlSearch1 = "https://phimapi.com/v1/api/tim-kiem"
 // api login
 //let urlAccount = "https://apiwebphim.onrender.com/api/auth"
 
-let urlApi = "http://apiwebphim.somee.com/api"
+//let urlApi = "http://apiwebphim.somee.com/api"
 
 export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
 export const urlImage1 = "https://phimapi.com/image.php?url="
