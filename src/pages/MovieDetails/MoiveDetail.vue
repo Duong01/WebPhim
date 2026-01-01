@@ -315,11 +315,18 @@
               density="comfortable"
               hide-details
               append-inner-icon="mdi-send"
-              @click:append-inner="addComment"
+              @click:append-inner="addComments"
               :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
             ></v-text-field>
             <v-divider class="mb-4" color="grey darken-3"></v-divider>
             <div
+              v-if="comments.length <= 0"
+              class="d-flex align-start mb-5"
+            >
+            Chưa có bình luận nào
+            </div>
+            <div
+              v-else
               v-for="(comment, index) in comments"
               :key="index"
               class="d-flex align-start mb-5"
@@ -1156,7 +1163,7 @@ export default {
     Login(){
       this.$router.push("/login");
     },
-    addComment() {
+    addComments() {
       var account = this.idAccount();
       var data = {
         IDAccount: account,
