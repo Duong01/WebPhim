@@ -1164,14 +1164,14 @@ export default {
       this.$router.push("/login");
     },
     addComments() {
-      var account = this.idAccount();
+      var account = this.idAccount;
       var data = {
         IDAccount: account,
         IDMovies: this.movie.idMovie,
         NameCreate: localStorage.getItem("nameShow") || "",
         Comments: this.newComment,
       };
-      if (account == null || account == "") {
+      if (account == null || account == "" || account== undefined) {
         alert("Bạn vui lòng đăng nhập")
         this.$router.push("/login");
       }
