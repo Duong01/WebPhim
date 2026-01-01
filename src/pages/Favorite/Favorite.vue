@@ -234,14 +234,15 @@ export default {
       getFavorites(
         movie,
         (dat) => {
-          if (dat.status === "success") {
-            this.movies = dat.data;
-            this.movies = dat.data.map(m => ({
+          console.log(dat)
+          if (dat.data.status === "success") {
+            this.movies = dat.data.data;
+            this.movies = dat.data.data.map(m => ({
             ...m,
             isFavorite: true // vì đang ở trang favorite
           }));
           } else {
-            this.MessageErr = dat.message;
+            this.MessageErr = dat.data.message;
           }
           this.loading = false;
         },
