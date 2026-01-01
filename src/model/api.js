@@ -102,20 +102,20 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  
 
 // api login
- export const Login = (params, success, error) => http.Post(`${urlApi}/AccountApi/Login`, params,success, error)
+ export const Login = (params, success, error) => http.Post(`/AccountApi/Login`, params,success, error)
 
  // api login
- export const Register = (params, success, error) => http.Post(`${urlApi}/AccountApi/Register`, params,success, error)
+ export const Register = (params, success, error) => http.Post(`/AccountApi/Register`, params,success, error)
 
  // add comment
- export const AddComment = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertCommnet`, params,success, error)
+ export const AddComment = (params, success, error) => http.Post(`/AccountApi/InsertCommnet`, params,success, error)
 
  // get comment
- export const GetComments = (params, success, error) => http.Get(`${urlApi}/AccountApi/GetComment`, params,success, error)
+ export const GetComments = (params, success, error) => http.Get(`/AccountApi/GetComment`, params,success, error)
 
  // get movies Favorite
- export const GetMoviesFavorite = (params, success, error) => http.Get(`${urlApi}/AccountApi/GetFavoriteMovies`, params,success, error)
+ export const GetMoviesFavorite = (params, success, error) => http.Get(`/AccountApi/GetFavoriteMovies`, params,success, error)
 
  // insert movies favorite
- export const PostMoviesFavorite = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertFavoriteMovies`, params,success, error)
+ export const PostMoviesFavorite = (params, success, error) => http.Post(`/AccountApi/InsertFavoriteMovies`, params,success, error)
 

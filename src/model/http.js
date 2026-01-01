@@ -1,13 +1,21 @@
 import axios from "axios";
 //import store from "@/store"
 
+// const api = axios.create({
+//   baseURL: process.env.VUE_APP_API_BASE_URL || "/api",
+//   timeout: 300000,
+//   headers: {
+//     "Content-Type": "application/json;charset=UTF-8",
+//   },
+//   withCredentials: true,
+// });
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || "/api",
+  baseURL: "/api", // 👈 QUAN TRỌNG
   timeout: 300000,
   headers: {
     "Content-Type": "application/json;charset=UTF-8",
   },
-  withCredentials: true,
+  withCredentials: false,
 });
 
 function InitAxiosForSession()  
@@ -45,8 +53,7 @@ function InitAxiosForNoNSession()
 // }
 
 function Post(url, params, success, error) {
-  api
-    .post(url, params)
+  api.post(url, params)
     .then(res => success(res))
     .catch(err => error(err));
 }
