@@ -69,13 +69,14 @@
                           variant="flat"
                           class="favorite-btn"
                           @click.stop.prevent="handleFavorite(movie)"
-                          :color="isFavoriteMovie(movie) ? 'red' : ''"
                         >
+                          <!-- :color="isFavoriteMovie(movie) ? 'red' : ''" -->
                       
                           <v-icon>
-                            {{ isFavoriteMovie(movie)
+                            <!-- {{ isFavoriteMovie(movie)
                                   ? "mdi-heart"
-                                  : "mdi-heart-outline" }}
+                                  : "mdi-heart-outline" }} -->
+                                  mdi-heart-outline
                           </v-icon>
                           
                         </v-btn>
@@ -475,10 +476,10 @@ export default {
       // this.liked = !this.liked;
     },
 
-    isFavoriteMovie(movie) {
-      const favorites = getFavorites();
-      return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
-    },
+    // isFavoriteMovie(movie) {
+    //   const favorites = getFavorites();
+    //   return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
+    // },
 
     toggleFavorite(movie) {
       const index = this.favoriteMovies.findIndex(
