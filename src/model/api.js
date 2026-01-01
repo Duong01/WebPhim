@@ -111,10 +111,10 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  export const AddComment = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertCommnet`, params,success, error)
 
  // get comment
- export const GetComments = (params, success, error) => http.GetNew(`${urlApi}/AccountApi/GetComment`, params,success, error)
+ export const GetComments = (params, success, error) => http.Get(`${urlApi}/AccountApi/GetComment`, params,success, error)
 
  // get movies Favorite
- export const GetMoviesFavorite = (params, success, error) => http.GetNew(`${urlApi}/AccountApi/GetFavoriteMovies`, params,success, error)
+ export const GetMoviesFavorite = (params, success, error) => http.Get(`${urlApi}/AccountApi/GetFavoriteMovies`, params,success, error)
 
  // insert movies favorite
  export const PostMoviesFavorite = (params, success, error) => http.Post(`${urlApi}/AccountApi/InsertFavoriteMovies`, params,success, error)
