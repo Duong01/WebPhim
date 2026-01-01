@@ -306,7 +306,7 @@
 
 <script>
 import { Search, Search1, urlImage, urlImage1 } from "@/model/api";
-import {  toggleFavorite,getFavorites } from "@/utils/favorite";
+import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "SearchMovie",
   data() {
