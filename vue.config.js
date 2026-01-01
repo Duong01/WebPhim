@@ -9,7 +9,9 @@ module.exports = defineConfig({
         target: 'https://ophim1.com;https://phimapi.com/;http://apiwebphim.somee.com', // API gốc
         changeOrigin: true,
         secure: false, // Bỏ kiểm tra SSL (nếu cần)
-        pathRewrite: { '^/api': '' } // xóa /api ra
+        pathRewrite: {
+          "^/api": "/api"
+        } // xóa /api ra
       },
     },
     client: {

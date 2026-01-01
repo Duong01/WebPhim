@@ -32,6 +32,7 @@
                 playsinline
                 webkit-playsinline
                 preload="none"
+                controlslist="nodownload noremoteplayback"
                 style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
               ></video>
               <iframe
@@ -1164,13 +1165,14 @@ export default {
         Comments: this.newComment,
       };
       if (account == null || account == "") {
+        alert("Bạn vui lòng đăng nhập")
         this.$router.push("/login");
       }
       if (this.newComment.trim()) {
         AddComment(
           data,
           (dat) => {
-            if (dat.status == 201) {
+            if (dat.data.status == "success") {
               this.Message = dat.data.message;
               this.color = "success";
               this.mess = true;
@@ -1178,7 +1180,7 @@ export default {
             }
           },
           (err) => {
-            this.Message = err.response.data.message;
+            this.Message = err.data.message;
             this.color = "error";
             this.mess = true;
           }
@@ -1196,12 +1198,8 @@ export default {
         GetComments(
           movie,
           (res) => {
-            if (Array.isArray(res)) {
-              this.comments = res.map((c) => ({
-                username: c.NameCreate,
-                content: c.Comments,
-                createdAt: c.DayCreate,
-              }));
+            if (res.status == "success") {
+              this.comments = res.data
               resolve(true);
             } else {
               reject("error");
