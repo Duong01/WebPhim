@@ -1170,6 +1170,8 @@ export default {
         IDMovies: this.movie.idMovie,
         NameCreate: localStorage.getItem("nameShow") || "",
         Comments: this.newComment,
+        NameMovie: this.movie.name,
+        CurrentPage: this.movie.page
       };
       if (account == null || account == "" || account== undefined) {
         alert("Bạn vui lòng đăng nhập")
@@ -1196,7 +1198,7 @@ export default {
       }
     },
     GetComment() {
-      return new Promise((resolve, reject) => {
+      
         if (!this.movie.idMovie) reject("error");
         var movie = {
           idMovies: this.movie.idMovie,
@@ -1205,19 +1207,17 @@ export default {
         GetComments(
           movie,
           (res) => {
+            console.log(res)
             if (res.status == "success") {
               this.comments = res.data
-              resolve(true);
             } else {
-              reject("error");
+
             }
           },
           (err) => {
             console.error("Lỗi lấy bình luận:", err);
-            reject(err);
           }
         );
-      });
     },
 
     scrollLeft() {
