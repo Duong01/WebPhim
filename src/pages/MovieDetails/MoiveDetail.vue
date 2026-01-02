@@ -348,7 +348,7 @@
                     {{ comment.DayCreate }}
                   </v-chip>
                 </div>
-                <div class="text-white text-body-2">{{ comment.Comments }}</div>
+                <div class=" d-flex text-white text-body-2 align-start">{{ comment.Comments }}</div>
                 
               </div>
             </div>
