@@ -292,8 +292,8 @@
                 </v-tabs-window-item>
                 <v-tabs-window-item value="three">
                   <v-sheet class="pa-5">
-                    <div v-if="comments.length == 0">
-                      <span class="text-black-lighten-3 font-weight-medium me-2">Chưa có bình luận nào</span>
+                    <div v-if="comments.length <= 0">
+                      <span class="text-black-lighten-3 font-weight-medium me-2 text-center">Chưa có bình luận nào</span>
                     </div>
 
                     <div
@@ -1047,8 +1047,6 @@ export default {
     },
     
     GetComment() {
-      return new Promise((resolve, reject) => {
-        if (!this.movie.idMovie) reject("error");
         var movie = {
           idMovies: this.movie.idMovie,
           page: 1
@@ -1056,24 +1054,17 @@ export default {
         GetComments(
           movie,
           (res) => {
-            if (Array.isArray(res)) {
-              this.comments = res.map((c) => ({
-                username: c.NameCreate,
-                content: c.Comments,
-                createdAt: c.DayCreate,
-              }));
+            if (res.status == "success") {
+              this.comments = res.data
 
-              resolve(true);
             } else {
-              reject("error");
+              console.log(res.message)
             }
           },
           (err) => {
             console.error("Lỗi lấy bình luận:", err);
-            reject(err);
           }
         );
-      });
     },
   },
   computed: {

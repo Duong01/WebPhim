@@ -321,7 +321,7 @@
             <v-divider class="mb-4" color="grey darken-3"></v-divider>
             <div
               v-if="comments.length <= 0"
-              class="d-flex align-start mb-5"
+              class="d-flex align-center mb-5 text-center"
             >
             Chưa có bình luận nào
             </div>
@@ -1199,7 +1199,6 @@ export default {
     },
     GetComment() {
       
-        if (!this.movie.idMovie) reject("error");
         var movie = {
           idMovies: this.movie.idMovie,
           page: 1
@@ -1211,7 +1210,7 @@ export default {
             if (res.status == "success") {
               this.comments = res.data
             } else {
-
+              console.log(res.message)
             }
           },
           (err) => {
