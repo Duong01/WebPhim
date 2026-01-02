@@ -308,7 +308,7 @@
                       <div class="flex-grow-1">
                         <div class="d-flex align-center mb-1">
                           <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-                            comment.username
+                            comment.NameCreate
                           }}</span>
                           <v-chip
                             size="x-small"
@@ -316,10 +316,10 @@
                             text-color="grey-lighten-1"
                             variant="flat"
                           >
-                            {{ comment.time }}
+                            {{ comment.DayCreate }}
                           </v-chip>
                         </div>
-                        <div class="text-white text-body-2">{{ comment.content }}</div>
+                        <div class="text-white text-body-2">{{ comment.Comments }}</div>
                         
                       </div>
                     </div>
