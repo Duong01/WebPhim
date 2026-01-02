@@ -316,7 +316,7 @@
                             text-color="grey-lighten-1"
                             variant="flat"
                           >
-                            {{ comment.DayCreate }}
+                            {{ timeAgo(comment.DayCreate) }}
                           </v-chip>
                         </div>
                         <div class="d-flex text-white text-body-2 align-start text-white text-body-2">{{ comment.Comments }}</div>
@@ -603,6 +603,24 @@ export default {
     }
   },
   methods: {
+    timeAgo(timestamp) {
+       const time = new Date(timestamp).getTime();
+      const now = Date.now();
+
+      if (time > now) {
+        return 'Vừa xong';
+      }
+      const diff = now - time;
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 1) return 'Vừa xong';
+        if (minutes < 60) return  `${minutes} phút trước`;
+        
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} giờ trước`;
+        const days = Math.floor(hours / 24);
+        return `${days} ngày trước`;
+    },
+
     // Call API
     MoveInfor(slug) {
       return new Promise((resolve, reject) => {
