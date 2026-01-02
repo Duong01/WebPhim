@@ -1,29 +1,43 @@
 const { defineConfig } = require('@vue/cli-service')
+
 module.exports = defineConfig({
-  transpileDependencies: [
-    'vuetify'
-  ],
+  transpileDependencies: ['vuetify'],
+
   devServer: {
     proxy: {
-      '/api': {
-        target: 'https://ophim1.com;https://phimapi.com/;http://apiwebphim.somee.com', // API gốc
+      '/api/ophim': {
+        target: 'https://ophim1.com',
         changeOrigin: true,
-        secure: false, // Bỏ kiểm tra SSL (nếu cần)
-        pathRewrite: {
-          "^/api": "/api"
-        } // xóa /api ra
+        secure: false,
+        pathRewrite: { '^/api/ophim': '' },
+      },
+
+      '/api/phimapi': {
+        target: 'https://phimapi.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/api/phimapi': '' },
+      },
+
+      '/api/account': {
+        target: 'http://apiwebphim.somee.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/api/account': '/api' },
       },
     },
+
     client: {
-      overlay: false // tắt màn hình đỏ
-    }
+      overlay: false,
+    },
   },
+
   pages: {
     index: {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: 'Phim Hay Mỗi Ngày', // 👉 Đây là tiêu đề bạn muốn
+      title: 'Phim Hay Mỗi Ngày',
     },
   },
 })

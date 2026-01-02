@@ -1,5 +1,6 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
+import { CheckSession } from "@/model/api";
 import store from "@/store";
 
 const routes = [
@@ -83,7 +84,8 @@ const routes = [
             title: "Phim bộ hay nhất - Web Phim Online",
             description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
             keepAlive: true,
-            auth: true
+            auth: true,
+            requiresAuth: true
         },
       },
       {
@@ -216,6 +218,32 @@ router.beforeEach((to, from, next) => {
     }
   }
   const isLogin = !!localStorage.getItem("name");
+  const token = localStorage.getItem("token")
+
+  // route cần login
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      return next("/login")
+    }
+
+    CheckSession(
+      (res) => {
+        if (res.data.status === "success") {
+          store.commit("SET_USER", res.data.data)
+          next()
+        } else {
+          store.commit("LOGOUT")
+          next("/login")
+        }
+      },
+      () => {
+        store.commit("LOGOUT")
+        next("/login")
+      }
+    )
+  } else {
+    next()
+  }
 
   if (to.meta.auth && !isLogin) {
     next({

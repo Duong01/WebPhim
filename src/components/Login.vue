@@ -124,6 +124,7 @@ export default {
         if (dat.data.status == "success" && dat.status == 200) {
           this.$store.commit("setEmpInfor", dat.data.data);
           localStorage.setItem("name", dat.data.data.ID);
+          localStorage.setItem("token", dat.data.token)
           localStorage.setItem("nameShow", dat.data.data.EmpName);
           localStorage.setItem("loginTimestamp", Date.now());
 

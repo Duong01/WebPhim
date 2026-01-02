@@ -6,6 +6,7 @@ const mutations =
     LOGOUT(state) {
         state.empInfor = null;
         localStorage.removeItem("empInfor");
+        localStorage.removeItem("token")
     }
    
 }
