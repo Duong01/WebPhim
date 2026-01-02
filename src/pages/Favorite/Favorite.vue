@@ -319,13 +319,13 @@ export default {
       )
 
     }
-  }
-  // watch: {
-  //   currentPage() {
-  //     this.loading = true;
-  //     this.ListMovie();
-  //   },
-  // },
+  },
+  watch: {
+    currentPage() {
+      this.loading = true;
+      this.ListMovie();
+    },
+  },
 };
 </script>
   

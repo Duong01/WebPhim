@@ -1054,11 +1054,11 @@ export default {
         GetComments(
           movie,
           (res) => {
-            if (res.status == "success") {
-              this.comments = res.data
+            if (res.data.status == "success") {
+              this.comments = res.data.data
 
             } else {
-              console.log(res.message)
+              console.log(res.data.message)
             }
           },
           (err) => {
