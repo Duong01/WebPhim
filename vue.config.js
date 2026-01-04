@@ -6,13 +6,15 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://ophim1.com;https://phimapi.com/;http://apiwebphim.somee.com', // API gốc
+        // target: 'https://ophim1.com;https://phimapi.com/;http://apiwebphim.somee.com', // API gốc
+        target: 'http://apiwebphim.somee.com', // API gốc
         changeOrigin: true,
         secure: false, // Bỏ kiểm tra SSL (nếu cần)
         pathRewrite: {
           "^/api": "/api"
         } // xóa /api ra
       },
+      
     },
     client: {
       overlay: false // tắt màn hình đỏ

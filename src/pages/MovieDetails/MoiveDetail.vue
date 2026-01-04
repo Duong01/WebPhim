@@ -547,8 +547,9 @@ import {
   urlImage1,
   GetComments,
   AddComment,
+  PostMoviesFavorite
 } from "@/model/api";
-import {  toggleFavorite } from "@/utils/favorite";
+//import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
 export default {
   name: "MovieDetail",
@@ -603,6 +604,17 @@ export default {
         origin_name: "",
         year: "",
         slug: "",
+      },
+      movieFavorite:{
+        IDAccount : '',
+        IDMovies: '',
+        slug: '',
+        currentPage: '',
+        UrlMovies: '',
+        origin_name: '',
+        name: '',
+        year: '',
+        lang:''
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -1038,20 +1050,34 @@ export default {
       window.open(linkdown);
     },
     handleFavorite(){
-      const  idaccount = this.idAccount
-      console.log(idaccount)
-      if(idaccount == "" || idaccount== null || idaccount == undefined){
+      this.liked = !this.liked;
+      this.movieFavorite.IDAccount = this.idAccount
+      this.movieFavorite.IDMovies = this.movie.idMovie
+      this.movieFavorite.slug = this.movie.slug
+      this.movieFavorite.currentPage = this.movie.page
+      this.movieFavorite.UrlMovies = this.movie.thumb_url
+      this.movieFavorite.origin_name = this.movie.origin_name
+      this.movieFavorite.name = this.movie.name
+      this.movieFavorite.year = this.movie.year
+      this.movieFavorite.lang = this.movie.lang
+
+      if(this.idAccount == "" || this.idAccount== null || this.idAccount == undefined){
         alert("Bạn vui lòng đăng nhập")
         this.$router.push("/login");
         return;
       }
-      let aa = toggleFavorite(this.movie, (dat)=>{
-        console.log(dat)
-      }, (err)=>{
+      PostMoviesFavorite(this.movieFavorite, (dat) =>{
+        if(dat.data.status == "success"){
+          alert("🎬 " +dat.data.message )
+          
+        }
+        else{
+          alert(dat.data.message)
+        }
+
+      }, (err) =>{
         console.log(err)
-      });
-      console.log(aa)
-      this.liked = !this.liked;
+      })
     },
 
     getOptimizedImage(imagePath) {

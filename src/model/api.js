@@ -102,7 +102,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  
 
 // api login
- export const CheckSession = ( success, error) => http.Get(`/AccountApi/CheckSession`,success, error)
+ export const CheckSession = ( success, error) => http.GetNew(`/AccountApi/CheckSession`,"",success, error)
 
  export const Login = (params, success, error) => http.Post(`/AccountApi/Login`, params,success, error)
 

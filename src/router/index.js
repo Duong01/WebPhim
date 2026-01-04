@@ -187,7 +187,6 @@ const routes = [
 ];
 
 // Thời gian session tối đa (ví dụ: 30 phút)
-const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 phút
 
 // Lưu thời điểm bắt đầu khi user vào trang lần đầu
 if (!sessionStorage.getItem("sessionStart")) {
@@ -210,107 +209,47 @@ router.onError((error) => {
   }
 });
 router.beforeEach((to, from, next) => {
-  if(to.meta.auth){
-    var checkLogin = store.state.empInfor.ID || localStorage.getItem("name")
-    if(checkLogin == "" || checkLogin == undefined || checkLogin == null){
-      alert("Bạn vui lòng đăng nhập")
-      next('/login')
+  CheckSession((dat)=>{
+    console.log(dat)
+    if(dat.data.status == "success"){
+      store.commit("setEmpInfor", dat.data.data);
+
     }
-  }
-  const isLogin = !!localStorage.getItem("name");
-  const token = localStorage.getItem("token")
-
-  // route cần login
-  if (to.meta.requiresAuth) {
-    if (!token) {
-      return next("/login")
+    else if(dat.status == "error" && to.meta.requiresAuth)
+    {
+      alert(dat.message)
+      next({
+        name: 'Login',
+        params:{}
+      })
     }
+  },(er)=>{
+    // session timeout or not login
+    if(er?.response?.status == 401)
+    {
+      console.error(er.response.data);
+      next({
+        name: 'Login',
+        params:{}
+      })
+    }
+  })
 
-    CheckSession(
-      (res) => {
-        if (res.data.status === "success") {
-          store.commit("SET_USER", res.data.data)
-          next()
-        } else {
-          store.commit("LOGOUT")
-          next("/login")
-        }
-      },
-      () => {
-        store.commit("LOGOUT")
-        next("/login")
-      }
-    )
-  } else {
-    next()
+  // ===== 3. Set meta SEO =====
+  const defaultTitle = "Web Phim Online - Xem phim miễn phí"
+  const defaultDesc = "Xem phim mới nhất, miễn phí, chất lượng cao"
+
+  document.title = to.meta.title || defaultTitle
+  let desc = document.querySelector('meta[name="description"]')
+  if (!desc) {
+    desc = document.createElement("meta")
+    desc.setAttribute("name", "description")
+    document.head.appendChild(desc)
   }
+  desc.setAttribute("content", to.meta.description || defaultDesc)
 
-  if (to.meta.auth && !isLogin) {
-    next({
-      path: "/login",
-      query: { redirect: to.fullPath } // 👈 LƯU TRANG TRƯỚC
-    });
-  } else {
-    next();
-  }
-  const defaultTitle = "Web Phim Online - Xem phim miễn phí";
-  const defaultDesc =
-    "Xem phim mới nhất, phim hot, phim bộ, phim lẻ online miễn phí.";
+  return next()
+})
 
-  document.title = to.meta.title || defaultTitle;
-
-  let descTag = document.querySelector('meta[name="description"]');
-  if (!descTag) {
-    descTag = document.createElement("meta");
-    descTag.setAttribute("name", "description");
-    document.head.appendChild(descTag);
-  }
-  descTag.setAttribute("content", to.meta.description || defaultDesc);
-  let ogTitle = document.querySelector('meta[property="og:title"]');
-  if (!ogTitle) {
-    ogTitle = document.createElement("meta");
-    ogTitle.setAttribute("property", "og:title");
-    document.head.appendChild(ogTitle);
-  }
-  ogTitle.setAttribute("content", to.meta.title || defaultTitle);
-
-  let ogDesc = document.querySelector('meta[property="og:description"]');
-  if (!ogDesc) {
-    ogDesc = document.createElement("meta");
-    ogDesc.setAttribute("property", "og:description");
-    document.head.appendChild(ogDesc);
-  }
-  ogDesc.setAttribute("content", to.meta.description || defaultDesc);
-
-  //  Kiểm tra session hết hạn
-  const sessionStart = parseInt(sessionStorage.getItem("sessionStart"), 10);
-  const now = Date.now();
-  const inactiveTime = now - sessionStart;
-
-  if (inactiveTime > SESSION_TIMEOUT) {
-    // Xoá session cũ và reload trang
-    sessionStorage.removeItem("sessionStart");
-    console.log("Phiên làm việc đã hết hạn, đang tải lại trang...");
-    window.location.reload();
-    return; // Dừng điều hướng để reload
-  } else {
-    // Cập nhật lại thời gian hoạt động gần nhất
-    sessionStorage.setItem("sessionStart", now);
-  }
-
-  // document.addEventListener("visibilitychange", () => {
-  //   if (document.visibilityState === "visible") {
-  //     fetch(window.location.href, { method: "HEAD" })
-  //       .then(() => {})
-  //       .catch(() => window.location.reload());
-  //   }
-  // });
-
-  if (to.matched.length === 0) {
-    next("/Error");
-  } else {
-    next();
-  }
-});
 
 export default router;
