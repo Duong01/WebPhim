@@ -173,14 +173,14 @@
                 <div class="action-item">
                   <v-btn variant="text" @click="handleFavorite()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>
-                     Xem sau
+                     {{$t('Xem sau')}}
                   </v-btn>
                   
                 </div>
                 <div class="action-item">
                   <v-btn variant="text" @click="shareMovie()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share" aria-hidden="true"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg>
-                     Chia sẻ
+                     {{$t('Chia sẻ')}}
                   </v-btn>
                 </div>
                 <!-- <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
@@ -228,9 +228,13 @@
                         >
 
                           <!-- DANH SÁCH TẬP -->
+                           <v-sheet
+                            class="episode-list mt-4"
+                            elevation="0"
+                          >
                           <v-row class="mt-4">
                             <v-col
-                              v-for="(ep, idx) in server.server_data.slice(0,20)"
+                              v-for="(ep, idx) in server.server_data"
                               :key="idx"
                               cols="4"
                               sm="4"
@@ -247,6 +251,8 @@
                               </v-btn>
                             </v-col>
                           </v-row>
+                        </v-sheet>
+                          
                           <div class="text-center mt-4">
                           <v-btn
                               color="gray"
@@ -296,10 +302,15 @@
                       <span class="text-black-lighten-3 font-weight-medium me-2 text-center">Chưa có bình luận nào</span>
                     </div>
 
-                    <div
-                      v-else
-                      v-for="(comment, index) in comments"
-                      :key="index"
+                    <v-sheet
+                            class="episode-list mt-4"
+                            elevation="0"
+                            v-else
+                            v-for="(comment, index) in comments"
+                            :key="index"
+                          >
+                          <div
+                      
                       class="d-flex align-start mb-5"
                     >
                       <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
@@ -323,6 +334,8 @@
                         
                       </div>
                     </div>
+                          </v-sheet>
+                    
                   </v-sheet>
                 </v-tabs-window-item>
                 <v-tabs-window-item value="four">
@@ -857,7 +870,7 @@ export default {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     goToWatch(ep) {
-      console.log(ep)
+      console.log(this.movies)
       var page= "01"
         if(ep == 'first'){
           page= '01'
@@ -870,7 +883,13 @@ export default {
           page = 'Trailer'
         }
         else if(ep == 'now'){
+          if(this.movie?.page?.includes('Hoàn Tất')){
+            page = `tap${this.movies.episode_total}`;
+            
+          }
+          else{
           page = this.formatEpisode(this.movie.page);
+          }
         }
         else{
           page = this.formatEpisode(ep.name);
@@ -887,7 +906,8 @@ export default {
     formatEpisode(text) {
       // Ví dụ: "Tập 1" → "tap01"
       const num = parseInt(text.replace(/\D/g, ""), 10);
-
+      console.log(text)
+      console.log(num)
       if (isNaN(num)) return text;
 
       const padded = num < 10 ? `0${num}` : `${num}`;
@@ -953,7 +973,7 @@ export default {
       this.movieFavorite.lang = this.movie.lang
       PostMoviesFavorite(this.movieFavorite, (dat) =>{
         if(dat.data.status == "success"){
-          alert("🎬 Lưu vào danh sách thành công!")
+          alert("🎬 "+ dat.data.message)
           
         }
         else{
@@ -1536,5 +1556,9 @@ border-bottom: 2px solid #ffd76b;
 
 .watch-now:active {
   transform: scale(0.95);
+}
+.episode-list {
+  max-height: calc(5 * 70px);
+  overflow-y: auto;
 }
 </style>

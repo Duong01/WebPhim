@@ -48,7 +48,6 @@ import {
 
 // Lấy danh sách dữ liệu phim yêu thích
 export function getFavorites(movie,success, error) {
-  console.log(movie)
   GetMoviesFavorite({idAccount: movie.idAccount, page: movie.page}, (res) => {
     success(res || []);
   }, error);

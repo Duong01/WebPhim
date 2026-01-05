@@ -45,7 +45,7 @@ export default
   'Không có mô tả.': 'Không có mô tả.',
   'Xem ngay': 'Xem ngay',
   'Báo lỗi': 'Báo lỗi',
-  'Xem sau': 'Xem sau',
+  'Xem sau': 'Yêu thích',
   'Tập ': 'Tập ',
   'Diễn viên': 'Diễn viên',
   'Đạo diễn': 'Đạo diễn',

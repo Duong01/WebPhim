@@ -44,7 +44,7 @@ export default
   'Không có mô tả.': 'No description.',
   'Xem ngay': 'Watch now',
   'Báo lỗi': 'Report error',
-  'Xem sau': 'Watch later',
+  'Xem sau': 'Favorite',
   'Tập ': 'Episode ',
   'Diễn viên': 'Cast',
   'Đạo diễn': 'Director',

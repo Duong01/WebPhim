@@ -305,8 +305,8 @@
 
 
 <script>
-import { Search, Search1, urlImage, urlImage1 } from "@/model/api";
-import {  toggleFavorite } from "@/utils/favorite";
+import { Search, Search1, urlImage, urlImage1,PostMoviesFavorite } from "@/model/api";
+//import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "SearchMovie",
   data() {
@@ -322,7 +322,18 @@ export default {
       path: "",
       link: "",
       shareDialog: false,
-      shareUrl: ""
+      shareUrl: "",
+      movieFavorite:{
+        IDAccount :this.$store.state.empInfor.ID || localStorage.getItem("name"),
+        IDMovies: '',
+        slug: '',
+        currentPage: '',
+        UrlMovies: '',
+        origin_name: '',
+        name: '',
+        year: '',
+        lang:''
+      }
     };
   },
   watch: {
@@ -471,15 +482,28 @@ export default {
 
     handleFavorite(movie){
       console.log(movie)
-      // this.movie.thumb_url = movie.thumb_url
-      toggleFavorite(movie);
-      // this.liked = !this.liked;
-    },
+      this.movieFavorite.IDMovies = movie._id
+      this.movieFavorite.slug = movie.slug
+      this.movieFavorite.currentPage = movie.episode_current
+      this.movieFavorite.UrlMovies = movie.thumb_url
+      this.movieFavorite.origin_name = movie.origin_name
+      this.movieFavorite.name = movie.name
+      this.movieFavorite.year = movie.year
+      this.movieFavorite.lang = movie.lang
+      console.log(this.movieFavorite)
+      PostMoviesFavorite(this.movieFavorite, (dat) =>{
+        if(dat.data.status == "success"){
+          alert("🎬 " + dat.data.message)
+          
+        }
+        else{
+          alert(dat.data.message)
+        }
 
-    // isFavoriteMovie(movie) {
-    //   const favorites = getFavorites();
-    //   return favorites.some(f => f._id === movie._id || f._id === movie.idMovie);
-    // },
+      }, (err) =>{
+        console.log(err)
+      })
+    },
 
     toggleFavorite(movie) {
       const index = this.favoriteMovies.findIndex(

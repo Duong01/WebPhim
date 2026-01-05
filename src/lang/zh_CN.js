@@ -45,7 +45,7 @@ export default
   "Không có mô tả.": "暂无描述。",
   "Xem ngay": "立即观看",
   "Báo lỗi": "报告错误",
-  "Xem sau": "稍后观看",
+  "Xem sau": "喜歡",
   "Tập ": "第 ",
   "Diễn viên": "演员",
   "Đạo diễn": "导演",

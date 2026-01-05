@@ -39,7 +39,7 @@
                   :key="movie.id"
                   cols="6"
                   sm="4"
-                  md="2"
+                  md="3"
                   style="padding: 10px"
                 >
                   
@@ -137,9 +137,9 @@
 </template>
   
   <script>
-import { urlImage1 } from "@/model/api";
+import { urlImage1,PostMoviesFavorite } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
-import { getFavorites,toggleFavorite } from "@/utils/favorite";
+import { getFavorites } from "@/utils/favorite";
 
 export default {
   name: "FavoritePage",
@@ -185,6 +185,7 @@ export default {
   },
   methods: {
     handleFavorite(movie){
+      console.log(movie)
       this.movieFavorite.IDAccount = this.idAccount
       this.movieFavorite.IDMovies = movie.IDMovies
       this.movieFavorite.slug = movie.slug
@@ -194,35 +195,21 @@ export default {
       this.movieFavorite.name = movie.name
       this.movieFavorite.year = movie.year
       this.movieFavorite.lang = movie.lang
-      toggleFavorite(this.movieFavorite, (dat) =>{
+      PostMoviesFavorite(this.movieFavorite, (dat) =>{
         if(dat.data.status == "success"){
-          this.movies = dat.data.data
-          movie.isFavorite = !movie.isFavorite;
+          alert("🎬 " + dat.data.message)
           
         }
+        else{
+          alert(dat.data.message)
+        }
+
       }, (err) =>{
         console.log(err)
       })
-      // console.log(movie)
-      // toggleFavorite(movie);
-      // this.$forceUpdate();
     },
     
-    // toggleFavorite(movie) {
-    //   const index = this.favoriteMovies.findIndex(
-    //     (fav) => fav._id === movie.id
-    //   );
-    //   if (index !== -1) {
-    //     this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-    //   } else {
-    //     this.favoriteMovies.push(movie); // Thêm yêu thích
-    //   }
-    // },
-    // onFilterChanged(newFilters) {
-    //   this.filters = { ...newFilters };
-    //   this.currentPage = 1;
-    //   this.ListMovie();
-    // },
+    
 
     ListMovie() {
       this.loading = true;
@@ -234,7 +221,6 @@ export default {
       getFavorites(
         movie,
         (dat) => {
-          console.log(dat)
           if (dat.data.status === "success") {
             this.movies = dat.data.data;
             this.movies = dat.data.data.map(m => ({
@@ -251,16 +237,7 @@ export default {
           this.loading = false;
         }
       );
-      // const favorites = getFavorites();
-
-      //   if (favorites && favorites.length > 0) {
-      //     this.movies = favorites
-      //     this.loading = false;
-          
-      //   } else {
-      //     this.MessageErr = this.$t("Bạn không có dữ liệu nào được lưu");
-      //     this.loading = false;
-      //   }
+      
 
     },
     getOptimizedImage(imagePath) {

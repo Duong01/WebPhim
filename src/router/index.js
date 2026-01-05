@@ -209,31 +209,39 @@ router.onError((error) => {
   }
 });
 router.beforeEach((to, from, next) => {
-  CheckSession((dat)=>{
-    console.log(dat)
-    if(dat.data.status == "success"){
-      store.commit("setEmpInfor", dat.data.data);
-
-    }
-    else if(dat.status == "error" && to.meta.requiresAuth)
-    {
-      alert(dat.message)
-      next({
-        name: 'Login',
-        params:{}
-      })
-    }
-  },(er)=>{
-    // session timeout or not login
-    if(er?.response?.status == 401)
-    {
-      console.error(er.response.data);
-      next({
-        name: 'Login',
-        params:{}
-      })
-    }
-  })
+  if(to.meta.requiresAuth){
+    CheckSession((dat)=>{
+      console.log(dat)
+      if(dat.status == "success"){
+        store.commit("setEmpInfor", dat.data);
+        return next()
+      }
+      if(dat.status == "error")
+      {
+        alert(dat.message)
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })
+      }
+      return next()
+    },(er)=>{
+      // session timeout or not login
+      if(er?.response?.status == 401)
+      {
+        console.error(er.response.data);
+          next({
+            path: '/login',
+            query: { redirect: to.fullPath }
+          })
+        }
+        return next()
+    })
+  }
+  else{
+    next()
+  }
+  
 
   // ===== 3. Set meta SEO =====
   const defaultTitle = "Web Phim Online - Xem phim miễn phí"
@@ -248,7 +256,6 @@ router.beforeEach((to, from, next) => {
   }
   desc.setAttribute("content", to.meta.description || defaultDesc)
 
-  return next()
 })
 
 
