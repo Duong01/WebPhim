@@ -1,7 +1,6 @@
 <template>
 <v-fade-transition appear>
-  <div class="detail-page">
-    <v-container class="search-page" fluid>
+  <v-container class="search-page" fluid>
     <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col> -->
@@ -38,7 +37,7 @@
       </div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-      <div class="h-full container mx-auto flex flex-col lg:flex-row gap-10">
+      <div class="h-full container mx-auto flex flex-col lg:flex-row gap-12">
         <v-row class="mt-0 pt-0" dense>
           <!-- CỘT TRÁI: VIDEO -->
           <v-col cols="12" md="4">
@@ -165,28 +164,26 @@
 
               <div class="hero-actions">
                 <div class="action-item">
-                  <v-btn variant="text" @click="goToWatch('first')">
-                    <span class="flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg></span>
-                    Xem từ đầu
-                  </v-btn>
+                    <v-btn variant="text" @click="goToWatch('first')">
+                      <v-icon>mdi-play</v-icon>
+                      <span v-if="!smAndDown">Xem từ đầu</span>
+                    </v-btn>
                 </div>
                 <div class="action-item">
                   <v-btn variant="text" @click="handleFavorite()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>
-                     {{$t('Xem sau')}}
+                    <v-icon>mdi-heart-outline</v-icon>
+                      <span v-if="!smAndDown">{{ $t('Xem sau') }}</span>
+                    
                   </v-btn>
                   
                 </div>
                 <div class="action-item">
                   <v-btn variant="text" @click="shareMovie()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share" aria-hidden="true"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg>
-                     {{$t('Chia sẻ')}}
+                    <v-icon>mdi-share-variant</v-icon>
+                      <span v-if="!smAndDown">{{ $t('Chia sẻ') }}</span>
+                    
                   </v-btn>
                 </div>
-                <!-- <div class="action-item"><v-icon>mdi-comment-outline</v-icon> Bình luận</div>
-                <div class="rating-box">
-                <v-icon color="white">mdi-star</v-icon> 0.0 Đánh giá
-                </div> -->
               </div>
             </div>
             <v-sheet elevation="4">
@@ -482,8 +479,8 @@
         </v-card>
       </v-dialog>
     </div>
-  </v-container>
-  </div>
+
+</v-container>
 </v-fade-transition>
   
 </template>
@@ -1119,8 +1116,8 @@ export default {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  padding: 0  !important;
 }
+
 .poster-wrapper {
   position: relative;
   width: 100%;
@@ -1455,11 +1452,36 @@ export default {
   font-size: 0.9rem;
   color: #ddd;
 }
-.action-item {
-display: flex;
-/* align-items: center; */
-gap: 4px;
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 👈 căn trái */
+  gap: 12px;
+  flex-wrap: wrap;             /* 👈 tự xuống dòng */
+  max-width: 100%;
+  overflow-x: hidden;          /* 👈 chống tràn ngang */
 }
+
+.action-item {
+  flex-shrink: 0;              /* 👈 không bị bóp icon */
+}
+
+.action-item .v-btn {
+  max-width: 100%;
+  white-space: nowrap;         /* 👈 tránh text vỡ dòng xấu */
+}
+@media (max-width: 600px) {
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .action-item .v-btn {
+    padding: 0 3px;
+  }
+}
+
+
 .center-buttons {
 display: flex;
 flex-direction: column;
@@ -1467,12 +1489,7 @@ flex-direction: column;
 gap: 20px;
 padding: 10px 0;
 }
-.hero-actions {
-display: flex;
-gap: 26px;
-font-size: 14px;
-opacity: 0.85;
-}
+
 .watch-now {
 background: #ffd76b !important;
 color: black !important;
