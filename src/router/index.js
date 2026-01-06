@@ -66,7 +66,7 @@ const routes = [
       },
       {
         path: "/movies/:slug",
-        name: "MoviesPage",
+        name: "Movies",
         component: () => import("@/pages/MovieDetails/Movies.vue"),
         props: true,
         meta: {
