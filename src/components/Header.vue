@@ -27,20 +27,20 @@
         >
           {{ $t("Trang chủ") }}
         </v-btn>
-        <v-btn
+        <!-- <v-btn
           text
           :to="{ path: '/phim-bo' }"
           :class="{ 'text-green': $route.path === '/phim-bo' }"
         >
           {{ $t("Phim Bộ") }}
-        </v-btn>
-        <v-btn
+        </v-btn> -->
+        <!-- <v-btn
           text
           :to="{ path: '/phim-le' }"
           :class="{ 'text-green': $route.path === '/phim-le' }"
         >
           {{ $t("Phim Lẻ") }}
-        </v-btn>
+        </v-btn> -->
 
         <!-- Dropdown Thể loại -->
         <v-menu offset-y>
@@ -262,12 +262,25 @@
       </v-menu>
       <v-menu offset-y v-else>
         <template #activator="{ props }">
-          <v-btn icon v-bind="props" :title="$t('Tài khoản')">
-            <v-icon>mdi-account-circle</v-icon>
-          </v-btn>
+            <v-btn
+              v-bind="props"
+              variant="text"
+              class="account-btn"
+              :title="account"
+            >
+              <v-icon size="20">mdi-account-circle</v-icon>
+
+              <!-- Chỉ hiện tên trên md trở lên -->
+              <span
+                class="account-name"
+                v-if="$vuetify.display.mdAndUp"
+              >
+                {{ account }}
+              </span>
+            </v-btn>
         </template>
         <v-list>
-          <v-list-item>
+          <v-list-item v-if="$vuetify.display.mdAndDown">
             <v-list-item-title><v-icon>mdi-account-circle</v-icon> {{ account }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="NextRouter()">
@@ -718,5 +731,24 @@ a:hover {
 }
 .v-spacer{
   flex-grow: 0 !important;
+}
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+}
+
+.account-name {
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-menu-name {
+  font-weight: 600;
 }
 </style>

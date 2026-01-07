@@ -1,244 +1,276 @@
 <template>
-<v-fade-transition appear>
-  <div class="watch-page">
-    <v-container class="search-page" fluid>
-    <!-- <v-col cols="12" class="text-center" v-if="isLoading">
+  <v-fade-transition appear>
+    <div class="watch-page">
+      <v-container class="search-page" fluid>
+        <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col>
     <div v-else-if="isLoadingData">
       <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
     </div> -->
-    <div >
-      
-      <!-- Breadcrumb -->
-      <v-breadcrumbs :items="items">
-        <template v-slot:divider>
-          <v-icon icon="mdi-chevron-right"></v-icon>
-        </template>
-      </v-breadcrumbs>
-      
-      <!-- Bố cục hai cột -->
-      <v-row dense>
-        <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-        <v-col cols="12" md="12">
-          <!-- VIDEO -->
-          <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
-          <div
-            class="video-wrapper"
-          >
-              <video
-                ref="videoPlayer"
-                controls
-                playsinline
-                webkit-playsinline
-                preload="none"
-                controlslist="nodownload noremoteplayback"
-                style="width: 100%; height: 100%; background-color: black; cursor: pointer;"
-              ></video>
-              <iframe
-              ref="videoIframe"
-              style="width:100%;aspect-ratio:16/9;border:0;display:none;"
-              allow="autoplay; encrypted-media"
-            ></iframe>
-          </div>
+        <div>
+          <!-- Breadcrumb -->
+          <v-breadcrumbs :items="items">
+            <template v-slot:divider>
+              <v-icon icon="mdi-chevron-right"></v-icon>
+            </template>
+          </v-breadcrumbs>
 
-          <!-- nut next tap và back tap -->
-           <div class="d-flex justify-center align-center my-3" style="gap: 12px">
-              <v-btn
-                color="grey-darken-2"
-                @click="prevEpisode()"
-                :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
-              >
-                <v-icon start>mdi-chevron-left</v-icon>
-                {{ $t("Tập trước") }}
-              </v-btn>
+          <!-- Bố cục hai cột -->
+          <v-row dense>
+            <!-- Cột bên trái: Video + nút + danh sách tập + info -->
+            <v-col cols="12" md="12">
+              <!-- VIDEO -->
+              <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
+              <div class="video-wrapper">
+                <video
+                  ref="videoPlayer"
+                  controls
+                  playsinline
+                  webkit-playsinline
+                  preload="none"
+                  controlslist="nodownload noremoteplayback"
+                  disablepictureinpicture
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    background-color: black;
+                    cursor: pointer;
+                  "
+                ></video>
+                <iframe
+                  ref="videoIframe"
+                  style="
+                    width: 100%;
+                    aspect-ratio: 16/9;
+                    border: 0;
+                    display: none;
+                  "
+                  allow="autoplay; encrypted-media"
+                ></iframe>
+              </div>
 
-              <v-chip color="blue-darken-2" text-color="white">
-                {{ movie.pageMovie[currentEpisodeIndex]?.name }}
-              </v-chip>
-
-              <v-btn
-                color="grey-darken-2"
-                @click="nextEpisode()"
-                :disabled="currentEpisodeIndex <= 0"
+              <!-- nut next tap và back tap -->
+              <div
+                class="d-flex justify-center align-center my-3"
+                style="gap: 12px"
               >
-                {{ $t("Tập tiếp") }}
-                <v-icon end>mdi-chevron-right</v-icon>
-              </v-btn>
-            </div>
-
-          <!-- Nhóm nút + server -->
-          <div
-            class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
-            style="background-color: #1a1a1a"
-          >
-            <!-- Nút chức năng -->
-            <div class="d-flex align-center flex-wrap" style="gap: 16px">
-              <v-btn variant="text" @click="getTrailer()">
-                <v-icon start icon="mdi-youtube" />
-                Trailer
-              </v-btn>
-              <v-btn variant="text" @click="shareMovie"
-                ><v-icon start icon="mdi-share-variant" />{{
-                  $t("Chia sẻ")
-                }}</v-btn
-              >
-              <v-btn variant="text" @click="ResponseError"
-                ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
-              >
-              <v-btn variant="text" @click="handleFavorite"
-                ><v-icon start :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'" />{{
-                  $t("Xem sau")
-                }}</v-btn
-              >
-            </div>
-
-            <!-- Server -->
-
-            <div
-              class="d-flex align-center"
-              style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
-            >
-              <router-link :to="movie.LinkDown" download target="_blank">
-                <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
-              </router-link>
-              <v-tabs
-                v-model="tabserver"
-                class="custom-tabs flex-shrink-0"
-                background-color="transparent"
-              >
-                <v-tab
-                  v-for="(server, index) in movie.servers"
-                  :key="index"
-                  @click="switchServer(server)"
-                  :class="{ 'active-tab': tabserver === index }"
+                <v-btn
+                  color="grey-darken-2"
+                  @click="prevEpisode()"
+                  :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
                 >
-                  {{ server.server_name || `Server ${index + 1}` }}
-                </v-tab>
-              </v-tabs>
-            </div>
-          </div>
+                  <v-icon start>mdi-chevron-left</v-icon>
+                  {{ $t("Tập trước") }}
+                </v-btn>
 
-          <!-- Danh sách tập -->
-          <v-card
-            class="my-4"
-            variant="flat"
-            color="grey-darken-4"
-            theme="dark"
-          >
-            <v-card-title class="d-flex align-center custom-title">
-              <span class="text-h6 title-text">{{ movie.title }}
-              <v-chip class="ml-2 chip-limit" color="red" text-color="white">{{
-                movie.pageMovie[currentEpisodeIndex]?.name
-              }}</v-chip>
-              </span>
-              
-            </v-card-title>
-            <v-card-text>
-              <v-row class="episode-list">
-                <v-col
-                  v-for="(episode, index) in visibleEpisodes"
-                  :key="index"
-                  class="episode-col"
+                <v-chip color="blue-darken-2" text-color="white">
+                  {{ movie.pageMovie[currentEpisodeIndex]?.name }}
+                </v-chip>
+
+                <v-btn
+                  color="grey-darken-2"
+                  @click="nextEpisode()"
+                  :disabled="currentEpisodeIndex <= 0"
                 >
-                  <v-btn color="primary" block size="small" @click="playEpisode(episode)">
-                    {{
-                      episode.name
-                        ? episode.name.includes("Tập")
-                          ? episode.name
-                          : $t("Tập ") + episode.name
-                        : "Trailer"
-                    }}
+                  {{ $t("Tập tiếp") }}
+                  <v-icon end>mdi-chevron-right</v-icon>
+                </v-btn>
+              </div>
+
+              <!-- Nhóm nút + server -->
+              <div
+                class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
+                style="background-color: #1a1a1a"
+              >
+                <!-- Nút chức năng -->
+                <div class="d-flex align-center flex-wrap" style="gap: 16px">
+                  <v-btn variant="text" @click="getTrailer()">
+                    <v-icon start icon="mdi-youtube" />
+                    Trailer
                   </v-btn>
-                </v-col>
-              </v-row>
-              <div class="text-center mt-4">
-          <v-btn
-            color="gray"
-            variant="tonal"
-            @click="toggleEpisodes"
-            class="btnnext"
-          >
-            {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
-            <v-icon size="18" class="mr-1">
-              {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
-            </v-icon>
-          </v-btn>
-        </div>
-            </v-card-text>
-          </v-card>
-
-          <!-- TRAILER -->
-          <div class="mb-4">
-            <v-row>
-              <v-col cols="12" sm="6" md="3">
-                <h3 class="text-white mb-2">TRAILER</h3>
-
-                <!-- Thumb container -->
-                <div
-                  class="trailer-thumb"
-                  @click="dialogTrailer = true"
-                  role="button"
-                  aria-label="Play trailer"
-                >
-                  <img
-                    :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
-                    :alt="`Trailer ${movie.name}`"
-                    loading="lazy"
-                  />
-
-                  <!-- dark overlay khi hover -->
-                  <div class="trailer-overlay" />
-
-                  <!-- nút Play (SVG) ở giữa -->
-                  <div class="trailer-play" aria-hidden="true">
-                    <svg
-                      width="64"
-                      height="64"
-                      viewBox="0 0 64 64"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <!-- nền tròn tối để làm nổi tam giác -->
-                      <circle cx="32" cy="32" r="30" fill="rgba(0,0,0,0.55)" />
-                      <!-- tam giác play màu trắng -->
-                      <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                    </svg>
-                  </div>
+                  <v-btn variant="text" @click="shareMovie"
+                    ><v-icon start icon="mdi-share-variant" />{{
+                      $t("Chia sẻ")
+                    }}</v-btn
+                  >
+                  <v-btn variant="text" @click="ResponseError"
+                    ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
+                  >
+                  <v-btn variant="text" @click="handleFavorite"
+                    ><v-icon
+                      start
+                      :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
+                    />{{ $t("Xem sau") }}</v-btn
+                  >
                 </div>
-              </v-col>
 
-              <v-col cols="12" sm="6" md="6" class="d-flex align-center">
-                <p class="text-grey-lighten-1">
-                  {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
-                </p>
-              </v-col>
-            </v-row>
-          </div>
+                <!-- Server -->
 
-          <!-- Dialog trailer -->
-          <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
-            <v-card class="bg-black relative">
-              <!-- Nút đóng -->
-              <v-btn
-                icon="mdi-close"
-                class="absolute top-2 right-2 z-10"
-                variant="text"
-                @click="dialogTrailer = false"
-              ></v-btn>
+                <div
+                  class="d-flex align-center"
+                  style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
+                >
+                  <router-link :to="movie.LinkDown" download target="_blank">
+                    <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
+                  </router-link>
+                  <v-tabs
+                    v-model="tabserver"
+                    class="custom-tabs flex-shrink-0"
+                    background-color="transparent"
+                  >
+                    <v-tab
+                      v-for="(server, index) in movie.servers"
+                      :key="index"
+                      @click="switchServer(server)"
+                      :class="{ 'active-tab': tabserver === index }"
+                    >
+                      {{ server.server_name || `Server ${index + 1}` }}
+                    </v-tab>
+                  </v-tabs>
+                </div>
+              </div>
 
-              <!-- Video -->
-              <iframe
-                width="100%"
-                height="600"
-                :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                loading="lazy"
+              <!-- Danh sách tập -->
+              <v-card
+                class="my-4"
+                variant="flat"
+                color="grey-darken-4"
+                theme="dark"
               >
-              </iframe>
+                <v-card-title class="d-flex align-center custom-title">
+                  <span class="text-h6 title-text"
+                    >{{ movie.title }}
+                    <v-chip
+                      class="ml-2 chip-limit"
+                      color="red"
+                      text-color="white"
+                      >{{ movie.pageMovie[currentEpisodeIndex]?.name }}</v-chip
+                    >
+                  </span>
+                </v-card-title>
+                <v-card-text>
+                  <v-sheet class="episode-list mt-4" elevation="0">
+                    <v-row class="episode-list">
+                      <v-col
+                        v-for="(episode, index) in visibleEpisodes"
+                        :key="index"
+                        class="episode-col"
+                      >
+                        <v-btn
+                          color="primary"
+                          block
+                          size="small"
+                          @click="playEpisode(episode)"
+                        >
+                          {{
+                            episode.name
+                              ? episode.name.includes("Tập")
+                                ? episode.name
+                                : $t("Tập ") + episode.name
+                              : "Trailer"
+                          }}
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-sheet>
 
-              <!-- <iframe
+                  <div class="text-center mt-4">
+                    <v-btn
+                      color="gray"
+                      variant="tonal"
+                      @click="toggleEpisodes"
+                      class="btnnext"
+                    >
+                      {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
+                      <v-icon size="18" class="mr-1">
+                        {{
+                          showAllEpisodes
+                            ? "mdi-chevron-up"
+                            : "mdi-chevron-down"
+                        }}
+                      </v-icon>
+                    </v-btn>
+                  </div>
+                </v-card-text>
+              </v-card>
+
+              <!-- TRAILER -->
+              <div class="mb-4">
+                <v-row>
+                  <v-col cols="12" sm="6" md="3">
+                    <h3 class="text-white mb-2">TRAILER</h3>
+
+                    <!-- Thumb container -->
+                    <div
+                      class="trailer-thumb"
+                      @click="dialogTrailer = true"
+                      role="button"
+                      aria-label="Play trailer"
+                    >
+                      <img
+                        :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
+                        :alt="`Trailer ${movie.name}`"
+                        loading="lazy"
+                      />
+
+                      <!-- dark overlay khi hover -->
+                      <div class="trailer-overlay" />
+
+                      <!-- nút Play (SVG) ở giữa -->
+                      <div class="trailer-play" aria-hidden="true">
+                        <svg
+                          width="64"
+                          height="64"
+                          viewBox="0 0 64 64"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <!-- nền tròn tối để làm nổi tam giác -->
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="30"
+                            fill="rgba(0,0,0,0.55)"
+                          />
+                          <!-- tam giác play màu trắng -->
+                          <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
+                        </svg>
+                      </div>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="6" class="d-flex align-center">
+                    <p class="text-grey-lighten-1">
+                      {{ movie.title }} - {{ $t("Xem trailer chính thức") }}
+                    </p>
+                  </v-col>
+                </v-row>
+              </div>
+
+              <!-- Dialog trailer -->
+              <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
+                <v-card class="bg-black relative">
+                  <!-- Nút đóng -->
+                  <v-btn
+                    icon="mdi-close"
+                    class="absolute top-2 right-2 z-10"
+                    variant="text"
+                    @click="dialogTrailer = false"
+                  ></v-btn>
+
+                  <!-- Video -->
+                  <iframe
+                    width="100%"
+                    height="600"
+                    :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy"
+                  >
+                  </iframe>
+
+                  <!-- <iframe
       width="100%"
       height="500"
       :src="movie.trailer_url"
@@ -246,119 +278,128 @@
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
     ></iframe> -->
-            </v-card>
-          </v-dialog>
+                </v-card>
+              </v-dialog>
 
-          <!-- Thông tin phim -->
-          <v-card
-            class="pa-6 text-left"
-            color="grey-darken-4"
-            variant="flat"
-            rounded="lg"
-            theme="dark"
-          >
-            <v-card-title class="text-white mb-4"
-              >{{ movie.title }} ( {{ movie.name }})</v-card-title
-            >
-            <v-card-text class="text-white">
-              <div v-html="movie.description"></div>
-            </v-card-text>
-            <v-card-text class="text-white">
-              <p>
-                <strong>{{ $t("Diễn viên") }}:</strong>
-                {{ movie.actors.join(", ") }}
-              </p>
-              <p>
-                <strong>{{ $t("Đạo diễn") }}:</strong>
-                {{ movie.director.join(", ") }}
-              </p>
-              <p>
-                <strong>{{ $t("Thể loại") }}:</strong> {{ movie.genre.name }}
-              </p>
-              <div class="d-flex align-center">
-                <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
-                <v-rating
-                  readonly
-                  :length="5"
-                  :size="28"
-                  :model-value="movie.rating"
-                  active-color="yellow-darken-2"
-                />
-              </div>
-            </v-card-text>
-          </v-card>
-          <div ref="lazyComment"></div>
-          <!-- Bình luận -->
-          <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-            <h2 class="text-white mb-6 text-h5 font-weight-bold">
-              🗨️ {{ $t("Bình luận") }}
-            </h2>
-            <div v-if="idAccount== '' || idAccount == null || idAccount == undefined">
-              <v-btn
-                color="primary"
-                variant="tonal"
-                @click="Login"
-                class="btnnext"
+              <!-- Thông tin phim -->
+              <v-card
+                class="pa-6 text-left"
+                color="grey-darken-4"
+                variant="flat"
+                rounded="lg"
+                theme="dark"
               >
-                <v-icon icon="mdi-play" />
-                Đăng nhập để bình luận
-
-              </v-btn>
-            </div>
-            <v-text-field
-              v-else
-              v-model="newComment"
-              :placeholder="$t('Thêm bình luận...')"
-              variant="outlined"
-              color="blue"
-              class="rounded-xl mb-4"
-              density="comfortable"
-              hide-details
-              append-inner-icon="mdi-send"
-              @click:append-inner="addComments"
-              :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
-            ></v-text-field>
-            <v-divider class="mb-4" color="grey darken-3"></v-divider>
-            <div
-              v-if="comments.length <= 0"
-              class="mb-5 text-center"
-            >
-            Chưa có bình luận nào
-            </div>
-            <div
-              v-else
-              v-for="(comment, index) in comments"
-              :key="index"
-              class="d-flex align-start mb-5"
-            >
-              <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
-                <v-icon color="white">mdi-account</v-icon>
-              </v-avatar>
-              <div class="flex-grow-1">
-                <div class="d-flex align-center mb-1">
-                  <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-                    comment.NameCreate
-                  }}</span>
-                  <v-chip
-                    size="x-small"
-                    color="grey-darken-4"
-                    text-color="grey-lighten-1"
-                    variant="flat"
+                <v-card-title class="text-white mb-4"
+                  >{{ movie.title }} ( {{ movie.name }})</v-card-title
+                >
+                <v-card-text class="text-white">
+                  <div v-html="movie.description"></div>
+                </v-card-text>
+                <v-card-text class="text-white">
+                  <p>
+                    <strong>{{ $t("Diễn viên") }}:</strong>
+                    {{ movie.actors.join(", ") }}
+                  </p>
+                  <p>
+                    <strong>{{ $t("Đạo diễn") }}:</strong>
+                    {{ movie.director.join(", ") }}
+                  </p>
+                  <p>
+                    <strong>{{ $t("Thể loại") }}:</strong>
+                    {{ movie.genre.name }}
+                  </p>
+                  <div class="d-flex align-center">
+                    <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
+                    <v-rating
+                      readonly
+                      :length="5"
+                      :size="28"
+                      :model-value="movie.rating"
+                      active-color="yellow-darken-2"
+                    />
+                  </div>
+                </v-card-text>
+              </v-card>
+              <div ref="lazyComment"></div>
+              <!-- Bình luận -->
+              <v-card
+                flat
+                color="#1e1e1e"
+                class="pa-6 rounded-xl elevation-2 mt-6"
+              >
+                <h2 class="text-white mb-6 text-h5 font-weight-bold">
+                  🗨️ {{ $t("Bình luận") }}
+                </h2>
+                <div
+                  v-if="
+                    idAccount == '' ||
+                    idAccount == null ||
+                    idAccount == undefined
+                  "
+                >
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    @click="Login"
+                    class="btnnext"
                   >
-                    {{ timeAgo(comment.DayCreate) }}
-                  </v-chip>
+                    <v-icon icon="mdi-play" />
+                    Đăng nhập để bình luận
+                  </v-btn>
                 </div>
-                <div class=" d-flex text-white text-body-2 align-start">{{ comment.Comments }}</div>
-                
-              </div>
-            </div>
-          </v-card>
-        </v-col>
+                <v-text-field
+                  v-else
+                  v-model="newComment"
+                  :placeholder="$t('Thêm bình luận...')"
+                  variant="outlined"
+                  color="blue"
+                  class="rounded-xl mb-4"
+                  density="comfortable"
+                  hide-details
+                  append-inner-icon="mdi-send"
+                  @click:append-inner="addComments"
+                  :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
+                ></v-text-field>
+                <v-divider class="mb-4" color="grey darken-3"></v-divider>
+                <div v-if="comments.length <= 0" class="mb-5 text-center">
+                  Chưa có bình luận nào
+                </div>
+                <div
+                  v-else
+                  v-for="(comment, index) in comments"
+                  :key="index"
+                  class="d-flex align-start mb-5"
+                >
+                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+                    <v-icon color="white">mdi-account</v-icon>
+                  </v-avatar>
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-center mb-1">
+                      <span
+                        class="text-blue-lighten-3 font-weight-medium me-2"
+                        >{{ comment.NameCreate }}</span
+                      >
+                      <v-chip
+                        size="x-small"
+                        color="grey-darken-4"
+                        text-color="grey-lighten-1"
+                        variant="flat"
+                      >
+                        {{ timeAgo(comment.DayCreate) }}
+                      </v-chip>
+                    </div>
+                    <div class="d-flex text-white text-body-2 align-start">
+                      {{ comment.Comments }}
+                    </div>
+                  </div>
+                </div>
+              </v-card>
+            </v-col>
 
-        <!-- Cột bên phải: Gợi ý -->
-        <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
-        
-        <!-- <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
+            <!-- Cột bên phải: Gợi ý -->
+            <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
+
+            <!-- <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
           <v-card class="pa-0" color="grey-darken-4" flat>
             <v-tabs v-model="tab" background-color="grey-darken-3" grow>
               <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
@@ -405,136 +446,146 @@
           </v-card>
         </v-col> -->
 
-        <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
-          <div ref="lazyCate"></div>
-        
-        <div class="suggested-movies my-8">
-          <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
-          <v-row>
-            <v-col
-              v-for="suggested in suggestedMovies"
-              :key="suggested._id"
-              cols="6"
-              sm="4"
-              md="2"
+            <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+            <div ref="lazyCate"></div>
+
+            <div class="suggested-movies my-8">
+              <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
+              <v-row>
+                <v-col
+                  v-for="suggested in suggestedMovies"
+                  :key="suggested._id"
+                  cols="6"
+                  sm="4"
+                  md="2"
+                >
+                  <v-lazy min-height="300" transition="fade-transition">
+                    <router-link
+                      :to="{ name: 'Movies', params: { slug: suggested.slug } }"
+                      class="text-decoration-none"
+                    >
+                      <v-card elevation="2" class="bg-grey-darken-4" hover>
+                        <v-img
+                          :lazy-src="getOptimizedImage(suggested.poster_url)"
+                          :src="getOptimizedImage(suggested.poster_url)"
+                          aspect-ratio="16/9"
+                          cover
+                        ></v-img>
+                        <div class="ml-3 flex-grow-1">
+                          <div
+                            class="text-white text-body-2 font-weight-medium text-truncate"
+                          >
+                            {{ suggested.name }}
+                          </div>
+                          <div class="text-grey-lighten-1 text-caption">
+                            {{ suggested.episode_current }} | {{ suggested.lang
+                            }}<br />
+                            {{ suggested.category[0]?.name }} •
+                            {{ suggested.year }}
+                          </div>
+                        </div>
+                      </v-card>
+                    </router-link>
+                  </v-lazy>
+                </v-col>
+              </v-row>
+            </div>
+          </v-row>
+
+          <!-- dialog share -->
+          <v-dialog v-model="shareDialog" max-width="500">
+            <v-card
+              class="pa-4"
+              style="background-color: #1e1e1e; color: white"
             >
-            <v-lazy min-height="300" transition="fade-transition">
-              <router-link
-                :to="{ name: 'Movies', params: { slug: suggested.slug } }"
-                class="text-decoration-none"
-              >
-                <v-card elevation="2" class="bg-grey-darken-4" hover>
-                  <v-img
-                    :lazy-src="getOptimizedImage(suggested.poster_url)"
-                    :src="getOptimizedImage(suggested.poster_url)"
-                    aspect-ratio="16/9"
-                    cover
-                  ></v-img>
-                  <div class="ml-3 flex-grow-1">
-                    <div class="text-white text-body-2 font-weight-medium text-truncate">
-                      {{ suggested.name }}
-                    </div>
-                    <div class="text-grey-lighten-1 text-caption">
-                      {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                      {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                    </div>
-                  </div>
-                </v-card>
-              </router-link>
-        </v-lazy>
+              <v-card-title class="text-h6 justify-center">{{
+                $t("Chia sẻ")
+              }}</v-card-title>
 
-            </v-col>
-          </v-row>
+              <v-row class="justify-center mt-4" dense>
+                <v-col cols="3" class="text-center">
+                  <v-btn
+                    icon
+                    size="large"
+                    @click="shareTo('facebook')"
+                    class="bg-grey-darken-4"
+                  >
+                    <v-icon icon="mdi-facebook" />
+                  </v-btn>
+                  <div class="mt-1 text-caption">Facebook</div>
+                </v-col>
+
+                <v-col cols="3" class="text-center">
+                  <v-btn
+                    icon
+                    size="large"
+                    @click="shareTo('youtube')"
+                    class="bg-grey-darken-4"
+                  >
+                    <v-icon icon="mdi-youtube" />
+                  </v-btn>
+                  <div class="mt-1 text-caption">YouTube</div>
+                </v-col>
+
+                <v-col cols="3" class="text-center">
+                  <v-btn
+                    icon
+                    size="large"
+                    @click="copyLink"
+                    class="bg-grey-darken-4"
+                  >
+                    <v-icon icon="mdi-link-variant" />
+                  </v-btn>
+                  <div class="mt-1 text-caption">Copy link</div>
+                </v-col>
+
+                <v-col cols="3" class="text-center">
+                  <v-btn
+                    icon
+                    size="large"
+                    @click="shareTo('twitter')"
+                    class="bg-grey-darken-4"
+                  >
+                    <v-icon icon="mdi-twitter" />
+                  </v-btn>
+                  <div class="mt-1 text-caption">Twitter</div>
+                </v-col>
+              </v-row>
+
+              <v-card
+                class="mt-4 px-3 py-2 d-flex align-center"
+                style="background-color: #2a2a2a; border-radius: 8px"
+              >
+                <span
+                  class="text-truncate"
+                  style="color: #facc15; max-width: 100%"
+                >
+                  {{ shareUrl }}
+                </span>
+                <v-spacer />
+                <v-btn icon @click="copyLink" size="small">
+                  <v-icon icon="mdi-content-copy" />
+                </v-btn>
+              </v-card>
+
+              <v-btn
+                icon
+                class="position-absolute"
+                style="top: 8px; right: 8px"
+                @click="shareDialog = false"
+              >
+                <v-icon icon="mdi-close" />
+              </v-btn>
+            </v-card>
+          </v-dialog>
+          <!-- Snackbar -->
+          <v-snackbar v-model="mess" :timeout="3000" :color="color">
+            {{ Message }}
+          </v-snackbar>
         </div>
-      </v-row>
-
-      <!-- dialog share -->
-      <v-dialog v-model="shareDialog" max-width="500">
-        <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
-          <v-card-title class="text-h6 justify-center">{{$t('Chia sẻ')}}</v-card-title>
-
-          <v-row class="justify-center mt-4" dense>
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('facebook')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-facebook" />
-              </v-btn>
-              <div class="mt-1 text-caption">Facebook</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('youtube')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-youtube" />
-              </v-btn>
-              <div class="mt-1 text-caption">YouTube</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="copyLink"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-link-variant" />
-              </v-btn>
-              <div class="mt-1 text-caption">Copy link</div>
-            </v-col>
-
-            <v-col cols="3" class="text-center">
-              <v-btn
-                icon
-                size="large"
-                @click="shareTo('twitter')"
-                class="bg-grey-darken-4"
-              >
-                <v-icon icon="mdi-twitter" />
-              </v-btn>
-              <div class="mt-1 text-caption">Twitter</div>
-            </v-col>
-          </v-row>
-
-          <v-card
-            class="mt-4 px-3 py-2 d-flex align-center"
-            style="background-color: #2a2a2a; border-radius: 8px"
-          >
-            <span class="text-truncate" style="color: #facc15; max-width: 100%">
-              {{ shareUrl }}
-            </span>
-            <v-spacer />
-            <v-btn icon @click="copyLink" size="small">
-              <v-icon icon="mdi-content-copy" />
-            </v-btn>
-          </v-card>
-
-          <v-btn
-            icon
-            class="position-absolute"
-            style="top: 8px; right: 8px"
-            @click="shareDialog = false"
-          >
-            <v-icon icon="mdi-close" />
-          </v-btn>
-        </v-card>
-      </v-dialog>
-      <!-- Snackbar -->
-      <v-snackbar v-model="mess" :timeout="3000" :color="color">
-        {{ Message }}
-      </v-snackbar>
+      </v-container>
     </div>
-  </v-container>
-  </div>
-</v-fade-transition>
-  
+  </v-fade-transition>
 </template>
 
 <script>
@@ -547,7 +598,8 @@ import {
   urlImage1,
   GetComments,
   AddComment,
-  PostMoviesFavorite
+  PostMoviesFavorite,
+  CheckSession,
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
@@ -605,16 +657,16 @@ export default {
         year: "",
         slug: "",
       },
-      movieFavorite:{
-        IDAccount : '',
-        IDMovies: '',
-        slug: '',
-        currentPage: '',
-        UrlMovies: '',
-        origin_name: '',
-        name: '',
-        year: '',
-        lang:''
+      movieFavorite: {
+        IDAccount: "",
+        IDMovies: "",
+        slug: "",
+        currentPage: "",
+        UrlMovies: "",
+        origin_name: "",
+        name: "",
+        year: "",
+        lang: "",
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -625,7 +677,7 @@ export default {
       shareDialog: false,
       link: "",
       liked: false,
-      videoKey: ""
+      videoKey: "",
     };
   },
   props: ["slug", "page"],
@@ -647,76 +699,76 @@ export default {
       this.hls.destroy();
       this.hls = null;
     }
-
   },
   watch: {
     async slug(newSlug) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(newSlug);
       if (this.page) {
-        console.log(this.page)
-        if(this.page == '01'){
-          this.currentEpisodeIndex = this.movie.pageMovie.length -1
-        }
-        else{
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(ep =>
-            ep.name.replace('Tập ', 'tap') === this.page
+        console.log(this.page);
+        if (this.page == "01") {
+          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === this.page
           );
         }
       }
-      this.movie.title = this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
+      this.movie.title =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
+      this.movie.videoUrl =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
 
       this.playVideo(this.movie.videoUrl);
       console.log(this.currentEpisodeIndex);
       if (epName) {
-        const normalized = epName.replace('Tập ', 'tap');
+        const normalized = epName.replace("Tập ", "tap");
 
         this.$router.replace({
           name: "MovieDetail",
           params: { slug: newSlug },
-          query: { page: normalized }
+          query: { page: normalized },
         });
       }
       // await this.ListMovieByCate();
       // await this.GetComment();
-
     },
   },
   async mounted() {
     try {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(this.slug);
       if (this.page) {
-        console.log(this.page)
-        
-        if(this.page == '01'){
-          this.currentEpisodeIndex = this.movie.pageMovie.length -1
-        }
-        else{
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(ep =>
-            ep.name.replace('Tập ', 'tap') === this.page
+        console.log(this.page);
+
+        if (this.page == "01") {
+          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === this.page
           );
         }
       }
-      this.movie.title = this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
+      this.movie.title =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
 
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8
+      this.movie.videoUrl =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
       this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
       this.playVideo(this.movie.videoUrl);
 
-      this.bindVideoEvents()
+      this.bindVideoEvents();
       console.log(this.currentEpisodeIndex);
       if (epName) {
-        const normalized = epName.replace('Tập ', 'tap');
+        const normalized = epName.replace("Tập ", "tap");
 
         // Cập nhật URL
         this.$router.replace({
           name: "MovieDetail",
           params: { slug: this.slug },
-          query: { page: normalized }
+          query: { page: normalized },
         });
       }
       this.initLazyLoad();
@@ -728,21 +780,21 @@ export default {
   },
   methods: {
     timeAgo(timestamp) {
-       const time = new Date(timestamp).getTime();
+      const time = new Date(timestamp).getTime();
       const now = Date.now();
 
       if (time > now) {
-        return 'Vừa xong';
+        return "Vừa xong";
       }
       const diff = now - time;
-        const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return 'Vừa xong';
-        if (minutes < 60) return  `${minutes} phút trước`;
-        
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} giờ trước`;
-        const days = Math.floor(hours / 24);
-        return `${days} ngày trước`;
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 1) return "Vừa xong";
+      if (minutes < 60) return `${minutes} phút trước`;
+
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} giờ trước`;
+      const days = Math.floor(hours / 24);
+      return `${days} ngày trước`;
     },
     // Call API
     MoveInfor(slug) {
@@ -750,7 +802,7 @@ export default {
         MoveInfor(
           slug,
           (result) => {
-            console.log(result)
+            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "";
               this.movie.page = result.movie.episode_current;
@@ -758,7 +810,8 @@ export default {
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+                (a, b) =>
+                  parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
               );
               // this.movie.pageMovie = serverData;
               // this.movie.pageMovie = result.episodes[0].server_data;
@@ -766,11 +819,11 @@ export default {
               this.movie.servers = result.episodes;
               this.movie.trailer_url = result.movie.trailer_url;
               this.movie.name = result.movie.name;
-              this.movie.thumb_url = result.movie.thumb_url
-              this.movie.lang = result.movie.lang
-              this.movie.origin_name = result.movie.origin_name
-              this.movie.year = result.movie.year
-              this.movie.slug = result.movie.slug
+              this.movie.thumb_url = result.movie.thumb_url;
+              this.movie.lang = result.movie.lang;
+              this.movie.origin_name = result.movie.origin_name;
+              this.movie.year = result.movie.year;
+              this.movie.slug = result.movie.slug;
               // if (result.data.seoOnPage) {
               //   this.updateMetaTags(result.data.seoOnPage)
               // }
@@ -792,8 +845,10 @@ export default {
                   this.movie.page.includes("/")
                 ) {
                   this.movie.videoUrl =
-                    result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
-                    this.currentEpisodeIndex = 0
+                    result.episodes[0].server_data[
+                      result.episodes[0].server_data.length - 1
+                    ].link_embed;
+                  this.currentEpisodeIndex = 0;
                   // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
@@ -802,7 +857,9 @@ export default {
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   // this.currentEpisodeIndex = parseInt(tap,10) -1;
-                  const idx = this.movie.pageMovie.findIndex(ep => ep.name === result.movie.episode_current);
+                  const idx = this.movie.pageMovie.findIndex(
+                    (ep) => ep.name === result.movie.episode_current
+                  );
                   if (idx !== -1) {
                     this.currentEpisodeIndex = idx;
                   }
@@ -832,7 +889,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              
+
               resolve(true);
             } else {
               reject("error");
@@ -852,7 +909,7 @@ export default {
         MoveInfor1(
           slug,
           (result) => {
-            console.log(result)
+            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "link";
               this.movie.page = result.movie.episode_current;
@@ -860,7 +917,8 @@ export default {
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+                (a, b) =>
+                  parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
               );
               // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
@@ -869,9 +927,9 @@ export default {
               this.movie.name = result.movie.name;
               this.movie.thumb_url = result.movie.thumb_url;
               this.movie.lang = result.movie.lang;
-              this.movie.origin_name = result.movie.origin_name
-              this.movie.year = result.movie.year
-              this.movie.slug = result.movie.slug
+              this.movie.origin_name = result.movie.origin_name;
+              this.movie.year = result.movie.year;
+              this.movie.slug = result.movie.slug;
 
               // if (result.data.seoOnPage) {
               //   this.updateMetaTags(result.data.seoOnPage)
@@ -894,9 +952,11 @@ export default {
                   this.movie.page.includes("/")
                 ) {
                   this.movie.videoUrl =
-                    result.episodes[0].server_data[result.episodes[0].server_data.length-1].link_embed;
-                    // this.currentEpisodeIndex = result.episodes[0].server_data.length-1
-                    this.currentEpisodeIndex = 0
+                    result.episodes[0].server_data[
+                      result.episodes[0].server_data.length - 1
+                    ].link_embed;
+                  // this.currentEpisodeIndex = result.episodes[0].server_data.length-1
+                  this.currentEpisodeIndex = 0;
                   this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
@@ -905,7 +965,9 @@ export default {
                     (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   // this.currentEpisodeIndex = parseInt(tap,10)-1;
-                  const idx = this.movie.pageMovie.findIndex(ep => ep.name === result.movie.episode_current);
+                  const idx = this.movie.pageMovie.findIndex(
+                    (ep) => ep.name === result.movie.episode_current
+                  );
                   if (idx !== -1) {
                     this.currentEpisodeIndex = idx;
                   }
@@ -934,7 +996,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
-              
+
               resolve(true);
             } else {
               this.MoveInfor(slug).then(resolve).catch(reject);
@@ -960,7 +1022,10 @@ export default {
               await this.ListMovieByCate();
             }
 
-            if (entry.target === this.$refs.lazyComment && !this.hasLoadedComment) {
+            if (
+              entry.target === this.$refs.lazyComment &&
+              !this.hasLoadedComment
+            ) {
               this.hasLoadedComment = true;
               await this.GetComment();
             }
@@ -995,21 +1060,20 @@ export default {
       }
     },
 
-      restoreTime() {
-        const video = this.$refs.videoPlayer;
-        const savedTime = localStorage.getItem(this.videoKey);
+    restoreTime() {
+      const video = this.$refs.videoPlayer;
+      const savedTime = localStorage.getItem(this.videoKey);
 
-        if (video && savedTime) {
-          video.currentTime = parseFloat(savedTime);
-        }
-      },
-    toggleEpisodes(){
+      if (video && savedTime) {
+        video.currentTime = parseFloat(savedTime);
+      }
+    },
+    toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
-      
     },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
-      console.log(url)
+      console.log(url);
       if (!video) return;
       // ======== Nguồn phimapi.com ========
       if (url.includes("player.phimapi.com/player/?url=")) {
@@ -1027,7 +1091,11 @@ export default {
       }
       // Nếu là file .m3u8 → dùng HLS
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        const hls = new Hls({ maxBufferLength: 5,enableWorker: true, startLevel: -1,});
+        const hls = new Hls({
+          maxBufferLength: 5,
+          enableWorker: true,
+          startLevel: -1,
+        });
         hls.loadSource(url);
         hls.attachMedia(video);
         video.addEventListener("play", () => {
@@ -1049,46 +1117,65 @@ export default {
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },
-    handleFavorite(){
+    handleFavorite() {
       this.liked = !this.liked;
-      this.movieFavorite.IDAccount = this.idAccount
-      this.movieFavorite.IDMovies = this.movie.idMovie
-      this.movieFavorite.slug = this.movie.slug
-      this.movieFavorite.currentPage = this.movie.page
-      this.movieFavorite.UrlMovies = this.movie.thumb_url
-      this.movieFavorite.origin_name = this.movie.origin_name
-      this.movieFavorite.name = this.movie.name
-      this.movieFavorite.year = this.movie.year
-      this.movieFavorite.lang = this.movie.lang
+      this.movieFavorite.IDAccount = this.idAccount;
+      this.movieFavorite.IDMovies = this.movie.idMovie;
+      this.movieFavorite.slug = this.movie.slug;
+      this.movieFavorite.currentPage = this.movie.page;
+      this.movieFavorite.UrlMovies = this.movie.thumb_url;
+      this.movieFavorite.origin_name = this.movie.origin_name;
+      this.movieFavorite.name = this.movie.name;
+      this.movieFavorite.year = this.movie.year;
+      this.movieFavorite.lang = this.movie.lang;
 
-      if(this.idAccount == "" || this.idAccount== null || this.idAccount == undefined){
-        alert("Bạn vui lòng đăng nhập")
+      if (
+        this.idAccount == "" ||
+        this.idAccount == null ||
+        this.idAccount == undefined
+      ) {
+        alert("Bạn vui lòng đăng nhập");
         this.$router.push("/login");
         return;
       }
-      PostMoviesFavorite(this.movieFavorite, (dat) =>{
-        if(dat.data.status == "success"){
-          alert("🎬 " +dat.data.message )
-          
+      CheckSession(
+        (dat) => {
+          if (dat.status == "success") {
+            this.$store.commit("setEmpInfor", dat.data);
+            PostMoviesFavorite(
+              this.movieFavorite,
+              (dat) => {
+                if (dat.data.status == "success") {
+                  alert("🎬 " + dat.data.message);
+                } else {
+                  alert(dat.data.message);
+                }
+              },
+              (err) => {
+                alert(err);
+              }
+            );
+          } else {
+            alert(dat.message);
+            this.$router.push({
+              path: "/login",
+              query: { redirect: this.$route.fullPath },
+            });
+          }
+        },
+        (err) => {
+          alert(err);
         }
-        else{
-          alert(dat.data.message)
-        }
-
-      }, (err) =>{
-        console.log(err)
-      })
+      );
     },
 
     getOptimizedImage(imagePath) {
       // if (this.link == "") {
       //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       // } else {
-        return `${
-          this.urlImage1 +
-          "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
-        }`;
+      return `${
+        this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
+      }`;
       // }
     },
     // Chuản SEO
@@ -1148,23 +1235,23 @@ export default {
         //     }
         //   );
         // } else {
-          Categoris1(
-            this.movie.categoris,
+        Categoris1(
+          this.movie.categoris,
 
-            (data) => {
-              if (data.status == true) {
-                this.suggestedMovies = data.data.items;
-                this.isLoading = false;
-                resolve(true);
-              } else {
-                reject("error");
-              }
-            },
-            (err) => {
-              console.log(err);
-              reject(err);
+          (data) => {
+            if (data.status == true) {
+              this.suggestedMovies = data.data.items;
+              this.isLoading = false;
+              resolve(true);
+            } else {
+              reject("error");
             }
-          );
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
         // }
       });
     },
@@ -1203,7 +1290,7 @@ export default {
         alert(this.$t("Đã sao chép liên kết!"));
       });
     },
-    Login(){
+    Login() {
       this.$router.push("/login");
     },
     addComments() {
@@ -1214,52 +1301,68 @@ export default {
         NameCreate: localStorage.getItem("nameShow") || "",
         Comments: this.newComment,
         NameMovie: this.movie.name,
-        CurrentPage: this.movie.page
+        CurrentPage: this.movie.page,
       };
-      if (account == null || account == "" || account== undefined) {
-        alert("Bạn vui lòng đăng nhập")
+      if (account == null || account == "" || account == undefined) {
+        alert("Bạn vui lòng đăng nhập");
         this.$router.push("/login");
       }
       if (this.newComment.trim()) {
-        AddComment(
-          data,
+        CheckSession(
           (dat) => {
-            if (dat.data.status == "success") {
-              this.Message = dat.data.message;
-              this.color = "success";
-              this.mess = true;
-              this.GetComment();
+            if (dat.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data);
+              AddComment(
+                data,
+                (dat) => {
+                  if (dat.data.status == "success") {
+                    this.Message = dat.data.message;
+                    this.color = "success";
+                    this.mess = true;
+                    this.GetComment();
+                  }
+                },
+                (err) => {
+                  this.Message = err.data.message;
+                  this.color = "error";
+                  this.mess = true;
+                }
+              );
+            } else {
+              alert(dat.message);
+              this.$router.push({
+                path: "/login",
+                query: { redirect: this.$route.fullPath },
+              });
             }
           },
           (err) => {
-            this.Message = err.data.message;
-            this.color = "error";
-            this.mess = true;
+            alert(err);
           }
         );
+
         this.newComment = "";
       }
     },
     GetComment() {
-      
-        var movie = {
-          idMovies: this.movie.idMovie,
-          page: 1
-        }
-        GetComments(
-          movie,
-          (res) => {
-            console.log(res)
-            if (res.data.status == "success") {
-              this.comments = res.data.data
-            } else {
-              console.log(res.data.message)
-            }
-          },
-          (err) => {
-            console.error("Lỗi lấy bình luận:", err);
+      var movie = {
+        idMovies: this.movie.idMovie,
+        page: 1,
+      };
+      GetComments(
+        movie,
+        (res) => {
+          console.log(res);
+          if (res.data.status == "success") {
+            this.comments = res.data.data;
+          } else {
+            console.log(res.data.message);
           }
-        );
+        },
+        (err) => {
+          console.error("Lỗi lấy bình luận:", err);
+        }
+      );
     },
 
     scrollLeft() {
@@ -1279,29 +1382,34 @@ export default {
       this.isTrailer = true;
     },
     playEpisode(episode) {
-      try{
-        console.log(episode)
+      try {
+        console.log(episode);
         this.currentEpisode = episode;
         this.isLoading = true;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if(episode.filename != undefined || episode.filename != null || episode.filename != ''){
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (
+          episode.filename != undefined ||
+          episode.filename != null ||
+          episode.filename != ""
+        ) {
           this.movie.title = episode.filename;
-
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        const idx = this.movie.pageMovie.findIndex(ep => ep.name === episode.name);
+        const idx = this.movie.pageMovie.findIndex(
+          (ep) => ep.name === episode.name
+        );
         if (idx !== -1) {
           this.currentEpisodeIndex = idx;
         }
         // this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
         this.movie.page = episode.name;
 
-        const normalized = episode.name.replace('Tập ', 'tap').trim()
+        const normalized = episode.name.replace("Tập ", "tap").trim();
         this.$router.replace({
           name: "MovieDetail",
           params: { slug: this.slug },
-          query: { page: normalized }
+          query: { page: normalized },
         });
         this.playVideo(this.movie.videoUrl);
 
@@ -1311,7 +1419,7 @@ export default {
 
         // cập nhật tập mới
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-          e => e.name === episode.name
+          (e) => e.name === episode.name
         );
 
         // tạo key mới cho tập mới
@@ -1323,16 +1431,13 @@ export default {
         this.playVideo(this.movie.videoUrl);
         this.GetComment();
         this.isLoading = false;
-      }
-      catch{
+      } catch {
         this.isLoading = false;
-        
       }
-      
     },
     switchServer(server) {
       this.isLoading = true;
-      
+
       // this.movie.pageMovie = server.server_data;
       this.movie.pageMovie = server.server_data.sort(
         (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
@@ -1342,8 +1447,10 @@ export default {
         // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
         this.movie.page.includes("/")
       ) {
-        this.movie.videoUrl = server.server_data[server.server_data.length-1].link_embed;
-        this.movie.LinkDown = server.server_data[server.server_data.length-1].link_m3u8;
+        this.movie.videoUrl =
+          server.server_data[server.server_data.length - 1].link_embed;
+        this.movie.LinkDown =
+          server.server_data[server.server_data.length - 1].link_m3u8;
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
@@ -1354,33 +1461,28 @@ export default {
           this.isTrailer = false;
         }
       }
-      
 
       this.GetComment();
       setTimeout(() => {
         this.isLoading = false;
-
       }, 1000);
     },
     nextEpisode() {
-      
       if (this.currentEpisodeIndex > 0) {
-        console.log(this.currentEpisodeIndex)
+        console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex--;
-        
+
         const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(nextEp);
       }
-      
     },
     prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        console.log(this.currentEpisodeIndex)
+        console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex++;
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(prevEp);
       }
-      
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
@@ -1429,12 +1531,8 @@ export default {
     },
   },
   computed: {
-    idAccount(){
-      return (
-        this.$store.state.empInfor.ID || localStorage.getItem("name")
-
-      )
-
+    idAccount() {
+      return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
 
     visibleEpisodes() {
@@ -1794,13 +1892,10 @@ a {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-.episode-list {
-  display: flex;
-  flex-wrap: wrap;
-}
+
 .episode-col {
-  flex: 0 0 20% !important;  
-  max-width: 20% !important; 
+  flex: 0 0 20% !important;
+  max-width: 20% !important;
   padding: 4px;
 }
 .video-player {
@@ -1824,22 +1919,22 @@ a {
 }
 .custom-title {
   display: flex;
-  flex-wrap: wrap;     
-  gap: 8px;        
-  white-space: normal; 
+  flex-wrap: wrap;
+  gap: 8px;
+  white-space: normal;
   width: 100%;
 }
 
 .title-text {
-  white-space: normal; 
+  white-space: normal;
   word-break: break-word;
 }
 
 .chip-limit {
-  max-width: 140px;  
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;   
+  white-space: nowrap;
 }
 .btnnext {
   border-radius: 10px;
@@ -1869,5 +1964,10 @@ a {
 
 .v-btn:active {
   transform: scale(0.96);
+}
+.episode-list {
+  max-height: calc(5 * 90px);
+  overflow-y: auto;
+  margin: 10px;
 }
 </style>

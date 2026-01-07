@@ -495,6 +495,7 @@ import {
   urlImage,
   urlImage1,
   GetComments,
+  CheckSession,
   PostMoviesFavorite
 } from "@/model/api";
 //import { toggleFavorite, isFavorite } from "@/utils/favorite";
@@ -968,18 +969,36 @@ export default {
       this.movieFavorite.name = this.movie.name
       this.movieFavorite.year = this.movie.year
       this.movieFavorite.lang = this.movie.lang
-      PostMoviesFavorite(this.movieFavorite, (dat) =>{
-        if(dat.data.status == "success"){
-          alert("🎬 "+ dat.data.message)
-          
-        }
-        else{
-          alert(dat.data.message)
-        }
 
-      }, (err) =>{
-        console.log(err)
-      })
+      CheckSession(
+          (dat) => {
+            if (dat.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data);
+              PostMoviesFavorite(this.movieFavorite, (dat) =>{
+                if(dat.data.status == "success"){
+                  alert("🎬 "+ dat.data.message)
+                  
+                }
+                else{
+                  alert(dat.data.message)
+                }
+
+              }, (err) =>{
+                console.log(err)
+              })
+            } else {
+              alert(dat.message);
+              this.$router.push({
+                path: '/login',
+                query: { redirect: this.$route.fullPath }
+              })
+            }
+          },
+          (err) => {
+            alert(err);
+          }
+        );
+      
     
     },
 
