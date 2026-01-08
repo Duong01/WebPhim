@@ -113,6 +113,18 @@ const routes = [
         },
       },
       {
+        path: "/movie-schedule",
+        name: "MovieSchedule",
+        component: () => import("@/pages/SchedulePage/MovieSchedule.vue"),
+        meta: {
+          title: "Phim bộ hay nhất - Web Phim Online",
+          description:
+            "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
+          keepAlive: true,
+        },
+      },
+      
+      {
         path: "/phim-le",
         name: "PhimLe",
         component: () => import("@/pages/PhimLe/PhimLe.vue"),

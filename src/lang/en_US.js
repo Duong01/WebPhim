@@ -121,5 +121,5 @@ export default
     "Thời gian chiếu": "Show time",
     "Đã lưu": "Films Saves",
 'Bạn không có phim nào đã được lưu': 'You do not have any movies saved',
-
+'Lịch chiếu':'Showtimes'
 }

@@ -45,7 +45,7 @@ let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
 
 let urlSearch1 = "https://phimapi.com/v1/api/tim-kiem"
 
-
+let urlSchedule="https://hoathinh3d.li/wp-json/movie-schedule/"
 // api login
 //let urlAccount = "https://apiwebphim.onrender.com/api/auth"
 
@@ -81,7 +81,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  export const ListMovieByCateHome1= (params, success, error) => http.GetNew(`${urlCategorisHome1}${params}`, {}  , success, error)
 
  // the loai phim
- export const CategorisDetail= (params, success, error) => http.GetNew(`${urlCategoris}${params}`, {}  , success, error)
+ export const CategorisDetail= (params, success, error) => http.GetNew(`${urlSchedule}${params}`, {}  , success, error)
     
  
  // quoc gia
@@ -99,6 +99,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  export const Search= (params, success, error) => http.GetNew(`${urlSearch}`, params  , success, error)
 
  export const Search1= (params, success, error) => http.GetNew(`${urlSearch1}`, params  , success, error)
+ export const GetMovieSchedule= (params, success, error) => http.GetNew(`${urlSearch1}`, params  , success, error)
  
 
 // api login
@@ -120,4 +121,6 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  // insert movies favorite
  export const PostMoviesFavorite = (params, success, error) => http.Post(`/AccountApi/InsertFavoriteMovies`, params,success, error)
+
+ 
 

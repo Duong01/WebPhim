@@ -132,25 +132,28 @@
           </v-list>
         </v-menu>
 
-        <v-btn
+         <v-btn
           text
-          :to="{ path: '/hoat-hinh' }"
-          :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+          :to="{ path: '/movie-schedule' }"
+          :class="{ 'text-green': $route.path === '/movie-schedule' }"
         >
-          {{ $t("Hoạt hình") }}
+          {{ $t("Lịch chiếu") }}
         </v-btn>
-        <v-btn
+        <!--<v-btn
           text
           :to="{ path: '/favorite' }"
           :class="{ 'text-green': $route.path === '/favorite' }"
         >
           {{ $t("Đã lưu") }}
-        </v-btn>
+        </v-btn> -->
       </v-toolbar-items>
 
       <!-- Search + Language + Profile -->
-      <v-spacer />
-      <div style="padding: 0 20px;"></div>
+      <!-- <v-spacer /> -->
+      <!-- <div style="padding: 0 20px;"></div> -->
+      <template v-slot:append>
+
+      
       <v-menu
         v-model="menuVisible"
         :close-on-content-click="false"
@@ -160,6 +163,7 @@
         offset-y
       >
         <template #activator="{ props: activatorProps }">
+          <div class="search-wrapper">
           <v-text-field
             v-bind="activatorProps"
             v-model="searchQuery"
@@ -172,10 +176,11 @@
             clearable
             solo
             hide-details
-            width="auto"
+            class="search-input"
             density="comfortable"
             rounded="pill"
           />
+          </div>
         </template>
         
         <v-list
@@ -291,7 +296,51 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      </template>
     </v-app-bar>
+
+    <!--  header ben duoi an/hien khi scroll -->
+    
+      <v-bottom-navigation
+      class="bottom-navbar"
+      :class="{ 'bottom-navbar--hidden': !showBottomBar }"
+      grow
+    >
+    
+      <v-btn 
+        :to="{ path: '/home' }"
+        :class="{ 'text-green': $route.path === '/home' }"
+      >
+        <v-icon>mdi-home</v-icon>
+        <span>{{ $t("Trang chủ") }}</span>
+      </v-btn>
+      <v-btn 
+        :to="{ path: '/phim-bo' }"
+        :class="{ 'text-green': $route.path === '/phim-bo' }">
+        <v-icon>mdi-movie</v-icon>
+        <span>{{ $t("Phim Bộ") }}</span>
+      </v-btn>
+      <v-btn
+          text
+          :to="{ path: '/phim-le' }"
+          :class="{ 'text-green': $route.path === '/phim-le' }"
+        >
+        <v-icon>mdi-movie</v-icon>
+          <span>{{ $t("Phim Lẻ") }}</span>
+      </v-btn>
+      <v-btn to="/hoat-hinh">
+        <v-icon>mdi-movie</v-icon>
+        <span>{{ $t("Hoạt hình") }}</span>
+      </v-btn>
+
+      <v-btn to="/favorite">
+        <v-icon >mdi-heart</v-icon>
+        <span>{{ $t("Đã lưu") }}</span>
+      </v-btn>
+
+      
+    </v-bottom-navigation>
+
 
     <!-- DRAWER CHO MOBILE -->
     <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
@@ -466,7 +515,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris2, City2, Search,Search1 } from "@/model/api";
+import { Categoris2, City2, Search, Search1 } from "@/model/api";
 import imageLogo from "@/assets/Logo.png";
 export default {
   name: "HeaderVuetify",
@@ -485,7 +534,9 @@ export default {
       curElLang: "",
       curLang: "",
       searchInput: "",
-      movieSuggestions: JSON.parse(localStorage.getItem("HisSearch")) ? JSON.parse(localStorage.getItem("HisSearch")) : [],
+      movieSuggestions: JSON.parse(localStorage.getItem("HisSearch"))
+        ? JSON.parse(localStorage.getItem("HisSearch"))
+        : [],
       menuVisible: false,
       genres: [],
       countries: [],
@@ -494,18 +545,21 @@ export default {
         { name: "English", title: "en-US" },
         { name: "中国", title: "zh-CN" },
       ],
-      dialogLogin: false,
-      dialogRegister: false,
-      loginForm: { email: "", password: "" },
-      registerForm: { name: "", email: "", password: "" },
+      lastScrollY: 0,
+      showBottomBar: true,
     };
   },
   inject: ["currentTheme", "setTheme"],
   mounted() {
-    this.account = this.$store.state.EmpName ||  localStorage.getItem("nameShow");
+    window.addEventListener("scroll", this.handleScroll, { passive: true });
+    this.account =
+      this.$store.state.EmpName || localStorage.getItem("nameShow");
     const history = JSON.parse(localStorage.getItem("HisSearch"));
     this.movieSuggestions = history ? history : [];
-    console.log(this.movieSuggestions)
+    console.log(this.movieSuggestions);
+  },
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   computed: {
     account() {
@@ -513,18 +567,32 @@ export default {
     },
     isLogin() {
       return !!this.$store.state.empInfor?.ID;
-    }
+    },
   },
   methods: {
+    handleScroll() {
+      const currentY = window.scrollY;
+
+      if (currentY > this.lastScrollY && currentY > 50) {
+        // cuộn xuống → ẩn
+        this.showBottomBar = false;
+      } else {
+        // cuộn lên → hiện
+        this.showBottomBar = true;
+      }
+
+      this.lastScrollY = currentY;
+    },
+
     openSearchHistory() {
-    this.menuVisible = true;
+      this.menuVisible = true;
 
-    // Load lịch sử
-    const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+      // Load lịch sử
+      const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
 
-    // Gán vào gợi ý
-    this.movieSuggestions = history;
-  },
+      // Gán vào gợi ý
+      this.movieSuggestions = history;
+    },
     changeTheme() {
       const newTheme = this.currentTheme() === "dark" ? "light" : "dark";
       this.setTheme(newTheme);
@@ -540,7 +608,6 @@ export default {
           // }
           this.genres = dat;
           this.loadingTheLoai = false;
-          
         },
         (err) => {
           console.log(err);
@@ -573,8 +640,8 @@ export default {
           query: { keyword: this.searchQuery },
         });
         let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-        history = history.filter(h => h.name !== this.searchQuery);
-        history.unshift({ name: this.searchQuery});
+        history = history.filter((h) => h.name !== this.searchQuery);
+        history.unshift({ name: this.searchQuery });
         history = history.slice(0, 5);
         localStorage.setItem("HisSearch", JSON.stringify(history));
         this.searchQuery = "";
@@ -616,7 +683,7 @@ export default {
     Login() {
       this.$router.push("/login");
     },
-    NextRouter(){
+    NextRouter() {
       this.$router.push("/favorite");
     },
     Register() {
@@ -640,18 +707,16 @@ export default {
     },
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {
-
         const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
 
-          // Nếu người dùng chưa nhập gì → hiển thị lịch sử trong movieSuggestions
+        // Nếu người dùng chưa nhập gì → hiển thị lịch sử trong movieSuggestions
         if (!this.searchQuery) {
-          this.movieSuggestions = history.map(h => ({ name: h }));
+          this.movieSuggestions = history.map((h) => ({ name: h }));
         }
         // this.movieSuggestions = [];
         this.menuVisible = false;
         return;
-      }
-      else{
+      } else {
         this.openSearchHistory();
       }
 
@@ -667,7 +732,8 @@ export default {
                 { keyword },
                 (data) => {
                   if (data.data.items != null) {
-                    this.movieSuggestions = data.data.items.sort((a, b) => b.year - a.year) || [];
+                    this.movieSuggestions =
+                      data.data.items.sort((a, b) => b.year - a.year) || [];
                     this.menuVisible = this.movieSuggestions.length > 0;
                   }
                 },
@@ -678,8 +744,7 @@ export default {
             } else {
               this.movieSuggestions =
                 dat.data.items.sort((a, b) => b.year - a.year) || [];
-                this.menuVisible = this.movieSuggestions.length > 0;
-              
+              this.menuVisible = this.movieSuggestions.length > 0;
             }
           },
           (err) => {
@@ -693,7 +758,7 @@ export default {
     selectSuggestion(item) {
       this.searchQuery = item.name;
       let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-      history = history.filter(h => h.name !== item.name);
+      history = history.filter((h) => h.name !== item.name);
       history.unshift({ name: item.name });
       history = history.slice(0, 5);
       localStorage.setItem("HisSearch", JSON.stringify(history));
@@ -702,7 +767,8 @@ export default {
     },
   },
   created() {
-    this.account = localStorage.getItem("nameShow") || this.$store.state.empInfor.EmpName;
+    this.account =
+      localStorage.getItem("nameShow") || this.$store.state.empInfor.EmpName;
     this.InitLang();
   },
 };
@@ -716,10 +782,20 @@ export default {
   z-index: 1000;
 }
 
+.search-wrapper {
+  flex: 1;                /* 🔥 cho phép giãn */
+  max-width: 420px;       /* desktop */
+  min-width: 280px;
+}
+
+@media (max-width: 960px) {
+  .search-wrapper {
+    max-width: 100%;
+  }
+}
+
 .search-input {
-  max-width: 200px;
-  background-color: #222;
-  color: white;
+  width: 100%;
 }
 .text-green {
   color: #00e165 !important;
@@ -729,7 +805,7 @@ a.router-link-active,
 a:hover {
   color: #00e165 !important;
 }
-.v-spacer{
+.v-spacer {
   flex-grow: 0 !important;
 }
 .account-btn {
@@ -750,5 +826,19 @@ a:hover {
 
 .account-menu-name {
   font-weight: 600;
+}
+.bottom-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1005;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.bottom-navbar--hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

@@ -80,7 +80,7 @@
             </div>
 
 
-
+            <keep-alive include="HomePage">
             <div v-if="section.loaded">
               <v-row
                 no-gutters
@@ -89,18 +89,13 @@
                 class="movie-list"
               >
                 <v-col
-                   v-for="item in section.listMovie.slice(0,12)"
+                   v-for="item in section.listMovie"
                    :key="item.slug"
                   cols="6"
                   sm="6"
                   md="3"
                   style="padding: 5px"
                 >
-                  <!-- <v-skeleton-loader
-                    v-if="section.loading"
-                    type="image"
-                    height="250"
-                  /> -->
                   <router-link
                     :to="{ name: 'Movies', params: { slug: item.slug } }"
                     
@@ -109,6 +104,7 @@
                       class="mx-auto  movie-card"
                       
                     >
+                    <template #placeholder>
                       <v-img
                         :src="getOptimizedImage(item.thumb_url, section.id)"
                         :lazy-src="
@@ -166,17 +162,11 @@
                           </div>
                         </template>
                       </v-img>
-
+                    </template>
                       <div>
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
-                              <!-- <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
-                                {{ cate.name }} 
-                                <span  v-if="ind < getCategoriesToShow(item.category).length -1">
-                                  ,
-                                </span>
-                              </div> -->
                               
                               <span>{{ item.lang }}</span>
                               <span> - {{ item.year }}</span>
@@ -192,6 +182,7 @@
             <div v-else style="height: 400px">
               <v-skeleton-loader type="card" height="100%" />
             </div>
+            </keep-alive>
           </div>
         </template>
       </v-lazy>
@@ -224,7 +215,7 @@ export default {
       sections: [
       {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=12",
           name: "HoatHinh",
           listMovie: [],
           content: "",
@@ -246,7 +237,7 @@ export default {
         
         {
           title: this.$t("PHIM VIỆT NAM"),
-          id: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=12",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -258,7 +249,7 @@ export default {
         },
         {
           title: this.$t("PHIM TRUNG QUỐC"),
-          id: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&sort_field=year&sort_type=desc&limit=12",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -270,7 +261,7 @@ export default {
         },
         {
           title: this.$t("PHIM BỘ"),
-          id: "https://phimapi.com/v1/api/danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=12",
           name: "PhimBo",
           listMovie: [],
           content: "",
@@ -279,7 +270,7 @@ export default {
         },
         {
           title: this.$t("PHIM LẺ"),
-          id: "https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=12",
           name: "PhimLe",
           listMovie: [],
           content: "",
@@ -288,7 +279,7 @@ export default {
         },
         {
           title: this.$t("PHIM HÀN QUỐC"),
-          id: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
+          id: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&sort_field=year&sort_type=desc&limit=12",
           name: "QuocGia",
           listMovie: [],
           content: "",
@@ -316,7 +307,7 @@ export default {
           link: {
             name: "PhimBo",
             params: {
-              path: "/phim-bo?page=1&sort_field=year&sort_type=desc&limit=20",
+              path: "/phim-bo?page=1&sort_field=year&sort_type=desc&limit=12",
             },
           },
         },
@@ -326,7 +317,7 @@ export default {
           link: {
             name: "QuocGia",
             params: {
-              path: "trung-quoc?page=1&sort_field=year&sort_type=desc&limit=20",
+              path: "trung-quoc?page=1&sort_field=year&sort_type=desc&limit=12",
             },
           },
         },
@@ -336,7 +327,7 @@ export default {
           link: {
             name: "PhimLe",
             params: {
-              path: "/phim-le?page=1&sort_field=year&sort_type=desc&limit=20",
+              path: "/phim-le?page=1&sort_field=year&sort_type=desc&limit=12",
             },
           },
         },
@@ -356,7 +347,7 @@ export default {
           link: {
             name: "TheLoai",
             params: {
-              path: "tinh-cam?page=1&sort_field=year&sort_type=desc&limit=20",
+              path: "tinh-cam?page=1&sort_field=year&sort_type=desc&limit=12",
             },
           },
         },
@@ -448,7 +439,7 @@ export default {
 
               if (result.status === "success" || result.status == true) {
                 this.link = "link1";
-                section.listMovie = result.items;
+                section.listMovie = result.items.slice(0,12);
 
                 // this.isLoading = false;
                 section.loading = false;
