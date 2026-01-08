@@ -321,14 +321,18 @@
         <span>{{ $t("Phim Bộ") }}</span>
       </v-btn>
       <v-btn
-          text
+          
           :to="{ path: '/phim-le' }"
           :class="{ 'text-green': $route.path === '/phim-le' }"
         >
         <v-icon>mdi-movie</v-icon>
           <span>{{ $t("Phim Lẻ") }}</span>
       </v-btn>
-      <v-btn to="/hoat-hinh">
+      <v-btn
+      :to="{ path: '/hoat-hinh' }"
+      :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+      v-show="$vuetify.display.mdAndUp"
+      >
         <v-icon>mdi-movie</v-icon>
         <span>{{ $t("Hoạt hình") }}</span>
       </v-btn>
@@ -337,7 +341,14 @@
         <v-icon >mdi-heart</v-icon>
         <span>{{ $t("Đã lưu") }}</span>
       </v-btn>
-
+      <v-btn
+          :to="{ path: '/movie-schedule' }"
+          :class="{ 'text-green': $route.path === '/movie-schedule' }"
+          v-show="$vuetify.display.mdAndDown"
+        >
+        <v-icon >mdi-calendar</v-icon>
+          <span>{{ $t("Lịch chiếu") }}</span>
+        </v-btn>
       
     </v-bottom-navigation>
 
@@ -430,6 +441,13 @@
             :class="{ 'text-green': $route.path === '/hoat-hinh' }"
           >
             <v-list-item-title>{{ $t("Hoạt hình") }}</v-list-item-title>
+          </v-list-item>
+          
+          <v-list-item
+            :to="{ path: '/movie-schedule' }"
+            :class="{ 'text-green': $route.path === '/movie-schedule' }"
+          >
+            <v-list-item-title>{{ $t("Lịch chiếu") }}</v-list-item-title>
           </v-list-item>
         <!-- Theme (chuyển theme) -->
         <v-list-item @click="changeTheme">

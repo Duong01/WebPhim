@@ -39,18 +39,18 @@
 
             <v-img
               :src="movie.thumbnail"
-              aspect-ratio="2/3"
               cover
-              class="early-thumb"
+              aspect-ratio="2/3"
+              class="movie-thumb"
             >
               <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="grey-lighten-4"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                    color="grey-lighten-4"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              </template>
               
             </v-img>
             <div class="early-time">
@@ -215,7 +215,6 @@ export default {
 .early-card {
   display: flex;
   align-items: center;
-  flex-direction: column;
   width: 100%;
   position: relative;
   overflow: visible; 
@@ -255,27 +254,23 @@ export default {
 }
 
 .movie-thumb {
-  max-height: 260px;
+  max-height: 200px;
+  max-width: 100px;
   border-radius: 8px;
 }
 .movie-item {
   display: flex;
-  flex-direction: column;
+  align-items: center
 }
 .movie-item .v-img {
   height: 260px;
   object-fit: cover;
 }
-.early-card {
-  display: flex;
-  gap: 12px;
-}
 
 .early-thumb {
-  width: 120px;
-  height: 180px;
-  flex-shrink: 0;
-  border-radius: 6px;
+  width: 80px;
+  height: 150px;
+  object-fit: cover;
 }
 
 </style>
