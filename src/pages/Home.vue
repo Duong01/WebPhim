@@ -80,7 +80,7 @@
             </div>
 
 
-            <keep-alive include="HomePage">
+            
             <div v-if="section.loaded">
               <v-row
                 no-gutters
@@ -89,13 +89,18 @@
                 class="movie-list"
               >
                 <v-col
-                   v-for="item in section.listMovie"
+                   v-for="item in section.listMovie.slice(0,12)"
                    :key="item.slug"
                   cols="6"
                   sm="6"
                   md="3"
                   style="padding: 5px"
                 >
+                  <!-- <v-skeleton-loader
+                    v-if="section.loading"
+                    type="image"
+                    height="250"
+                  /> -->
                   <router-link
                     :to="{ name: 'Movies', params: { slug: item.slug } }"
                     
@@ -104,7 +109,6 @@
                       class="mx-auto  movie-card"
                       
                     >
-                    <template #placeholder>
                       <v-img
                         :src="getOptimizedImage(item.thumb_url, section.id)"
                         :lazy-src="
@@ -161,12 +165,26 @@
                             </svg>
                           </div>
                         </template>
+                        <template #placeholder>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="grey-lighten-4"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
                       </v-img>
-                    </template>
+
                       <div>
                           <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
+                              <!-- <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
+                                {{ cate.name }} 
+                                <span  v-if="ind < getCategoriesToShow(item.category).length -1">
+                                  ,
+                                </span>
+                              </div> -->
                               
                               <span>{{ item.lang }}</span>
                               <span> - {{ item.year }}</span>
@@ -182,7 +200,6 @@
             <div v-else style="height: 400px">
               <v-skeleton-loader type="card" height="100%" />
             </div>
-            </keep-alive>
           </div>
         </template>
       </v-lazy>

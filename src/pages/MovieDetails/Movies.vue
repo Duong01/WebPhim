@@ -29,7 +29,16 @@
             height="80vh"
             loading="lazy"
             cover
-          />
+          >
+          <template #placeholder>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="grey-lighten-4"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
+        </v-img>
           
         </div>
 
@@ -62,7 +71,16 @@
                   cover
                   @click="goToWatch('first')"
                   v-show="$vuetify.display.mdAndUp"
-                ></v-img>
+                >
+                <template #placeholder>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="grey-lighten-4"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
+              </v-img>
 
                 <!-- Overlay mờ khi hover -->
                 <!-- <div class="poster-overlay"></div> -->
@@ -356,7 +374,16 @@
                               :src="getOptimizedImage(suggested.thumb_url)"
                               aspect-ratio="16/9"
                               cover
-                            ></v-img>
+                            >
+                          <template #placeholder>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="grey-lighten-4"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
+                          </v-img>
                             <div class="ml-3 flex-grow-1">
                               <div class="text-white text-body-2 font-weight-medium text-truncate">
                                 {{ suggested.name }}

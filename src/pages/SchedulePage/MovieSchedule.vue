@@ -44,8 +44,13 @@
               class="early-thumb"
             >
               <template #placeholder>
-                <v-progress-circular indeterminate />
-              </template>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="grey-lighten-4"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
               
             </v-img>
             <div class="early-time">
