@@ -803,7 +803,7 @@ export default {
 .search-wrapper {
   flex: 1;                /* 🔥 cho phép giãn */
   max-width: 420px;       /* desktop */
-  min-width: 280px;
+  min-width: 250px;
 }
 
 @media (max-width: 960px) {
