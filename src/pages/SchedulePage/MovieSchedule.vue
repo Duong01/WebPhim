@@ -26,39 +26,46 @@
         ⭐ PHIM CHIẾU SỚM
       </div>
 
-      <v-row v-if="earlyMovies.length">
+      <v-row v-if="earlyMovies.length" dense>
         <v-col
-            v-for="(movie, index) in earlyMovies"
-            :key="index"
-            cols="12"
-            sm="6"
-            md="4"
+          v-for="(movie, index) in earlyMovies"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="4"
         >
-          <v-card class="early-card" flat>
-            
-
+          <v-card class="movie-item" flat>
             <v-img
               :src="movie.thumbnail"
-              cover
               aspect-ratio="2/3"
+              cover
               class="movie-thumb"
             >
               <template #placeholder>
                 <div class="d-flex align-center justify-center fill-height">
                   <v-progress-circular
-                    color="grey-lighten-4"
                     indeterminate
-                  ></v-progress-circular>
+                    size="32"
+                    width="3"
+                    color="grey-lighten-3"
+                  />
                 </div>
               </template>
-              
             </v-img>
+
+            <!-- Giờ chiếu -->
             <div class="early-time">
               {{ movie.early_screening_time }}
             </div>
-            <div>
-              <div class="movie-name">{{ movie.title }}</div>
-              <div class="movie-ep">📺 Tập {{ movie.latest_episode }}</div>
+
+            <!-- Thông tin -->
+            <div class="movie-info">
+              <div class="movie-name">
+                {{ movie.title }}
+              </div>
+              <div class="movie-ep">
+                📺 Tập {{ movie.latest_episode }}
+              </div>
             </div>
           </v-card>
         </v-col>
@@ -233,19 +240,28 @@ export default {
 
 .movie-item {
   display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: #2b2b2b;
-  border-radius: 10px;
+  flex-direction: column;
+  height: 100%;
 }
 
 .movie-name {
+  font-size: 14px;
   font-weight: 600;
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* số dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .movie-ep {
-  color: #00e5ff;
-  font-size: 13px;
+  font-size: 12px;
+  color: #bdbdbd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .empty-text {
@@ -254,19 +270,20 @@ export default {
 }
 
 .movie-thumb {
-  max-height: 200px;
-  max-width: 100px;
-  border-radius: 8px;
-}
-.movie-item {
-  display: flex;
-  align-items: center
+  border-radius: 10px;
 }
 .movie-item .v-img {
+  min-width: 100px;
   height: 260px;
   object-fit: cover;
 }
 
+.movie-info {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .early-thumb {
   width: 80px;
   height: 150px;
