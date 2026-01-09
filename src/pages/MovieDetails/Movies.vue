@@ -13,7 +13,7 @@
               >
                 <v-skeleton-loader
                   type="image, article"
-                  height="80vh"
+                  height="85vh"
                   width="100%"
                   class="rounded-lg"
                 />
@@ -26,18 +26,18 @@
             :alt="`Poster phim ${movie.name}`"
             class="banner-img"
             width="100%"
-            height="80vh"
+            height="85vh"
             loading="lazy"
             cover
           >
           <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="grey-lighten-4"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
+            <div class="d-flex align-center justify-center fill-height">
+              <v-progress-circular
+                color="grey-lighten-4"
+                indeterminate
+              ></v-progress-circular>
+            </div>
+          </template>
         </v-img>
           
         </div>

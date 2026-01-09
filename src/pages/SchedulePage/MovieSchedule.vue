@@ -34,21 +34,22 @@
           sm="6"
           md="4"
         >
-          <v-card class="movie-item simple-hover" flat @click="goMovie(movie.permalink)">
+          <v-card class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.permalink)">
             <v-img
               :src="movie.thumbnail"
               aspect-ratio="2/3"
               cover
+              height="250"
+              width="40%"
+              loading="lazy"
               class="movie-thumb"
             >
               <template #placeholder>
                 <div class="d-flex align-center justify-center fill-height">
                   <v-progress-circular
+                    color="grey-lighten-4"
                     indeterminate
-                    size="32"
-                    width="3"
-                    color="grey-lighten-3"
-                  />
+                  ></v-progress-circular>
                 </div>
               </template>
             </v-img>
@@ -85,15 +86,23 @@
           md="4"
         >
           <!-- Có dữ liệu -->
-          <v-card v-if="movie" class="movie-item simple-hover" flat @click="goMovie(movie.permalink)">
+          <v-card v-if="movie" class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.permalink)">
             <v-img
               :src="movie.thumbnail"
               aspect-ratio="2/3"
               cover
+              height="250"
+              width="40%"
+              loading="lazy"
               class="movie-thumb"
             >
               <template #placeholder>
-                <v-progress-circular indeterminate />
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                    color="grey-lighten-4"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
               </template>
             </v-img>
 
@@ -165,9 +174,10 @@ export default {
       
     },
     goMovie(url) {
-      var link = url.split('/').pop()
+      var slug = url.split('/').pop()
       this.$router.push({
-        path: link
+        name : 'Movies',
+        params: {slug}
       })
     }
     
@@ -280,7 +290,7 @@ export default {
 }
 .movie-item .v-img {
   min-width: 100px;
-  height: 260px;
+  height: 250px;
   object-fit: cover;
 }
 
