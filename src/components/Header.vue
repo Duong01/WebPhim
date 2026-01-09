@@ -10,7 +10,7 @@
         :src="imageLogo"
         alt="Phim360"
         contain
-        class="mx-4"
+        class=""
         cover
         :max-width="smAndDown ? 180 : 120"
         :max-height="smAndDown ? 60 : 40"

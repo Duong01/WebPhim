@@ -39,8 +39,7 @@
               :src="movie.thumbnail"
               aspect-ratio="2/3"
               cover
-              height="250"
-              width="40%"
+              
               loading="lazy"
               class="movie-thumb"
             >
@@ -91,9 +90,6 @@
               :src="movie.thumbnail"
               aspect-ratio="2/3"
               cover
-              height="250"
-              width="40%"
-              loading="lazy"
               class="movie-thumb"
             >
               <template #placeholder>
