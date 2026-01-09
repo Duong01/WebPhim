@@ -34,7 +34,7 @@
           sm="6"
           md="4"
         >
-          <v-card class="movie-item" flat>
+          <v-card class="movie-item simple-hover" flat @click="goMovie(movie.permalink)">
             <v-img
               :src="movie.thumbnail"
               aspect-ratio="2/3"
@@ -85,7 +85,7 @@
           md="4"
         >
           <!-- Có dữ liệu -->
-          <v-card v-if="movie" class="movie-item" flat>
+          <v-card v-if="movie" class="movie-item simple-hover" flat @click="goMovie(movie.permalink)">
             <v-img
               :src="movie.thumbnail"
               aspect-ratio="2/3"
@@ -164,6 +164,12 @@ export default {
       })
       
     },
+    goMovie(url) {
+      var link = url.split('/').pop()
+      this.$router.push({
+        path: link
+      })
+    }
     
     
   },
@@ -229,12 +235,12 @@ export default {
 
 .early-time {
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: -3px;
+  left: -5px;
   background: #ffb300;
   color: #000;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: bold;
 }
 
@@ -258,7 +264,7 @@ export default {
 
 .movie-ep {
   font-size: 12px;
-  color: #bdbdbd;
+  color: #b7dff7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -279,7 +285,7 @@ export default {
 }
 
 .movie-info {
-  margin-top: 6px;
+  margin: 15px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -289,6 +295,15 @@ export default {
   height: 150px;
   object-fit: cover;
 }
+.simple-hover {
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
 
+.simple-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
 </style>
 
