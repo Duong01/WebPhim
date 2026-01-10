@@ -1,6 +1,6 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
-import { CheckSession } from "@/model/api";
+// import { CheckSession } from "@/model/api";
 import store from "@/store";
 
 const routes = [
@@ -221,52 +221,62 @@ router.onError((error) => {
   }
 });
 router.beforeEach((to, from, next) => {
-  if(to.meta.requiresAuth){
-    const token = localStorage.getItem("token");
-  if (token) {
-    CheckSession((dat)=>{
-      console.log(dat)
-      if(dat.status == "success"){
-        store.commit("setEmpInfor", dat.data);
-        return next()
-      }
-      if(dat.status == "error")
-      {
-        localStorage.removeItem("token");
+  const isLoggedIn = !!store.state.empInfor;
 
-        alert(dat.message)
-        next({
-          path: '/login',
-          query: { redirect: to.fullPath }
-        })
-      }
-      return next()
-    },(er)=>{
-      // session timeout or not login
-      localStorage.removeItem("token");
-
-      if(er?.response?.status == 401)
-      {
-        console.error(er.response.data);
-          next({
-            path: '/login',
-            query: { redirect: to.fullPath }
-          })
-        }
-        return next()
-    })
-  }
-  else{
-    next({
-      path: '/login',
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    return next({
+      path: "/login",
       query: { redirect: to.fullPath }
-    })
+    });
   }
+
+  next();
+  // if(to.meta.requiresAuth){
+  //   const token = localStorage.getItem("token");
+  // if (token) {
+  //   CheckSession((dat)=>{
+  //     console.log(dat)
+  //     if(dat.status == "success"){
+  //       store.commit("setEmpInfor", dat.data);
+  //       return next()
+  //     }
+  //     if(dat.status == "error")
+  //     {
+  //       localStorage.removeItem("token");
+
+  //       alert(dat.message)
+  //       next({
+  //         path: '/login',
+  //         query: { redirect: to.fullPath }
+  //       })
+  //     }
+  //     return next()
+  //   },(er)=>{
+  //     // session timeout or not login
+  //     localStorage.removeItem("token");
+
+  //     if(er?.response?.status == 401)
+  //     {
+  //       console.error(er.response.data);
+  //         next({
+  //           path: '/login',
+  //           query: { redirect: to.fullPath }
+  //         })
+  //       }
+  //       return next()
+  //   })
+  // }
+  // else{
+  //   next({
+  //     path: '/login',
+  //     query: { redirect: to.fullPath }
+  //   })
+  // }
     
-  }
-  else{
-    next()
-  }
+  // }
+  // else{
+  //   next()
+  // }
   
 
   // ===== 3. Set meta SEO =====
