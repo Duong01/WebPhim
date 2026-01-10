@@ -717,11 +717,12 @@ export default {
       this.$router.push("/home");
     },
     Logout() {
-      localStorage.removeItem("name");
-      localStorage.removeItem("nameShow");
-      localStorage.removeItem("loginTimestamp");
-      this.$store.commit("LOGOUT");
-      this.$router.push("/login");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      this.$store.commit("clearUser");
+
+      this.$router.replace("/login");
     },
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {

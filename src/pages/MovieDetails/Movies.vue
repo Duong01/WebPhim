@@ -996,8 +996,9 @@ export default {
       this.movieFavorite.name = this.movie.name
       this.movieFavorite.year = this.movie.year
       this.movieFavorite.lang = this.movie.lang
-
-      CheckSession(
+      const token = localStorage.getItem("token");
+  if (token) {
+CheckSession(
           (dat) => {
             if (dat.status == "success") {
               this.$store.commit("setEmpInfor", dat.data);
@@ -1007,13 +1008,16 @@ export default {
                   
                 }
                 else{
+                  localStorage.removeItem("token");
                   alert(dat.data.message)
                 }
 
               }, (err) =>{
+                localStorage.removeItem("token");
                 console.log(err)
               })
             } else {
+              localStorage.removeItem("token");
               alert(dat.message);
               this.$router.push({
                 path: '/login',
@@ -1025,6 +1029,8 @@ export default {
             alert(err);
           }
         );
+      
+  }
       
     
     },

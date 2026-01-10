@@ -1147,7 +1147,9 @@ export default {
         this.$router.push("/login");
         return;
       }
-      CheckSession(
+      const token = localStorage.getItem("token");
+      if (token) {
+        CheckSession(
         (dat) => {
           if (dat.status == "success") {
             this.$store.commit("setEmpInfor", dat.data);
@@ -1161,11 +1163,13 @@ export default {
                 }
               },
               (err) => {
+                localStorage.removeItem("token");
                 alert(err);
               }
             );
           } else {
             alert(dat.message);
+            localStorage.removeItem("token");
             this.$router.push({
               path: "/login",
               query: { redirect: this.$route.fullPath },
@@ -1176,6 +1180,10 @@ export default {
           alert(err);
         }
       );
+    
+      }
+      
+    
     },
 
     getOptimizedImage(imagePath) {

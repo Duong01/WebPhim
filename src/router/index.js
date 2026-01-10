@@ -222,6 +222,8 @@ router.onError((error) => {
 });
 router.beforeEach((to, from, next) => {
   if(to.meta.requiresAuth){
+    const token = localStorage.getItem("token");
+  if (token) {
     CheckSession((dat)=>{
       console.log(dat)
       if(dat.status == "success"){
@@ -230,6 +232,8 @@ router.beforeEach((to, from, next) => {
       }
       if(dat.status == "error")
       {
+        localStorage.removeItem("token");
+
         alert(dat.message)
         next({
           path: '/login',
@@ -239,6 +243,8 @@ router.beforeEach((to, from, next) => {
       return next()
     },(er)=>{
       // session timeout or not login
+      localStorage.removeItem("token");
+
       if(er?.response?.status == 401)
       {
         console.error(er.response.data);
@@ -249,6 +255,8 @@ router.beforeEach((to, from, next) => {
         }
         return next()
     })
+  }
+    
   }
   else{
     next()

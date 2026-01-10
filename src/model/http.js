@@ -15,20 +15,26 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json;charset=UTF-8",
   },
-  withCredentials: false,
+  //withCredentials: false,
 });
-
+api.interceptors.request.use(config => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
 
 
 function InitAxiosForSession()  
 {
     axios.defaults.timeout = 300000;
-    axios.defaults.withCredentials = false // allow use server api with  Session
+    //axios.defaults.withCredentials = false // allow use server api with  Session
 }
 function InitAxiosForNoNSession()  
 {
     axios.defaults.timeout = 300000;
-    axios.defaults.withCredentials = false // allow use server api with  Session
+    //axios.defaults.withCredentials = false // allow use server api with  Session
 }
 
 // function Post(url, params, success, error) {

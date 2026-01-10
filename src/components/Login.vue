@@ -108,46 +108,39 @@ export default {
     },
 
     handleLogin() {
-      const { Email, Password } = this.loginForm;
+  this.loading = true;
 
-      if (!Email || !Password) {
-        this.Message = this.$t('Vui lòng nhập đầy đủ email và mật khẩu');
-        this.color = "error";
-        this.mess = true;
-        return;
-      }
+  Login(this.loginForm, (res) => {
+    const data = res.data;
 
-      this.loading = true;
+    if (data.status === "success") {
+      const { token, user } = data.data;
 
-      Login(this.loginForm, (dat) => {
-        console.log(dat)
-        if (dat.data.status == "success" && dat.status == 200) {
-          this.$store.commit("setEmpInfor", dat.data.data);
-          localStorage.setItem("name", dat.data.data.ID);
-          localStorage.setItem("nameShow", dat.data.data.EmpName);
-          localStorage.setItem("loginTimestamp", Date.now());
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
+      this.$store.commit("setEmpInfor", user);
 
-          this.Message = this.$t('Đăng nhập thành công');
-          this.color = "success";
-          this.mess = true;
-          this.loading = false;
+      this.Message = this.$t("Đăng nhập thành công");
+      this.color = "success";
+      this.mess = true;
 
-          const redirect = this.$route.query.redirect || "/home";
-          this.$router.replace(redirect);
-        } else {
-          this.Message = dat.data.message || this.$t('Đăng nhập thất bại');
-          this.color = "error";
-          this.mess = true;
-          this.loading = false;
-        }
-      }, (err) => {
-        this.Message = err?.message || this.$t('Có lỗi xảy ra');
-        this.color = "error";
-        this.mess = true;
-        this.loading = false;
-      });
-    },
+      const redirect = this.$route.query.redirect || "/home";
+      this.$router.replace(redirect);
+    } else {
+      this.Message = data.message;
+      this.color = "error";
+      this.mess = true;
+    }
+
+    this.loading = false;
+    }, () => {
+      this.Message = this.$t("Có lỗi xảy ra");
+      this.color = "error";
+      this.mess = true;
+      this.loading = false;
+    });
+  }
   },
 };
 </script>
