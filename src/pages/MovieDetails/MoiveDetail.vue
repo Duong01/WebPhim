@@ -1164,12 +1164,16 @@ export default {
               },
               (err) => {
                 localStorage.removeItem("token");
+                localStorage.removeItem("favoriteMovies");
+                localStorage.removeItem("user");
                 alert(err);
               }
             );
           } else {
             alert(dat.message);
             localStorage.removeItem("token");
+            localStorage.removeItem("favoriteMovies");
+            localStorage.removeItem("user");
             this.$router.push({
               path: "/login",
               query: { redirect: this.$route.fullPath },

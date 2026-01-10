@@ -31,6 +31,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
         alert("Tài khoản của bạn đã hết hạn đăng nhập")
       localStorage.removeItem("token");
+      localStorage.removeItem("favoriteMovies");
       localStorage.removeItem("user");
       window.location.href = "/login";
     }

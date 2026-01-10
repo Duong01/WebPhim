@@ -721,11 +721,10 @@ export default {
     },
     Logout() {
       localStorage.removeItem("token");
+      localStorage.removeItem("favoriteMovies");
       localStorage.removeItem("user");
 
-      this.$store.commit("clearUser");
-
-      this.$router.replace("/login");
+      this.$router.push("/login");
     },
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {

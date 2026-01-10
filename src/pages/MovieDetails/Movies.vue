@@ -1009,15 +1009,21 @@ CheckSession(
                 }
                 else{
                   localStorage.removeItem("token");
+                  localStorage.removeItem("favoriteMovies");
+                  localStorage.removeItem("user");
                   alert(dat.data.message)
                 }
 
               }, (err) =>{
                 localStorage.removeItem("token");
+                localStorage.removeItem("favoriteMovies");
+                localStorage.removeItem("user");
                 console.log(err)
               })
             } else {
               localStorage.removeItem("token");
+              localStorage.removeItem("favoriteMovies");
+              localStorage.removeItem("user");
               alert(dat.message);
               this.$router.push({
                 path: '/login',

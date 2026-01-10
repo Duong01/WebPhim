@@ -50,13 +50,16 @@ async function bootstrap() {
         store.commit("setEmpInfor", res.data.data);
       } else {
         localStorage.removeItem("token");
+        localStorage.removeItem("favoriteMovies");
+      localStorage.removeItem("user");
       }
       });
       
       
     } catch (err) {
-      console.warn("Session invalid / expired");
       localStorage.removeItem("token");
+      localStorage.removeItem("favoriteMovies");
+      localStorage.removeItem("user");
     }
   }
 

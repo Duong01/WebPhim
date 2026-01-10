@@ -1,83 +1,83 @@
 <template>
-  <v-container fluid class="fill-height">
-    <v-row align="center" justify="center" style="flex-direction: column">
-      <v-btn icon variant="text" class="ma-4" @click="goBack">
-        <v-icon>mdi-arrow-left</v-icon>
-         Back
-      </v-btn>
+  <v-container fluid class="login-bg fill-height">
 
+    
+
+    <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-card elevation="12" class="pa-6 rounded-xl">
-          <v-card-title class="text-h5 text-center font-weight-bold">
-            {{ $t('Đăng nhập') }}
-          </v-card-title>
+        <v-btn
+      icon
+      variant="text"
+      class="back-btn"
+      @click="goBack"
+    >
+      <v-icon size="24">mdi-arrow-left</v-icon>
+      Back
+    </v-btn>
+        <v-card class="pa-8 rounded-xl login-card" elevation="14">
 
-          <v-card-subtitle class="text-center mb-4">
-            {{ $t('Chào mừng bạn quay lại! Vui lòng đăng nhập.') }}
-          </v-card-subtitle>
+          <!-- Logo / Title -->
+          <div class="text-center mb-6">
+            <v-icon size="48" color="primary">mdi-movie-open</v-icon>
+            <h2 class="mt-2 font-weight-bold">{{ $t('Đăng nhập') }}</h2>
+            <p class="text-caption text-grey">
+              {{ $t('Chào mừng bạn quay lại') }}
+            </p>
+          </div>
 
+          <!-- FORM -->
           <v-form ref="loginFormRef" @submit.prevent="handleLogin">
-            <!-- Email -->
             <v-text-field
               v-model="loginForm.Email"
               label="Email"
-              prepend-inner-icon="mdi-email"
-              :placeholder="$t('Nhập email')"
-              type="email"
-              clearable
-              class="mb-3"
-              :rules="emailRules"
+              prepend-inner-icon="mdi-email-outline"
+              variant="outlined"
               required
             />
 
-            <!-- Password -->
             <v-text-field
               v-model="loginForm.Password"
               label="Mật khẩu"
-              prepend-inner-icon="mdi-lock"
-              :placeholder="$t('Nhập mật khẩu')"
-              type="password"
-              
-              class="mb-3"
+              :type="showPassword ? 'text' : 'password'"
+              prepend-inner-icon="mdi-lock-outline"
+              :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              @click:append-inner="showPassword = !showPassword"
+              variant="outlined"
               required
             />
 
-            <!-- Forgot password -->
             <div class="text-right mb-4">
-              <router-link  class="text-caption text-decoration-underline">
+              <router-link class="text-caption text-primary">
                 {{ $t('Quên mật khẩu?') }}
               </router-link>
             </div>
 
-            <!-- Login button -->
             <v-btn
               type="submit"
-              color="primary"
               block
-              class="mb-4"
               size="large"
+              color="primary"
               :loading="loading"
-              @click="handleLogin"
             >
+              <v-icon start>mdi-login</v-icon>
               {{ $t('Đăng nhập') }}
             </v-btn>
 
-            <!-- Divider -->
-            <v-divider class="my-4"></v-divider>
+            <v-divider class="my-6" />
 
-            <!-- Sign up link -->
-            <div class="text-center">
-              <span>{{ $t('Chưa có tài khoản?') }}</span>
-              <router-link to="/register" class="ml-1 text-decoration-underline font-weight-bold">
+            <div class="text-center text-caption">
+              {{ $t('Chưa có tài khoản?') }}
+              <router-link to="/register" class="font-weight-bold text-primary ml-1">
                 {{ $t('Đăng ký') }}
               </router-link>
             </div>
           </v-form>
+
         </v-card>
       </v-col>
     </v-row>
 
-    <v-snackbar v-model="mess" :timeout="5000" :color="color">
+    <v-snackbar v-model="mess" :color="color" timeout="4000">
       {{ Message }}
     </v-snackbar>
   </v-container>
@@ -90,6 +90,7 @@ export default {
   name: "LoginPage",
   data() {
     return {
+      showPassword: false,
       loginForm: { Email: "", Password: "" },
       Message: "",
       color: "",
@@ -104,7 +105,11 @@ export default {
   
   methods: {
     goBack() {
-      this.$router.go(-1);
+      if (window.history.length > 1) {
+      this.$router.back();
+    } else {
+      this.$router.push("/home");
+    }
     },
 
     handleLogin() {
@@ -145,5 +150,19 @@ export default {
 };
 </script>
 
+
 <style scoped>
+.login-bg {
+  background: linear-gradient(135deg, #54585f, #413333);
+}
+
+.login-card {
+  backdrop-filter: blur(8px);
+}
+
+.back-btn {
+  width: auto;
+  color: rgb(218, 190, 190);
+}
 </style>
+

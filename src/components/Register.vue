@@ -1,12 +1,13 @@
 <template>
   <v-container fluid class="fill-height">
     <v-row justify="center" align="center" style="flex-direction: column">
+        
+
+      <v-col cols="12" sm="10" md="6" lg="4">
         <v-btn icon variant="text" class="ma-4" @click="goBack">
             <v-icon>mdi-arrow-left</v-icon>
              Go Home
         </v-btn>
-
-      <v-col cols="12" sm="10" md="6" lg="4">
         <v-card class="pa-6 rounded-xl" elevation="12">
           
           <!-- Tiêu đề -->
@@ -124,6 +125,8 @@ export default {
       },
       confirmPassword: '',
       agree: false,
+      showPassword: false,
+    showConfirm: false,
       snackbar: false,
         snackbarMessage: '',
         snackbarColor: 'success',
@@ -136,17 +139,14 @@ export default {
   },
   computed: {
     isValid() {
-      const f = this.registerForm;
-      return (
-        f.BirthDay &&
-        f.EmpName &&
-        f.Password &&
-        f.Phone &&
-        this.confirmPassword === f.Password &&
-        this.agree
-
-      );
-    },
+    return (
+      this.registerForm.EmpName &&
+      this.registerForm.Email &&
+      this.registerForm.Password &&
+      this.confirmPassword === this.registerForm.Password &&
+      this.agree
+    );
+  },
     
   },
   methods: {
@@ -188,5 +188,16 @@ export default {
 </script>
 
 <style scoped>
+.login-bg {
+  background: linear-gradient(135deg, #54585f, #413333);
+}
 
+.login-card {
+  backdrop-filter: blur(8px);
+}
+
+.back-btn {
+  width: auto;
+  color: rgb(218, 190, 190);
+}
 </style>
