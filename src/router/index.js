@@ -1,7 +1,7 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
 // import { CheckSession } from "@/model/api";
-import store from "@/store";
+// import store from "@/store";
 
 const routes = [
   {
@@ -221,13 +221,18 @@ router.onError((error) => {
   }
 });
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!store.state.empInfor;
 
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    return next({
+  //const isLoggedIn = !!store.state.empInfor;
+
+  if (to.meta.requiresAuth) {
+    const token = localStorage.getItem("token");
+    if (!token){
+      return next({
       path: "/login",
       query: { redirect: to.fullPath }
     });
+    }
+    
   }
 
   next();

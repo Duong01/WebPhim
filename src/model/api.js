@@ -1,4 +1,5 @@
 // import axios from "axios"
+import http1 from "./http1"
 import http from "./http"
 
 // Phim moi cap nhat
@@ -54,56 +55,56 @@ let urlSchedule="https://hoathinh3d.li/wp-json/movie-schedule/"
 export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
 export const urlImage1 = "https://phimapi.com/image.php?url="
 
- export const ListmovieNew= (params, success, error) => http.GetNew(`${URL}`, params, success, error)
+ export const ListmovieNew= (params, success, error) => http1.GetNew(`${URL}`, params, success, error)
 
- export const ListMovieNew1= (params, success, error) => http.GetNew(`${urlMovies}${params}`, {}, success, error)
+ export const ListMovieNew1= (params, success, error) => http1.GetNew(`${urlMovies}${params}`, {}, success, error)
 
- export const ListmovieInfor= (params, success, error) => http.GetNew(`${URLInfor}`, params, success, error)
- export const MoveInfor= (params, success, error) => http.GetNew(`${URLInfor}${params}`, {}  , success, error)
+ export const ListmovieInfor= (params, success, error) => http1.GetNew(`${URLInfor}`, params, success, error)
+ export const MoveInfor= (params, success, error) => http1.GetNew(`${URLInfor}${params}`, {}  , success, error)
 
- export const MoveInfor1= (params, success, error) => http.GetNew(`${URLInfor1}${params}`, {}  , success, error)
+ export const MoveInfor1= (params, success, error) => http1.GetNew(`${URLInfor1}${params}`, {}  , success, error)
 
 
  // the loai phim
- export const Categoris= (params,success, error) => http.GetNew(`${urlCategoris}`,params  , success, error)
+ export const Categoris= (params,success, error) => http1.GetNew(`${urlCategoris}`,params  , success, error)
 
- export const Categoris1= (params,success, error) => http.GetNew(`${urlCategoris1}${params}`,{}  , success, error)
+ export const Categoris1= (params,success, error) => http1.GetNew(`${urlCategoris1}${params}`,{}  , success, error)
 
- export const Categoris2= (success, error) => http.GetNew(`${urlCategoris2}`  , success, error)
+ export const Categoris2= (success, error) => http1.GetNew(`${urlCategoris2}`  , success, error)
 
  // danh sach phim theo the loai phim
- export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris1}${params}`, {}  , success, error)
+ export const ListMovieByCate= (params, success, error) => http1.GetNew(`${urlListMoiveByCategoris1}${params}`, {}  , success, error)
 
- export const ListMovieByCate1= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris1}${params}`, {}  , success, error)
+ export const ListMovieByCate1= (params, success, error) => http1.GetNew(`${urlListMoiveByCategoris1}${params}`, {}  , success, error)
 
- export const ListMovieByCateHome= (params, success, error) => http.GetNew(`${urlCategorisHome}${params}`, {}  , success, error)
+ export const ListMovieByCateHome= (params, success, error) => http1.GetNew(`${urlCategorisHome}${params}`, {}  , success, error)
 
- export const ListMovieByCateHome1= (params, success, error) => http.GetNew(`${urlCategorisHome1}${params}`, {}  , success, error)
+ export const ListMovieByCateHome1= (params, success, error) => http1.GetNew(`${urlCategorisHome1}${params}`, {}  , success, error)
 
  // the loai phim
- export const CategorisDetail= (params, success, error) => http.GetNew(`${urlSchedule}${params}`, {}  , success, error)
+ export const CategorisDetail= (params, success, error) => http1.GetNew(`${urlSchedule}${params}`, {}  , success, error)
     
  
  // quoc gia
- export const City= (params, success, error) => http.GetNew(`${urlCity}`, params  , success, error)
- export const City1= (params, success, error) => http.GetNew(`${urlCity1}`, params  , success, error)
- export const City2= ( success, error) => http.GetNew(`${urlCity2}`, success, error)
+ export const City= (params, success, error) => http1.GetNew(`${urlCity}`, params  , success, error)
+ export const City1= (params, success, error) => http1.GetNew(`${urlCity1}`, params  , success, error)
+ export const City2= ( success, error) => http1.GetNew(`${urlCity2}`, success, error)
 
  // the loai phim
- export const CityDetail= (params, success, error) => http.GetNew(`${urlCity}${params}`, {}  , success, error)
+ export const CityDetail= (params, success, error) => http1.GetNew(`${urlCity}${params}`, {}  , success, error)
 
- export const CityDetail1= (params, success, error) => http.GetNew(`${urlCity1}${params}`, {}  , success, error)
+ export const CityDetail1= (params, success, error) => http1.GetNew(`${urlCity1}${params}`, {}  , success, error)
 
  
  // tim kiem phim
- export const Search= (params, success, error) => http.GetNew(`${urlSearch}`, params  , success, error)
+ export const Search= (params, success, error) => http1.GetNew(`${urlSearch}`, params  , success, error)
 
- export const Search1= (params, success, error) => http.GetNew(`${urlSearch1}`, params  , success, error)
- export const GetMovieSchedule= (params, success, error) => http.GetNew(`${urlSearch1}`, params  , success, error)
+ export const Search1= (params, success, error) => http1.GetNew(`${urlSearch1}`, params  , success, error)
+ export const GetMovieSchedule= (params, success, error) => http1.GetNew(`${urlSearch1}`, params  , success, error)
  
 
 // api login
- export const CheckSession = ( success, error) => http.GetNew(`/AccountApi/CheckSession`,"",success, error)
+ export const CheckSession = ( success, error) => http.Get(`/AccountApi/CheckSession`,"",success, error)
 
  export const Login = (params, success, error) => http.Post(`/AccountApi/Login`, params,success, error)
 

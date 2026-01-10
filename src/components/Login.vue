@@ -37,7 +37,7 @@
               prepend-inner-icon="mdi-lock"
               :placeholder="$t('Nhập mật khẩu')"
               type="password"
-              clearable
+              
               class="mb-3"
               required
             />

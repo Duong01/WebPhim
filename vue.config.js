@@ -29,3 +29,4 @@ module.exports = defineConfig({
     },
   },
 })
+//"destination": "http://apiwebphim.somee.com/api/:path*"
