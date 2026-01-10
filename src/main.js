@@ -27,7 +27,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import "intersection-observer"
 import ResizeObserver from "resize-observer-polyfill"
 
-import { CheckSession } from "@/model/api"; // ✅ THÊM
+import { CheckSession } from "@/model/api";
 
 const vuetify = createVuetify({
   components,
@@ -44,17 +44,19 @@ async function bootstrap() {
 
   if (token) {
     try {
-      const res = await CheckSession();
-      if (res.data.status === "success") {
+      await CheckSession((res) =>{
+        console.log(res)
+        if (res.data.status === "success") {
         store.commit("setEmpInfor", res.data.data);
       } else {
         localStorage.removeItem("token");
-        store.commit("clearEmpInfor");
       }
+      });
+      
+      
     } catch (err) {
       console.warn("Session invalid / expired");
       localStorage.removeItem("token");
-      store.commit("clearEmpInfor");
     }
   }
 

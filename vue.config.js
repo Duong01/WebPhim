@@ -8,6 +8,7 @@ module.exports = defineConfig({
       '/api': {
         // target: 'https://ophim1.com;https://phimapi.com/;http://apiwebphim.somee.com', // API gốc
         target: 'http://apiwebphim.somee.com', // API gốc
+        //target: 'http://localhost:51763/api', // API gốc
         changeOrigin: true,
         secure: false, // Bỏ kiểm tra SSL (nếu cần)
         pathRewrite: {

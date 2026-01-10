@@ -337,7 +337,10 @@
         <span>{{ $t("Hoạt hình") }}</span>
       </v-btn>
 
-      <v-btn to="/favorite">
+      <v-btn 
+        :to="{ path: '/favorite' }"
+          :class="{ 'text-green': $route.path === '/favorite' }"
+      >
         <v-icon >mdi-heart</v-icon>
         <span>{{ $t("Đã lưu") }}</span>
       </v-btn>
