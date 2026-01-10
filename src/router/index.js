@@ -256,6 +256,12 @@ router.beforeEach((to, from, next) => {
         return next()
     })
   }
+  else{
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+  }
     
   }
   else{
