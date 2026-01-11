@@ -46,7 +46,7 @@ let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
 
 let urlSearch1 = "https://phimapi.com/v1/api/tim-kiem"
 
-let urlSchedule="https://hoathinh3d.li/wp-json/movie-schedule/"
+let urlSchedule="https://hoathinh3d.vn/api/movies.php"
 // api login
 //let urlAccount = "https://apiwebphim.onrender.com/api/auth"
 

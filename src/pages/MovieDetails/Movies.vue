@@ -930,11 +930,13 @@ export default {
     },
     formatEpisode(text) {
       // Ví dụ: "Tập 1" → "tap01"
-      const num = parseInt(text.replace(/\D/g, ""), 10);
       console.log(text)
-      console.log(num)
+      let num = parseInt(text.replace(/\D/g, ""), 10);
+      const matchFraction = text.match(/\((\d+)\s*\/\s*(\d+)\)/);
+      if (matchFraction) {
+        num = parseInt(matchFraction[2], 10);
+      }
       if (isNaN(num)) return text;
-
       const padded = num < 10 ? `0${num}` : `${num}`;
       return `tap${padded}`;
     },

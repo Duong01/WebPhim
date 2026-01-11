@@ -34,28 +34,31 @@
           sm="6"
           md="4"
         >
-          <v-card class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.permalink)">
-            <v-img
-              :src="movie.thumbnail"
-              aspect-ratio="2/3"
-              cover
-              
-              loading="lazy"
-              class="movie-thumb"
-            >
-              <template #placeholder>
-                <div class="d-flex align-center justify-center fill-height">
-                  <v-progress-circular
-                    color="grey-lighten-4"
-                    indeterminate
-                  ></v-progress-circular>
-                </div>
-              </template>
-            </v-img>
+          <v-card class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.slug)">
+            <div class="card-poster">
+              <v-img
+                :src="'https://hoathinh3d.vn'+movie.thumbnail"
+                aspect-ratio="2/3"
+                cover
+                
+                loading="lazy"
+                class="movie-thumb"
+              >
+                <template #placeholder>
+                  <div class="d-flex align-center justify-center fill-height">
+                    <v-progress-circular
+                      color="grey-lighten-4"
+                      indeterminate
+                    ></v-progress-circular>
+                  </div>
+                </template>
+              </v-img>
+
+            </div>
 
             <!-- Giờ chiếu -->
             <div class="early-time">
-              {{ movie.early_screening_time }}
+              {{ movie.broadcast_time }}
             </div>
 
             <!-- Thông tin -->
@@ -64,7 +67,7 @@
                 {{ movie.title }}
               </div>
               <div class="movie-ep">
-                📺 Tập {{ movie.latest_episode }}
+                📺 Tập {{ movie.current_episode }}
               </div>
             </div>
           </v-card>
@@ -75,7 +78,7 @@
     </v-card>
 
     <!-- PHIM THƯỜNG -->
-    <v-card class="schedule-box" >
+    <!-- <v-card class="schedule-box" >
       <v-row v-if="regularMovies.length">
         <v-col
           v-for="(movie, index) in regularMovies"
@@ -84,7 +87,6 @@
           sm="6"
           md="4"
         >
-          <!-- Có dữ liệu -->
           <v-card v-if="movie" class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.permalink)">
             <v-img
               :src="movie.thumbnail"
@@ -108,7 +110,6 @@
             </div>
           </v-card>
 
-          <!-- Skeleton -->
           <v-skeleton-loader
             v-else
             type="image, text"
@@ -117,7 +118,7 @@
         </v-col>
       </v-row>
       <div v-else class="empty-text">Không có phim chiếu sớm</div>
-    </v-card>
+    </v-card> -->
 
   </v-container>
 </template>
@@ -128,18 +129,17 @@ export default {
   name: "MovieSchedule",
   data() {
     return {
-      url: "v1/daily",
       daily: "",
       earlyMovies: [],
       regularMovies: [],
       days: [
-        { label: "Chủ Nhật", value: "chu-nhat" },
-        { label: "Thứ Hai", value: "thu-hai" },
-        { label: "Thứ Ba", value: "thu-ba" },
-        { label: "Thứ Tư", value: "thu-tu" },
-        { label: "Thứ Năm", value: "thu-nam" },
-        { label: "Thứ Sáu", value: "thu-sau" },
-        { label: "Thứ Bảy", value: "thu-bay" },
+        { label: "Chủ Nhật", value: "0" },
+        { label: "Thứ Hai", value: "1" },
+        { label: "Thứ Ba", value: "2" },
+        { label: "Thứ Tư", value: "3" },
+        { label: "Thứ Năm", value: "4" },
+        { label: "Thứ Sáu", value: "5" },
+        { label: "Thứ Bảy", value: "6" },
       ],
     };
   },
@@ -157,10 +157,10 @@ export default {
       this.ListMovie();
     },
     ListMovie() {
-      CategorisDetail(`${this.url}?day=${this.daily}`,(dat)=>{
+      CategorisDetail(`?action=getSchedule&day=${this.daily}`,(dat)=>{
         if(dat.success == true){
-            this.earlyMovies = dat.early_movies
-            this.regularMovies = dat.regular_movies
+            this.earlyMovies = dat.movies
+            // this.regularMovies = dat.movies
         }
         console.log(dat)
       },(err)=>{
@@ -188,7 +188,12 @@ export default {
   background: #1c1c1c;
   color: #fff;
 }
-
+.card-poster {
+    width: 100px;
+    height: 140px;
+    flex-shrink: 0;
+    position: relative;
+}
 .schedule-header {
   text-align: center;
   font-size: 22px;
@@ -252,8 +257,12 @@ export default {
 
 .movie-item {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+    background: #252525;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #333;
 }
 
 .movie-name {
@@ -269,7 +278,7 @@ export default {
 }
 
 .movie-ep {
-  font-size: 12px;
+  font-size: 14px;
   color: #b7dff7;
   white-space: nowrap;
   overflow: hidden;
@@ -291,10 +300,12 @@ export default {
 }
 
 .movie-info {
-  margin: 15px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 .early-thumb {
   width: 80px;

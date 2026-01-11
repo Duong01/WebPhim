@@ -23,21 +23,33 @@
               <!-- VIDEO -->
               <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
               <div class="video-wrapper">
-                <video
-                  ref="videoPlayer"
-                  controls
-                  playsinline
-                  webkit-playsinline
-                  preload="none"
-                  controlslist="nodownload noremoteplayback"
-                  disablepictureinpicture
-                  style="
-                    width: 100%;
-                    height: 100%;
-                    background-color: black;
-                    cursor: pointer;
-                  "
-                ></video>
+                <button
+                  v-if="playTrailerFirst && trailerPlayable"
+                  class="skip-trailer-btn"
+                  @click="playMainVideo"
+                >
+                  Bỏ qua
+                </button>
+                  <!-- <video
+                    ref="videoPlayer"
+                    controls
+                    playsinline
+                    webkit-playsinline
+                    preload="metadata"
+                    controlslist="nodownload noremoteplayback"
+                    disablepictureinpicture
+                    class="video-player"
+                  ></video> -->
+                  <video
+                    ref="videoPlayer"
+                    class="video-player"
+                    controls
+                    playsinline
+                    webkit-playsinline
+                    preload="metadata"
+                    
+                  ></video>
+
                 <iframe
                   ref="videoIframe"
                   style="
@@ -616,6 +628,12 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      // phat trailler
+      playTrailerFirst: false,
+    trailerSkipped: false,
+    trailerPlayable: false,
+    mainVideoUrl: "",
+
       hasLoadedCate: false,
       hasLoadedComment: false,
       showAllEpisodes: false,
@@ -759,6 +777,16 @@ export default {
           );
         }
       }
+      if(this.currentEpisodeIndex == -1){
+        var page = this.page.replace("tap","")
+        if (this.page == "01") {
+          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === page
+          );
+        }
+      }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
 
@@ -766,6 +794,32 @@ export default {
       this.movie.videoUrl =
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
       this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
+
+      // this.mainVideoUrl = this.movie.videoUrl;
+
+      // if (this.movie.trailer_url) {
+      //   let canPlay = false;
+
+      //   if (this.movie.trailer_url.includes("youtube")) {
+      //     canPlay = this.checkYoutubeTrailer(this.movie.trailer_url);
+      //   } else {
+      //     canPlay = await this.checkTrailerPlayable(this.movie.trailer_url);
+      //   }
+
+      //   if (canPlay) {
+      //     this.trailerPlayable = true;
+      //     this.playTrailerFirst = true;
+      //     this.isTrailer = true;
+      //     this.playVideo(this.movie.trailer_url);
+      //     return;
+      //   }
+      // }
+      // // fallback → vào thẳng phim chính
+      // this.trailerPlayable = false;
+      // this.playTrailerFirst = false;
+      // this.isTrailer = false;
+      // this.playVideo(this.mainVideoUrl);
+
       this.playVideo(this.movie.videoUrl);
 
       this.bindVideoEvents();
@@ -788,6 +842,47 @@ export default {
     }
   },
   methods: {
+    checkTrailerPlayable(url) {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    video.src = url;
+    video.muted = true;
+    video.playsInline = true;
+
+    const timeout = setTimeout(() => {
+      cleanup(false);
+    }, 5000); // quá 5s coi như lỗi
+
+    const cleanup = (result) => {
+      clearTimeout(timeout);
+      video.remove();
+      resolve(result);
+    };
+
+    video.addEventListener("loadedmetadata", () => cleanup(true));
+    video.addEventListener("error", () => cleanup(false));
+  });
+},
+checkYoutubeTrailer(url) {
+  return /(?:youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}/.test(url);
+},
+    bindVideoEvents() {
+  const video = this.$refs.videoPlayer;
+  if (!video) return;
+
+  video.addEventListener("ended", () => {
+    if (this.playTrailerFirst && this.trailerPlayable) {
+      this.playMainVideo();
+    }
+  });
+},
+
+playMainVideo() {
+  this.playTrailerFirst = false;
+  this.trailerSkipped = true;
+  this.isTrailer = false;
+  this.playVideo(this.mainVideoUrl);
+},
     timeAgo(timestamp) {
       const time = new Date(timestamp).getTime();
       const now = Date.now();
@@ -1047,16 +1142,16 @@ export default {
       if (this.$refs.lazyComment) observer.observe(this.$refs.lazyComment);
     },
 
-    bindVideoEvents() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
+    // bindVideoEvents() {
+    //   const video = this.$refs.videoPlayer;
+    //   if (!video) return;
 
-      // khi video load xong metadata → mới set currentTime
-      video.addEventListener("loadedmetadata", this.restoreTime);
+    //   // khi video load xong metadata → mới set currentTime
+    //   video.addEventListener("loadedmetadata", this.restoreTime);
 
-      // lưu vị trí xem
-      video.addEventListener("timeupdate", this.saveTime);
-    },
+    //   // lưu vị trí xem
+    //   video.addEventListener("timeupdate", this.saveTime);
+    // },
     saveTime() {
       const video = this.$refs.videoPlayer;
       if (!video) return;
@@ -1664,6 +1759,7 @@ export default {
     padding: 0 !important;
   }
 }
+
 .suggested-item {
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -1991,4 +2087,38 @@ a {
   overflow-y: auto;
   margin: 10px;
 }
+.controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.controls button {
+  color: white;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.controls input[type="range"] {
+  flex: 1;
+}
+.skip-trailer-btn {
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+  z-index: 10;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 </style>

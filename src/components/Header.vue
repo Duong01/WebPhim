@@ -12,8 +12,8 @@
         contain
         class=""
         cover
-        :max-width="smAndDown ? 180 : 120"
-        :max-height="smAndDown ? 60 : 40"
+        :max-width="$vuetify.display.smAndDown ? 120 : 180"
+        :max-height="$vuetify.display.smAndDown ? 40 : 60"
         style="cursor: pointer"
         @click="goHome"
       ></v-img>
@@ -25,6 +25,7 @@
           :to="{ path: '/home' }"
           :class="{ 'text-green': $route.path === '/home' }"
         >
+        <v-icon size="18">mdi-fire</v-icon>
           {{ $t("Trang chủ") }}
         </v-btn>
         <!-- <v-btn
@@ -52,6 +53,7 @@
               :loading="loadingTheLoai"
               :disabled="loadingTheLoai"
             >
+            <v-icon start size="18">mdi-shape</v-icon>
               {{ $t("Thể loại") }}
               <v-icon right>mdi-menu-down</v-icon>
             </v-btn>
@@ -79,6 +81,7 @@
                     class="d-block text-white text-body-2 mb-2"
                     style="text-decoration: none"
                   >
+                  <v-icon size="16" class="mr-1">mdi-filmstrip</v-icon>
                     {{ genre.name }}
                   </RouterLink>
                 </v-col>
@@ -97,6 +100,7 @@
               :loading="loadingQuocGia"
               :disabled="loadingQuocGia"
             >
+            <v-icon start size="18">mdi-earth</v-icon>
               {{ $t("Quốc gia") }}
               <v-icon right>mdi-menu-down</v-icon>
             </v-btn>
@@ -137,6 +141,7 @@
           :to="{ path: '/movie-schedule' }"
           :class="{ 'text-green': $route.path === '/movie-schedule' }"
         >
+        <v-icon start size="18">mdi-calendar</v-icon>
           {{ $t("Lịch chiếu") }}
         </v-btn>
         <!--<v-btn
@@ -311,13 +316,13 @@
         :to="{ path: '/home' }"
         :class="{ 'text-green': $route.path === '/home' }"
       >
-        <v-icon>mdi-home</v-icon>
+        <v-icon size="22">mdi-fire</v-icon>
         <span>{{ $t("Trang chủ") }}</span>
       </v-btn>
       <v-btn 
         :to="{ path: '/phim-bo' }"
         :class="{ 'text-green': $route.path === '/phim-bo' }">
-        <v-icon>mdi-movie</v-icon>
+        <v-icon size="22">mdi-movie</v-icon>
         <span>{{ $t("Phim Bộ") }}</span>
       </v-btn>
       <v-btn
@@ -325,7 +330,7 @@
           :to="{ path: '/phim-le' }"
           :class="{ 'text-green': $route.path === '/phim-le' }"
         >
-        <v-icon>mdi-movie</v-icon>
+        <v-icon size="22">mdi-movie</v-icon>
           <span>{{ $t("Phim Lẻ") }}</span>
       </v-btn>
       <v-btn
@@ -333,7 +338,7 @@
       :class="{ 'text-green': $route.path === '/hoat-hinh' }"
       v-show="$vuetify.display.mdAndUp"
       >
-        <v-icon>mdi-movie</v-icon>
+        <v-icon size="22">mdi-movie</v-icon>
         <span>{{ $t("Hoạt hình") }}</span>
       </v-btn>
 
@@ -341,7 +346,7 @@
         :to="{ path: '/favorite' }"
           :class="{ 'text-green': $route.path === '/favorite' }"
       >
-        <v-icon >mdi-heart</v-icon>
+        <v-icon size="22">mdi-heart</v-icon>
         <span>{{ $t("Đã lưu") }}</span>
       </v-btn>
       <v-btn
@@ -349,7 +354,7 @@
           :class="{ 'text-green': $route.path === '/movie-schedule' }"
           v-show="$vuetify.display.mdAndDown"
         >
-        <v-icon >mdi-calendar</v-icon>
+        <v-icon start size="22">mdi-calendar</v-icon>
           <span>{{ $t("Lịch chiếu") }}</span>
         </v-btn>
       
@@ -364,21 +369,29 @@
           :to="{ path: '/home' }"
           :class="{ 'text-green': $route.path === '/home' }"
         >
-          <v-list-item-title>{{ $t("Trang chủ") }}</v-list-item-title>
+          <v-list-item-title>
+            <v-icon size="16">mdi-fire</v-icon>
+            {{ $t("Trang chủ") }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item
           :to="{ path: '/phim-bo' }"
           :class="{ 'text-green': $route.path === '/phim-bo' }"
         >
-          <v-list-item-title>{{ $t("Phim Bộ") }}</v-list-item-title>
+          <v-list-item-title>
+            <v-icon size="16">mdi-movie</v-icon>
+            {{ $t("Phim Bộ") }}
+            </v-list-item-title>
         </v-list-item>
 
         <v-list-item
           :to="{ path: '/phim-le' }"
           :class="{ 'text-green': $route.path === '/phim-le' }"
         >
-          <v-list-item-title>{{ $t("Phim Lẻ") }}</v-list-item-title>
+          <v-list-item-title>
+        <v-icon size="16">mdi-movie</v-icon>
+            {{ $t("Phim Lẻ") }}
+            </v-list-item-title>
         </v-list-item>
 
         <!-- THỂ LOẠI (submenu) -->
@@ -389,6 +402,7 @@
               :loading="loadingTheLoai"
               :disabled="loadingTheLoai"
             >
+            <v-icon start size="18">mdi-shape</v-icon>
               {{ $t("Thể loại") }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
@@ -399,7 +413,10 @@
                   :to="{ name: 'TheLoai', params: { path: genre.slug } }"
                   @click="drawer = false"
                 >
-                  <v-list-item-title>{{ genre.name }}</v-list-item-title>
+                  <v-list-item-title>
+                    <v-icon size="16" class="mr-1">mdi-filmstrip</v-icon>
+                    {{ genre.name }}
+                    </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-expansion-panel-text>
@@ -412,6 +429,7 @@
               :loading="loadingQuocGia"
               :disabled="loadingQuocGia"
             >
+            <v-icon start size="16">mdi-earth</v-icon>
               {{ $t("Quốc gia") }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
@@ -437,20 +455,26 @@
             :to="{ path: '/tv-shows' }"
             :class="{ 'text-green': $route.path === '/tv-shows' }"
           >
-            <v-list-item-title>{{ $t("TV Show") }}</v-list-item-title>
+            <v-list-item-title>
+              <v-icon size="16">mdi-movie</v-icon>
+              {{ $t("TV Show") }}
+              </v-list-item-title>
           </v-list-item>
           <v-list-item
             :to="{ path: '/hoat-hinh' }"
             :class="{ 'text-green': $route.path === '/hoat-hinh' }"
           >
-            <v-list-item-title>{{ $t("Hoạt hình") }}</v-list-item-title>
+            <v-list-item-title>
+              <v-icon size="16">mdi-movie</v-icon>
+              {{ $t("Hoạt hình") }}
+              </v-list-item-title>
           </v-list-item>
           
           <v-list-item
             :to="{ path: '/movie-schedule' }"
             :class="{ 'text-green': $route.path === '/movie-schedule' }"
           >
-            <v-list-item-title>{{ $t("Lịch chiếu") }}</v-list-item-title>
+            <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Lịch chiếu") }}</v-list-item-title>
           </v-list-item>
         <!-- Theme (chuyển theme) -->
         <v-list-item @click="changeTheme">
@@ -861,5 +885,19 @@ a:hover {
   transform: translateY(100%);
   opacity: 0;
   pointer-events: none;
+}
+.main-navbar {
+  backdrop-filter: blur(10px);
+  background: rgba(18, 18, 18, 0.9);
+}
+
+.text-green {
+  color: #4caf50 !important;
+}
+
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 </style>

@@ -1,6 +1,6 @@
 export default
 {
-    'Trang chủ': 'Home',
+    'Trang chủ': 'Hot',
     'Phim Bộ': 'TV Series',
     'Phim Lẻ': 'Movies',
     'Quốc gia': 'Country',

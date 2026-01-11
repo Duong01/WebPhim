@@ -1,6 +1,6 @@
 export default
 {
-    'Trang chủ': 'Trang chủ',
+    'Trang chủ': 'Hot',
     'Phim Bộ': 'Phim Bộ',
     'Phim Lẻ': 'Phim Lẻ',
     'Quốc gia': 'Quốc gia',
