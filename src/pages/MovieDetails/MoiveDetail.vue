@@ -23,44 +23,40 @@
               <!-- VIDEO -->
               <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
               <div class="video-wrapper">
-                <button
-                  v-if="playTrailerFirst && trailerPlayable"
-                  class="skip-trailer-btn"
-                  @click="playMainVideo"
-                >
-                  Bỏ qua
-                </button>
-                  <!-- <video
-                    ref="videoPlayer"
-                    controls
-                    playsinline
-                    webkit-playsinline
-                    preload="metadata"
-                    controlslist="nodownload noremoteplayback"
-                    disablepictureinpicture
-                    class="video-player"
-                  ></video> -->
-                  <video
-                    ref="videoPlayer"
-                    class="video-player"
-                    controls
-                    playsinline
-                    webkit-playsinline
-                    preload="metadata"
-                    
-                  ></video>
 
-                <iframe
-                  ref="videoIframe"
-                  style="
-                    width: 100%;
-                    aspect-ratio: 16/9;
-                    border: 0;
-                    display: none;
-                  "
-                  allow="autoplay; encrypted-media"
-                ></iframe>
-              </div>
+  <!-- NÚT BỎ QUA -->
+  <button
+    v-if="playTrailerFirst && trailerPlayable"
+    class="skip-trailer-btn"
+    @click="playMainVideo"
+  >
+    Bỏ qua
+  </button>
+
+  <!-- VIDEO CHÍNH (.m3u8) -->
+  <video
+    ref="videoPlayer"
+    class="video-player"
+    controls
+    playsinline
+    webkit-playsinline
+    preload="metadata"
+    :style="{ display: isTrailer ? 'none' : 'block' }"
+  ></video>
+
+  <!-- TRAILER YOUTUBE -->
+  <iframe
+    ref="videoIframe"
+    :style="{
+      width: '100%',
+      aspectRatio: '16/9',
+      border: 0,
+      display: isTrailer ? 'block' : 'none'
+    }"
+    allow="autoplay; encrypted-media"
+  ></iframe>
+
+</div>
 
               <!-- nut next tap và back tap -->
               <div
@@ -814,8 +810,10 @@ export default {
             this.playTrailerFirst = true;
             this.isTrailer = true;
 
-            this.playVideo(this.movie.trailer_url);
-            this.bindVideoEvents();
+            // this.playVideo(this.movie.trailer_url);
+            // this.bindVideoEvents();
+            // return;
+            this.playYoutubeTrailer(this.movie.trailer_url);
             return;
           }
         }
@@ -849,6 +847,34 @@ export default {
     }
   },
   methods: {
+    playYoutubeTrailer(url) {
+  const iframe = this.$refs.videoIframe;
+  if (!iframe) return;
+
+  const videoId = this.extractYoutubeId(url);
+  if (!videoId) return;
+
+  iframe.src =
+    `https://www.youtube.com/embed/${videoId}` +
+    `?autoplay=1&controls=0&rel=0&mute=1&enablejsapi=1`;
+
+  this.isTrailer = true;
+  this.startTrailerFallback(); // fallback nếu user không tương tác
+},
+extractYoutubeId(url) {
+  const match = url.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
+  );
+  return match ? match[1] : null;
+},
+startTrailerFallback() {
+  // ví dụ: 15s auto skip
+  this.trailerTimeout = setTimeout(() => {
+    if (this.isTrailer) {
+      this.playMainVideo();
+    }
+  }, 15000);
+},
     checkTrailerPlayable(url) {
   return new Promise((resolve) => {
     const video = document.createElement("video");
@@ -889,6 +915,13 @@ playMainVideo() {
   this.trailerSkipped = true;
   this.isTrailer = false;
 
+  clearTimeout(this.trailerTimeout);
+
+  // tắt iframe
+  const iframe = this.$refs.videoIframe;
+  if (iframe) iframe.src = "";
+
+  // phát phim chính
   this.playVideo(this.mainVideoUrl);
 },
     timeAgo(timestamp) {
@@ -1222,8 +1255,10 @@ playMainVideo() {
         if (iframe) iframe.style.display = "none";
       } else {
         // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
-        video.src = url;
-        video.play();
+        if (!url.endsWith(".m3u8")) {
+          video.src = url;
+          video.play();
+        }
       }
     },
     DownloadVideo(linkdown) {

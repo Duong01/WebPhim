@@ -27,7 +27,7 @@
             class="banner-img"
             width="100%"
             height="85vh"
-            loading="lazy"
+            :v-lazy="movie.thumb_url"
             cover
           >
           <template #placeholder>
@@ -70,6 +70,7 @@
                   width="30%"
                   cover
                   @click="goToWatch('first')"
+                  :v-lazy="movie.poster_url"
                   v-show="$vuetify.display.mdAndUp"
                 >
                 <template #placeholder>
@@ -1044,6 +1045,9 @@ CheckSession(
     },
 
     getOptimizedImage(imagePath) {
+      if(imagePath.includes("img.ophim.live")){
+        return imagePath
+      }
       return `${imagePath.includes("https://phimimg.com/upload") ? this.urlImage1 + imagePath : this.urlImage1 + "https://phimimg.com/" + imagePath}`;
       // }
     },
