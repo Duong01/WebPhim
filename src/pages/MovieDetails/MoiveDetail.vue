@@ -630,9 +630,9 @@ export default {
     return {
       // phat trailler
       playTrailerFirst: false,
-    trailerSkipped: false,
-    trailerPlayable: false,
-    mainVideoUrl: "",
+      trailerSkipped: false,
+      trailerPlayable: false,
+      mainVideoUrl: "",
 
       hasLoadedCate: false,
       hasLoadedComment: false,
@@ -767,7 +767,6 @@ export default {
       window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(this.slug);
       if (this.page) {
-        console.log(this.page);
 
         if (this.page == "01") {
           this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
@@ -795,34 +794,42 @@ export default {
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
       this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
 
-      // this.mainVideoUrl = this.movie.videoUrl;
+      // lưu video chính
+        this.mainVideoUrl = this.movie.videoUrl;
 
-      // if (this.movie.trailer_url) {
-      //   let canPlay = false;
+        // nếu có trailer
+        if (this.movie.trailer_url) {
+          let canPlay = false;
 
-      //   if (this.movie.trailer_url.includes("youtube")) {
-      //     canPlay = this.checkYoutubeTrailer(this.movie.trailer_url);
-      //   } else {
-      //     canPlay = await this.checkTrailerPlayable(this.movie.trailer_url);
-      //   }
+          // trailer youtube
+          if (this.movie.trailer_url.includes("youtube")) {
+            canPlay = this.checkYoutubeTrailer(this.movie.trailer_url);
+          } else {
+            // trailer mp4 / m3u8
+            canPlay = await this.checkTrailerPlayable(this.movie.trailer_url);
+          }
 
-      //   if (canPlay) {
-      //     this.trailerPlayable = true;
-      //     this.playTrailerFirst = true;
-      //     this.isTrailer = true;
-      //     this.playVideo(this.movie.trailer_url);
-      //     return;
-      //   }
-      // }
-      // // fallback → vào thẳng phim chính
-      // this.trailerPlayable = false;
-      // this.playTrailerFirst = false;
-      // this.isTrailer = false;
-      // this.playVideo(this.mainVideoUrl);
+          if (canPlay) {
+            this.trailerPlayable = true;
+            this.playTrailerFirst = true;
+            this.isTrailer = true;
 
-      this.playVideo(this.movie.videoUrl);
+            this.playVideo(this.movie.trailer_url);
+            this.bindVideoEvents();
+            return;
+          }
+        }
 
-      this.bindVideoEvents();
+        // fallback → vào thẳng phim chính
+        this.playTrailerFirst = false;
+        this.trailerPlayable = false;
+        this.isTrailer = false;
+        this.playVideo(this.mainVideoUrl);
+        this.bindVideoEvents();
+
+      //this.playVideo(this.movie.videoUrl);
+
+      //this.bindVideoEvents();
       console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
@@ -870,17 +877,18 @@ checkYoutubeTrailer(url) {
   const video = this.$refs.videoPlayer;
   if (!video) return;
 
-  video.addEventListener("ended", () => {
+  video.onended = () => {
     if (this.playTrailerFirst && this.trailerPlayable) {
       this.playMainVideo();
     }
-  });
+  };
 },
 
 playMainVideo() {
   this.playTrailerFirst = false;
   this.trailerSkipped = true;
   this.isTrailer = false;
+
   this.playVideo(this.mainVideoUrl);
 },
     timeAgo(timestamp) {
@@ -2111,14 +2119,18 @@ a {
 }
 .skip-trailer-btn {
   position: absolute;
-  bottom: 40px;
-  right: 20px;
+  right: 16px;
+  bottom: 16px;
   z-index: 10;
+  background: rgba(0,0,0,0.7);
   color: #fff;
-  border: none;
+  border: 1px solid #fff;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+.skip-trailer-btn:hover {
+  background: #ff0000;
 }
 
 </style>
