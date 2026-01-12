@@ -32,12 +32,15 @@
   >
     Bỏ qua
   </button>
-
+<div v-if="showTrailerNotice" class="trailer-notice-overlay">
+  Trailer sẽ được phát trước
+</div>
   <!-- VIDEO CHÍNH (.m3u8) -->
   <video
     ref="videoPlayer"
     class="video-player"
     controls
+    autoplay
     playsinline
     webkit-playsinline
     preload="metadata"
@@ -604,7 +607,6 @@
     </div>
   </v-fade-transition>
 </template>
-
 <script>
 import {
   MoveInfor,
@@ -629,6 +631,8 @@ export default {
       trailerSkipped: false,
       trailerPlayable: false,
       mainVideoUrl: "",
+      ytPlayer: null,
+      showTrailerNotice: false,
 
       hasLoadedCate: false,
       hasLoadedComment: false,
@@ -823,12 +827,16 @@ export default {
         this.trailerPlayable = false;
         this.isTrailer = false;
         this.playVideo(this.mainVideoUrl);
-        this.bindVideoEvents();
 
       //this.playVideo(this.movie.videoUrl);
 
       //this.bindVideoEvents();
       console.log(this.currentEpisodeIndex);
+      if (!window.YT) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+      }
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
 
@@ -849,17 +857,43 @@ export default {
   methods: {
     playYoutubeTrailer(url) {
   const iframe = this.$refs.videoIframe;
-  if (!iframe) return;
-
   const videoId = this.extractYoutubeId(url);
-  if (!videoId) return;
-
-  iframe.src =
-    `https://www.youtube.com/embed/${videoId}` +
-    `?autoplay=1&controls=0&rel=0&mute=1&enablejsapi=1`;
+  if (!iframe || !videoId) return;
 
   this.isTrailer = true;
-  this.startTrailerFallback(); // fallback nếu user không tương tác
+
+  // Hiển thị thông báo 2 giây trước khi phát trailer
+  this.showTrailerNotice = true;
+  setTimeout(() => {
+    this.showTrailerNotice = false;
+    this.startYoutubePlayer(videoId);
+  }, 3000);
+
+},
+startYoutubePlayer(videoId) {
+  // chờ YT API sẵn sàng
+  const waitYT = setInterval(() => {
+    if (window.YT && window.YT.Player) {
+      clearInterval(waitYT);
+      this.initYoutubePlayer(videoId);
+    }
+  }, 100);
+},
+
+initYoutubePlayer(videoId) {
+  this.ytPlayer = new window.YT.Player(this.$refs.videoIframe, {
+    videoId,
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      rel: 0,
+      mute: 1,
+      playsinline: 1
+    },
+    events: {
+      onReady: () => {}
+    }
+  });
 },
 extractYoutubeId(url) {
   const match = url.match(
@@ -867,14 +901,7 @@ extractYoutubeId(url) {
   );
   return match ? match[1] : null;
 },
-startTrailerFallback() {
-  // ví dụ: 15s auto skip
-  this.trailerTimeout = setTimeout(() => {
-    if (this.isTrailer) {
-      this.playMainVideo();
-    }
-  }, 15000);
-},
+
     checkTrailerPlayable(url) {
   return new Promise((resolve) => {
     const video = document.createElement("video");
@@ -899,29 +926,21 @@ startTrailerFallback() {
 checkYoutubeTrailer(url) {
   return /(?:youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}/.test(url);
 },
-    bindVideoEvents() {
-  const video = this.$refs.videoPlayer;
-  if (!video) return;
-
-  video.onended = () => {
-    if (this.playTrailerFirst && this.trailerPlayable) {
-      this.playMainVideo();
-    }
-  };
-},
+    
 
 playMainVideo() {
   this.playTrailerFirst = false;
   this.trailerSkipped = true;
   this.isTrailer = false;
 
-  clearTimeout(this.trailerTimeout);
+  if (this.ytPlayer) {
+    this.ytPlayer.destroy();
+    this.ytPlayer = null;
+  }
 
-  // tắt iframe
   const iframe = this.$refs.videoIframe;
   if (iframe) iframe.src = "";
 
-  // phát phim chính
   this.playVideo(this.mainVideoUrl);
 },
     timeAgo(timestamp) {
@@ -2154,18 +2173,39 @@ a {
 }
 .skip-trailer-btn {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 10;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  border: 1px solid #fff;
+  right: 12px;
+  bottom: 12px;
+  z-index: 50;
   padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.skip-trailer-btn:hover {
-  background: #ff0000;
+  border-radius: 9999px;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(6px);
+  font-size: 14px;
 }
 
+/* mobile */
+@media (max-width: 768px) {
+  .skip-trailer-btn {
+    bottom: 8px;
+    right: 8px;
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
+.trailer-notice-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 10;
+  text-align: center;
+}
 </style>
