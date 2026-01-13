@@ -23,20 +23,27 @@
               <!-- VIDEO -->
               <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
               <div class="video-wrapper">
-
-  <!-- NÚT BỎ QUA -->
-  <button
-    v-if="playTrailerFirst && trailerPlayable"
-    class="skip-trailer-btn"
-    @click="playMainVideo"
-  >
-    Bỏ qua
-  </button>
-<div v-if="showTrailerNotice" class="trailer-notice-overlay">
-  Trailer sẽ được phát trước
-</div>
-  <!-- VIDEO CHÍNH (.m3u8) -->
+  <!-- Trailer Youtube -->
+  <div v-if="isTrailer" class="yt-container">
+    <iframe
+    ref="videoIframe"
+    class="video-iframe"
+    :src="youtubeEmbedUrl"
+    allow="autoplay; encrypted-media"
+    allowfullscreen
+  ></iframe>
+<div class="yt-interaction-blocker"></div>
+<div
+      v-if="showTrailerNotice"
+      class="trailer-notice"
+    >
+      Trailer sẽ được phát trước
+    </div>
+  </div>
+  
+  <!-- Video chính -->
   <video
+    v-else
     ref="videoPlayer"
     class="video-player"
     controls
@@ -44,22 +51,18 @@
     playsinline
     webkit-playsinline
     preload="metadata"
-    :style="{ display: isTrailer ? 'none' : 'block' }"
   ></video>
 
-  <!-- TRAILER YOUTUBE -->
-  <iframe
-    ref="videoIframe"
-    :style="{
-      width: '100%',
-      aspectRatio: '16/9',
-      border: 0,
-      display: isTrailer ? 'block' : 'none'
-    }"
-    allow="autoplay; encrypted-media"
-  ></iframe>
-
+  <!-- Bỏ qua trailer -->
+  <button
+    v-if="isTrailer"
+    class="skip-trailer-btn"
+    @click="playMainVideo"
+  >
+    Bỏ qua
+  </button>
 </div>
+
 
               <!-- nut next tap và back tap -->
               <div
@@ -797,36 +800,19 @@ export default {
       // lưu video chính
         this.mainVideoUrl = this.movie.videoUrl;
 
-        // nếu có trailer
-        if (this.movie.trailer_url) {
-          let canPlay = false;
-
-          // trailer youtube
-          if (this.movie.trailer_url.includes("youtube")) {
-            canPlay = this.checkYoutubeTrailer(this.movie.trailer_url);
-          } else {
-            // trailer mp4 / m3u8
-            canPlay = await this.checkTrailerPlayable(this.movie.trailer_url);
-          }
-
-          if (canPlay) {
-            this.trailerPlayable = true;
-            this.playTrailerFirst = true;
-            this.isTrailer = true;
-
-            // this.playVideo(this.movie.trailer_url);
-            // this.bindVideoEvents();
-            // return;
-            this.playYoutubeTrailer(this.movie.trailer_url);
-            return;
-          }
-        }
-
-        // fallback → vào thẳng phim chính
-        this.playTrailerFirst = false;
-        this.trailerPlayable = false;
-        this.isTrailer = false;
-        this.playVideo(this.mainVideoUrl);
+// NẾU CÓ TRAILER YOUTUBE → PHÁT TRƯỚC
+if (
+  this.movie.trailer_url &&
+  this.extractYoutubeId(this.movie.trailer_url)
+) {
+  this.playYoutubeTrailer(this.movie.trailer_url);
+} else {
+  // Không có trailer → phát phim luôn
+  this.isTrailer = false;
+  this.$nextTick(() => {
+    this.playVideo(this.mainVideoUrl);
+  });
+}
 
       //this.playVideo(this.movie.videoUrl);
 
@@ -856,19 +842,21 @@ export default {
   },
   methods: {
     playYoutubeTrailer(url) {
-  const iframe = this.$refs.videoIframe;
-  const videoId = this.extractYoutubeId(url);
-  if (!iframe || !videoId) return;
+  const id = this.extractYoutubeId(url);
+  if (!id) return;
 
   this.isTrailer = true;
-
-  // Hiển thị thông báo 2 giây trước khi phát trailer
   this.showTrailerNotice = true;
+
+  // Tự ẩn sau 2.5s
   setTimeout(() => {
     this.showTrailerNotice = false;
-    this.startYoutubePlayer(videoId);
-  }, 3000);
+    this.$nextTick(() => {
+      this.initYoutubePlayer(id);
+    });
+  }, 2500);
 
+  
 },
 startYoutubePlayer(videoId) {
   // chờ YT API sẵn sàng
@@ -883,15 +871,35 @@ startYoutubePlayer(videoId) {
 initYoutubePlayer(videoId) {
   this.ytPlayer = new window.YT.Player(this.$refs.videoIframe, {
     videoId,
+    width: "100%",
+    height: "100%",
     playerVars: {
       autoplay: 1,
-      controls: 0,
+      controls: 0,        // ❌ không control
+      disablekb: 1,       // ❌ tắt bàn phím
+      fs: 0,              // ❌ fullscreen
+      modestbranding: 1,
       rel: 0,
-      mute: 1,
-      playsinline: 1
-    },
+      playsinline: 1,
+      iv_load_policy: 3,
+      cc_load_policy: 0,
+      mute: 0
+    },  
     events: {
-      onReady: () => {}
+      onReady: (e) => {
+        // ép chất lượng cao nhất
+        setTimeout(() => {
+          const levels = e.target.getAvailableQualityLevels();
+          if (levels?.length) {
+            e.target.setPlaybackQuality(levels[0]); // hd2160 > hd1080
+          }
+        }, 500);
+      },
+      onStateChange: (e) => {
+        if (e.data === window.YT.PlayerState.ENDED) {
+          this.playMainVideo();
+        }
+      }
     }
   });
 },
@@ -929,8 +937,6 @@ checkYoutubeTrailer(url) {
     
 
 playMainVideo() {
-  this.playTrailerFirst = false;
-  this.trailerSkipped = true;
   this.isTrailer = false;
 
   if (this.ytPlayer) {
@@ -938,10 +944,30 @@ playMainVideo() {
     this.ytPlayer = null;
   }
 
+  this.$nextTick(() => {
+    this.playVideo(this.mainVideoUrl);
+  });
+},
+resetPlayer() {
+  const video = this.$refs.videoPlayer;
   const iframe = this.$refs.videoIframe;
-  if (iframe) iframe.src = "";
 
-  this.playVideo(this.mainVideoUrl);
+  if (video) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.style.display = "block";
+  }
+
+  if (iframe) {
+    iframe.src = "";
+    iframe.style.display = "none";
+  }
+
+  if (this.hls) {
+    this.hls.destroy();
+    this.hls = null;
+  }
 },
     timeAgo(timestamp) {
       const time = new Date(timestamp).getTime();
@@ -1236,50 +1262,24 @@ playMainVideo() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     playVideo(url) {
-      const video = this.$refs.videoPlayer;
-      console.log(url);
-      if (!video) return;
-      // ======== Nguồn phimapi.com ========
-      if (url.includes("player.phimapi.com/player/?url=")) {
-        url = url.split("player/?url=")[1];
-      }
-      // ======== Nguồn opstream10.com (link share) ========
-      if (url.includes("opstream10.com/share/")) {
-        const iframe = this.$refs.videoIframe;
-        if (iframe) {
-          iframe.style.display = "block";
-          iframe.src = url;
-        }
-        video.style.display = "none";
-        return;
-      }
-      // Nếu là file .m3u8 → dùng HLS
-      if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        const hls = new Hls({
-          maxBufferLength: 5,
-          enableWorker: true,
-          startLevel: -1,
-        });
-        hls.loadSource(url);
-        hls.attachMedia(video);
-        video.addEventListener("play", () => {
-          hls.startLoad();
-        });
+  const video = this.$refs.videoPlayer;
+  if (!video || !url) return;
 
-        video.addEventListener("pause", () => {
-          hls.stopLoad();
-        });
-        video.style.display = "block";
-        const iframe = this.$refs.videoIframe;
-        if (iframe) iframe.style.display = "none";
-      } else {
-        // Nếu là mp4 hoặc youtube thì dùng thẻ video thông thường
-        if (!url.endsWith(".m3u8")) {
-          video.src = url;
-          video.play();
-        }
-      }
-    },
+  if (this.hls) {
+    this.hls.destroy();
+    this.hls = null;
+  }
+
+  if (Hls.isSupported() && url.endsWith(".m3u8")) {
+    this.hls = new Hls();
+    this.hls.loadSource(url);
+    this.hls.attachMedia(video);
+  } else {
+    video.src = url;
+  }
+
+  video.play().catch(() => {});
+},
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },
@@ -1707,12 +1707,21 @@ playMainVideo() {
       </div>`;
       }
     },
+    
   },
   computed: {
     idAccount() {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
+    
+    youtubeEmbedUrl() {
+    if (!this.movie.trailer_url) return "";
 
+    const id = this.extractYoutubeId(this.movie.trailer_url);
+    if (!id) return "";
+
+    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playsinline=1&rel=0`;
+  },
     visibleEpisodes() {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
@@ -1778,48 +1787,18 @@ playMainVideo() {
 </script>
 
 <style scoped>
-@media (min-width: 956px) {
-  .search-page {
-    padding: 0 60px !important;
-  }
-  .video-wrapper {
-    width: 100%;
-    /* padding: 0 40px; */
-    max-height: 800px;
-    aspect-ratio: 16 / 9;
-    background: black;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    animation: videoFade 0.4s ease;
-  }
+.video-wrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: #000;
 }
-@keyframes videoFade {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.video-wrapper iframe,
-.video-wrapper video {
+.video-player,
+.video-iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-@media (max-width: 768px) {
-  .video-wrapper {
-    aspect-ratio: 16 / 9;
-  }
-  .content,
-  .container {
-    width: 100% !important;
-    padding: 0 !important;
-  }
 }
 
 .suggested-item {
@@ -2207,5 +2186,63 @@ a {
   font-size: 20px;
   z-index: 10;
   text-align: center;
+}
+.yt-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.yt-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* CHẶN 100% thao tác */
+.yt-interaction-blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+  pointer-events: all;
+  touch-action: none;
+  user-select: none;
+}
+.trailer-notice {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 24px;
+
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+
+  animation: fadeNotice 2.5s ease forwards;
+}
+
+/* Hiệu ứng mờ dần */
+@keyframes fadeNotice {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>
