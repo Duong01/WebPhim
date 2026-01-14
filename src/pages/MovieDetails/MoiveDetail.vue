@@ -19,9 +19,8 @@
           <!-- Bố cục hai cột -->
           <v-row dense>
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-            <v-col cols="12" md="12">
+            <v-col cols="12" md="9">
               <!-- VIDEO -->
-              <!-- v-html="generateEmbedHtml(movie.videoUrl)" -->
               <div class="video-wrapper">
                 <!-- Trailer Youtube -->
                 <div v-if="isTrailer" class="yt-container">
@@ -30,13 +29,11 @@
                     class="video-iframe"
                     :src="youtubeEmbedUrl"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    mute="0"
                     allowfullscreen
                     frameborder="0"
                     loading="lazy"
-
                   ></iframe>
-                  
+
                   <div class="yt-interaction-blocker"></div>
                   <div v-if="showTrailerNotice" class="trailer-notice">
                     Trailer sẽ được phát trước
@@ -50,6 +47,7 @@
                   class="video-player"
                   controls
                   autoplay
+                  muted
                   playsinline
                   webkit-playsinline
                   preload="metadata"
@@ -92,7 +90,24 @@
                   <v-icon end>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
-
+              <v-card
+                class="my-4"
+                variant="flat"
+                color="grey-darken-4"
+                theme="dark"
+              >
+                <v-card-title class="d-flex align-center custom-title">
+                  <span class="text-h6 title-text"
+                    >{{ movie.title }}
+                    <v-chip
+                      class="ml-2 chip-limit"
+                      color="red"
+                      text-color="white"
+                      >{{ movie.pageMovie[currentEpisodeIndex]?.name }}</v-chip
+                    >
+                  </span>
+                </v-card-title>
+              </v-card>
               <!-- Nhóm nút + server -->
               <div
                 class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
@@ -147,7 +162,7 @@
               </div>
 
               <!-- Danh sách tập -->
-              <v-card
+              <!-- <v-card
                 class="my-4"
                 variant="flat"
                 color="grey-darken-4"
@@ -208,7 +223,7 @@
                     </v-btn>
                   </div>
                 </v-card-text>
-              </v-card>
+              </v-card> -->
 
               <!-- TRAILER -->
               <div class="mb-4">
@@ -410,57 +425,54 @@
                 </div>
               </v-card>
             </v-col>
+            <v-col cols="12" md="3" class="right-panel">
+              <!-- THÔNG TIN PHIM -->
+              <v-card
+                color="grey-darken-4"
+                variant="flat"
+                rounded="lg"
+                class="mb-4"
+                theme="dark"
+              >
+                <v-card-title class="text-h6">
+                  {{ movie.title }}
+                </v-card-title>
+              </v-card>
 
-            <!-- Cột bên phải: Gợi ý -->
-            <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
+              <!-- DANH SÁCH TẬP -->
+              <v-card
+                color="grey-darken-4"
+                variant="flat"
+                rounded="lg"
+                theme="dark"
+              >
+                <v-card-title class="text-h6"> Danh sách tập </v-card-title>
 
-            <!-- <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
-          <v-card class="pa-0" color="grey-darken-4" flat>
-            <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-              <v-tab value="1">{{ $t("Gợi ý cho bạn") }}</v-tab>
-              <v-tab value="2">{{ $t("Top phim") }}</v-tab>
-            </v-tabs>
-
-            <v-card-text style="max-height: 87vh; overflow-y: auto; padding: 0">
-              <v-list dense nav class="pa-0">
-                <v-list-item
-                  v-for="suggested in suggestedMovies"
-                  :key="suggested.id"
-                  class="suggested-item d-flex align-center"
-                >
-                <v-lazy transition="fade-transition">
-                  <router-link
-                    :to="{ name: 'Movies', params: { slug: suggested.slug } }"
-                    class="d-flex text-decoration-none align-center py-4"
-                    style="width: 100%"
-                  >
-                    <v-img
-                      :src="getOptimizedImage(suggested.poster_url)"
-                      :lazy-src="getOptimizedImage(suggested.poster_url)"
-                      width="100"
-                      height="80"
-                      class="rounded-lg"
-                      cover
-                    ></v-img>
-
-                    <div class="ml-3 text-truncate" >
-                      <div class="text-white text-body-2 font-weight-medium text-truncate">
-                        {{ suggested.name }}
-                      </div>
-                      <div class="text-grey-lighten-1 text-caption">
-                        {{ suggested.episode_current }} | {{ suggested.lang }}<br />
-                        {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                      </div>
-                    </div>
-                  </router-link>
-                </v-lazy>
-
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col> -->
-
+                <v-card-text class="episode-scroll">
+                  <v-row dense>
+                    <v-col
+                      v-for="(episode, index) in visibleEpisodes"
+                      :key="index"
+                      cols="6"
+                    >
+                      <v-btn
+                        block
+                        size="small"
+                        :color="
+                          index === currentEpisodeIndex
+                            ? 'red'
+                            : 'grey-darken-2'
+                        "
+                        @click="playEpisode(episode)"
+                      >
+                        {{ episode.name || "Trailer" }}
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            
             <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
             <div ref="lazyCate"></div>
 
@@ -807,7 +819,6 @@ export default {
         this.movie.trailer_url &&
         this.extractYoutubeId(this.movie.trailer_url)
       ) {
-        
         this.playYoutubeTrailer(this.movie.trailer_url);
       } else {
         // Không có trailer → phát phim luôn
@@ -888,6 +899,7 @@ export default {
         },
         events: {
           onReady: (e) => {
+            e.target.mute();
             // ép chất lượng cao nhất
             setTimeout(() => {
               const levels = e.target.getAvailableQualityLevels();
@@ -902,7 +914,6 @@ export default {
             }
           },
         },
-        
       });
     },
     extractYoutubeId(url) {
@@ -1270,6 +1281,8 @@ export default {
         this.hls.destroy();
         this.hls = null;
       }
+      video.muted = true;        // ✅ cho phép autoplay
+      video.autoplay = true;
 
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
         this.hls = new Hls();
@@ -1279,7 +1292,10 @@ export default {
         video.src = url;
       }
 
-      video.play().catch(() => {});
+      video.play().catch(() => {
+        video.muted = true;
+        video.play();
+      });
     },
     DownloadVideo(linkdown) {
       window.open(linkdown);
@@ -1784,8 +1800,17 @@ export default {
 </script>
 
 <style scoped>
+.right-panel {
+  position: sticky;
+  top: 72px;
+}
+
+.episode-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 .video-wrapper {
-  width: 100%;
+  width: 100% !important;
   aspect-ratio: 16 / 9;
   position: relative;
   background: #000;
@@ -2097,6 +2122,7 @@ a {
 }
 .watch-page {
   animation: watchEnter 0.5s ease-out;
+  width: 100% !important;
 }
 
 @keyframes watchEnter {
