@@ -507,7 +507,7 @@
                             >
                               <v-progress-circular
                                 color="blue-lighten-3"
-                :width="12"
+                :width="5"
                                 indeterminate
                               ></v-progress-circular>
                             </div>

@@ -103,7 +103,7 @@
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular
                               color="blue-lighten-3"
-                :width="12"
+                :width="5"
                               indeterminate
                             ></v-progress-circular>
                           </div>
