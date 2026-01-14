@@ -100,6 +100,15 @@
                             </svg>
                           </div>
                         </template>
+                        <template #placeholder>
+                          <div class="d-flex align-center justify-center fill-height">
+                            <v-progress-circular
+                              color="blue-lighten-3"
+                :width="12"
+                              indeterminate
+                            ></v-progress-circular>
+                          </div>
+                        </template>
                       </v-img>
 
                       <v-card-subtitle class="episode-lang" style="margin-top: 5px;">

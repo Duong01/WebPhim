@@ -47,6 +47,7 @@ let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
 let urlSearch1 = "https://phimapi.com/v1/api/tim-kiem"
 
 let urlSchedule="https://hoathinh3d.vn/api/movies.php"
+let urlHomeUpdateNew = "https://hoathinh3d.moi/wp-json/movie-schedule/v1/daily"
 // api login
 //let urlAccount = "https://apiwebphim.onrender.com/api/auth"
 
@@ -83,7 +84,8 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  // the loai phim
  export const CategorisDetail= (params, success, error) => http1.GetNew(`${urlSchedule}${params}`, {}  , success, error)
-    
+ export const NewUpdate= (params, success, error) => http1.GetNew(`${urlHomeUpdateNew}${params}`, {}  , success, error)
+
  
  // quoc gia
  export const City= (params, success, error) => http1.GetNew(`${urlCity}`, params  , success, error)

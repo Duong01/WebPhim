@@ -108,7 +108,8 @@
                         <template #placeholder>
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular
-                              color="grey-lighten-4"
+                              color="blue-lighten-3"
+                :width="12"
                               indeterminate
                             ></v-progress-circular>
                           </div>

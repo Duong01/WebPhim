@@ -14,26 +14,25 @@ const mutations = {
 
 const actions = {
   startLoading({ commit, state, dispatch }) {
-    commit("SET_LOADING", true);
-
-    // clear timer cũ
-    if (state.timer) {
-      clearTimeout(state.timer);
-    }
-
-    // set timer 2 phút
-    const timer = setTimeout(() => {
-      dispatch("timeoutLoading");
-    }, 120000);
-
-    commit("SET_TIMER", timer);
+    if (state.timer) clearTimeout(state.timer)
+  
+    const delayTimer = setTimeout(() => {
+      commit("SET_LOADING", true)
+    }, 150)
+  
+    const timeoutTimer = setTimeout(() => {
+      dispatch("timeoutLoading")
+    }, 120000)
+  
+    commit("SET_TIMER", { delayTimer, timeoutTimer })
   },
   stopLoading({ commit, state }) {
-    commit("SET_LOADING", false);
     if (state.timer) {
-      clearTimeout(state.timer);
-      commit("SET_TIMER", null);
+      clearTimeout(state.timer.delayTimer)
+      clearTimeout(state.timer.timeoutTimer)
     }
+    commit("SET_LOADING", false)
+    commit("SET_TIMER", null)
   },
   timeoutLoading({ commit }) {
     commit("SET_LOADING", false);

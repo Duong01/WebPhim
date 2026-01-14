@@ -168,7 +168,8 @@
                         <template #placeholder>
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular
-                              color="grey-lighten-4"
+                              color="blue-lighten-3"
+                              :width="12"
                               indeterminate
                             ></v-progress-circular>
                           </div>
@@ -214,6 +215,7 @@
 import {
   urlImage,
   urlImage1,
+  NewUpdate
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 
@@ -370,6 +372,19 @@ export default {
         },
       ],
       link: "",
+      days: [
+        { label: "Chủ Nhật", value: "chu-nhat" },
+        { label: "Thứ Hai", value: "thu-hai" },
+        { label: "Thứ Ba", value: "thu-ba" },
+        { label: "Thứ Tư", value: "thu-tu" },
+        { label: "Thứ Năm", value: "thu-nam" },
+        { label: "Thứ Sáu", value: "thu-sau" },
+        { label: "Thứ Bảy", value: "thu-bay" },
+      ],
+      daily: "",
+      earlyMovies:[],
+      regular_movies:[]
+
     };
   },
   components: {
@@ -443,6 +458,16 @@ export default {
       );
 
       this.$refs.sectionRefs.forEach(el => el && observer.observe(el));
+    },
+    async ListNewUpdate(){
+      NewUpdate(`?day=${this.daily}`,(dat)=>{
+        if(dat.success == true){
+            this.earlyMovies = dat.early_movies
+            this.regular_movies = dat.movies
+        }
+      }, (err)=>{
+        console.log(err)
+      })
     },
     async ListMovie(sectionId, section) {
       section.loading = true;

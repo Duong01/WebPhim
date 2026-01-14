@@ -47,7 +47,6 @@
                   class="video-player"
                   controls
                   autoplay
-                  muted
                   playsinline
                   webkit-playsinline
                   preload="metadata"
@@ -162,11 +161,12 @@
               </div>
 
               <!-- Danh sách tập -->
-              <!-- <v-card
+              <v-card
                 class="my-4"
                 variant="flat"
                 color="grey-darken-4"
                 theme="dark"
+                v-if="$vuetify.display.smAndDown"
               >
                 <v-card-title class="d-flex align-center custom-title">
                   <span class="text-h6 title-text"
@@ -223,7 +223,7 @@
                     </v-btn>
                   </div>
                 </v-card-text>
-              </v-card> -->
+              </v-card>
 
               <!-- TRAILER -->
               <div class="mb-4">
@@ -425,7 +425,7 @@
                 </div>
               </v-card>
             </v-col>
-            <v-col cols="12" md="3" class="right-panel">
+            <v-col cols="12" md="3" class="right-panel" v-if="$vuetify.display.smAndUp">
               <!-- THÔNG TIN PHIM -->
               <v-card
                 color="grey-darken-4"
@@ -435,7 +435,7 @@
                 theme="dark"
               >
                 <v-card-title class="text-h6">
-                  {{ movie.title }}
+                  {{ movie.name }}
                 </v-card-title>
               </v-card>
 
@@ -445,10 +445,12 @@
                 variant="flat"
                 rounded="lg"
                 theme="dark"
+                
               >
                 <v-card-title class="text-h6"> Danh sách tập </v-card-title>
 
                 <v-card-text class="episode-scroll">
+                  <v-sheet class="episode-list mt-4" elevation="0">
                   <v-row dense>
                     <v-col
                       v-for="(episode, index) in visibleEpisodes"
@@ -469,13 +471,14 @@
                       </v-btn>
                     </v-col>
                   </v-row>
+                  </v-sheet>
                 </v-card-text>
               </v-card>
             </v-col>
             
-            <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
             <div ref="lazyCate"></div>
 
+            <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
             <div class="suggested-movies my-8">
               <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
               <v-row>
@@ -503,7 +506,8 @@
                               class="d-flex align-center justify-center fill-height"
                             >
                               <v-progress-circular
-                                color="grey-lighten-4"
+                                color="blue-lighten-3"
+                :width="12"
                                 indeterminate
                               ></v-progress-circular>
                             </div>
@@ -783,7 +787,9 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
+      this.$store.dispatch('loading/stopLoading')
       if (this.page) {
         if (this.page == "01") {
           this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
@@ -1281,8 +1287,6 @@ export default {
         this.hls.destroy();
         this.hls = null;
       }
-      video.muted = true;        // ✅ cho phép autoplay
-      video.autoplay = true;
 
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
         this.hls = new Hls();

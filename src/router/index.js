@@ -1,7 +1,7 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
 // import { CheckSession } from "@/model/api";
-// import store from "@/store";
+import store from "@/store";
 
 const routes = [
   {
@@ -234,8 +234,10 @@ router.beforeEach((to, from, next) => {
     }
     
   }
-
+  store.dispatch('loading/startLoading')
+  
   next();
+
   // if(to.meta.requiresAuth){
   //   const token = localStorage.getItem("token");
   // if (token) {
@@ -297,6 +299,12 @@ router.beforeEach((to, from, next) => {
   }
   desc.setAttribute("content", to.meta.description || defaultDesc)
 
+})
+router.afterEach(() => {
+  // delay nhẹ cho UX mượt
+  setTimeout(() => {
+    store.dispatch('loading/stopLoading')
+  }, 700)
 })
 
 

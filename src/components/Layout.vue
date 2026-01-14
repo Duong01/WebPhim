@@ -4,6 +4,12 @@
     <header class="fixed-header">
       <header-component />
     </header>
+    <v-progress-linear
+      v-if="$store.getters['loading/isLoading']"
+      color="blue-darken-3"
+      indeterminate
+      height="3"
+    />
 
     <div class="main">
       <div class="content">

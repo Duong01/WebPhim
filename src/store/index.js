@@ -6,7 +6,9 @@ import loading from "./loading"
 const store = createStore({
     state,
     mutations,
-    loading
+    modules: {
+      loading,
+    },
     
   })
 export default store

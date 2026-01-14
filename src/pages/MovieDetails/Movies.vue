@@ -33,7 +33,8 @@
           <template #placeholder>
             <div class="d-flex align-center justify-center fill-height">
               <v-progress-circular
-                color="grey-lighten-4"
+                color="blue-lighten-3"
+                :width="12"
                 indeterminate
               ></v-progress-circular>
             </div>
@@ -73,14 +74,13 @@
                   :v-lazy="movie.poster_url"
                   v-show="$vuetify.display.mdAndUp"
                 >
-                <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="grey-lighten-4"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
+                        <template #placeholder>
+      <div class="d-flex align-center justify-center fill-height">
+        <v-icon size="60" color="red-darken-1" class="spin">
+          mdi-play-circle-outline
+        </v-icon>
+      </div>
+    </template>
               </v-img>
 
                 <!-- Overlay mờ khi hover -->
@@ -379,7 +379,8 @@
                           <template #placeholder>
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular
-                              color="grey-lighten-4"
+                              color="blue-lighten-3"
+                :width="12"
                               indeterminate
                             ></v-progress-circular>
                           </div>
@@ -627,7 +628,9 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      this.$store.dispatch('loading/startLoading')
       await this.MoveInfor1(this.slug);
+      this.$store.dispatch('loading/stopLoading')
       if (this.movie?.servers?.length) {
         this.currentServer = this.movie.servers[0].server_name;
       }

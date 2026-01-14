@@ -17,10 +17,7 @@
             :is="Component"
           />
         </router-view>
-        <div v-if="isLoading" class="overlay">
-          <div class="loader"></div>
-          <p>Đang tải dữ liệu...</p>
-        </div>
+        
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
       </v-snackbar>

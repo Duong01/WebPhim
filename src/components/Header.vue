@@ -548,7 +548,7 @@
         </v-expansion-panels> -->
       </v-list>
     </v-navigation-drawer>
-
+    
     <v-snackbar v-model="mess" :timeout="3000" :color="color">
       {{ Message }}
     </v-snackbar>
