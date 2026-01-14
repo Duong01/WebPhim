@@ -628,9 +628,9 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      this.$store.dispatch('loading/startLoading')
+      // this.$store.dispatch('loading/startLoading')
       await this.MoveInfor1(this.slug);
-      this.$store.dispatch('loading/stopLoading')
+      // this.$store.dispatch('loading/stopLoading')
       if (this.movie?.servers?.length) {
         this.currentServer = this.movie.servers[0].server_name;
       }

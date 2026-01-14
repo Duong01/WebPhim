@@ -41,6 +41,82 @@
       </div>
     </div>
 
+    <!-- PHIM MỚI CẬP NHẬT -->
+<v-row no-gutters class="align-center mt-6 mb-2">
+  <v-col cols="12">
+    <h1 class="category-title d-flex align-center">
+      <v-icon size="20" color="#ffcc00" class="mr-2">
+        mdi-update
+      </v-icon>
+      {{ $t('Phim mới cập nhật') }}
+    </h1>
+  </v-col>
+</v-row>
+
+<!-- Chọn ngày trong tuần -->
+<div
+  class="d-flex align-center"
+  style="overflow-x:auto; gap:10px; padding:10px 0"
+>
+  <v-btn
+    v-for="day in days"
+    :key="day.value"
+    size="small"
+    rounded="pill"
+    :color="daily === day.value ? 'blue-darken-3' : 'grey-darken-3'"
+    @click="changeDay(day.value)"
+  >
+    {{ day.label }}
+  </v-btn>
+</div>
+<v-row v-if="earlyMovies.length" class="movie-list" no-gutters>
+  <v-col
+    v-for="(item, key) in earlyMovies"
+    :key="key"
+    cols="6"
+    sm="4"
+    md="3"
+    lg="2"
+    style="padding:6px"
+  >
+    <router-link
+      :to="{ name: 'Movies', params: {slug:item.permalink.split('/').pop() } }"
+    >
+      <v-card class="movie-card">
+        <v-img
+              :src="item.thumbnail"
+              aspect-ratio="2/3"
+              cover
+              height="240"
+              class="movie-thumb"
+            >
+              <template #placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                    color="grey-lighten-4"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              </template>
+            </v-img>
+
+        <div class="movie-info">
+              <div class="movie-name">{{ item.title }}</div>
+              <div class="movie-ep">📺 Tập {{ item.latest_episode }}</div>
+            </div>
+      </v-card>
+    </router-link>
+  </v-col>
+</v-row>
+
+<!-- Loading -->
+<v-row v-else>
+  <v-col v-for="i in 12" :key="i" cols="6" sm="4" md="3">
+    <v-skeleton-loader type="image" height="240" />
+  </v-col>
+</v-row>
+    
+
     <div
       v-for="(section, sectionIndex) in sections"
       :key="sectionIndex"
@@ -391,12 +467,20 @@ export default {
     CarouselPage,
   },
   async mounted() {
-    
+    const todayIndex = new Date().getDay();
+    this.daily = this.days[todayIndex].value;
+    await this.ListNewUpdate()
     this.$nextTick(() => {
       this.observeSections();
     });
   },
   methods: {
+
+
+    changeDay(day) {
+      this.daily = day;
+      this.ListNewUpdate();
+    },
     getCategoriesToShow(item){
       const isMobile = this.$vuetify.display.xs;
       if (isMobile) {
@@ -422,8 +506,6 @@ export default {
         const days = Math.floor(hours / 24);
         return `${days} ngày trước`;
   },
-
-    
 
     getColor(index) {
       return this.colorList[index % this.colorList.length];
@@ -461,9 +543,10 @@ export default {
     },
     async ListNewUpdate(){
       NewUpdate(`?day=${this.daily}`,(dat)=>{
+        console.log(dat)
         if(dat.success == true){
             this.earlyMovies = dat.early_movies
-            this.regular_movies = dat.movies
+            this.regular_movies = dat.regular_movies
         }
       }, (err)=>{
         console.log(err)

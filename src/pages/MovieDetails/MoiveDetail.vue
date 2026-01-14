@@ -179,14 +179,14 @@
                     >
                   </span>
                 </v-card-title>
-                <v-card-text>
+                <v-card-text class="episode-scroll">
                   <v-sheet class="episode-list mt-4" elevation="0">
-                    <v-row class="episode-list">
-                      <v-col
-                        v-for="(episode, index) in visibleEpisodes"
-                        :key="index"
-                        class="episode-col"
-                      >
+                  <v-row dense>
+                    <v-col
+                      v-for="(episode, index) in visibleEpisodes"
+                      :key="index"
+                      cols="6"
+                    >
                         <v-btn
                           color="primary"
                           block
@@ -225,6 +225,47 @@
                 </v-card-text>
               </v-card>
 
+              
+
+              <!-- Thông tin phim -->
+              <v-card
+                class="pa-6 text-left"
+                color="grey-darken-4"
+                variant="flat"
+                rounded="lg"
+                theme="dark"
+              >
+                <v-card-title class="text-white mb-4"
+                  >{{ movie.title }} ( {{ movie.name }})</v-card-title
+                >
+                <v-card-text class="text-white">
+                  <div v-html="movie.description"></div>
+                </v-card-text>
+                <v-card-text class="text-white">
+                  <p>
+                    <strong>{{ $t("Diễn viên") }}:</strong>
+                    {{ movie.actors.join(", ") }}
+                  </p>
+                  <p>
+                    <strong>{{ $t("Đạo diễn") }}:</strong>
+                    {{ movie.director.join(", ") }}
+                  </p>
+                  <p>
+                    <strong>{{ $t("Thể loại") }}:</strong>
+                    {{ movie.genre.name }}
+                  </p>
+                  <div class="d-flex align-center">
+                    <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
+                    <v-rating
+                      readonly
+                      :length="5"
+                      :size="28"
+                      :model-value="movie.rating"
+                      active-color="yellow-darken-2"
+                    />
+                  </div>
+                </v-card-text>
+              </v-card>
               <!-- TRAILER -->
               <div class="mb-4">
                 <v-row>
@@ -310,46 +351,6 @@
     ></iframe> -->
                 </v-card>
               </v-dialog>
-
-              <!-- Thông tin phim -->
-              <v-card
-                class="pa-6 text-left"
-                color="grey-darken-4"
-                variant="flat"
-                rounded="lg"
-                theme="dark"
-              >
-                <v-card-title class="text-white mb-4"
-                  >{{ movie.title }} ( {{ movie.name }})</v-card-title
-                >
-                <v-card-text class="text-white">
-                  <div v-html="movie.description"></div>
-                </v-card-text>
-                <v-card-text class="text-white">
-                  <p>
-                    <strong>{{ $t("Diễn viên") }}:</strong>
-                    {{ movie.actors.join(", ") }}
-                  </p>
-                  <p>
-                    <strong>{{ $t("Đạo diễn") }}:</strong>
-                    {{ movie.director.join(", ") }}
-                  </p>
-                  <p>
-                    <strong>{{ $t("Thể loại") }}:</strong>
-                    {{ movie.genre.name }}
-                  </p>
-                  <div class="d-flex align-center">
-                    <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
-                    <v-rating
-                      readonly
-                      :length="5"
-                      :size="28"
-                      :model-value="movie.rating"
-                      active-color="yellow-darken-2"
-                    />
-                  </div>
-                </v-card-text>
-              </v-card>
               <div ref="lazyComment"></div>
               <!-- Bình luận -->
               <v-card
@@ -434,7 +435,7 @@
                 class="mb-4"
                 theme="dark"
               >
-                <v-card-title class="text-h6">
+                <v-card-title class="text-h5" style="font-weight: bold; color: #42dfff;">
                   {{ movie.name }}
                 </v-card-title>
               </v-card>
@@ -453,7 +454,7 @@
                   <v-sheet class="episode-list mt-4" elevation="0">
                   <v-row dense>
                     <v-col
-                      v-for="(episode, index) in visibleEpisodes"
+                      v-for="(episode, index) in visibleEpisodesRight"
                       :key="index"
                       cols="6"
                     >
@@ -787,9 +788,9 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      this.$store.dispatch('loading/stopLoading')
+      // this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
-      this.$store.dispatch('loading/stopLoading')
+      // this.$store.dispatch('loading/stopLoading')
       if (this.page) {
         if (this.page == "01") {
           this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
@@ -1744,6 +1745,10 @@ export default {
       return this.showAllEpisodes
         ? this.movie.pageMovie // Hiện tất cả tập
         : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+    },
+    visibleEpisodesRight() {
+      return  this.movie.pageMovie // Hiện tất cả tập
+        
     },
     thumbnailUrl() {
       const match = this.movie.videoUrl.match(
