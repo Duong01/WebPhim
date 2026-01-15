@@ -37,7 +37,7 @@
           <v-card class="mx-auto movie-item simple-hover" flat @click="goMovie(movie.slug)">
             <div class="card-poster">
               <v-img
-                :src="'https://hoathinh3d.vn'+movie.thumbnail"
+                :src="'https://hoathinh3d.vn/'+movie.thumbnail"
                 aspect-ratio="2/3"
                 cover
                 referrerpolicy="no-referrer"

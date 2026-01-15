@@ -72,38 +72,49 @@
 <v-slide-group
   show-arrows
   class="trending-track"
-  v-if="earlyMovies.length"
+  v-if="allMovies.length"
 >
   <v-slide-group-item
-    v-for="(item, index) in earlyMovies"
-    :key="index"
+    v-for="(item, index) in allMovies"
+    :key="`${item._type}-${index}`"
+    class="trending-item"
   >
     <router-link
       :to="{ name: 'Movies', params: { slug: item.permalink.split('/').pop() } }"
       class="trending-link"
     >
-      <v-card class="trending-card" 
-      elevation="0">
+      <v-card class="trending-card" elevation="0">
         <!-- POSTER -->
         <v-img
           :src="item.thumbnail"
-          aspect-ratio="3/4"
+          aspect-ratio="9/16"
           cover
-          height="100%"
           class="trending-poster"
           referrerpolicy="no-referrer"
         >
-          <!-- Rating -->
+          <!-- BADGE -->
           <div class="trending-rating">
-            {{ item.early_screening_time }}
+            <template v-if="item._type === 'early'">
+              {{ item.early_screening_time }}
+            </template>
+            <template v-else>
+              ⭐
+            </template>
           </div>
+
+          <template #placeholder>
+            <div class="d-flex align-center justify-center fill-height">
+              <v-progress-circular indeterminate :width="5" />
+            </div>
+          </template>
         </v-img>
 
         <!-- INFO -->
-        <div class="trending-info">
-          <div class="trending-number">
-            {{ index + 1 }}
+        <div class="trending-info fixed-info">
+          <div v-if="item._type === 'early'" class="trending-number">
+            {{ item._index + 1 }}
           </div>
+
           <div class="trending-details">
             <div class="trending-title">
               {{ item.title }}
@@ -116,48 +127,8 @@
       </v-card>
     </router-link>
   </v-slide-group-item>
-
-  <v-slide-group-item
-    v-for="(item1, index) in regular_movies"
-    :key="index"
-  >
-    <router-link
-      :to="{ name: 'Movies', params: { slug: item1.permalink.split('/').pop() } }"
-      class="trending-link"
-    >
-      <v-card class="trending-card"
-       elevation="0">
-        <!-- POSTER -->
-        <v-img
-          :src="item1.thumbnail"
-          aspect-ratio="3/4"
-          cover
-          height="100%"
-          class="trending-poster"
-          referrerpolicy="no-referrer"
-        >
-          <!-- Rating -->
-          <div class="trending-rating">
-            ⭐
-          </div>
-        </v-img>
-
-        <!-- INFO -->
-        <div class="trending-info">
-          
-          <div class="trending-details">
-            <div class="trending-title">
-              {{ item1.title }}
-            </div>
-            <div class="trending-original">
-              📺 Tập {{ item1.latest_episode }}
-            </div>
-          </div>
-        </div>
-      </v-card>
-    </router-link>
-  </v-slide-group-item>
 </v-slide-group>
+
 
 
 <!-- Loading -->
@@ -767,8 +738,19 @@ export default {
   },
   computed: {
   allMovies() {
-    return [...this.earlyMovies, ...this.regular_movies]
-  }
+    return [
+      ...this.earlyMovies.map((m, i) => ({
+        ...m,
+        _type: 'early',
+        _index: i,
+      })),
+      ...this.regular_movies.map((m, i) => ({
+        ...m,
+        _type: 'regular',
+        _index: i,
+      })),
+    ]
+  },
 }
 };
 </script>
@@ -1088,6 +1070,8 @@ a {
   overflow: hidden;
   margin-right: 12px;
   transition: transform 0.25s ease;
+   display: flex;
+  flex-direction: column;
 }
 
 .trending-card:hover {
@@ -1098,6 +1082,8 @@ a {
 .trending-poster {
   background: radial-gradient(#222, #000);
   position: relative;
+  aspect-ratio: 9/16;
+  flex-shrink: 0;
 }
 
 /* RATING */
@@ -1107,10 +1093,12 @@ a {
   right: 8px;
   background: rgba(0, 0, 0, 0.75);
   color: #ffcc00;
-  padding: 2px 8px;
+  margin: 2px 0;
   font-size: 12px;
   border-radius: 999px;
   font-weight: 600;
+  min-width: 44px;
+  text-align: center;
 }
 
 /* INFO */
@@ -1118,13 +1106,18 @@ a {
   display: flex;
   gap: 10px;
   padding: 10px;
+  height: 72px;       
+  align-items: flex-start;
 }
 
 .trending-number {
+  width: 26px;        /* 🔥 cố định */
+  text-align: center;
   font-size: 28px;
   font-weight: 800;
   color: #ffcc00;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .trending-details {
@@ -1139,6 +1132,10 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .trending-original {

@@ -31,7 +31,6 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
                     frameborder="0"
-                    loading="lazy"
                   ></iframe>
 
                   <div class="yt-interaction-blocker"></div>
@@ -179,7 +178,7 @@
                     >
                   </span>
                 </v-card-title>
-                <v-card-text class="episode-scroll">
+                <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
                   <v-row dense>
                     <v-col
@@ -450,7 +449,7 @@
               >
                 <v-card-title class="text-h6"> Danh sách tập </v-card-title>
 
-                <v-card-text class="episode-scroll">
+                <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
                   <v-row dense>
                     <v-col
@@ -2156,7 +2155,7 @@ a {
   transform: scale(0.96);
 }
 .episode-list {
-  max-height: calc(5 * 90px);
+  max-height: calc(5 * 70px);
   overflow-y: auto;
   margin: 10px;
 }
