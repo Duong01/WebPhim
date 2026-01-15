@@ -69,45 +69,96 @@
     {{ day.label }}
   </v-btn>
 </div>
-<v-row v-if="earlyMovies.length" class="movie-list" no-gutters>
-  <v-col
-    v-for="(item, key) in earlyMovies"
-    :key="key"
-    cols="6"
-    sm="4"
-    md="3"
-    lg="2"
-    style="padding:6px"
+<v-slide-group
+  show-arrows
+  class="trending-track"
+  v-if="earlyMovies.length"
+>
+  <v-slide-group-item
+    v-for="(item, index) in earlyMovies"
+    :key="index"
   >
     <router-link
-      :to="{ name: 'Movies', params: {slug:item.permalink.split('/').pop() } }"
+      :to="{ name: 'Movies', params: { slug: item.permalink.split('/').pop() } }"
+      class="trending-link"
     >
-      <v-card class="movie-card">
+      <v-card class="trending-card" 
+      elevation="0">
+        <!-- POSTER -->
         <v-img
-              :src="item.thumbnail"
-              aspect-ratio="2/3"
-              cover
-              height="240"
-              class="movie-thumb"
-            >
-              <template #placeholder>
-                <div class="d-flex align-center justify-center fill-height">
-                  <v-progress-circular
-                    color="grey-lighten-4"
-                    indeterminate
-                  ></v-progress-circular>
-                </div>
-              </template>
-            </v-img>
+          :src="item.thumbnail"
+          aspect-ratio="3/4"
+          cover
+          height="100%"
+          class="trending-poster"
+          referrerpolicy="no-referrer"
+        >
+          <!-- Rating -->
+          <div class="trending-rating">
+            {{ item.early_screening_time }}
+          </div>
+        </v-img>
 
-        <div class="movie-info">
-              <div class="movie-name">{{ item.title }}</div>
-              <div class="movie-ep">📺 Tập {{ item.latest_episode }}</div>
+        <!-- INFO -->
+        <div class="trending-info">
+          <div class="trending-number">
+            {{ index + 1 }}
+          </div>
+          <div class="trending-details">
+            <div class="trending-title">
+              {{ item.title }}
             </div>
+            <div class="trending-original">
+              📺 Tập {{ item.latest_episode }}
+            </div>
+          </div>
+        </div>
       </v-card>
     </router-link>
-  </v-col>
-</v-row>
+  </v-slide-group-item>
+
+  <v-slide-group-item
+    v-for="(item1, index) in regular_movies"
+    :key="index"
+  >
+    <router-link
+      :to="{ name: 'Movies', params: { slug: item1.permalink.split('/').pop() } }"
+      class="trending-link"
+    >
+      <v-card class="trending-card"
+       elevation="0">
+        <!-- POSTER -->
+        <v-img
+          :src="item1.thumbnail"
+          aspect-ratio="3/4"
+          cover
+          height="100%"
+          class="trending-poster"
+          referrerpolicy="no-referrer"
+        >
+          <!-- Rating -->
+          <div class="trending-rating">
+            ⭐
+          </div>
+        </v-img>
+
+        <!-- INFO -->
+        <div class="trending-info">
+          
+          <div class="trending-details">
+            <div class="trending-title">
+              {{ item1.title }}
+            </div>
+            <div class="trending-original">
+              📺 Tập {{ item1.latest_episode }}
+            </div>
+          </div>
+        </div>
+      </v-card>
+    </router-link>
+  </v-slide-group-item>
+</v-slide-group>
+
 
 <!-- Loading -->
 <v-row v-else>
@@ -714,6 +765,11 @@ export default {
     
     
   },
+  computed: {
+  allMovies() {
+    return [...this.earlyMovies, ...this.regular_movies]
+  }
+}
 };
 </script>
 
@@ -833,14 +889,14 @@ a {
   }
 }
 .v-img {
-  height: 250px;
+  width: 100%;
 }
-
+/*
 @media (max-width: 600px) {
   .v-img {
     height: 180px;
   }
-}
+} */
 
 /* container card */
 .movie-card {
@@ -1014,5 +1070,85 @@ a {
 }
 .v-skeleton-loader__image {
   border-radius: 12px;
+}
+.trending-track {
+  padding: 12px;
+}
+
+.trending-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* CARD */
+.trending-card {
+  width: 180px;
+  background: #111;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-right: 12px;
+  transition: transform 0.25s ease;
+}
+
+.trending-card:hover {
+  transform: translateY(-6px);
+}
+
+/* POSTER */
+.trending-poster {
+  background: radial-gradient(#222, #000);
+  position: relative;
+}
+
+/* RATING */
+.trending-rating {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffcc00;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* INFO */
+.trending-info {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.trending-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffcc00;
+  line-height: 1;
+}
+
+.trending-details {
+  flex: 1;
+}
+
+.trending-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trending-original {
+  font-size: 12px;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.v-slide-group-item {
+  flex: 0 0 auto;
 }
 </style>

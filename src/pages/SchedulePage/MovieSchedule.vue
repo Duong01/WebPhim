@@ -40,7 +40,7 @@
                 :src="'https://hoathinh3d.vn'+movie.thumbnail"
                 aspect-ratio="2/3"
                 cover
-                
+                referrerpolicy="no-referrer"
                 loading="lazy"
                 class="movie-thumb"
               >
@@ -48,7 +48,7 @@
                   <div class="d-flex align-center justify-center fill-height">
                     <v-progress-circular
                       color="blue-lighten-3"
-                :width="5"
+                :width="4"
                       indeterminate
                     ></v-progress-circular>
                   </div>
@@ -148,7 +148,6 @@ export default {
     
     const todayIndex = new Date().getDay();
     this.daily = this.days[todayIndex].value;
-    console.log(this.daily)
     this.ListMovie();
   },
   
