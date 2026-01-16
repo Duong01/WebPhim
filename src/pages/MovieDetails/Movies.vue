@@ -1,5 +1,5 @@
 <template>
-<v-fade-transition appear v-if="movies.length">
+<v-fade-transition appear v-if="movies.length > 0">
   <v-container class="search-page" fluid>
     <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
