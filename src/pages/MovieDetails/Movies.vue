@@ -1,9 +1,10 @@
 <template>
-<v-fade-transition appear v-if="movies.length > 0">
+<v-fade-transition appear v-if="status == true">
   <v-container class="search-page" fluid>
     <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
     </v-col> -->
+    <p>{{movies.length}}</p>
     <div>
       <div class="movie-banner">
         <!-- Ảnh nền mờ -->
@@ -71,7 +72,7 @@
                   width="30%"
                   cover
                   @click="showPreview = true"
-                  :v-lazy="movie.poster_url"
+                  :v-lazy="getOptimizedImage(movie.poster_url)"
                   v-show="$vuetify.display.mdAndUp"
                 >
                         <template #placeholder>
@@ -566,6 +567,7 @@ export default {
     return {
       activeNames: "1",
       tab: "one",
+      status: false,
       currentServer: null,
       imageLoaded: false,
       showAllEpisodes: false,
@@ -705,6 +707,7 @@ export default {
             if (result.status == true || result.status == "success") {
               this.link = "";
               this.movies = result.movie;
+              this.status = result.status
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
@@ -818,6 +821,7 @@ export default {
             if (result.status == true || result.status == "success") {
               this.link = "link";
               this.movies = result.movie;
+              this.status = result.status
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
