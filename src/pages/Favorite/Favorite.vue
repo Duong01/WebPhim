@@ -14,11 +14,11 @@
 
 
     <v-row justify="center">
-      <!-- <v-col cols="12" class="text-center" v-if="loading">
+      <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
-      </v-col> -->
+      </v-col>
 
-      <v-col cols="12">
+      <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0" class="text-center">
           <strong>{{$t('Bạn không có phim nào đã được lưu')}} {{ MessageErr }}</strong>
           <br />

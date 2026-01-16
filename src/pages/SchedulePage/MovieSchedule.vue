@@ -1,6 +1,9 @@
 <template>
   <v-container fluid class="schedule-page">
-
+<v-col cols="12" class="text-center" v-if="isLoading">
+          <v-progress-circular indeterminate color="primary" size="50" />
+        </v-col>
+        <div>
     <!-- HEADER -->
     <div class="schedule-header">
       <v-icon color="cyan">mdi-filmstrip</v-icon>
@@ -120,7 +123,7 @@
       </v-row>
       <div v-else class="empty-text">Không có phim chiếu sớm</div>
     </v-card> -->
-
+</div>
   </v-container>
 </template>
 

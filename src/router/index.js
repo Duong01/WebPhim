@@ -234,7 +234,7 @@ router.beforeEach((to, from, next) => {
     }
     
   }
-  store.dispatch('loading/startLoading')
+  //store.dispatch('loading/startLoading')
   
   next();
 

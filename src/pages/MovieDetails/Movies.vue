@@ -517,7 +517,7 @@
         v-if="showPreview"
         :url-list="[getOptimizedImage(movie.poster_url)]"
         show-progress
-        :initial-index="4"
+        :initial-index="0"
         @close="showPreview = false"
       />
     </div>
