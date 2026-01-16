@@ -955,7 +955,7 @@ export default {
             page = `tap${this.movies.episode_total}`;
             
           }
-          else if(this.link = ""){
+          else if(this.link == ""){
             const match = this.movies.page?.match(/\d+/);
             page = match ? match[0] : "";
 
