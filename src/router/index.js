@@ -300,12 +300,12 @@ router.beforeEach((to, from, next) => {
   desc.setAttribute("content", to.meta.description || defaultDesc)
 
 })
-router.afterEach(() => {
-  // delay nhẹ cho UX mượt
-  setTimeout(() => {
-    store.dispatch('loading/stopLoading')
-  }, 700)
-})
+// router.afterEach(() => {
+//   // delay nhẹ cho UX mượt
+//   setTimeout(() => {
+//     store.dispatch('loading/stopLoading')
+//   }, 700)
+// })
 
 
 export default router;
