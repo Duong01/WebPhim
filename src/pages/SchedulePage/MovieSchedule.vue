@@ -3,7 +3,7 @@
 <v-col cols="12" class="text-center" v-if="isLoading">
           <v-progress-circular indeterminate color="primary" size="50" />
         </v-col>
-        <div>
+        <div v-else>
     <!-- HEADER -->
     <div class="schedule-header">
       <v-icon color="cyan">mdi-filmstrip</v-icon>
@@ -71,7 +71,7 @@
                 {{ movie.title }}
               </div>
               <div class="movie-ep">
-                📺 Tập {{ movie.current_episode }}
+                📺 Tập {{ movie.current_episode|| "sắp chiếu" }}
               </div>
             </div>
           </v-card>
@@ -134,6 +134,7 @@ export default {
   data() {
     return {
       daily: "",
+      isLoading: true,
       earlyMovies: [],
       regularMovies: [],
       days: [
@@ -171,9 +172,11 @@ export default {
             this.earlyMovies = dat.movies
             // this.regularMovies = dat.movies
         }
+        this.isLoading = false
         console.log(dat)
       },(err)=>{
         console.log(err)
+        this.isLoading= false
 
       })
       

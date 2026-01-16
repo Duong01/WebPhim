@@ -81,7 +81,7 @@
         {{ day.label }}
       </v-btn>
     </div>
-
+<v-divider :content-offset="[12, 2.5]" opacity=".7">* * *</v-divider>
 <v-slide-group
   show-arrows="desktop"
   class="trending-track"
@@ -133,12 +133,19 @@
           <div class="trending-details">
             <div class="trending-title">
               {{ item.title }}
+              
             </div>
             <div class="trending-original">
               📺 Tập {{ item.latest_episode }}
             </div>
           </div>
+          <v-tooltip
+            activator="parent"
+            location="top"
+            
+          >{{ item.title }}</v-tooltip>
         </div>
+        
       </v-card>
     </router-link>
   </v-slide-group-item>
@@ -1152,6 +1159,7 @@ a {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  display: flex;
 }
 
 .trending-original {
@@ -1160,6 +1168,7 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
 }
 .v-slide-group-item {
   flex: 0 0 auto;
@@ -1183,4 +1192,5 @@ a {
   border: 1px solid #00e5ff;
   color: #00e5ff;
 }
+
 </style>
