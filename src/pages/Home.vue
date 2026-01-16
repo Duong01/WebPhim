@@ -54,7 +54,7 @@
 </v-row>
 
 <!-- Chọn ngày trong tuần -->
-<div
+<!-- <div
   class="d-flex align-center"
   style="overflow-x:auto; gap:10px; padding:10px 0"
 >
@@ -68,9 +68,22 @@
   >
     {{ day.label }}
   </v-btn>
-</div>
+</div> -->
+
+<div class="day-tabs">
+      <v-btn
+        v-for="day in days"
+        :key="day.value"
+        :color="daily === day.value ? 'blue-darken-3' : 'grey-darken-3'"
+        @click="changeDay(day.value)"
+        rounded
+      >
+        {{ day.label }}
+      </v-btn>
+    </div>
+
 <v-slide-group
-  show-arrows
+  show-arrows="desktop"
   class="trending-track"
   v-if="allMovies.length"
 >
@@ -89,7 +102,9 @@
           :src="item.thumbnail"
           aspect-ratio="9/16"
           cover
+          eager
           class="trending-poster"
+          transition="fade-transition"
           referrerpolicy="no-referrer"
         >
           <!-- BADGE -->
@@ -129,15 +144,6 @@
   </v-slide-group-item>
 </v-slide-group>
 
-
-
-<!-- Loading -->
-<v-row v-else>
-  <v-col v-for="i in 12" :key="i" cols="6" sm="4" md="3">
-    <v-skeleton-loader type="image" height="240" />
-  </v-col>
-</v-row>
-    
 
     <div
       v-for="(section, sectionIndex) in sections"
@@ -569,6 +575,11 @@ export default {
         if(dat.success == true){
             this.earlyMovies = dat.early_movies
             this.regular_movies = dat.regular_movies
+
+            this.$nextTick(()=>{
+              window.dispatchEvent(new Event('resize'))
+
+            })
         }
       }, (err)=>{
         console.log(err)
@@ -1147,5 +1158,24 @@ a {
 }
 .v-slide-group-item {
   flex: 0 0 auto;
+}
+.day-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.day-btn {
+    min-width: unset; 
+  white-space: nowrap;
+  background: #2a2a2a;
+  color: #ccc;
+}
+
+.day-btn.active {
+  border: 1px solid #00e5ff;
+  color: #00e5ff;
 }
 </style>

@@ -763,6 +763,25 @@ export default {
           );
         }
       }
+      if (this.currentEpisodeIndex == -1) {
+        var page = this.page.replace("tap", "");
+        if (this.page == "01") {
+          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === page
+          );
+        }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
+            const epNumber = parseInt(
+              (ep.name.toString().match(/\d+/) || [])[0],
+              10
+            );
+            return epNumber === page;
+          });
+      }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
@@ -808,6 +827,15 @@ export default {
             (ep) => ep.name.replace("Tập ", "tap") === page
           );
         }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
+            const epNumber = parseInt(
+              (ep.name.toString().match(/\d+/) || [])[0],
+              10
+            );
+            return epNumber === page;
+          });
       }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;

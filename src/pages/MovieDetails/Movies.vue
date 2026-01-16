@@ -1,5 +1,5 @@
 <template>
-<v-fade-transition appear>
+<v-fade-transition appear v-if="movies.length">
   <v-container class="search-page" fluid>
     <!-- <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
@@ -70,15 +70,17 @@
                   height="220"
                   width="30%"
                   cover
-                  @click="goToWatch('first')"
+                  @click="showPreview = true"
                   :v-lazy="movie.poster_url"
                   v-show="$vuetify.display.mdAndUp"
                 >
                         <template #placeholder>
       <div class="d-flex align-center justify-center fill-height">
-        <v-icon size="60" color="red-darken-1" class="spin">
-          mdi-play-circle-outline
-        </v-icon>
+        <v-progress-circular
+                color="blue-lighten-3"
+                :width="5"
+                indeterminate
+              ></v-progress-circular>
       </div>
     </template>
               </v-img>
@@ -121,6 +123,37 @@
                       </el-collapse-item>
                       
                     </el-collapse> -->
+                    <div class="center-buttons">
+                        <v-btn class="watch-now" size="large" @click="goToWatch('now')">
+                        ▶ Xem Ngay
+                        </v-btn>
+
+
+                        <div class="hero-actions">
+                          <div class="action-item">
+                              <v-btn variant="text" @click="goToWatch('first')">
+                                <v-icon>mdi-play</v-icon>
+                                <span v-if="!smAndDown">Xem từ đầu</span>
+                              </v-btn>
+                          </div>
+                          <div class="action-item">
+                            <v-btn variant="text" @click="handleFavorite()">
+                              <v-icon>mdi-heart-outline</v-icon>
+                                <span v-if="!smAndDown">{{ $t('Xem sau') }}</span>
+                              
+                            </v-btn>
+                            
+                          </div>
+                          <div class="action-item">
+                            <v-btn variant="text" @click="shareMovie()">
+                              <v-icon>mdi-share-variant</v-icon>
+                                <span v-if="!smAndDown">{{ $t('Chia sẻ') }}</span>
+                              
+                            </v-btn>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Giới thiệu film -->
                     <div>
                       <p class="movie-sub">Giới thiệu: </p>
                       <div
@@ -175,36 +208,7 @@
 
           <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
           <v-col cols="12" md="8">
-            <div class="center-buttons">
-              <v-btn class="watch-now" size="large" @click="goToWatch('now')">
-              ▶ Xem Ngay
-              </v-btn>
-
-
-              <div class="hero-actions">
-                <div class="action-item">
-                    <v-btn variant="text" @click="goToWatch('first')">
-                      <v-icon>mdi-play</v-icon>
-                      <span v-if="!smAndDown">Xem từ đầu</span>
-                    </v-btn>
-                </div>
-                <div class="action-item">
-                  <v-btn variant="text" @click="handleFavorite()">
-                    <v-icon>mdi-heart-outline</v-icon>
-                      <span v-if="!smAndDown">{{ $t('Xem sau') }}</span>
-                    
-                  </v-btn>
-                  
-                </div>
-                <div class="action-item">
-                  <v-btn variant="text" @click="shareMovie()">
-                    <v-icon>mdi-share-variant</v-icon>
-                      <span v-if="!smAndDown">{{ $t('Chia sẻ') }}</span>
-                    
-                  </v-btn>
-                </div>
-              </div>
-            </div>
+            
             <v-sheet elevation="4">
               <v-tabs color="primary" v-model="tab">
                 <v-tab value="one">Tập phim</v-tab>
@@ -507,11 +511,38 @@
           ></iframe>
         </v-card>
       </v-dialog>
+
+      <!-- preview Image -->
+      <el-image-viewer
+        v-if="showPreview"
+        :url-list="getOptimizedImage(movie.poster_url)"
+        show-progress
+        :initial-index="4"
+        @close="showPreview = false"
+      />
     </div>
+    
 
 </v-container>
 </v-fade-transition>
-  
+  <v-main v-else>
+        <v-empty-state
+          image="https://vuetifyjs.b-cdn.net/docs/images/components/v-empty-state/astro-dog.svg"
+          text-width="250"
+        >
+          <template v-slot:media>
+            <v-img class="mb-8"></v-img>
+          </template>
+
+          <template v-slot:title>
+            <div class="text-h6 text-high-emphasis">Chưa có dữ liệu của phim này</div>
+          </template>
+
+          <template v-slot:text>
+            <div class="text-body-1">Vui lòng theo dõi lại sau</div>
+          </template>
+        </v-empty-state>
+      </v-main>
 </template>
 
 
@@ -557,6 +588,7 @@ export default {
       ],
       isLoading: true,
       isLoadingData: false,
+      showPreview: false,
       Message: "",
       color: "",
       mess: false,
