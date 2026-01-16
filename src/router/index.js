@@ -1,7 +1,7 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
 // import { CheckSession } from "@/model/api";
-import store from "@/store";
+// import store from "@/store";
 
 const routes = [
   {
