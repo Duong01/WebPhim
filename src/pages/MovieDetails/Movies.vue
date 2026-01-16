@@ -1,11 +1,11 @@
 <template>
-<v-fade-transition appear v-if="status == true">
+<v-fade-transition appear >
   <v-container class="search-page" fluid>
-    <!-- <v-col cols="12" class="text-center" v-if="isLoading">
+    <v-col cols="12" class="text-center" v-if="isLoading">
       <v-progress-circular indeterminate color="primary" size="50" />
-    </v-col> -->
-    <p>{{movies.length}}</p>
-    <div>
+    </v-col>
+    <div v-else>
+      <div v-if="status == true">
       <div class="movie-banner">
         <!-- Ảnh nền mờ -->
         <div
@@ -72,7 +72,6 @@
                   width="30%"
                   cover
                   @click="showPreview = true"
-                  :v-lazy="getOptimizedImage(movie.poster_url)"
                   v-show="$vuetify.display.mdAndUp"
                 >
                         <template #placeholder>
@@ -516,17 +515,13 @@
       <!-- preview Image -->
       <el-image-viewer
         v-if="showPreview"
-        :url-list="getOptimizedImage(movie.poster_url)"
+        :url-list="[getOptimizedImage(movie.poster_url)]"
         show-progress
         :initial-index="4"
         @close="showPreview = false"
       />
     </div>
-    
-
-</v-container>
-</v-fade-transition>
-  <v-main v-else>
+    <v-main v-else>
         <v-empty-state
           image="https://vuetifyjs.b-cdn.net/docs/images/components/v-empty-state/astro-dog.svg"
           text-width="250"
@@ -544,6 +539,12 @@
           </template>
         </v-empty-state>
       </v-main>
+    </div>
+    
+
+</v-container>
+</v-fade-transition>
+  
 </template>
 
 
@@ -671,11 +672,13 @@ export default {
       
       //this.playVideo(this.movie.videoUrl);
 
-      await this.ListMovieByCate();
-      await this.GetComment();
+      this.ListMovieByCate();
+      this.GetComment();
       console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
+    }finally {
+      this.$store.dispatch('loading/stopLoading')
     }
   },
   methods: {
@@ -951,6 +954,11 @@ export default {
           if(this.movie?.page?.includes('Hoàn Tất')){
             page = `tap${this.movies.episode_total}`;
             
+          }
+          else if(this.link = ""){
+            const match = this.movies.page?.match(/\d+/);
+            page = match ? match[0] : "";
+
           }
           else{
           page = this.formatEpisode(this.movie.page);
@@ -1657,6 +1665,7 @@ border-bottom: 2px solid #ffd76b;
 
 .poster-img {
   transition: transform 0.35s ease;
+  cursor: zoom-in;
 }
 
 .poster-wrapper:hover .poster-img {

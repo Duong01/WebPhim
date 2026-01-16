@@ -145,10 +145,16 @@ export default {
     };
   },
   mounted() {
+    try{
+      const todayIndex = new Date().getDay();
+      this.daily = this.days[todayIndex].value;
+      this.ListMovie();
+    }catch(err){
+      console.log(err)
+    }finally {
+      this.$store.dispatch('loading/stopLoading')
+    }
     
-    const todayIndex = new Date().getDay();
-    this.daily = this.days[todayIndex].value;
-    this.ListMovie();
   },
   
   methods: {

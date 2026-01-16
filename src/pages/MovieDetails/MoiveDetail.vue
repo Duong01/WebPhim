@@ -886,6 +886,8 @@ export default {
       // await this.GetComment();
     } catch (err) {
       console.log(err);
+    }finally {
+      this.$store.dispatch('loading/stopLoading')
     }
   },
   methods: {

@@ -495,16 +495,21 @@ export default {
     CarouselPage,
   },
   async mounted() {
-    const todayIndex = new Date().getDay();
-    this.daily = this.days[todayIndex].value;
-    await this.ListNewUpdate()
-    this.$nextTick(() => {
-      this.observeSections();
-    });
+    try{
+      const todayIndex = new Date().getDay();
+      this.daily = this.days[todayIndex].value;
+      await this.ListNewUpdate()
+      this.$nextTick(() => {
+        this.observeSections();
+      });
+    }catch(err){
+      console.log(err)
+    }finally {
+      this.$store.dispatch('loading/stopLoading')
+    }
+    
   },
   methods: {
-
-
     changeDay(day) {
       this.daily = day;
       this.ListNewUpdate();
