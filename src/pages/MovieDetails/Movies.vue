@@ -66,7 +66,7 @@
               <!-- Ảnh + hiệu ứng hover -->
               <div v-else class="poster-wrapper">
                 <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
+                  :src="this.$store.state.image || getOptimizedImage(movie.poster_url)"
                   class="poster-img"
                   height="220"
                   width="30%"
@@ -515,7 +515,7 @@
       <!-- preview Image -->
       <el-image-viewer
         v-if="showPreview"
-        :url-list="[getOptimizedImage(movie.poster_url)]"
+        :url-list="[this.$store.state.image || getOptimizedImage(movie.poster_url)]"
         show-progress
         :initial-index="0"
         @close="showPreview = false"
@@ -804,11 +804,12 @@ export default {
               resolve(true);
             } else {
               reject("error");
+              this.isLoading = false;
             }
           },
           (err) => {
             console.log(err);
-            this.loading = false;
+            this.isLoading = false;
             this.isLoadingData = true;
             reject(err);
           }

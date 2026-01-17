@@ -95,8 +95,9 @@
     <router-link
       :to="{ name: 'Movies', params: { slug: item.permalink.split('/').pop() } }"
       class="trending-link"
+      
     >
-      <v-card class="trending-card" elevation="0">
+      <v-card class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
           :src="item.thumbnail"
@@ -498,6 +499,7 @@ export default {
 
     };
   },
+  props: ['item'],
   components: {
     CarouselPage,
   },
@@ -514,9 +516,11 @@ export default {
     }finally {
       this.$store.dispatch('loading/stopLoading')
     }
-    
   },
   methods: {
+    goMovies(item){
+      this.$store.commit("imageThumbnail",item.thumbnail)
+    },
     changeDay(day) {
       this.daily = day;
       this.ListNewUpdate();

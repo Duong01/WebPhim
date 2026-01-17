@@ -7,6 +7,9 @@ const mutations =
         state.empInfor = null;
         localStorage.removeItem("empInfor");
         localStorage.removeItem("token")
+    },
+    imageThumbnail(state,newimage){
+        state.image = newimage
     }
    
 }
