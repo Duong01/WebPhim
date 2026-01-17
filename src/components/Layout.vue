@@ -13,19 +13,7 @@
 
     <div class="main">
       <div class="content">
-        <router-view v-slot="{ Component, route }">
-          <keep-alive>
-            <component
-              v-if="route.meta.keepAlive"
-              :is="Component"
-            />
-          </keep-alive>
-
-          <component
-            v-if="!route.meta.keepAlive"
-            :is="Component"
-          />
-        </router-view>
+        <router-view />
       </div>
     </div>
     <hr/>
