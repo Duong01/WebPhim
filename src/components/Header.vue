@@ -812,8 +812,7 @@ export default {
     },
   },
   created() {
-    this.account =
-      localStorage.getItem("nameShow") || this.$store.state.empInfor.EmpName;
+    
     this.InitLang();
   },
 };

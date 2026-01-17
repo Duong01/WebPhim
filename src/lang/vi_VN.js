@@ -121,6 +121,7 @@ export default
   "Thời gian chiếu": "Thời gian chiếu",
   "Đã lưu": "Phim đã lưu",
   'Bạn không có phim nào đã được lưu': 'Bạn không có phim nào đã được lưu',
-'Lịch chiếu':'Lịch chiếu'
+'Lịch chiếu':'Lịch chiếu',
+
 
 }

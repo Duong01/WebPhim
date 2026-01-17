@@ -35,7 +35,7 @@
 
                   <div class="yt-interaction-blocker"></div>
                   <div v-if="showTrailerNotice" class="trailer-notice">
-                    Trailer sẽ được phát trước
+                    {{$t('Trailer sẽ được phát trước')}}
                   </div>
                 </div>
 
@@ -57,7 +57,7 @@
                   class="skip-trailer-btn"
                   @click="playMainVideo"
                 >
-                  Bỏ qua
+                  {{$t('Bỏ qua')}}
                 </button>
               </div>
 
@@ -187,10 +187,14 @@
                       cols="6"
                     >
                         <v-btn
-                          color="primary"
                           block
                           size="small"
                           @click="playEpisode(episode)"
+                          :color="
+                            index === currentEpisodeIndex
+                              ? 'red'
+                              : 'grey-darken-2'
+                            "
                         >
                           {{
                             episode.name
@@ -374,7 +378,7 @@
                     class="btnnext"
                   >
                     <v-icon icon="mdi-play" />
-                    Đăng nhập để bình luận
+                    {{$t('Đăng nhập để bình luận')}}
                   </v-btn>
                 </div>
                 <v-text-field
@@ -392,7 +396,7 @@
                 ></v-text-field>
                 <v-divider class="mb-4" color="grey darken-3"></v-divider>
                 <div v-if="comments.length <= 0" class="mb-5 text-center">
-                  Chưa có bình luận nào
+                  {{$t('Chưa có bình luận nào. Hãy là người đầu tiên!')}}
                 </div>
                 <div
                   v-else
@@ -447,7 +451,7 @@
                 theme="dark"
                 
               >
-                <v-card-title class="text-h6"> Danh sách tập </v-card-title>
+                <v-card-title class="text-h6"> {{$t('Danh sách tập')}} </v-card-title>
 
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
@@ -671,6 +675,11 @@ export default {
           title: "Home",
           disabled: false,
           href: "/home",
+        },
+        {
+          title: "Movie",
+          disabled: false,
+          href: "/movies/"+this.slug,
         },
         {
           title: this.slug,
@@ -1062,9 +1071,26 @@ export default {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
-              // if (result.data.seoOnPage) {
-              //   this.updateMetaTags(result.data.seoOnPage)
-              // }
+
+              // SEO TITLE
+              const removeOldMeta = (key, attr = "name") => {
+                const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
+                old.forEach((tag) => tag.remove());
+              };
+
+              const setMeta = (key, content, attr = "name") => {
+                if (!content) return;
+                const meta = document.createElement("meta");
+                meta.setAttribute(attr, key);
+                meta.setAttribute("content", content);
+                document.head.appendChild(meta);
+              };
+
+              document.title = result.movie.name || "Phim hay";
+              removeOldMeta("og:title", "property");
+              setMeta("og:title", result.movie.name, "property");
+
+              // END SEO
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
@@ -1169,10 +1195,23 @@ export default {
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
 
-              // if (result.data.seoOnPage) {
-              //   this.updateMetaTags(result.data.seoOnPage)
-              // }
+              // SEO TITLE
+              const removeOldMeta = (key, attr = "name") => {
+                const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
+                old.forEach((tag) => tag.remove());
+              };
 
+              const setMeta = (key, content, attr = "name") => {
+                if (!content) return;
+                const meta = document.createElement("meta");
+                meta.setAttribute(attr, key);
+                meta.setAttribute("content", content);
+                document.head.appendChild(meta);
+              };
+              document.title = result.movie.name || "Phim hay";
+              removeOldMeta("og:title", "property");
+              setMeta("og:title", result.movie.name, "property");
+              // end SEO
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
@@ -1852,6 +1891,25 @@ export default {
   aspect-ratio: 16 / 9;
   position: relative;
   background: #000;
+
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.6);
+}
+.video-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    #ffcc00,
+    #ff3d00,
+    #00e5ff
+  );
+  filter: blur(14px);
+  opacity: 0.4;
+  z-index: -1;
 }
 .video-player,
 .video-iframe {
@@ -1859,6 +1917,10 @@ export default {
   inset: 0;
   width: 100%;
   height: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 16px;
+  background: #000;
 }
 
 .suggested-item {
@@ -2213,17 +2275,28 @@ a {
 }
 .skip-trailer-btn {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 50;
-  padding: 8px 14px;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  bottom: 16px;
+  right: 16px;
+  z-index: 5;
+
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(6px);
-  font-size: 14px;
+  color: #fff;
+
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+
+  transition: all .2s ease;
+
 }
+.skip-trailer-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
 
 /* mobile */
 @media (max-width: 768px) {
@@ -2232,6 +2305,14 @@ a {
     right: 8px;
     font-size: 13px;
     padding: 6px 12px;
+  }
+  .video-wrapper {
+    border-radius: 10px;
+  }
+
+  .video-iframe,
+  .video-player {
+    border-radius: 10px;
   }
 }
 .trailer-notice-overlay {

@@ -125,7 +125,7 @@
                     </el-collapse> -->
                     <div class="center-buttons">
                         <v-btn class="watch-now" size="large" @click="goToWatch('now')">
-                        ▶ Xem Ngay
+                        ▶ {{$t('Xem Ngay')}}
                         </v-btn>
 
 
@@ -133,7 +133,7 @@
                           <div class="action-item">
                               <v-btn variant="text" @click="goToWatch('first')">
                                 <v-icon>mdi-play</v-icon>
-                                <span v-if="!smAndDown">Xem từ đầu</span>
+                                <span v-if="!smAndDown">{{$t('Xem từ đầu')}}</span>
                               </v-btn>
                           </div>
                           <div class="action-item">
@@ -155,7 +155,7 @@
                       </div>
                       <!-- Giới thiệu film -->
                     <div>
-                      <p class="movie-sub">Giới thiệu: </p>
+                      <p class="movie-sub">{{$t('Giới thiệu:')}} </p>
                       <div
                         class="movie-description text-left"
                         style="font-size: 12px"
@@ -166,7 +166,7 @@
                     
                     <div class="movie-info-grid text-left">
                 <div>
-                  <strong>Thể loại:</strong>
+                  <strong>{{$t('Thể loại:')}}</strong>
                   <div
                     class="category-nowrap"
                     v-for="(cate, ind) in movies.category"
@@ -178,16 +178,16 @@
                   </div>
                 </div>
                 <div>
-                  <strong>Quốc gia:</strong>
-                  {{ movies.country[0].name || "Đang cập nhật" }}
+                  <strong>{{$t('Quốc gia:')}}</strong>
+                  {{ movies.country[0].name || $t("Đang cập nhật") }}
                 </div>
 
                 <div>
-                  <strong>Số tập:</strong> {{ movies.episode_total }} tập
+                  <strong>{{$t('Số tập:')}}</strong> {{ movies.episode_total }} {{$t('tập')}}
                 </div>
-                <div><strong>Thời lượng:</strong> {{ movies.time }}</div>
+                <div><strong>{{$t('Thời lượng:')}}</strong> {{ movies.time }}</div>
                 <div>
-                  <strong>Diễn viên:</strong>
+                  <strong>{{$t('Diễn viên:')}}</strong>
                   <div
                     class="category-nowrap"
                     v-for="(actor, ind) in movies.actor"
@@ -211,10 +211,10 @@
             
             <v-sheet elevation="4">
               <v-tabs color="primary" v-model="tab">
-                <v-tab value="one">Tập phim</v-tab>
+                <v-tab value="one">{{$t('Tập phim')}}</v-tab>
                 <v-tab value="two">Trailer</v-tab>
                 <v-tab value="three">{{ $t("Bình luận") }}</v-tab>
-                <v-tab value="four">Đề xuất</v-tab>
+                <v-tab value="four">{{$t('Đề xuất')}}</v-tab>
               </v-tabs>
 
               <v-divider></v-divider>
@@ -281,7 +281,7 @@
                               class="btnnext"
                               v-if="episodeLimit < movie.pageMovie.length"
                             >
-                              Xem thêm
+                              {{$t('Xem thêm')}}
                               <v-icon size="12" class="mr-1">mdi-chevron-down</v-icon>
                             </v-btn>
 
@@ -292,7 +292,7 @@
                               class="btnnext"
                               v-else
                             >
-                              Thu gọn
+                              {{$t('Thu gọn')}}
                               <v-icon size="12" class="mr-1">mdi-chevron-up</v-icon>
                             </v-btn>
                         </div>
@@ -319,7 +319,7 @@
                 <v-tabs-window-item value="three">
                   <v-sheet class="pa-5">
                     <div v-if="comments.length <= 0">
-                      <span class="text-black-lighten-3 font-weight-medium me-2 text-center">Chưa có bình luận nào</span>
+                      <span class="text-black-lighten-3 font-weight-medium me-2 text-center">{{$t('Chưa có bình luận nào. Hãy là người đầu tiên!')}}</span>
                     </div>
 
                     <v-sheet
@@ -531,11 +531,11 @@
           </template>
 
           <template v-slot:title>
-            <div class="text-h6 text-high-emphasis">Chưa có dữ liệu của phim này</div>
+            <div class="text-h6 text-high-emphasis">{{$t('Chưa có dữ liệu của phim này')}}</div>
           </template>
 
           <template v-slot:text>
-            <div class="text-body-1">Vui lòng theo dõi lại sau</div>
+            <div class="text-body-1">{{$t('Vui lòng theo dõi lại sau')}}</div>
           </template>
         </v-empty-state>
       </v-main>
@@ -687,17 +687,17 @@ export default {
       const now = Date.now();
 
       if (time > now) {
-        return 'Vừa xong';
+        return this.$t('Vừa xong');
       }
       const diff = now - time;
         const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return 'Vừa xong';
-        if (minutes < 60) return  `${minutes} phút trước`;
+        if (minutes < 1) return this.$t('Vừa xong');
+        if (minutes < 60) return  `${minutes} ${this.$t('phút trước')}`;
         
         const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} giờ trước`;
+        if (hours < 24) return `${hours} ${this.$t('giờ trước')}`;
         const days = Math.floor(hours / 24);
-        return `${days} ngày trước`;
+        return `${days} ${this.$t('ngày trước')}`;
     },
 
     // Call API

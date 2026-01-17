@@ -17,7 +17,7 @@
           Không tìm thấy phim nào.
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 

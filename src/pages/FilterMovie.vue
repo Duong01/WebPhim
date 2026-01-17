@@ -6,7 +6,7 @@
         <v-icon left size="20" class="mr-1">
           mdi-filter-menu
         </v-icon>
-        {{ showFilter ? "Ẩn bộ lọc" : "Lọc phim" }}
+        {{ showFilter ? $t("Ẩn bộ lọc") : $t("Lọc phim") }}
       </el-button>
     </div>
     <v-expand-transition>
@@ -19,7 +19,7 @@
               :items="Categories"
               item-title="title"
               item-value="value"
-              label="Thể loại"
+              :label="$t('Thể loại')"
               clearable
               variant="outlined"
               density="compact"
@@ -33,7 +33,7 @@
               :items="Countries"
               item-title="title"
               item-value="value"
-              label="Quốc gia"
+              :label="$t('Quốc gia')"
               clearable
               variant="outlined"
               density="compact"
@@ -45,7 +45,7 @@
             <v-select
               v-model="filters.year"
               :items="years"
-              label="Năm"
+              :label="$t('Năm')"
               clearable
               variant="outlined"
               density="compact"
@@ -59,7 +59,7 @@
               :items="languages"
               item-title="title"
               item-value="value"
-              label="Ngôn ngữ"
+              :label="$t('Ngôn ngữ')"
               clearable
               variant="outlined"
               density="compact"
@@ -73,7 +73,7 @@
               :items="sortOptions"
               item-title="title"
               item-value="value"
-              label="Sắp xếp"
+              :label="$t('Sắp xếp')"
               variant="outlined"
               density="compact"
             />
@@ -120,44 +120,44 @@ export default {
       years: Array.from({ length: 20 }, (_, i) => `${2025 - i}`),
       languages: [
         { title: "VietSub", value: "vietsub" },
-        { title: "Thuyết Minh", value: "thuyet-minh" },
-        { title: "Lồng Tiếng", value: "long-tieng" },
+        { title: this.$t("Thuyết Minh"), value: "thuyet-minh" },
+        { title: this.$t("Lồng Tiếng"), value: "long-tieng" },
       ],
       Categories: [
-        { title: "Hành động", value: "hanh-dong" },
-        { title: "Tình cảm", value: "tinh-cam" },
-        { title: "Chiến tranh", value: "chien-tranh" },
-        { title: "Viễn tưởng", value: "vien-tuong" },
-        { title: "Kinh dị", value: "kinh-di" },
-        { title: "Bí ấn", value: "bi-an" },
-        { title: "Phim 18+", value: "phim-18" },
-        { title: "Tâm lý", value: "tam-ly" },
-        { title: "Gia đình", value: "gia-dinh" },
-        { title: "Học đường", value: "hoc-duong" },
-        { title: "Hài hước", value: "hai-huoc" },
-        { title: "Chính kịch", value: "chinh-kich" },
+        { title: this.$t("Hành động"), value: "hanh-dong" },
+        { title: this.$t("Tình cảm"), value: "tinh-cam" },
+        { title: this.$t("Chiến tranh"), value: "chien-tranh" },
+        { title: this.$t("Viễn tưởng"), value: "vien-tuong" },
+        { title: this.$t("Kinh dị"), value: "kinh-di" },
+        { title: this.$t("Bí ấn"), value: "bi-an" },
+        { title: this.$t("Phim 18+"), value: "phim-18" },
+        { title: this.$t("Tâm lý"), value: "tam-ly" },
+        { title: this.$t("Gia đình"), value: "gia-dinh" },
+        { title: this.$t("Học đường"), value: "hoc-duong" },
+        { title: this.$t("Hài hước"), value: "hai-huoc" },
+        { title: this.$t("Chính kịch"), value: "chinh-kich" },
       ],
       Countries: [
-        { title: "Việt Nam", value: "viet-nam" },
-        { title: "Trung Quốc", value: "trung-quoc" },
-        { title: "Thái Lan", value: "thai-lan" },
-        { title: "Hồng Kông", value: "hong-kong" },
-        { title: "Pháp", value: "phap" },
-        { title: "Đức", value: "duc" },
-        { title: "Hà Lan", value: "ha-lan" },
-        { title: "Mexico", value: "mexico" },
-        { title: "Thụy điển", value: "thuy-dien" },
-        { title: "Philippines", value: "philippines" },
-        { title: "Hàn Quốc", value: "han-quoc" },
-        { title: "Ấn Độ", value: "an-do" },
-        { title: "Châu Phi", value: "chau-phi" },
-        { title: "Nhật Bản", value: "nhat-ban" },
-        { title: "Đài Loan", value: "dai-loan" },
-        { title: "Anh", value: "anh" },
+        { title: this.$t("Việt Nam"), value: "viet-nam" },
+        { title: this.$t("Trung Quốc"), value: "trung-quoc" },
+        { title: this.$t("Thái Lan"), value: "thai-lan" },
+        { title: this.$t("Hồng Kông"), value: "hong-kong" },
+        { title: this.$t("Pháp"), value: "phap" },
+        { title: this.$t("Đức"), value: "duc" },
+        { title: this.$t("Hà Lan"), value: "ha-lan" },
+        { title: this.$t("Mexico"), value: "mexico" },
+        { title: this.$t("Thụy điển"), value: "thuy-dien" },
+        { title: this.$t("Philippines"), value: "philippines" },
+        { title: this.$t("Hàn Quốc"), value: "han-quoc" },
+        { title: this.$t("Ấn Độ"), value: "an-do" },
+        { title: this.$t("Châu Phi"), value: "chau-phi" },
+        { title: this.$t("Nhật Bản"), value: "nhat-ban" },
+        { title: this.$t("Đài Loan"), value: "dai-loan" },
+        { title: this.$t("Anh"), value: "anh" },
       ],
       sortOptions: [
-        { title: "Năm ↓", value: "year" },
-        { title: "Thời gian cập nhật", value: "modified.time" },
+        { title: this.$t("Năm ↓"), value: "year" },
+        { title: this.$t("Thời gian cập nhật"), value: "modified.time" },
       ],
     };
   },

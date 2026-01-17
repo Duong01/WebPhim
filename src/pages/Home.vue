@@ -53,23 +53,6 @@
   </v-col>
 </v-row>
 
-<!-- Chọn ngày trong tuần -->
-<!-- <div
-  class="d-flex align-center"
-  style="overflow-x:auto; gap:10px; padding:10px 0"
->
-  <v-btn
-    v-for="day in days"
-    :key="day.value"
-    size="small"
-    rounded="pill"
-    :color="daily === day.value ? 'blue-darken-3' : 'grey-darken-3'"
-    @click="changeDay(day.value)"
-  >
-    {{ day.label }}
-  </v-btn>
-</div> -->
-
 <div class="day-tabs">
       <v-btn
         v-for="day in days"
@@ -126,7 +109,7 @@
         </v-img>
 
         <!-- INFO -->
-        <div class="trending-info fixed-info">
+        <div class="trending-info">
           <div v-if="item._type === 'early'" class="trending-number">
             {{ item._index + 1 }}
           </div>
@@ -485,13 +468,13 @@ export default {
       ],
       link: "",
       days: [
-        { label: "Chủ Nhật", value: "chu-nhat" },
-        { label: "Thứ Hai", value: "thu-hai" },
-        { label: "Thứ Ba", value: "thu-ba" },
-        { label: "Thứ Tư", value: "thu-tu" },
-        { label: "Thứ Năm", value: "thu-nam" },
-        { label: "Thứ Sáu", value: "thu-sau" },
-        { label: "Thứ Bảy", value: "thu-bay" },
+        { label: this.$t("Chủ Nhật"), value: "chu-nhat" },
+        { label: this.$t("Thứ Hai"), value: "thu-hai" },
+        { label: this.$t("Thứ Ba"), value: "thu-ba" },
+        { label: this.$t("Thứ Tư"), value: "thu-tu" },
+        { label: this.$t("Thứ Năm"), value: "thu-nam" },
+        { label: this.$t("Thứ Sáu"), value: "thu-sau" },
+        { label: this.$t("Thứ Bảy"), value: "thu-bay" },
       ],
       daily: "",
       earlyMovies:[],
@@ -538,17 +521,17 @@ export default {
       const now = Date.now();
 
       if (time > now) {
-        return 'Vừa xong';
+        return this.$t(this.$t('Vừa xong'));
       }
       const diff = now - time;
         const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return 'Vừa xong';
-        if (minutes < 60) return  `${minutes} phút trước`;
+        if (minutes < 1) return this.$t('Vừa xong');
+        if (minutes < 60) return  `${minutes} ${this.$t('phút trước')}`;
         
         const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} giờ trước`;
+        if (hours < 24) return `${hours} ${this.$t('giờ trước')}`;
         const days = Math.floor(hours / 24);
-        return `${days} ngày trước`;
+        return `${days} ${this.$t('ngày trước')}`;
   },
 
     getColor(index) {
@@ -592,10 +575,6 @@ export default {
             this.earlyMovies = dat.early_movies
             this.regular_movies = dat.regular_movies
 
-            this.$nextTick(()=>{
-              window.dispatchEvent(new Event('resize'))
-
-            })
         }
       }, (err)=>{
         console.log(err)
