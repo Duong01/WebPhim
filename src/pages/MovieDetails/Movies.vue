@@ -513,13 +513,23 @@
       </v-dialog>
 
       <!-- preview Image -->
-      <el-image-viewer
-        v-if="showPreview"
-        :url-list="[this.$store.state.image || getOptimizedImage(movie.poster_url)]"
-        show-progress
-        :initial-index="0"
-        @close="showPreview = false"
-      />
+      
+      <div
+  v-if="showPreview"
+  class="preview-overlay"
+  @wheel.prevent
+>
+  <div class="preview-scroll">
+    <el-image-viewer
+      :url-list="[this.$store.state.image || getOptimizedImage(movie.poster_url)]"
+      show-progress
+      :initial-index="0"
+
+      @close="showPreview=false"
+    >
+    </el-image-viewer>
+  </div>
+</div>
     </div>
     <v-main v-else>
         <v-empty-state
