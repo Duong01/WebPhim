@@ -131,23 +131,23 @@
 
                         <div class="hero-actions">
                           <div class="action-item">
-                              <v-btn variant="text" @click="goToWatch('first')">
+                              <v-btn variant="text" @click="goToWatch('first')" class="action-btn">
                                 <v-icon>mdi-play</v-icon>
-                                <span v-if="!smAndDown">{{$t('Xem từ đầu')}}</span>
+                                <span v-if="!smAndDown" class="action-text">{{$t('Xem từ đầu')}}</span>
                               </v-btn>
                           </div>
                           <div class="action-item">
-                            <v-btn variant="text" @click="handleFavorite()">
+                            <v-btn variant="text" @click="handleFavorite()" class="action-btn">
                               <v-icon>mdi-heart-outline</v-icon>
-                                <span v-if="!smAndDown">{{ $t('Xem sau') }}</span>
+                                <span v-if="!smAndDown" class="action-text">{{ $t('Xem sau') }}</span>
                               
                             </v-btn>
                             
                           </div>
                           <div class="action-item">
-                            <v-btn variant="text" @click="shareMovie()">
+                            <v-btn variant="text" @click="shareMovie()" class="action-btn">
                               <v-icon>mdi-share-variant</v-icon>
-                                <span v-if="!smAndDown">{{ $t('Chia sẻ') }}</span>
+                                <span v-if="!smAndDown" class="action-text">{{ $t('Chia sẻ') }}</span>
                               
                             </v-btn>
                           </div>
@@ -1578,20 +1578,44 @@ CheckSession(
 .hero-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* 👈 căn trái */
-  gap: 12px;
-  flex-wrap: wrap;             /* 👈 tự xuống dòng */
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
   max-width: 100%;
-  overflow-x: hidden;          /* 👈 chống tràn ngang */
+  overflow-x: hidden;
 }
 
 .action-item {
-  flex-shrink: 0;              /* 👈 không bị bóp icon */
+  flex-shrink: 0;
 }
 
 .action-item .v-btn {
   max-width: 100%;
-  white-space: nowrap;         /* 👈 tránh text vỡ dòng xấu */
+  white-space: nowrap;
+}
+
+.action-btn {
+  color: white !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 8px !important;
+}
+
+.action-btn:hover {
+  color: #ffd76b !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 215, 107, 0.3);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-text {
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: 6px;
 }
 @media (max-width: 600px) {
   .hero-actions {

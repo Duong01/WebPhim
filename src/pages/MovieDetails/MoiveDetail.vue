@@ -2181,7 +2181,7 @@ a {
 .video-player {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* hoặc 'cover' nếu bạn muốn full */
+  object-fit: contain; /* hoặc 'cover' nếu bạn muốn full */
   background-color: black;
   cursor: pointer;
 }
