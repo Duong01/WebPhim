@@ -7,30 +7,33 @@
     <div v-else>
       <div v-if="status == true">
       <div class="movie-banner">
-        <!-- Ảnh nền mờ -->
+        <!-- Loading Placeholder -->
         <div
-                v-if="isLoading"
-                class="default-placeholder"
-              >
-                <v-skeleton-loader
-                  type="image, article"
-                  height="85vh"
-                  width="100%"
-                  class="rounded-lg"
-                />
-              </div>
-        <div
-          class=""
+          v-if="isLoading"
+          class="banner-placeholder"
         >
-          <v-img
-            :src="getOptimizedImage(movie.thumb_url)"
-            :alt="`Poster phim ${movie.name}`"
-            class="banner-img"
+          <v-skeleton-loader
+            type="image"
+            height="100%"
             width="100%"
-            height="85vh"
-            :v-lazy="movie.thumb_url"
-            cover
-          >
+            class="rounded-lg"
+          />
+        </div>
+
+        <!-- Banner Image -->
+        <v-img
+          v-else
+          :src="getOptimizedImage(movie.thumb_url)"
+          :lazy-src="getOptimizedImage(movie.thumb_url)"
+          :alt="`Poster phim ${movie.name}`"
+          class="banner-img"
+          cover
+          loading="eager"
+        >
+          <!-- Overlay Gradient -->
+          <!-- <div class="banner-overlay"></div> -->
+
+          <!-- Placeholder Loading -->
           <template #placeholder>
             <div class="d-flex align-center justify-center fill-height">
               <v-progress-circular
@@ -41,10 +44,6 @@
             </div>
           </template>
         </v-img>
-          
-        </div>
-
-        <!-- Lớp tối -->
       </div>
 
       <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
@@ -1240,6 +1239,71 @@ CheckSession(
   min-height: 100vh;
 }
 
+/* MOVIE BANNER */
+.movie-banner {
+  position: relative;
+  width: 100%;
+  height: clamp(320px, 80vh, 600px);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: #111;
+}
+
+.banner-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Responsive Banner Height */
+@media (max-width: 1200px) {
+  .movie-banner {
+    height: clamp(280px, 70vh, 500px);
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-banner {
+    height: clamp(240px, 60vh, 400px);
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-banner {
+    height: clamp(200px, 50vh, 300px);
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+}
+
 .poster-wrapper {
   position: relative;
   width: 100%;
@@ -1579,7 +1643,6 @@ CheckSession(
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
   flex-wrap: wrap;
   max-width: 100%;
   overflow-x: hidden;

@@ -58,6 +58,7 @@
                   @click="playMainVideo"
                 >
                   {{$t('Bỏ qua')}}
+                  <v-icon start>mdi-page-last</v-icon>
                 </button>
               </div>
 
@@ -676,11 +677,7 @@ export default {
           disabled: false,
           href: "/home",
         },
-        {
-          title: "Movie",
-          disabled: false,
-          href: "/movies/"+this.slug,
-        },
+        
         {
           title: this.slug,
           disabled: true,
@@ -1890,27 +1887,52 @@ export default {
   width: 100% !important;
   aspect-ratio: 16 / 9;
   position: relative;
-  background: #000;
-
-  box-shadow:
+  background: #0a0a0a;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  
+  /* YouTube-style shadow */
+  box-shadow: 
     0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 10px 30px rgba(0, 0, 0, 0.6);
+    0 8px 24px rgba(0, 0, 0, 0.6);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Smooth focus state */
+  cursor: pointer;
 }
+
+.video-wrapper:hover,
+.video-wrapper:focus-within {
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+/* YouTube-style glow border on hover */
 .video-wrapper::before {
   content: "";
   position: absolute;
-  inset: -2px;
-  border-radius: 20px;
+  inset: -1px;
+  border-radius: 12px;
   background: linear-gradient(
     135deg,
-    #ffcc00,
-    #ff3d00,
-    #00e5ff
+    rgba(255, 200, 0, 0.15),
+    rgba(255, 61, 0, 0.1),
+    rgba(0, 229, 255, 0.15)
   );
-  filter: blur(14px);
-  opacity: 0.4;
+  filter: blur(8px);
+  opacity: 0;
   z-index: -1;
+  transition: opacity 0.3s ease;
 }
+
+.video-wrapper:hover::before {
+  opacity: 0.6;
+}
+
 .video-player,
 .video-iframe {
   position: absolute;
@@ -1919,8 +1941,21 @@ export default {
   height: 100%;
   aspect-ratio: 16 / 9;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   background: #000;
+  display: block;
+  
+  /* YouTube player smooth appearance */
+  animation: playerFadeIn 0.5s ease-out;
+}
+
+@keyframes playerFadeIn {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .suggested-item {
@@ -2221,6 +2256,7 @@ a {
   color: #757575;
 }
 .watch-page {
+  margin: 0 !important;
   animation: watchEnter 0.5s ease-out;
   width: 100% !important;
 }
@@ -2275,44 +2311,86 @@ a {
 }
 .skip-trailer-btn {
   position: absolute;
-  bottom: 16px;
+  bottom: 20px;
   right: 16px;
   z-index: 5;
-
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(6px);
+  font-weight: bold;
+  /* YouTube-style semi-transparent background */
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
   color: #fff;
-
-  border: 1px solid rgba(255,255,255,.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
 
-  padding: 6px 14px;
-  font-size: 13px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
   cursor: pointer;
-
-  transition: all .2s ease;
-
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  white-space: nowrap;
 }
+
 .skip-trailer-btn:hover {
   background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.skip-trailer-btn:active {
+  transform: scale(0.98);
 }
 
 
-/* mobile */
+/* Mobile - YouTube responsive design */
 @media (max-width: 768px) {
-  .skip-trailer-btn {
-    bottom: 8px;
-    right: 8px;
-    font-size: 13px;
-    padding: 6px 12px;
-  }
   .video-wrapper {
-    border-radius: 10px;
+    border-radius: 8px;
+    margin-bottom: 16px;
   }
 
   .video-iframe,
   .video-player {
-    border-radius: 10px;
+    border-radius: 8px;
+  }
+
+  .skip-trailer-btn {
+    bottom: 12px;
+    right: 12px;
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .trailer-notice {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-wrapper {
+    border-radius: 6px;
+  }
+
+  .video-iframe,
+  .video-player {
+    border-radius: 6px;
+  }
+
+  .skip-trailer-btn {
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 5px 12px;
   }
 }
 .trailer-notice-overlay {
@@ -2334,12 +2412,16 @@ a {
   position: absolute;
   inset: 0;
   z-index: 1;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .yt-container iframe {
   width: 100%;
   height: 100%;
   border: 0;
+  border-radius: 12px;
+  display: block;
 }
 
 /* CHẶN 100% thao tác */
@@ -2359,16 +2441,29 @@ a {
   transform: translate(-50%, -50%);
   z-index: 4;
 
-  background: rgba(0, 0, 0, 0.6);
+  /* YouTube-style notice with glass effect */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.65)
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
   color: #fff;
-  padding: 10px 18px;
-  border-radius: 24px;
+  padding: 12px 20px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 200, 0, 0.25);
 
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.3px;
+  text-align: center;
 
   animation: fadeNotice 2.5s ease forwards;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Hiệu ứng mờ dần */

@@ -56,13 +56,12 @@ export default {
 }
 
 .main {
-  padding: 0 15px 0 15px;
   display: flex;
   justify-content: center;
 }
 
 .content {
-  width: 80%;
+  width: 90%;
 }
 
 /* mobile */

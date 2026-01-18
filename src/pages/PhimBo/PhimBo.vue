@@ -45,8 +45,8 @@
                   v-for="movie in movies"
                   :key="movie.id"
                   cols="6"
-                  sm="4"
-                  md="2"
+                  sm="6"
+                  md="3"
                   style="padding: 10px"
                 >
                   
