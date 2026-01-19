@@ -1125,15 +1125,15 @@ export default {
                 }
               );
             } else {
-              alert(dat.message);
-              this.$router.push({
-                path: "/login",
-                query: { redirect: this.$route.fullPath },
-              });
+              console.log(dat.message);
+              // this.$router.push({
+              //   path: "/login",
+              //   query: { redirect: this.$route.fullPath },
+              // });
             }
           },
           (err) => {
-            alert(err);
+            console.log(err);
           }
         );
       }
