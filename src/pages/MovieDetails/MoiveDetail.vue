@@ -1395,8 +1395,8 @@ export default {
       if (token) {
         CheckSession(
           (dat) => {
-            if (dat.status == "success") {
-              this.$store.commit("setEmpInfor", dat.data);
+            if (dat.data.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data.data);
               PostMoviesFavorite(
                 this.movieFavorite,
                 (dat) => {
@@ -1411,7 +1411,7 @@ export default {
                 }
               );
             } else {
-              alert(dat.message);
+              alert(dat.data.message);
               this.$router.push({
                 path: "/login",
                 query: { redirect: this.$route.fullPath },
@@ -1573,13 +1573,13 @@ export default {
       if (this.newComment.trim()) {
         CheckSession(
           (dat) => {
-            if (dat.status == "success") {
-              this.$store.commit("setEmpInfor", dat.data);
+            if (dat.data.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data.data);
               AddComment(
                 data,
-                (dat) => {
+                (data) => {
                   if (dat.data.status == "success") {
-                    this.Message = dat.data.message;
+                    this.Message = data.data.message;
                     this.color = "success";
                     this.mess = true;
                     this.GetComment();
@@ -1592,7 +1592,7 @@ export default {
                 }
               );
             } else {
-              alert(dat.message);
+              alert(dat.data.message);
               this.$router.push({
                 path: "/login",
                 query: { redirect: this.$route.fullPath },

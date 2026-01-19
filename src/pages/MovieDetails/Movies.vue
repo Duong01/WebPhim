@@ -1109,9 +1109,8 @@ export default {
       if (token) {
         CheckSession(
           (dat) => {
-            console.log(dat)
-            if (dat.status == "success") {
-              this.$store.commit("setEmpInfor", dat.data);
+            if (dat.data.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data.data);
               PostMoviesFavorite(
                 this.movieFavorite,
                 (dat) => {
@@ -1126,7 +1125,7 @@ export default {
                 }
               );
             } else {
-              console.log(dat.message);
+              alert(dat.data.message);
               // this.$router.push({
               //   path: "/login",
               //   query: { redirect: this.$route.fullPath },
@@ -1134,7 +1133,7 @@ export default {
             }
           },
           (err) => {
-            console.log(err);
+            alert(err);
           }
         );
       }
