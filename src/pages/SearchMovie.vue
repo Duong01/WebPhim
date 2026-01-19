@@ -38,8 +38,8 @@
                   v-for="movie in movies"
                   :key="movie.id"
                   cols="6"
-                  sm="4"
-                  md="2"
+                  sm="6"
+                  md="3"
                   style="padding: 10px"
                 >
                   
@@ -381,7 +381,7 @@ export default {
         reject(new Error("Timeout"));
       }, 120000);
         Search(
-          { keyword: query, page: this.currentPage },
+          { keyword: query },
           (result) => {
             clearTimeout(timer);
             if (result.status == "success" || result.status == true) {
@@ -402,30 +402,15 @@ export default {
                 this.movies = [];
               this.loading = false;
 
-                // this.link = "link1";
-                // this.SearchMovie1(query)
-                // .then(resolve)
-                // .catch(reject);
               }
             } 
-            // else {
-            //   this.link = "link1";
-            //   this.SearchMovie1(query)
-            //   .then(resolve)
-            //   .catch(reject);
-            //   resolve(true)
-            // }
+           
             reject(result)
           },
           (err) => {
             clearTimeout(timer);
           console.log(err);
-            // console.log(err);
-            // clearTimeout(timer);
-            // this.link = "link1";
-            // this.SearchMovie1(query)
-            // .then(resolve)
-            // .catch(reject);
+            
             
           }
         );

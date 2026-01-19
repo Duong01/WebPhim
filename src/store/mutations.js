@@ -10,7 +10,10 @@ const mutations =
     },
     imageThumbnail(state,newimage){
         state.image = newimage
-    }
+    },
+    UPDATE_ACTIVE_TIME(state) {
+        state.lastActive = Date.now()
+      }
    
 }
 export default mutations

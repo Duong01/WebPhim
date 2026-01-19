@@ -29,10 +29,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-        alert("Tài khoản của bạn đã hết hạn đăng nhập")
-      localStorage.removeItem("token");
-      localStorage.removeItem("favoriteMovies");
-      localStorage.removeItem("user");
+        alert(this.$t("Tài khoản của bạn đã hết hạn đăng nhập"))
+        localStorage.removeItem("token");
+        localStorage.removeItem("favoriteMovies");
+        localStorage.removeItem("user");
+        localStorage.removeItem("name");
+        localStorage.removeItem("nameShow");
       window.location.href = "/login";
     }
     return Promise.reject(error);

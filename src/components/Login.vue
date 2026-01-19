@@ -119,6 +119,12 @@ export default {
     const data = res.data;
 
     if (data.status === "success") {
+      // Xoa du lieu cu
+        localStorage.removeItem("token");
+        localStorage.removeItem("favoriteMovies");
+        localStorage.removeItem("user");
+
+
       const { token, user } = data.data;
 
       localStorage.setItem("token", token);

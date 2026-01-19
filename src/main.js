@@ -49,19 +49,31 @@ async function bootstrap() {
         if (res.data.status === "success") {
         store.commit("setEmpInfor", res.data.data);
       } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("favoriteMovies");
-      localStorage.removeItem("user");
+        // localStorage.removeItem("token");
+        // localStorage.removeItem("favoriteMovies");
+        // localStorage.removeItem("user");
       }
       });
       
       
     } catch (err) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("favoriteMovies");
-      localStorage.removeItem("user");
+      console.error(err)
+    //   localStorage.removeItem("token");
+    //   localStorage.removeItem("favoriteMovies");
+    //   localStorage.removeItem("user");
     }
   }
+  document.addEventListener("click", () => {
+    store.commit("UPDATE_ACTIVE_TIME")
+  })
+  
+  document.addEventListener("keydown", () => {
+    store.commit("UPDATE_ACTIVE_TIME")
+  })
+  
+  window.addEventListener("scroll", () => {
+    store.commit("UPDATE_ACTIVE_TIME")
+  })
 
   const app = createApp(App);
 

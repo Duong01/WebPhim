@@ -18,7 +18,8 @@ export default function state() {
       },
       isLoading: false,  // show loading icon full screen when call api
       curri18n: null,//  current $t for i18n
-      image: ""
+      image: "",
+      lastActive: Date.now()
       
   
     }

@@ -52,44 +52,31 @@ export default {
         localStorage.setItem('theme', newVal)
       }
     },
-  mounted(){
-    const loginTime = localStorage.getItem("loginTimestamp");
-    if (loginTime) {
-    // const now = Date.now();
-    // const diff = now - Number(loginTime);
-    // const oneDay = 24 * 60 * 60 * 1000;
-
-    // if (diff > oneDay) {
-    //   localStorage.removeItem("name");
-    //   localStorage.removeItem("loginTimestamp");
-    //   // Nếu cần, xóa luôn thông tin trong Vuex store:
-    //   this.$store.commit("setEmpInfor", null);
-    // }
-  }
+  mounted() {
+    // kiem tra khi ma het session thi tu dong load lai trang
+  document.addEventListener("visibilitychange", this.handleVisibility)
+  window.addEventListener("pageshow", this.handlePageShow)
+},
+beforeUnmount() {
   
-  this.$bus.$on("show-error", (msg) => {
-      this.errorMessage = msg;
-      this.showError = true;
-    });
-    
-  },
-  
-  created() {
-  // const expireAt = localStorage.getItem("expireAt");
-  // const now = new Date().getTime();
-
-  // if (expireAt && now > parseInt(expireAt)) {
-  //   // Đã hết hạn → xóa dữ liệu
-  //   localStorage.removeItem("name");
-  //   localStorage.removeItem("expireAt");
-  //   this.$store.commit("setEmpInfor", null);
-
-  // }
+  document.removeEventListener("visibilitychange", this.handleVisibility)
+  window.removeEventListener("pageshow", this.handlePageShow)
 },
   methods: {
     setTheme(newTheme) {
       this.theme = newTheme
+    },
+    handleVisibility() {
+    if (document.visibilityState === "visible") {
+      this.$store.dispatch("checkResume")
     }
+  },
+
+  handlePageShow(e) {
+    if (e.persisted) {
+      this.$store.dispatch("checkResume")
+    }
+  }
     
   }
 }
