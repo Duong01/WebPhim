@@ -1109,6 +1109,7 @@ export default {
       if (token) {
         CheckSession(
           (dat) => {
+            console.log(dat)
             if (dat.status == "success") {
               this.$store.commit("setEmpInfor", dat.data);
               PostMoviesFavorite(
