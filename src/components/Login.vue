@@ -24,7 +24,16 @@
               {{ $t('Chào mừng bạn quay lại') }}
             </p>
           </div>
-
+          <v-btn
+            block
+            size="large"
+            variant="outlined"
+            class="mt-4"
+            @click="loginWithGoogle"
+          >
+            <v-icon start color="red">mdi-google</v-icon>
+            {{ $t('Đăng nhập bằng Google') }}
+          </v-btn>
           <!-- FORM -->
           <v-form ref="loginFormRef" @submit.prevent="handleLogin">
             <v-text-field
@@ -104,6 +113,47 @@ export default {
   },
   
   methods: {
+
+    async loginWithGoogle() {
+    try {
+      const googleUser = await this.$gAuth.signIn();
+      const token = googleUser.credential;
+
+      // Gửi token về backend
+      this.loginGoogleApi(token);
+
+    } catch (err) {
+      this.Message = "Đăng nhập Google thất bại";
+      this.color = "error";
+      this.mess = true;
+    }
+  },
+  loginGoogleApi(googleToken) {
+    this.loading = true;
+
+    this.$axios.post("/api/auth/google-login", {
+      token: googleToken
+    }).then(res => {
+      const data = res.data;
+
+      if (data.status === "success") {
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+
+        this.$store.commit("setEmpInfor", data.data.user);
+        const redirect = this.$route.query.redirect || "/home";
+        this.$router.replace(redirect);
+      } else {
+        this.Message = data.message;
+        this.color = "error";
+        this.mess = true;
+      }
+    }).finally(() => {
+      this.loading = false;
+    });
+  },
+
+
     goBack() {
       if (window.history.length > 1) {
       this.$router.back();
