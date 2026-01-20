@@ -1,112 +1,140 @@
 <template>
-  <v-container fluid class="fill-height">
-    <v-row justify="center" align="center" style="flex-direction: column">
-        
-
+  <v-container fluid class="register-bg fill-height">
+    <v-row justify="center" align="center">
       <v-col cols="12" sm="10" md="6" lg="4">
-        <v-btn icon variant="text" class="ma-4" @click="goBack">
-            <v-icon>mdi-arrow-left</v-icon>
-             Go Home
+        <!-- Back -->
+        <v-btn icon variant="text" class="back-btn mb-4" @click="goBack">
+          <v-icon size="22">mdi-arrow-left</v-icon>
+          <span class="ml-1">Trang chủ</span>
         </v-btn>
-        <v-card class="pa-6 rounded-xl" elevation="12">
-          
-          <!-- Tiêu đề -->
-          <v-card-title class="text-h5 font-weight-bold text-center">
-            {{$t('Đăng ký tài khoản')}}
-          </v-card-title>
-          <v-card-subtitle class="text-center mb-4">
-            {{$t('Điền thông tin bên dưới để tạo tài khoản')}}
-          </v-card-subtitle>
 
+        <v-card class="pa-8 rounded-xl cinematic-card" elevation="18">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <v-icon size="54" color="deep-orange-accent-2">
+              mdi-account-plus
+            </v-icon>
+
+            <h1 class="register-title mt-4">
+              Tạo tài khoản miễn phí
+            </h1>
+
+            <p class="register-subtitle">
+              Mở khóa thế giới phim ảnh không giới hạn
+            </p>
+          </div>
+
+          <!-- FORM -->
           <v-form ref="form" @submit.prevent="submitRegister">
             <v-text-field
               v-model="registerForm.EmpName"
-              :label="$t('Tên hiển thị')"
+              label="Tên hiển thị"
               prepend-inner-icon="mdi-account"
-              required
+              variant="outlined"
+              color="deep-orange-accent-2"
               class="mb-3"
+              required
             />
-            
+
             <v-text-field
               v-model="registerForm.BirthDay"
-              :label="$t('Ngày sinh')"
-              prepend-inner-icon="mdi-account"
-              required
+              label="Ngày sinh"
               type="date"
+              prepend-inner-icon="mdi-calendar"
+              variant="outlined"
+              color="deep-orange-accent-2"
               class="mb-3"
+              required
             />
 
             <v-text-field
               v-model="registerForm.Email"
               label="Email"
-              prepend-inner-icon="mdi-email"
               type="email"
-              required
+              prepend-inner-icon="mdi-email-outline"
+              variant="outlined"
+              color="deep-orange-accent-2"
               class="mb-3"
               :rules="emailRules"
+              required
             />
 
             <v-text-field
               v-model="registerForm.Password"
-              :label="$t('Mật khẩu')"
-              prepend-inner-icon="mdi-lock"
-              type="password"
-              required
+              label="Mật khẩu"
+              :type="showPassword ? 'text' : 'password'"
+              prepend-inner-icon="mdi-lock-outline"
+              :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              @click:append-inner="showPassword = !showPassword"
+              variant="outlined"
+              color="deep-orange-accent-2"
               class="mb-3"
+              required
             />
 
             <v-text-field
-            v-model="confirmPassword"
-            :label="$t('Xác nhận mật khẩu')"
-            prepend-inner-icon="mdi-lock-check"
-            type="password"
-            :error="confirmPassword && confirmPassword !== registerForm.password"
-            :error-messages="confirmPassword && confirmPassword !== registerForm.password ? $t('Mật khẩu không khớp') : ''"
-            required
-            class="mb-3"
+              v-model="confirmPassword"
+              label="Xác nhận mật khẩu"
+              :type="showConfirm ? 'text' : 'password'"
+              prepend-inner-icon="mdi-lock-check"
+              :append-inner-icon="showConfirm ? 'mdi-eye-off' : 'mdi-eye'"
+              @click:append-inner="showConfirm = !showConfirm"
+              :error="confirmPassword && confirmPassword !== registerForm.Password"
+              :error-messages="
+                confirmPassword && confirmPassword !== registerForm.Password
+                  ? 'Mật khẩu không khớp'
+                  : ''
+              "
+              variant="outlined"
+              color="deep-orange-accent-2"
+              class="mb-3"
+              required
             />
+
             <v-text-field
               v-model="registerForm.Phone"
-              :label="$t('Số điện thoại')"
-              prepend-inner-icon="mdi-lock"
-              required
-              class="mb-3"
+              label="Số điện thoại"
+              prepend-inner-icon="mdi-phone"
+              variant="outlined"
+              color="deep-orange-accent-2"
+              class="mb-5"
             />
 
-            <v-checkbox
-              v-model="agree"
-              :label="$t('Tôi đồng ý với Điều khoản & Chính sách')"
-              class="mb-4"
-              required
-            />
-
+            <!-- CTA -->
             <v-btn
               type="submit"
-              color="primary"
               block
               size="large"
+              class="register-btn"
               :loading="loading"
               :disabled="!isValid"
             >
-              {{$t('Đăng ký')}}
+              <v-icon start>mdi-play-circle</v-icon>
+              Tạo tài khoản & bắt đầu xem phim
             </v-btn>
           </v-form>
 
-          <div class="text-center mt-6">
-            <span>Đã có tài khoản?</span>
-            <router-link to="/login" class="ml-1 text-decoration-underline font-weight-bold">
-              {{$t('Đăng nhập')}}
+          <v-divider class="my-6 opacity-50" />
+
+          <div class="text-center text-caption">
+            Đã có tài khoản?
+            <router-link
+              to="/login"
+              class="font-weight-bold text-orange-accent-2 ml-1"
+            >
+              Đăng nhập ngay
             </router-link>
           </div>
-
         </v-card>
       </v-col>
     </v-row>
+
+    <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="3000">
+      {{ snackbarMessage }}
+    </v-snackbar>
   </v-container>
-  <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="3000">
-  {{ snackbarMessage }}
-</v-snackbar>
 </template>
+
 
 <script>
 import { Register } from "@/model/api";
@@ -143,8 +171,7 @@ export default {
       this.registerForm.EmpName &&
       this.registerForm.Email &&
       this.registerForm.Password &&
-      this.confirmPassword === this.registerForm.Password &&
-      this.agree
+      this.confirmPassword === this.registerForm.Password
     );
   },
     
@@ -188,16 +215,46 @@ export default {
 </script>
 
 <style scoped>
-.login-bg {
-  background: linear-gradient(135deg, #54585f, #413333);
+.register-bg {
+  background:
+    radial-gradient(circle at top, rgba(255,140,0,0.15), transparent 40%),
+    linear-gradient(135deg, #0f0f0f, #1c1c1c);
 }
 
-.login-card {
-  backdrop-filter: blur(8px);
+.cinematic-card {
+  background: rgba(20, 20, 20, 0.88);
+  border: 1px solid rgba(255, 140, 0, 0.15);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+}
+
+.register-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.register-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 6px;
+}
+
+.register-btn {
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.register-btn:hover {
+  filter: brightness(1.1);
 }
 
 .back-btn {
-  width: auto;
-  color: rgb(218, 190, 190);
+  color: rgba(255, 255, 255, 0.7);
 }
+
 </style>
