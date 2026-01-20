@@ -1397,6 +1397,7 @@ export default {
           (dat) => {
             if (dat.data.status == "success") {
               this.$store.commit("setEmpInfor", dat.data.data);
+              this.$store.commit("setAvatar", dat.data.data.Avatar);
               PostMoviesFavorite(
                 this.movieFavorite,
                 (dat) => {
@@ -1575,6 +1576,7 @@ export default {
           (dat) => {
             if (dat.data.status == "success") {
               this.$store.commit("setEmpInfor", dat.data.data);
+              this.$store.commit("setAvatar", dat.data.data.Avatar);
               AddComment(
                 data,
                 (data) => {

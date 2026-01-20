@@ -1111,6 +1111,7 @@ export default {
           (dat) => {
             if (dat.data.status == "success") {
               this.$store.commit("setEmpInfor", dat.data.data);
+              this.$store.commit("setAvatar", dat.data.data.Avatar);
               PostMoviesFavorite(
                 this.movieFavorite,
                 (dat) => {

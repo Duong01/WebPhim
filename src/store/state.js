@@ -9,7 +9,8 @@ export default function state() {
         Email: "",
         Password: "",
         Phone: "",
-        TimeLogin: ""
+        TimeLogin: "",
+        Avatar: ""
         
       },
       curi18n: {
@@ -19,6 +20,7 @@ export default function state() {
       isLoading: false,  // show loading icon full screen when call api
       curri18n: null,//  current $t for i18n
       image: "",
+      Avatar: "",
       lastActive: Date.now()
       
   

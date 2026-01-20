@@ -182,18 +182,19 @@ export default {
 
       LoginGoogle(
         { Token: googleToken },
-        (data) => {
-          console.log(data)
-          if (data.status === "success") {
-            localStorage.setItem("token", data.data.token);
-            localStorage.setItem("user", JSON.stringify(data.data.user));
-
-            this.$store.commit("setEmpInfor", data.data.user);
+        (dat) => {
+          console.log(dat)
+          if (dat.data.status === "success") {
+            localStorage.setItem("token", dat.data.data.token);
+            localStorage.setItem("user", JSON.stringify(dat.data.data.user));
+            
+            this.$store.commit("setEmpInfor", dat.data.data.user);
+            this.$store.commit("setAvatar", dat.data.data.user.Avartar);
 
             const redirect = this.$route.query.redirect || "/home";
             this.$router.replace(redirect);
           } else {
-            this.Message = data.message;
+            this.Message = dat.data.message;
             this.color = "error";
             this.mess = true;
           }

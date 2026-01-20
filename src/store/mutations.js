@@ -8,6 +8,9 @@ const mutations =
         localStorage.removeItem("empInfor");
         localStorage.removeItem("token")
     },
+    setAvatar(state, avar){
+        state.Avatar = avar
+    },
     imageThumbnail(state,newimage){
         state.image = newimage
     },

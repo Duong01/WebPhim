@@ -255,7 +255,8 @@
       <v-menu offset-y v-if="!isLogin">
         <template #activator="{ props }">
           <v-btn icon v-bind="props" :title="$t('Tài khoản')">
-            <v-icon>mdi-account-circle</v-icon>
+            <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
+              <v-icon v-else>mdi-account-circle</v-icon> {{ account }}
           </v-btn>
         </template>
         <v-list>
@@ -278,7 +279,8 @@
               class="account-btn"
               :title="account"
             >
-              <v-icon size="20">mdi-account-circle</v-icon>
+            <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
+              <v-icon size="20" v-else>mdi-account-circle</v-icon>
 
               <!-- Chỉ hiện tên trên md trở lên -->
               <span
@@ -291,7 +293,10 @@
         </template>
         <v-list>
           <v-list-item v-if="$vuetify.display.mdAndDown">
-            <v-list-item-title><v-icon>mdi-account-circle</v-icon> {{ account }}</v-list-item-title>
+            <v-list-item-title>
+              <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
+              <v-icon v-else>mdi-account-circle</v-icon> {{ account }}
+            </v-list-item-title>
           </v-list-item>
           <v-list-item @click="NextRouter()">
             <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
@@ -609,6 +614,9 @@ export default {
   computed: {
     account() {
       return this.$store.state.empInfor?.EmpName || "";
+    },
+    avatar(){
+      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || "";
     },
     isLogin() {
       return !!this.$store.state.empInfor?.ID;

@@ -49,6 +49,7 @@ async function bootstrap() {
         console.log(res)
         if (res.data.status === "success") {
         store.commit("setEmpInfor", res.data.data);
+        store.commit("setAvatar", res.data.data.Avatar);
       } else {
         // localStorage.removeItem("token");
         // localStorage.removeItem("favoriteMovies");
