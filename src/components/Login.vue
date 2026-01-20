@@ -139,8 +139,11 @@ export default {
   },
   loginGoogleApi(googleToken) {
   this.loading = true;
+  var data1 = {
+    Token: googleToken
+  }
 
-  LoginGoogle(googleToken, (data) => {
+  LoginGoogle(data1, (data) => {
     if (data.status === "success") {
       localStorage.setItem("token", data.data.token);
       localStorage.setItem("user", JSON.stringify(data.data.user));
