@@ -115,14 +115,14 @@ export default {
   methods: {
 
     loginWithGoogle() {
-    googleSdkLoaded((google) => {
-      google.accounts.id.initialize({
-        client_id: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com",
-        callback: this.handleGoogleLogin,
-      });
+      googleSdkLoaded((google) => {
+        google.accounts.id.initialize({
+          client_id: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com",
+          callback: this.handleGoogleLogin,
+        });
 
-      google.accounts.id.prompt(); // mở popup login
-    });
+        google.accounts.id.prompt(); // mở popup login
+      });
   },
   handleGoogleLogin(response) {
     // 🔥 response.credential = GOOGLE ID TOKEN (JWT)
