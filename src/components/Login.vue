@@ -183,6 +183,7 @@ export default {
       LoginGoogle(
         { Token: googleToken },
         (data) => {
+          console.log(data)
           if (data.status === "success") {
             localStorage.setItem("token", data.data.token);
             localStorage.setItem("user", JSON.stringify(data.data.user));
