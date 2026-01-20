@@ -109,60 +109,81 @@ export default {
       v => !!v || this.$t('Email không được để trống'),
       v => /.+@.+\..+/.test(v) || this.$t('Email không hợp lệ'),
     ],
+    googleInited: false,
+      googleLogging: false,
     };
   },
-  
+  mounted() {
+    // ✅ INIT GOOGLE SDK 1 LẦN DUY NHẤT
+    googleSdkLoaded((google) => {
+      if (this.googleInited) return;
+
+      google.accounts.id.initialize({
+        client_id:
+          "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com",
+        callback: this.handleGoogleLogin,
+        ux_mode: "popup", // 🔥 BẮT BUỘC
+      });
+
+      this.googleInited = true;
+    });
+  },
   methods: {
 
     loginWithGoogle() {
-      googleSdkLoaded((google) => {
-        google.accounts.id.initialize({
-          client_id: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com",
-          callback: this.handleGoogleLogin,
-        });
+      if (!this.googleInited || this.googleLogging) return;
 
-        google.accounts.id.prompt(); // mở popup login
+      this.googleLogging = true;
+
+      window.google.accounts.id.prompt((notification) => {
+        if (
+          notification.isNotDisplayed() ||
+          notification.isSkippedMoment()
+        ) {
+          this.googleLogging = false;
+        }
       });
-  },
+    },
   handleGoogleLogin(response) {
-    // 🔥 response.credential = GOOGLE ID TOKEN (JWT)
-    const googleIdToken = response.credential;
+      this.googleLogging = false;
 
-    if (!googleIdToken) {
-      this.Message = "Không lấy được token Google";
-      this.color = "error";
-      this.mess = true;
-      return;
-    }
+      const googleIdToken = response?.credential;
 
-    this.loginGoogleApi(googleIdToken);
-  },
+      if (!googleIdToken) {
+        this.Message = "Không lấy được token Google";
+        this.color = "error";
+        this.mess = true;
+        return;
+      }
+
+      this.loginGoogleApi(googleIdToken);
+    },
   loginGoogleApi(googleToken) {
-  this.loading = true;
-  var data1 = {
-    Token: googleToken
-  }
+      this.loading = true;
 
-  LoginGoogle(data1, (data) => {
-    if (data.status === "success") {
-      localStorage.setItem("token", data.data.token);
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      LoginGoogle(
+        { Token: googleToken },
+        (data) => {
+          if (data.status === "success") {
+            localStorage.setItem("token", data.data.token);
+            localStorage.setItem("user", JSON.stringify(data.data.user));
 
-      this.$store.commit("setEmpInfor", data.data.user);
+            this.$store.commit("setEmpInfor", data.data.user);
 
-      const redirect = this.$route.query.redirect || "/home";
-      this.$router.replace(redirect);
-    } else {
-      this.Message = data.message;
-      this.color = "error";
-      this.mess = true;
-    }
-    this.loading = false;
-  }, () => {
-    this.loading = false;
-  })
-},
-
+            const redirect = this.$route.query.redirect || "/home";
+            this.$router.replace(redirect);
+          } else {
+            this.Message = data.message;
+            this.color = "error";
+            this.mess = true;
+          }
+          this.loading = false;
+        },
+        () => {
+          this.loading = false;
+        }
+      );
+    },
 
     goBack() {
       if (window.history.length > 1) {
