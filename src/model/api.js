@@ -110,6 +110,8 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  export const Login = (params, success, error) => http.Post(`/AccountApi/Login`, params,success, error)
 
+ export const LoginGoogle = (params, success, error) => http.Post(`/AccountApi/GoogleLogin`, params,success, error)
+
  // api login
  export const Register = (params, success, error) => http.Post(`/AccountApi/Register`, params,success, error)
 

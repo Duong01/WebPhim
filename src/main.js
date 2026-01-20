@@ -26,6 +26,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 import "intersection-observer"
 import ResizeObserver from "resize-observer-polyfill"
+import vue3GoogleLogin from 'vue3-google-login'
 
 import { CheckSession } from "@/model/api";
 
@@ -106,7 +107,9 @@ async function bootstrap() {
   app.use(ElementPlus);
   app.use(i18n);
   app.use(vuetify);
-
+  app.use(vue3GoogleLogin,{
+    clientId: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com"
+  })
   app.mount('#app');
 }
 

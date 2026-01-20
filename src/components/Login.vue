@@ -93,8 +93,8 @@
 </template>
 
 <script>
-import { Login } from "@/model/api";
-
+import { Login,LoginGoogle } from "@/model/api";
+import { googleSdkLoaded } from "vue3-google-login";  
 export default {
   name: "LoginPage",
   data() {
@@ -114,44 +114,51 @@ export default {
   
   methods: {
 
-    async loginWithGoogle() {
-    try {
-      const googleUser = await this.$gAuth.signIn();
-      const token = googleUser.credential;
+    loginWithGoogle() {
+    googleSdkLoaded((google) => {
+      google.accounts.id.initialize({
+        client_id: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com",
+        callback: this.handleGoogleLogin,
+      });
 
-      // Gửi token về backend
-      this.loginGoogleApi(token);
+      google.accounts.id.prompt(); // mở popup login
+    });
+  },
+  handleGoogleLogin(response) {
+    // 🔥 response.credential = GOOGLE ID TOKEN (JWT)
+    const googleIdToken = response.credential;
 
-    } catch (err) {
-      this.Message = "Đăng nhập Google thất bại";
+    if (!googleIdToken) {
+      this.Message = "Không lấy được token Google";
+      this.color = "error";
+      this.mess = true;
+      return;
+    }
+
+    this.loginGoogleApi(googleIdToken);
+  },
+  loginGoogleApi(googleToken) {
+  this.loading = true;
+
+  LoginGoogle(googleToken, (data) => {
+    if (data.status === "success") {
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+
+      this.$store.commit("setEmpInfor", data.data.user);
+
+      const redirect = this.$route.query.redirect || "/home";
+      this.$router.replace(redirect);
+    } else {
+      this.Message = data.message;
       this.color = "error";
       this.mess = true;
     }
-  },
-  loginGoogleApi(googleToken) {
-    this.loading = true;
-
-    this.$axios.post("/api/auth/google-login", {
-      token: googleToken
-    }).then(res => {
-      const data = res.data;
-
-      if (data.status === "success") {
-        localStorage.setItem("token", data.data.token);
-        localStorage.setItem("user", JSON.stringify(data.data.user));
-
-        this.$store.commit("setEmpInfor", data.data.user);
-        const redirect = this.$route.query.redirect || "/home";
-        this.$router.replace(redirect);
-      } else {
-        this.Message = data.message;
-        this.color = "error";
-        this.mess = true;
-      }
-    }).finally(() => {
-      this.loading = false;
-    });
-  },
+    this.loading = false;
+  }, () => {
+    this.loading = false;
+  })
+},
 
 
     goBack() {
