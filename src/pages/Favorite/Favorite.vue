@@ -52,8 +52,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="movie.UrlMovies.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.UrlMovies : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.UrlMovies"
-                        :lazy-src="movie.UrlMovies.includes('https://phimimg.com/upload') ?  `https://phimapi.com/image.php?url=` + movie.UrlMovies : `https://phimapi.com/image.php?url=` + 'https://phimimg.com/'+ movie.UrlMovies"
+                        :src="getOptimizedImage(movie.UrlMovies)"
+                        :lazy-src="getOptimizedImage(movie.UrlMovies)"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
@@ -257,9 +257,17 @@ export default {
 
     },
     getOptimizedImage(imagePath) {
-      return `${ this.urlImage +  encodeURIComponent(imagePath) }`;
+      if (imagePath.includes("img.ophim.live")) {
+        return imagePath;
+      }
+      return `${
+        imagePath.includes("https://phimimg.com/upload")
+          ? this.urlImage1 + imagePath
+          : this.urlImage1 + "https://phimimg.com/" + imagePath
+      }`;
+      // }
     },
-
+    
 
     applyFilters() {
       this.currentPage = 1;

@@ -755,6 +755,8 @@ export default {
       localStorage.removeItem("token");
       localStorage.removeItem("favoriteMovies");
       localStorage.removeItem("user");
+      localStorage.removeItem("name");
+      localStorage.removeItem("nameShow");
 
       this.$router.push("/login");
     },

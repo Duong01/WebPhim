@@ -7,6 +7,10 @@ const mutations =
         state.empInfor = null;
         localStorage.removeItem("empInfor");
         localStorage.removeItem("token")
+        localStorage.removeItem("favoriteMovies");
+        localStorage.removeItem("user");
+        localStorage.removeItem("name");
+        localStorage.removeItem("nameShow");
     },
     setAvatar(state, avar){
         state.Avatar = avar

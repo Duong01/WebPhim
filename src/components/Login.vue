@@ -185,9 +185,21 @@ export default {
         (dat) => {
           console.log(dat)
           if (dat.data.status === "success") {
+
+            // xoa du lieu cu
+            localStorage.removeItem("token");
+            localStorage.removeItem("favoriteMovies");
+            localStorage.removeItem("user");
+            localStorage.removeItem("name");
+            localStorage.removeItem("nameShow");
+
+
             localStorage.setItem("token", dat.data.data.token);
-            localStorage.setItem("user", JSON.stringify(dat.data.data.user));
+            //localStorage.setItem("user", JSON.stringify(dat.data.data.user));
             
+            localStorage.setItem("name", dat.data.data.user.ID);
+            localStorage.setItem("nameShow", dat.data.data.user.EmpName);
+
             this.$store.commit("setEmpInfor", dat.data.data.user);
             this.$store.commit("setAvatar", dat.data.data.user.Avartar);
 
@@ -221,11 +233,15 @@ export default {
             localStorage.removeItem("token");
             localStorage.removeItem("favoriteMovies");
             localStorage.removeItem("user");
+            localStorage.removeItem("name");
+            localStorage.removeItem("nameShow");
 
             const { token, user } = data.data;
 
             localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("name", user.ID);
+            localStorage.setItem("nameShow", user.EmpName);
+            //localStorage.setItem("user", JSON.stringify(user));
 
             this.$store.commit("setEmpInfor", user);
 
