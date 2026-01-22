@@ -863,9 +863,9 @@ export default {
       } else {
         // Không có trailer → phát phim luôn
         this.isTrailer = false;
-        // this.$nextTick(() => {
-        //   this.playVideo(this.mainVideoUrl);
-        // });
+        this.$nextTick(() => {
+          this.playVideo(this.mainVideoUrl);
+        });
       }
 
       //this.playVideo(this.movie.videoUrl);
