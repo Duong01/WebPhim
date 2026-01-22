@@ -1349,62 +1349,27 @@ export default {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     playVideo(url) {
-  const video = this.$refs.videoPlayer;
-  if (!video || !url) return;
+      const video = this.$refs.videoPlayer;
+      if (!video || !url) return;
 
-  const isMobile = this.$vuetify.display.smAndDown;
+      if (this.hls) {
+        this.hls.destroy();
+        this.hls = null;
+      }
 
-  if (this.hls) {
-    this.hls.destroy();
-    this.hls = null;
-  }
+      if (Hls.isSupported() && url.endsWith(".m3u8")) {
+        this.hls = new Hls();
+        this.hls.loadSource(url);
+        this.hls.attachMedia(video);
+      } else {
+        video.src = url;
+      }
 
-  if (Hls.isSupported() && url.endsWith(".m3u8")) {
-    this.hls = new Hls({
-      autoStartLoad: !isMobile, // 🔥 mobile không load ngay
-      maxBufferLength: isMobile ? 5 : 20,
-      backBufferLength: 3,
-      enableWorker: true,
-    });
-
-    this.hls.loadSource(url);
-    this.hls.attachMedia(video);
-
-    if (isMobile) {
-      video.addEventListener(
-        "play",
-        () => {
-          this.hls.startLoad(); // 🔥 chỉ load khi user bấm play
-        },
-        { once: true }
-      );
-    }
-  } else {
-    video.src = url;
-  }
-},
-    // playVideo(url) {
-    //   const video = this.$refs.videoPlayer;
-    //   if (!video || !url) return;
-
-    //   if (this.hls) {
-    //     this.hls.destroy();
-    //     this.hls = null;
-    //   }
-
-    //   if (Hls.isSupported() && url.endsWith(".m3u8")) {
-    //     this.hls = new Hls();
-    //     this.hls.loadSource(url);
-    //     this.hls.attachMedia(video);
-    //   } else {
-    //     video.src = url;
-    //   }
-
-    //   video.play().catch(() => {
-    //     video.muted = true;
-    //     video.play();
-    //   });
-    // },
+      video.play().catch(() => {
+        video.muted = true;
+        video.play();
+      });
+    },
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },
