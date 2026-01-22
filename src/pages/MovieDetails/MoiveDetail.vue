@@ -48,7 +48,7 @@
                   
                   playsinline
                   webkit-playsinline
-                  :preload="$vuetify.display.smAndDown ? 'none' : 'metadata'"
+                  preload="metadata"
                 ></video>
 
                 <!-- Bỏ qua trailer -->
