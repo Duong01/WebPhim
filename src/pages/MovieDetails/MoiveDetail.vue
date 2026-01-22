@@ -44,8 +44,8 @@
                   v-else
                   ref="videoPlayer"
                   class="video-player"
-                  control
-                  
+                  controls
+                  autoplay
                   playsinline
                   webkit-playsinline
                   preload="metadata"
@@ -999,10 +999,7 @@ export default {
       }
 
       this.$nextTick(() => {
-        if (!this.$vuetify.display.smAndDown) {
-          this.playVideo(this.mainVideoUrl);
-
-        }
+        this.playVideo(this.mainVideoUrl);
       });
     },
     resetPlayer() {
