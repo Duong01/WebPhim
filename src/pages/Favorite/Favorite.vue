@@ -260,11 +260,12 @@ export default {
       if (imagePath.includes("img.ophim.live")) {
         return imagePath;
       }
-      return `${
-        imagePath.includes("https://phimimg.com/upload")
-          ? this.urlImage1 + imagePath
-          : this.urlImage1 + "https://phimimg.com/" + imagePath
-      }`;
+      return imagePath;
+      // return `${
+      //   imagePath.includes("https://phimimg.com/upload")
+      //     ? this.urlImage1 + imagePath
+      //     : this.urlImage1 + "https://phimimg.com/" + imagePath
+      // }`;
       // }
     },
     
