@@ -843,6 +843,11 @@ export default {
       this.hls.destroy();
       this.hls = null;
     }
+
+    // Remove keyboard shortcuts
+    if (this._keyboardHandler) {
+      window.removeEventListener('keydown', this._keyboardHandler);
+    }
   },
   watch: {
     async slug(newSlug) {
@@ -960,6 +965,23 @@ export default {
       this.initLazyLoad();
       // await this.ListMovieByCate();
       // await this.GetComment();
+
+      // Thêm keyboard shortcuts cho skip 15 giây
+      const handleKeyboard = (e) => {
+        // Arrow Right: Skip forward 15 giây
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          this.skipVideo(15);
+        }
+        // Arrow Left: Skip backward 15 giây
+        else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          this.skipVideo(-15);
+        }
+      };
+      
+      this._keyboardHandler = handleKeyboard;
+      window.addEventListener('keydown', handleKeyboard);
     } catch (err) {
       console.log(err);
     }finally {
@@ -1465,6 +1487,15 @@ export default {
       if (this.isVideoPlaying) {
         this.showControls = false;
       }
+    },
+    skipVideo(seconds) {
+      const video = this.$refs.videoPlayer;
+      if (!video || isNaN(video.duration)) return;
+
+      const newTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration));
+      video.currentTime = newTime;
+      this.currentTime = newTime;
+      this.progressPercent = (newTime / video.duration) * 100;
     },
     DownloadVideo(linkdown) {
       window.open(linkdown);
