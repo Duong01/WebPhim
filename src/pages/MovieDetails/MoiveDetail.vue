@@ -37,7 +37,7 @@
                 
                 <!-- Play overlay khi chưa click -->
                 <div v-if="!videoStarted" class="video-play-overlay" @click="playVideoOnClick">
-                  <v-icon size="small" color="white">mdi-play-circle</v-icon>
+                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
                 </div>
               </div>
