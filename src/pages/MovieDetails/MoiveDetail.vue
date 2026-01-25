@@ -21,42 +21,117 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" md="9">
               <!-- VIDEO -->
-              <div class="video-wrapper">
+              <div class="video-wrapper" @mousemove="showVideoControls" @mouseleave="hideVideoControls">
                 <!-- Video chính -->
                 <video
                   ref="videoPlayer"
                   class="video-player"
-                  controls
                   playsinline
                   webkit-playsinline
                   preload="metadata"
-                  muted
                   :poster="movie.thumb_url || ''"
-                  @click="playVideoOnClick"
+                  @click="togglePlay"
+                  @timeupdate="onTimeUpdate"
+                  @loadedmetadata="onLoadedMetadata"
+                  @play="videoStarted = true"
                 ></video>
                 
                 <!-- Play overlay khi chưa click -->
                 <div v-if="!videoStarted" class="video-play-overlay" @click="playVideoOnClick">
-                  <v-icon size="80" color="white">mdi-play-circle</v-icon>
+                  <div class="play-button-large">
+                    <v-icon color="white">mdi-play</v-icon>
+                  </div>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                </div>
+
+                <!-- Modern Video Controls -->
+                <div class="video-controls-container" :class="{ 'show-controls': showControls || !isVideoPlaying }">
+                  <!-- Progress bar -->
+                  <div class="progress-bar-wrapper">
+                    <div class="progress-bar">
+                      <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+                      <div class="progress-handle" :style="{ left: progressPercent + '%' }"></div>
+                    </div>
+                  </div>
+
+                  <!-- Controls bottom -->
+                  <div class="controls-bottom">
+                    <!-- Left controls -->
+                    <div class="controls-left">
+                      <button class="control-btn play-btn" @click="togglePlay" title="Play/Pause">
+                        <v-icon size="24">{{ isVideoPlaying ? 'mdi-pause' : 'mdi-play' }}</v-icon>
+                      </button>
+                      
+                      <div class="volume-control">
+                        <button class="control-btn" @click="toggleMute" title="Mute">
+                          <v-icon size="24">{{ isMuted ? 'mdi-volume-off' : 'mdi-volume-high' }}</v-icon>
+                        </button>
+                        <input 
+                          type="range" 
+                          class="volume-slider" 
+                          min="0" 
+                          max="100" 
+                          :value="volume"
+                          @input="setVolume"
+                          @wheel.prevent
+                        />
+                      </div>
+
+                      <span class="time-display">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+                    </div>
+
+                    <!-- Right controls -->
+                    <div class="controls-right">
+                      <button class="control-btn" @click="toggleSubtitles" title="Subtitles">
+                        <v-icon size="24">mdi-closed-caption</v-icon>
+                      </button>
+                      
+                      <button class="control-btn" @click="toggleSettings" title="Settings">
+                        <v-icon size="24">mdi-cog</v-icon>
+                      </button>
+                      
+                      <button class="control-btn" @click="toggleFullscreen" title="Fullscreen">
+                        <v-icon size="24">{{ isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}</v-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Settings Dropdown -->
+                <div v-if="showSettings" class="settings-panel">
+                  <div class="settings-header">
+                    <button class="back-btn" @click="showSettings = false">
+                      <v-icon>mdi-chevron-left</v-icon>
+                      {{ $t('Cài đặt') }}
+                    </button>
+                  </div>
+                  <div class="settings-item">
+                    <span>{{ $t('Chất lượng') }}</span>
+                    <span class="settings-value">1080p</span>
+                  </div>
+                  <div class="settings-item">
+                    <span>{{ $t('Tốc độ') }}</span>
+                    <span class="settings-value">1x</span>
+                  </div>
                 </div>
               </div>
 
               <!-- nut next tap và back tap -->
               <div
-                class="d-flex justify-center align-center my-3"
-                style="gap: 12px"
+                class="d-flex justify-center align-center my-3 episode-nav-buttons"
+                style="gap: 12px; flex-wrap: wrap"
               >
                 <v-btn
                   color="grey-darken-2"
                   @click="prevEpisode()"
                   :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
+                  class="episode-btn"
                 >
                   <v-icon start>mdi-chevron-left</v-icon>
-                  {{ $t("Tập trước") }}
+                  <span class="btn-text">{{ $t("Tập trước") }}</span>
                 </v-btn>
 
-                <v-chip color="blue-darken-2" text-color="white">
+                <v-chip color="blue-darken-2" text-color="white" class="episode-chip-info">
                   {{ movie.pageMovie[currentEpisodeIndex]?.name }}
                 </v-chip>
 
@@ -64,8 +139,9 @@
                   color="grey-darken-2"
                   @click="nextEpisode()"
                   :disabled="currentEpisodeIndex <= 0"
+                  class="episode-btn"
                 >
-                  {{ $t("Tập tiếp") }}
+                  <span class="btn-text">{{ $t("Tập tiếp") }}</span>
                   <v-icon end>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
@@ -89,35 +165,35 @@
               </v-card>
               <!-- Nhóm nút + server -->
               <div
-                class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
-                style="background-color: #1a1a1a"
+                class="d-flex align-center justify-space-between flex-wrap px-4 py-2 function-buttons-wrapper"
+                style="background-color: #1a1a1a; gap: 16px"
               >
                 <!-- Nút chức năng -->
-                <div class="d-flex align-center flex-wrap" style="gap: 16px">
-                  <v-btn variant="text" @click="getTrailer()">
+                <div class="d-flex align-center flex-wrap function-buttons" style="gap: 8px; flex-wrap: wrap">
+                  <v-btn variant="text" @click="getTrailer()" class="function-btn">
                     <v-icon start icon="mdi-youtube" />
-                    Trailer
+                    <span class="btn-text-short">Trailer</span>
                   </v-btn>
-                  <v-btn variant="text" @click="shareMovie"
-                    ><v-icon start icon="mdi-share-variant" />{{
+                  <v-btn variant="text" @click="shareMovie" class="function-btn"
+                    ><v-icon start icon="mdi-share-variant" /><span class="btn-text-short">{{
                       $t("Chia sẻ")
-                    }}</v-btn
+                    }}</span></v-btn
                   >
-                  <v-btn variant="text" @click="ResponseError"
-                    ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
+                  <v-btn variant="text" @click="ResponseError" class="function-btn"
+                    ><v-icon start icon="mdi-flag" /><span class="btn-text-short">{{ $t("Báo lỗi") }}</span></v-btn
                   >
-                  <v-btn variant="text" @click="handleFavorite"
+                  <v-btn variant="text" @click="handleFavorite" class="function-btn"
                     ><v-icon
                       start
                       :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
-                    />{{ $t("Xem sau") }}</v-btn
+                    /><span class="btn-text-short">{{ $t("Xem sau") }}</span></v-btn
                   >
                 </div>
 
                 <!-- Server -->
 
                 <div
-                  class="d-flex align-center"
+                  class="d-flex align-center server-tabs-wrapper"
                   style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
                 >
                   <router-link :to="movie.LinkDown" download target="_blank">
@@ -161,11 +237,14 @@
                 </v-card-title>
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense>
+                  <v-row dense class="episode-row">
                     <v-col
                       v-for="(episode, index) in visibleEpisodes"
                       :key="index"
                       cols="6"
+                      sm="4"
+                      md="3"
+                      class="episode-col-responsive"
                     >
                         <v-btn
                           block
@@ -176,6 +255,7 @@
                               ? 'red'
                               : 'grey-darken-2'
                             "
+                          class="episode-item-btn"
                         >
                           {{
                             episode.name
@@ -731,6 +811,17 @@ export default {
       link: "",
       liked: false,
       videoKey: "",
+      // Video player controls
+      isVideoPlaying: false,
+      isMuted: false,
+      currentTime: 0,
+      duration: 0,
+      volume: 100,
+      progressPercent: 0,
+      showControls: true,
+      showSettings: false,
+      isFullscreen: false,
+      controlsHideTimer: null,
     };
   },
   props: ["slug", "page"],
@@ -1274,6 +1365,105 @@ export default {
             video.play();
           });
         }
+      }
+    },
+    // Video player controls methods
+    togglePlay() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    },
+    toggleMute() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      this.isMuted = !this.isMuted;
+      video.muted = this.isMuted;
+    },
+    setVolume(e) {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      this.volume = parseInt(e.target.value);
+      video.volume = this.volume / 100;
+      if (this.volume > 0) {
+        this.isMuted = false;
+      }
+    },
+    onTimeUpdate() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      this.currentTime = video.currentTime;
+      this.progressPercent = (video.currentTime / video.duration) * 100 || 0;
+      this.isVideoPlaying = !video.paused;
+      this.saveTime();
+    },
+    onLoadedMetadata() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      this.duration = video.duration;
+      this.restoreTime();
+    },
+    formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = Math.floor(seconds % 60);
+      
+      if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+      return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    },
+    toggleSubtitles() {
+      this.Message = this.$t("Chức năng phụ đề sẽ được bổ sung");
+      this.color = "info";
+      this.mess = true;
+    },
+    toggleSettings() {
+      this.showSettings = !this.showSettings;
+    },
+    toggleFullscreen() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      
+      if (!this.isFullscreen) {
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+        }
+        this.isFullscreen = true;
+      } else {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          document.webkitExitFullscreen();
+        }
+        this.isFullscreen = false;
+      }
+    },
+    showVideoControls() {
+      this.showControls = true;
+      clearTimeout(this.controlsHideTimer);
+      
+      if (this.isVideoPlaying) {
+        this.controlsHideTimer = setTimeout(() => {
+          this.showControls = false;
+        }, 3000);
+      }
+    },
+    hideVideoControls() {
+      if (this.isVideoPlaying) {
+        this.showControls = false;
       }
     },
     DownloadVideo(linkdown) {
@@ -1833,7 +2023,7 @@ export default {
   overflow: hidden;
   margin-bottom: 20px;
   
-  /* YouTube-style shadow */
+  /* Modern shadow */
   box-shadow: 
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 8px 24px rgba(0, 0, 0, 0.6);
@@ -1852,7 +2042,7 @@ export default {
   transform: translateY(-1px);
 }
 
-/* YouTube-style glow border on hover */
+/* Modern glow border on hover */
 .video-wrapper::before {
   content: "";
   position: absolute;
@@ -1886,7 +2076,7 @@ export default {
   background: #000;
   display: block;
   
-  /* YouTube player smooth appearance */
+  /* Smooth appearance */
   animation: playerFadeIn 0.5s ease-out;
 }
 
@@ -1896,6 +2086,388 @@ export default {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Video Play Overlay */
+.video-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.3s ease;
+}
+
+.video-play-overlay:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.play-button-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.video-play-overlay:hover .play-button-large {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.play-button-large .v-icon {
+  font-size: 60px !important;
+  color: white;
+}
+
+.overlay-text {
+  color: white;
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  transition: font-size 0.3s ease;
+}
+
+/* Modern Video Controls */
+.video-controls-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  padding: 20px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.video-controls-container.show-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.progress-bar-wrapper {
+  width: 100%;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+  transition: height 0.2s ease;
+}
+
+.progress-bar:hover {
+  height: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ff6b6b, #ff0000);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.progress-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progress-bar:hover .progress-handle {
+  opacity: 1;
+}
+
+.controls-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.controls-left,
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.play-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 0, 0, 0.7);
+  border-radius: 50%;
+}
+
+.play-btn:hover {
+  background: rgba(255, 0, 0, 0.9);
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.volume-slider {
+  width: 80px;
+  height: 4px;
+  cursor: pointer;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border: none;
+}
+
+.volume-slider:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.time-display {
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: absolute;
+  bottom: 60px;
+  right: 16px;
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 8px;
+  padding: 12px 0;
+  min-width: 180px;
+  z-index: 15;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.settings-header {
+  padding: 0 12px 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  padding: 6px;
+}
+
+.back-btn:hover {
+  color: #ff0000;
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.settings-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-value {
+  color: #ff0000;
+  font-weight: 500;
+}
+
+/* Tablet Responsive */
+@media (max-width: 768px) {
+  .video-play-overlay {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .play-button-large {
+    width: 80px;
+    height: 80px;
+  }
+
+  .play-button-large .v-icon {
+    font-size: 48px !important;
+  }
+
+  .overlay-text {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .controls-bottom {
+    gap: 4px;
+  }
+
+  .control-btn {
+    padding: 4px;
+  }
+
+  .volume-slider {
+    width: 60px;
+  }
+
+  .time-display {
+    font-size: 11px;
+    min-width: 70px;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .video-play-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .play-button-large {
+    width: 60px;
+    height: 60px;
+  }
+
+  .play-button-large .v-icon {
+    font-size: 36px !important;
+  }
+
+  .overlay-text {
+    font-size: 12px;
+    margin-top: 10px;
+    padding: 0 16px;
+  }
+
+  .video-controls-container {
+    padding: 12px 12px 12px 12px;
+    gap: 8px;
+  }
+
+  .controls-left,
+  .controls-right {
+    gap: 4px;
+  }
+
+  .control-btn {
+    padding: 4px;
+  }
+
+  .control-btn .v-icon {
+    font-size: 18px !important;
+  }
+
+  .play-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .volume-control {
+    gap: 2px;
+  }
+
+  .volume-slider {
+    width: 40px;
+    height: 3px;
+  }
+
+  .time-display {
+    font-size: 10px;
+    min-width: 60px;
+  }
+
+  .settings-panel {
+    right: 12px;
+    min-width: 160px;
+  }
+
+  .progress-bar {
+    height: 3px;
+  }
+
+  .progress-bar:hover {
+    height: 5px;
   }
 }
 
@@ -2242,46 +2814,17 @@ export default {
   }
 }
 
-.video-play-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-  transition: background 0.3s ease;
-}
-
-.video-play-overlay:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.overlay-text {
-  color: white;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
-}
-
-.movie-detail {
-  padding: 12px 0;
-}
 a {
   color: #fff;
 }
+
 .custom-tabs .v-tab {
   color: white;
   background-color: transparent;
   border-radius: 8px;
   transition: all 0.3s;
 }
+
 .custom-tabs .v-tab.active-tab {
   color: #000;
   background-color: #f8b230;
@@ -2584,6 +3127,22 @@ a {
   overflow-y: auto;
   margin: 10px;
 }
+
+.episode-row {
+  width: 100%;
+}
+
+.episode-col-responsive {
+  padding: 6px !important;
+}
+
+.episode-item-btn {
+  min-height: 36px !important;
+  font-size: 0.85rem !important;
+  padding: 6px 4px !important;
+  white-space: normal;
+  word-break: break-word;
+}
 .controls {
   position: absolute;
   bottom: 0;
@@ -2618,6 +3177,78 @@ a {
   .video-player {
     border-radius: 8px;
   }
+
+  /* Responsive buttons */
+  .episode-nav-buttons {
+    gap: 8px !important;
+  }
+
+  .episode-btn {
+    min-width: auto !important;
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+    flex: 1;
+    min-height: 40px !important;
+  }
+
+  .episode-btn .v-icon {
+    size: 20px !important;
+  }
+
+  .btn-text {
+    display: inline;
+  }
+
+  .episode-chip-info {
+    flex: 0 1 auto;
+    min-width: 80px;
+  }
+
+  .function-buttons-wrapper {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .function-buttons {
+    width: 100%;
+    gap: 8px !important;
+  }
+
+  .function-btn {
+    flex: 1;
+    min-height: 40px !important;
+    font-size: 0.85rem !important;
+    padding: 8px 12px !important;
+  }
+
+  .function-btn .v-icon {
+    margin-right: 4px !important;
+  }
+
+  .btn-text-short {
+    display: inline;
+    font-size: 0.85rem;
+  }
+
+  .server-tabs-wrapper {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .custom-tabs {
+    width: 100%;
+  }
+
+  /* Episode buttons in mobile */
+  .episode-col-responsive {
+    padding: 6px !important;
+  }
+
+  .episode-item-btn {
+    min-height: 40px !important;
+    font-size: 0.85rem !important;
+    padding: 8px 6px !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -2628,6 +3259,53 @@ a {
   .video-iframe,
   .video-player {
     border-radius: 6px;
+  }
+
+  /* Extra small screens */
+  .episode-nav-buttons {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+
+  .episode-btn {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 0.95rem !important;
+    padding: 10px !important;
+  }
+
+  .episode-chip-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .function-buttons {
+    width: 100%;
+  }
+
+  .function-btn {
+    min-height: 44px !important;
+    font-size: 0.9rem !important;
+    padding: 10px 8px !important;
+  }
+
+  .function-btn .v-icon {
+    size: 20px !important;
+  }
+
+  .btn-text-short {
+    font-size: 0.9rem;
+  }
+
+  /* Episode buttons on very small screens */
+  .episode-col-responsive {
+    padding: 8px !important;
+  }
+
+  .episode-item-btn {
+    min-height: 44px !important;
+    font-size: 0.9rem !important;
+    padding: 10px !important;
   }
 }
 </style>
