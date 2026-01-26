@@ -21,8 +21,8 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" md="9">
               <!-- VIDEO -->
-              <div class="video-wrapper">
                 <!-- Video chính -->
+              <!-- <div class="video-wrapper modern-player">
                 <video
                   ref="videoPlayer"
                   class="video-player"
@@ -35,10 +35,33 @@
                   @click="playVideoOnClick"
                 ></video>
                 
-                <!-- Play overlay khi chưa click -->
                 <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                </div>
+              </div> -->
+              <div 
+              class="video-wrapper modern-player"
+              :class="{ 'video-started': videoStarted }">
+                <video
+                  ref="videoPlayer"
+                  class="video-player plyr__video-embed"
+                  playsinline
+                  webkit-playsinline
+                  preload="metadata"
+                  muted
+                  :poster="movie.thumb_url || ''"
+                  @click="playVideoOnClick"
+                ></video>
+
+                <!-- Overlay play -->
+                <div
+                  v-if="!videoStarted && $vuetify.display.mdAndUp"
+                  class="video-play-overlay"
+                  @click="playVideoOnClick"
+                >
+                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
+                  <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
                 </div>
               </div>
 
@@ -652,6 +675,8 @@ import {
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
+import Plyr from "plyr";
+import "plyr/dist/plyr.css";
 export default {
   name: "MovieDetail",
   data() {
@@ -735,6 +760,7 @@ export default {
       link: "",
       liked: false,
       videoKey: "",
+      plyr: null,
     };
   },
   props: ["slug", "page"],
@@ -886,7 +912,34 @@ export default {
       );
       return match ? match[1] : null;
     },
+    initPlyr() {
+  if (this.plyr) {
+    this.plyr.destroy();
+    this.plyr = null;
+  }
 
+  this.$nextTick(() => {
+    this.plyr = new Plyr(this.$refs.videoPlayer, {
+      controls: [
+        "play-large",
+        "play",
+        "progress",
+        "current-time",
+        "mute",
+        "volume",
+        "settings",
+        "fullscreen",
+      ],
+      settings: ["speed", "quality"],
+      speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+      ratio: "16:9",
+    });
+
+    // lưu & restore thời gian xem
+    this.plyr.on("timeupdate", this.saveTime);
+    this.plyr.on("loadedmetadata", this.restoreTime);
+  });
+},
     resetPlayer() {
       const video = this.$refs.videoPlayer;
       const iframe = this.$refs.videoIframe;
@@ -1230,23 +1283,46 @@ export default {
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
+    // setupVideo(url) {
+    //   const video = this.$refs.videoPlayer;
+    //   if (!video || !url) return;
+
+    //   if (this.hls) {
+    //     this.hls.destroy();
+    //     this.hls = null;
+    //   }
+
+    //   if (Hls.isSupported() && url.endsWith(".m3u8")) {
+    //     this.hls = new Hls();
+    //     this.hls.loadSource(url);
+    //     this.hls.attachMedia(video);
+    //   } else {
+    //     video.src = url;
+    //   }
+    // },
     setupVideo(url) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !url) return;
+  const video = this.$refs.videoPlayer;
+  if (!video || !url) return;
 
-      if (this.hls) {
-        this.hls.destroy();
-        this.hls = null;
-      }
+  if (this.hls) {
+    this.hls.destroy();
+    this.hls = null;
+  }
 
-      if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        this.hls = new Hls();
-        this.hls.loadSource(url);
-        this.hls.attachMedia(video);
-      } else {
-        video.src = url;
-      }
-    },
+  if (Hls.isSupported() && url.endsWith(".m3u8")) {
+    this.hls = new Hls();
+    this.hls.loadSource(url);
+    this.hls.attachMedia(video);
+
+    this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      this.initPlyr(); // 🔥 sau khi load HLS
+    });
+  } else {
+    video.src = url;
+    this.initPlyr();
+  }
+},
+
     playVideo(url) {
       // Setup video source nếu cần
       if (url) {
@@ -1266,16 +1342,25 @@ export default {
     playVideoOnClick() {
       if (!this.videoStarted) {
         // Setup video data khi user click play (lazy loading)
-        if (this.movie.videoUrl && !this.hlsInstance) {
-          this.setupVideo(this.movie.videoUrl);
-        }
+        // if (this.movie.videoUrl && !this.hlsInstance) {
+        //   this.setupVideo(this.movie.videoUrl);
+        // }
 
-        this.videoStarted = true;
-        const video = this.$refs.videoPlayer;
-        if (video) {
-          video.muted = false;
-          video.play().catch(() => {
-            video.play();
+        // this.videoStarted = true;
+        // const video = this.$refs.videoPlayer;
+        // if (video) {
+        //   video.muted = false;
+        //   video.play().catch(() => {
+        //     video.play();
+        //   });
+        // }
+        if (!this.videoStarted) {
+          this.setupVideo(this.movie.videoUrl);
+
+          this.videoStarted = true;
+          this.$nextTick(() => {
+            this.plyr.muted = false;
+            this.plyr.play();
           });
         }
       }
@@ -2247,6 +2332,7 @@ export default {
 }
 
 .video-play-overlay {
+  
   position: absolute;
   top: 0;
   left: 0;
@@ -2260,8 +2346,12 @@ export default {
   cursor: pointer;
   z-index: 5;
   transition: background 0.3s ease;
+  pointer-events: auto;
 }
-
+.video-started .video-play-overlay {
+  pointer-events: none;
+  display: none;
+}
 .video-play-overlay:hover {
   background: rgba(0, 0, 0, 0.5);
 }
@@ -2418,6 +2508,8 @@ a {
   padding: 8px;
   transform: translateY(100%);
   transition: transform 0.3s ease;
+  inset: 0;
+  z-index: 3;
 }
 
 .movie-card:hover .card-hover-overlay {
@@ -2799,6 +2891,20 @@ a {
     font-size: 0.9rem !important;
     padding: 10px !important;
   }
+}
+.modern-player {
+  position: relative;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.plyr {
+  position: relative;
+  z-index: 2;
+  --plyr-color-main: #e50914; /* Netflix red */
+  --plyr-control-radius: 8px;
+  --plyr-font-size-time: 13px;
 }
 </style>
  
