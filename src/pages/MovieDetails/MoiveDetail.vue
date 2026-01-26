@@ -21,38 +21,24 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" md="9">
               <!-- VIDEO -->
-                <!-- Video chính -->
-              <!-- <div class="video-wrapper modern-player">
-                <video
-                  ref="videoPlayer"
-                  class="video-player"
-                  controls
-                  playsinline
-                  webkit-playsinline
-                  preload="metadata"
-                  muted
-                  :poster="movie.thumb_url || ''"
-                  @click="playVideoOnClick"
-                ></video>
-                
-                <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
-                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
-                  <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
-                </div>
-              </div> -->
               <div 
               class="video-wrapper modern-player"
               :class="{ 'video-started': videoStarted }">
                 <video
-                  ref="videoPlayer"
-                  class="video-player plyr__video-embed"
-                  playsinline
-                  webkit-playsinline
-                  preload="metadata"
-                  muted
-                  :poster="movie.thumb_url || ''"
-                  @click="playVideoOnClick"
-                ></video>
+  ref="videoPlayer"
+  class="video-player plyr__video-embed"
+  playsinline
+  webkit-playsinline
+  x5-playsinline
+  preload="metadata"
+  muted
+  autoplay
+  crossorigin="anonymous"
+  disablePictureInPicture
+  controlslist="nodownload noplaybackrate"
+  :poster="movie.thumb_url || ''"
+  @click="playVideoOnClick"
+></video>
 
                 <!-- Overlay play -->
                 <div
@@ -112,35 +98,35 @@
               </v-card>
               <!-- Nhóm nút + server -->
               <div
-                class="d-flex align-center justify-space-between flex-wrap px-4 py-2 function-buttons-wrapper"
-                style="background-color: #1a1a1a; gap: 16px"
+                class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
+                style="background-color: #1a1a1a"
               >
                 <!-- Nút chức năng -->
-                <div class="d-flex align-center flex-wrap function-buttons" style="gap: 8px; flex-wrap: wrap">
-                  <v-btn variant="text" @click="getTrailer()" class="function-btn">
+                <div class="d-flex align-center flex-wrap" style="gap: 16px">
+                  <v-btn variant="text" @click="getTrailer()">
                     <v-icon start icon="mdi-youtube" />
-                    <span class="btn-text-short">Trailer</span>
+                    Trailer
                   </v-btn>
-                  <v-btn variant="text" @click="shareMovie" class="function-btn"
-                    ><v-icon start icon="mdi-share-variant" /><span class="btn-text-short">{{
+                  <v-btn variant="text" @click="shareMovie"
+                    ><v-icon start icon="mdi-share-variant" />{{
                       $t("Chia sẻ")
-                    }}</span></v-btn
+                    }}</v-btn
                   >
-                  <v-btn variant="text" @click="ResponseError" class="function-btn"
-                    ><v-icon start icon="mdi-flag" /><span class="btn-text-short">{{ $t("Báo lỗi") }}</span></v-btn
+                  <v-btn variant="text" @click="ResponseError"
+                    ><v-icon start icon="mdi-flag" />{{ $t("Báo lỗi") }}</v-btn
                   >
-                  <v-btn variant="text" @click="handleFavorite" class="function-btn"
+                  <v-btn variant="text" @click="handleFavorite"
                     ><v-icon
                       start
                       :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
-                    /><span class="btn-text-short">{{ $t("Xem sau") }}</span></v-btn
+                    />{{ $t("Xem sau") }}</v-btn
                   >
                 </div>
 
                 <!-- Server -->
 
                 <div
-                  class="d-flex align-center server-tabs-wrapper"
+                  class="d-flex align-center"
                   style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
                 >
                   <router-link :to="movie.LinkDown" download target="_blank">
@@ -184,14 +170,11 @@
                 </v-card-title>
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense class="episode-row">
+                  <v-row dense>
                     <v-col
                       v-for="(episode, index) in visibleEpisodes"
                       :key="index"
                       cols="6"
-                      sm="4"
-                      md="3"
-                      class="episode-col-responsive"
                     >
                         <v-btn
                           block
@@ -202,7 +185,6 @@
                               ? 'red'
                               : 'grey-darken-2'
                             "
-                          class="episode-item-btn"
                         >
                           {{
                             episode.name
@@ -448,13 +430,7 @@
               >
                 <v-card-title class="text-h5" style="font-weight: bold; color: #42dfff;">
                   {{ movie.name }}
-                  
                 </v-card-title>
-                <v-tooltip
-                    activator="parent"
-                    location="top"
-                  >{{ movie.name }}
-                  </v-tooltip>
               </v-card>
 
               <!-- DANH SÁCH TẬP -->
@@ -496,73 +472,60 @@
             
             <div ref="lazyCate"></div>
 
-            <!-- Gợi ý phim - Responsive Scroll Layout -->
-            <v-col cols="12">
-              <div class="suggested-movies my-8">
-                <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
-                
-                <!-- Scroll container -->
-                <div class="suggested-scroll-wrapper">
-                  <!-- Left nav button -->
-                  <button 
-                    class="suggested-nav-btn suggested-nav-left"
-                    @click="scrollSuggestedLeft"
-                    aria-label="Scroll left"
-                  >
-                    <v-icon>mdi-chevron-left</v-icon>
-                  </button>
-
-                  <!-- Scrollable content -->
-                  <div ref="suggestedScrollContainer" class="suggested-content-scroll">
+            <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+            <div class="suggested-movies my-8">
+              <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
+              <v-row>
+                <v-col
+                  v-for="suggested in suggestedMovies"
+                  :key="suggested._id"
+                  cols="6"
+                  sm="4"
+                  md="2"
+                >
+                  <v-lazy min-height="300" transition="fade-transition">
                     <router-link
-                      v-for="suggested in suggestedMovies"
-                      :key="suggested._id"
                       :to="{ name: 'Movies', params: { slug: suggested.slug } }"
-                      class="suggested-movie-card"
+                      class="text-decoration-none"
                     >
-                      <div class="suggested-card-wrapper">
-                        <!-- Poster Image -->
-                        <div class="suggested-poster">
-                          <img
-                            :src="getOptimizedImage(suggested.poster_url)"
-                            :alt="suggested.name"
-                            loading="lazy"
-                            class="suggested-poster-img"
-                          />
-                          <!-- Hover overlay -->
-                          <div class="suggested-overlay">
-                            <div class="suggested-play-icon">
-                              <v-icon size="48">mdi-play-circle</v-icon>
+                      <v-card elevation="2" class="bg-grey-darken-4" hover>
+                        <v-img
+                          :lazy-src="getOptimizedImage(suggested.poster_url)"
+                          :src="getOptimizedImage(suggested.poster_url)"
+                          aspect-ratio="16/9"
+                          cover
+                        >
+                          <template #placeholder>
+                            <div
+                              class="d-flex align-center justify-center fill-height"
+                            >
+                              <v-progress-circular
+                                color="blue-lighten-3"
+                :width="5"
+                                indeterminate
+                              ></v-progress-circular>
                             </div>
+                          </template>
+                        </v-img>
+                        <div class="ml-3 flex-grow-1">
+                          <div
+                            class="text-white text-body-2 font-weight-medium text-truncate"
+                          >
+                            {{ suggested.name }}
+                          </div>
+                          <div class="text-grey-lighten-1 text-caption">
+                            {{ suggested.episode_current }} | {{ suggested.lang
+                            }}<br />
+                            {{ suggested.category[0]?.name }} •
+                            {{ suggested.year }}
                           </div>
                         </div>
-
-                        <!-- Card info -->
-                        <div class="suggested-info">
-                          <div class="suggested-title">{{ suggested.name }}</div>
-                          <div class="suggested-meta">
-                            <span class="suggested-episode">{{ suggested.episode_current }}</span>
-                            <span class="suggested-lang">{{ suggested.lang }}</span>
-                          </div>
-                          <div class="suggested-category">
-                            {{ suggested.category[0]?.name }} • {{ suggested.year }}
-                          </div>
-                        </div>
-                      </div>
+                      </v-card>
                     </router-link>
-                  </div>
-
-                  <!-- Right nav button -->
-                  <button 
-                    class="suggested-nav-btn suggested-nav-right"
-                    @click="scrollSuggestedRight"
-                    aria-label="Scroll right"
-                  >
-                    <v-icon>mdi-chevron-right</v-icon>
-                  </button>
-                </div>
-              </div>
-            </v-col>
+                  </v-lazy>
+                </v-col>
+              </v-row>
+            </div>
           </v-row>
 
           <!-- dialog share -->
@@ -686,7 +649,8 @@ export default {
       trailerSkipped: false,
       trailerPlayable: false,
       mainVideoUrl: "",
-      videoStarted: false,
+      ytPlayer: null,
+      showTrailerNotice: false,
 
       hasLoadedCate: false,
       hasLoadedComment: false,
@@ -710,6 +674,7 @@ export default {
           disabled: true,
         },
       ],
+      videoStarted: false,
       isLoading: true,
       isLoadingData: false,
       Message: "",
@@ -822,7 +787,7 @@ export default {
       this.movie.videoUrl =
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
 
-      this.setupVideo(this.movie.videoUrl);
+      this.playVideo(this.movie.videoUrl);
       console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
@@ -879,13 +844,32 @@ export default {
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
       this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
 
-      // Không setup video khi vào page - chỉ setup khi user click play
-      this.isTrailer = false;
+      // lưu video chính
+      this.mainVideoUrl = this.movie.videoUrl;
+
+      // NẾU CÓ TRAILER YOUTUBE → PHÁT TRƯỚC
+      if (
+        this.movie.trailer_url &&
+        this.extractYoutubeId(this.movie.trailer_url)
+      ) {
+        this.playYoutubeTrailer(this.movie.trailer_url);
+      } else {
+        // Không có trailer → phát phim luôn
+        this.isTrailer = false;
+        this.$nextTick(() => {
+          this.playVideo(this.mainVideoUrl);
+        });
+      }
 
       //this.playVideo(this.movie.videoUrl);
 
       //this.bindVideoEvents();
       console.log(this.currentEpisodeIndex);
+      if (!window.YT) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+      }
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
 
@@ -906,17 +890,11 @@ export default {
     }
   },
   methods: {
-    extractYoutubeId(url) {
-      const match = url.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
-      );
-      return match ? match[1] : null;
-    },
     initPlyr() {
-  if (this.plyr) {
-    this.plyr.destroy();
-    this.plyr = null;
-  }
+    if (this.plyr) {
+      this.plyr.destroy();
+      this.plyr = null;
+    }
 
   this.$nextTick(() => {
     this.plyr = new Plyr(this.$refs.videoPlayer, {
@@ -926,20 +904,141 @@ export default {
         "progress",
         "current-time",
         "mute",
-        "volume",
         "settings",
         "fullscreen",
       ],
       settings: ["speed", "quality"],
       speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
       ratio: "16:9",
+      hideControls: false,
+  clickToPlay: true,
     });
-
+    
     // lưu & restore thời gian xem
     this.plyr.on("timeupdate", this.saveTime);
     this.plyr.on("loadedmetadata", this.restoreTime);
   });
 },
+    playYoutubeTrailer(url) {
+      const id = this.extractYoutubeId(url);
+      if (!id) return;
+
+      this.isTrailer = true;
+      this.showTrailerNotice = true;
+
+      // Tự ẩn sau 2.5s
+      setTimeout(() => {
+        this.showTrailerNotice = false;
+        this.$nextTick(() => {
+          this.initYoutubePlayer(id);
+        });
+      }, 3000);
+    },
+    startYoutubePlayer(videoId) {
+      // chờ YT API sẵn sàng
+      const waitYT = setInterval(() => {
+        if (window.YT && window.YT.Player) {
+          clearInterval(waitYT);
+          this.initYoutubePlayer(videoId);
+        }
+      }, 100);
+    },
+
+    initYoutubePlayer(videoId) {
+      this.ytPlayer = new window.YT.Player(this.$refs.videoIframe, {
+        videoId,
+        width: "100%",
+        height: "100%",
+        playerVars: {
+          autoplay: 1,
+          controls: 0, // ❌ không control
+          disablekb: 1, // ❌ tắt bàn phím
+          fs: 0, // ❌ fullscreen
+          modestbranding: 1,
+          rel: 0,
+          playsinline: 1,
+          iv_load_policy: 3,
+          cc_load_policy: 0,
+          mute: 0,
+        },
+        events: {
+          onReady: (e) => {
+            e.target.mute();
+            // ép chất lượng cao nhất
+            setTimeout(() => {
+              const levels = e.target.getAvailableQualityLevels();
+              if (levels?.length) {
+                e.target.setPlaybackQuality(levels[0]); // hd2160 > hd1080
+              }
+            }, 500);
+          },
+          onStateChange: (e) => {
+            if (e.data === window.YT.PlayerState.ENDED) {
+              this.playMainVideo();
+            }
+          },
+        },
+      });
+    },
+    playVideoOnClick() {
+    if (this.videoStarted) return;
+
+    this.playVideo(this.movie.videoUrl);
+  this.videoStarted = true;
+
+  if (!this.plyr) {
+    this.setupVideo(this.movie.videoUrl);
+  }
+  this.$nextTick(() => {
+    this.plyr.muted = false;
+    this.plyr.play();
+  });
+  
+   },
+    extractYoutubeId(url) {
+      const match = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
+      );
+      return match ? match[1] : null;
+    },
+
+    checkTrailerPlayable(url) {
+      return new Promise((resolve) => {
+        const video = document.createElement("video");
+        video.src = url;
+        video.muted = true;
+        video.playsInline = true;
+
+        const timeout = setTimeout(() => {
+          cleanup(false);
+        }, 5000); // quá 5s coi như lỗi
+
+        const cleanup = (result) => {
+          clearTimeout(timeout);
+          video.remove();
+          resolve(result);
+        };
+
+        video.addEventListener("loadedmetadata", () => cleanup(true));
+        video.addEventListener("error", () => cleanup(false));
+      });
+    },
+    checkYoutubeTrailer(url) {
+      return /(?:youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}/.test(url);
+    },
+
+    playMainVideo() {
+      this.isTrailer = false;
+
+      if (this.ytPlayer) {
+        this.ytPlayer.destroy();
+        this.ytPlayer = null;
+      }
+      this.videoStarted = true;
+      this.$nextTick(() => {
+        this.playVideo(this.mainVideoUrl);
+      });
+    },
     resetPlayer() {
       const video = this.$refs.videoPlayer;
       const iframe = this.$refs.videoIframe;
@@ -1283,88 +1382,70 @@ export default {
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
-    // setupVideo(url) {
-    //   const video = this.$refs.videoPlayer;
-    //   if (!video || !url) return;
-
-    //   if (this.hls) {
-    //     this.hls.destroy();
-    //     this.hls = null;
-    //   }
-
-    //   if (Hls.isSupported() && url.endsWith(".m3u8")) {
-    //     this.hls = new Hls();
-    //     this.hls.loadSource(url);
-    //     this.hls.attachMedia(video);
-    //   } else {
-    //     video.src = url;
-    //   }
-    // },
-    setupVideo(url) {
+    playVideo(url) {
   const video = this.$refs.videoPlayer;
+  this.videoStarted = true;
   if (!video || !url) return;
-
+  // reset
   if (this.hls) {
     this.hls.destroy();
     this.hls = null;
   }
 
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
   if (Hls.isSupported() && url.endsWith(".m3u8")) {
-    this.hls = new Hls();
+    this.hls = new Hls({
+      autoStartLoad: true,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      backBufferLength: 30,
+
+      enableWorker: true,
+      lowLatencyMode: true,
+
+      capLevelToPlayerSize: true,
+      startLevel: -1, // auto quality
+      abrEwmaFastLive: 3,
+      abrEwmaSlowLive: 9,
+    });
+
     this.hls.loadSource(url);
     this.hls.attachMedia(video);
 
     this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      this.initPlyr(); // 🔥 sau khi load HLS
-    });
-  } else {
-    video.src = url;
-    this.initPlyr();
-  }
-},
-
-    playVideo(url) {
-      // Setup video source nếu cần
-      if (url) {
-        this.setupVideo(url);
-      }
-
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      // Nếu là lần đầu click hoặc chuyển tập thì unmute
-      
-
       video.play().catch(() => {
+        video.muted = true;
         video.play();
       });
-    },
-    playVideoOnClick() {
-      if (!this.videoStarted) {
-        // Setup video data khi user click play (lazy loading)
-        // if (this.movie.videoUrl && !this.hlsInstance) {
-        //   this.setupVideo(this.movie.videoUrl);
-        // }
+    });
 
-        // this.videoStarted = true;
-        // const video = this.$refs.videoPlayer;
-        // if (video) {
-        //   video.muted = false;
-        //   video.play().catch(() => {
-        //     video.play();
-        //   });
-        // }
-        if (!this.videoStarted) {
-          this.setupVideo(this.movie.videoUrl);
-
-          this.videoStarted = true;
-          this.$nextTick(() => {
-            this.plyr.muted = false;
-            this.plyr.play();
-          });
+    this.hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            this.hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            this.hls.recoverMediaError();
+            break;
+          default:
+            this.hls.destroy();
+            break;
         }
       }
-    },
+    });
+  } else {
+    // Safari iOS native HLS
+    video.src = url;
+    video.play();
+  }
+
+  this.initPlyr();
+}
+,
     DownloadVideo(linkdown) {
       window.open(linkdown);
     },
@@ -1520,26 +1601,6 @@ export default {
     shareMovie() {
       this.shareDialog = true;
     },
-    
-    scrollSuggestedLeft() {
-      const container = this.$refs.suggestedScrollContainer;
-      if (container) {
-        container.scrollBy({ 
-          left: -280, 
-          behavior: "smooth" 
-        });
-      }
-    },
-    
-    scrollSuggestedRight() {
-      const container = this.$refs.suggestedScrollContainer;
-      if (container) {
-        container.scrollBy({ 
-          left: 280, 
-          behavior: "smooth" 
-        });
-      }
-    },
 
     shareTo(platform) {
       // const url = encodeURIComponent(shareUrl.value);
@@ -1666,6 +1727,17 @@ export default {
     },
     playEpisode(episode) {
       try {
+        this.videoStarted = false
+        if (this.plyr) {
+          this.plyr.destroy()
+          this.plyr = null
+        }
+
+        // destroy HLS cũ
+        if (this.hls) {
+          this.hls.destroy()
+          this.hls = null
+        }
         console.log(episode);
         this.currentEpisode = episode;
         this.isLoading = true;
@@ -1694,6 +1766,8 @@ export default {
           params: { slug: this.slug },
           query: { page: normalized },
         });
+        this.videoStarted = true;
+        this.playVideo(this.movie.videoUrl);
 
         if (this.videoKey) {
           localStorage.removeItem(this.videoKey);
@@ -1707,20 +1781,9 @@ export default {
         // tạo key mới cho tập mới
         this.videoKey = `movie_${this.slug}_${this.page}`;
 
-        // Setup video và play tập mới (auto-play với unmute)
+        // load video mới
         this.movie.videoUrl = episode.link_m3u8;
-        this.setupVideo(this.movie.videoUrl);
-        this.videoStarted = true;
-        this.$nextTick(() => {
-          const video = this.$refs.videoPlayer;
-          if (video) {
-            video.muted = false;
-            video.play().catch(() => {
-              video.play();
-            });
-          }
-        });
-
+        this.playVideo(this.movie.videoUrl);
         this.GetComment();
         this.isLoading = false;
       } catch {
@@ -1761,6 +1824,7 @@ export default {
     },
     nextEpisode() {
       if (this.currentEpisodeIndex > 0) {
+        this.videoStarted = false
         console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex--;
 
@@ -1770,6 +1834,7 @@ export default {
     },
     prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
+        this.videoStarted = false
         console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex++;
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
@@ -1833,7 +1898,7 @@ export default {
       const id = this.extractYoutubeId(this.movie.trailer_url);
       if (!id) return "";
 
-      return `https://www.youtube.com/embed/${id}?mute=0&playsinline=1&rel=0`;
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&playsinline=1&rel=0`;
     },
     visibleEpisodes() {
       if (!this.movie?.pageMovie) return [];
@@ -2003,398 +2068,6 @@ export default {
   background-color: #2e2e2e;
 }
 
-/* ===== SUGGESTED MOVIES SCROLL LAYOUT ===== */
-.suggested-movies {
-  width: 100%;
-  overflow: hidden;
-}
-
-.suggested-scroll-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  width: 100%;
-  overflow: visible;
-}
-
-.suggested-content-scroll {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  padding: 8px 0;
-  -webkit-overflow-scrolling: touch;
-  flex: 1;
-  min-width: 0;
-  
-  /* Hide scrollbar */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.suggested-content-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.suggested-movie-card {
-  flex: 0 0 auto;
-  width: 200px;
-  min-width: 200px;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.3s ease;
-}
-
-.suggested-movie-card:hover {
-  transform: translateY(-8px);
-}
-
-.suggested-card-wrapper {
-  background: #2e2e2e;
-  border-radius: 12px;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: box-shadow 0.3s ease;
-}
-
-.suggested-movie-card:hover .suggested-card-wrapper {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.suggested-poster {
-  position: relative;
-  width: 100%;
-  padding-bottom: 150%;
-  overflow: hidden;
-  background: #1e1e1e;
-}
-
-.suggested-poster-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.suggested-movie-card:hover .suggested-poster-img {
-  transform: scale(1.08);
-}
-
-.suggested-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.suggested-movie-card:hover .suggested-overlay {
-  opacity: 1;
-}
-
-.suggested-play-icon {
-  color: white;
-  opacity: 0.9;
-}
-
-.suggested-info {
-  padding: 12px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: white;
-}
-
-.suggested-title {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.3;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: break-word;
-}
-
-.suggested-meta {
-  display: flex;
-  gap: 8px;
-  font-size: 12px;
-  color: #ffd600;
-  font-weight: 500;
-  flex-wrap: wrap;
-}
-
-.suggested-episode {
-  background: rgba(255, 214, 0, 0.2);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.suggested-lang {
-  background: rgba(100, 150, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 4px;
-  color: #64b5f6;
-}
-
-.suggested-category {
-  font-size: 11px;
-  color: #aaa;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-top: auto;
-}
-
-/* Navigation buttons */
-.suggested-nav-btn {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  max-width: 40px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  z-index: 10;
-  padding: 0;
-}
-
-.suggested-nav-btn:hover {
-  background: rgba(0, 0, 0, 0.9);
-  transform: scale(1.1);
-}
-
-.suggested-nav-btn:active {
-  transform: scale(0.95);
-}
-
-.suggested-nav-left {
-  margin-right: 0;
-}
-
-.suggested-nav-right {
-  margin-left: 0;
-}
-
-/* Responsive - Tablet */
-@media (max-width: 960px) {
-  .suggested-scroll-wrapper {
-    gap: 6px;
-  }
-
-  .suggested-movie-card {
-    width: 170px;
-    min-width: 170px;
-  }
-
-  .suggested-nav-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .suggested-content-scroll {
-    gap: 12px;
-  }
-
-  .suggested-info {
-    padding: 10px;
-  }
-
-  .suggested-title {
-    font-size: 13px;
-  }
-
-  .suggested-meta {
-    font-size: 11px;
-  }
-
-  .suggested-category {
-    font-size: 10px;
-  }
-}
-
-/* Responsive - Mobile */
-@media (max-width: 768px) {
-  .suggested-scroll-wrapper {
-    gap: 4px;
-    margin-bottom: 12px;
-  }
-
-  .suggested-movie-card {
-    width: 150px;
-    min-width: 150px;
-  }
-
-  .suggested-nav-btn {
-    width: 32px;
-    height: 32px;
-  }
-
-  .suggested-content-scroll {
-    gap: 10px;
-  }
-
-  .suggested-info {
-    padding: 8px;
-  }
-
-  .suggested-title {
-    font-size: 12px;
-    -webkit-line-clamp: 2;
-  }
-
-  .suggested-meta {
-    font-size: 10px;
-  }
-
-  .suggested-category {
-    font-size: 9px;
-  }
-}
-
-/* Responsive - Small Mobile */
-@media (max-width: 480px) {
-  .suggested-scroll-wrapper {
-    gap: 2px;
-    margin-bottom: 8px;
-  }
-
-  .suggested-movie-card {
-    width: 130px;
-    min-width: 130px;
-  }
-
-  .suggested-nav-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-  }
-
-  .suggested-content-scroll {
-    gap: 8px;
-  }
-
-  .suggested-info {
-    padding: 6px;
-  }
-
-  .suggested-title {
-    font-size: 11px;
-    -webkit-line-clamp: 1;
-    line-height: 1.2;
-  }
-
-  .suggested-meta {
-    font-size: 9px;
-    gap: 4px;
-  }
-
-  .suggested-episode,
-  .suggested-lang {
-    padding: 1px 6px;
-    font-size: 8px;
-  }
-
-  .suggested-category {
-    font-size: 8px;
-  }
-
-  .suggested-poster {
-    padding-bottom: 140%;
-  }
-}
-
-.video-play-overlay {
-  
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-  transition: background 0.3s ease;
-  pointer-events: auto;
-}
-.video-started .video-play-overlay {
-  pointer-events: none;
-  display: none;
-}
-.video-play-overlay:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.video-play-overlay .v-icon {
-  size: 80px !important;
-  transition: size 0.3s ease;
-}
-
-.overlay-text {
-  color: white;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
-  transition: font-size 0.3s ease;
-}
-
-/* Tablet - Reduce size */
-@media (max-width: 768px) {
-  .video-play-overlay .v-icon {
-    size: 50px !important;
-  }
-
-  .overlay-text {
-    font-size: 14px;
-    margin-top: 10px;
-  }
-}
-
-/* Mobile - Further reduce size */
-@media (max-width: 480px) {
-  .video-play-overlay .v-icon {
-    size: 48px !important;
-  }
-
-  .overlay-text {
-    font-size: 12px;
-    margin-top: 8px;
-    padding: 0 16px;
-  }
-}
-
 .movie-detail {
   padding: 12px 0;
 }
@@ -2508,8 +2181,6 @@ a {
   padding: 8px;
   transform: translateY(100%);
   transition: transform 0.3s ease;
-  inset: 0;
-  z-index: 3;
 }
 
 .movie-card:hover .card-hover-overlay {
@@ -2707,25 +2378,9 @@ a {
   transform: scale(0.96);
 }
 .episode-list {
-  max-height: calc(5 * 90px);
+  max-height: calc(5 * 70px);
   overflow-y: auto;
   margin: 10px;
-}
-
-.episode-row {
-  width: 100%;
-}
-
-.episode-col-responsive {
-  padding: 6px !important;
-}
-
-.episode-item-btn {
-  min-height: 36px !important;
-  font-size: 0.85rem !important;
-  padding: 6px 4px !important;
-  white-space: normal;
-  word-break: break-word;
 }
 .controls {
   position: absolute;
@@ -2749,6 +2404,47 @@ a {
 .controls input[type="range"] {
   flex: 1;
 }
+.skip-trailer-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 16px;
+  z-index: 5;
+  font-weight: bold;
+  /* YouTube-style semi-transparent background */
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.skip-trailer-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.skip-trailer-btn:active {
+  transform: scale(0.98);
+}
+
 
 /* Mobile - YouTube responsive design */
 @media (max-width: 768px) {
@@ -2762,76 +2458,16 @@ a {
     border-radius: 8px;
   }
 
-  /* Responsive buttons */
-  .episode-nav-buttons {
-    gap: 8px !important;
+  .skip-trailer-btn {
+    bottom: 12px;
+    right: 12px;
+    font-size: 12px;
+    padding: 6px 14px;
   }
 
-  .episode-btn {
-    min-width: auto !important;
-    padding: 8px 12px !important;
-    font-size: 0.9rem !important;
-    flex: 1;
-    min-height: 40px !important;
-  }
-
-  .episode-btn .v-icon {
-    size: 20px !important;
-  }
-
-  .btn-text {
-    display: inline;
-  }
-
-  .episode-chip-info {
-    flex: 0 1 auto;
-    min-width: 80px;
-  }
-
-  .function-buttons-wrapper {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .function-buttons {
-    width: 100%;
-    gap: 8px !important;
-  }
-
-  .function-btn {
-    flex: 1;
-    min-height: 40px !important;
-    font-size: 0.85rem !important;
-    padding: 8px 12px !important;
-  }
-
-  .function-btn .v-icon {
-    margin-right: 4px !important;
-  }
-
-  .btn-text-short {
-    display: inline;
-    font-size: 0.85rem;
-  }
-
-  .server-tabs-wrapper {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .custom-tabs {
-    width: 100%;
-  }
-
-  /* Episode buttons in mobile */
-  .episode-col-responsive {
-    padding: 6px !important;
-  }
-
-  .episode-item-btn {
-    min-height: 40px !important;
-    font-size: 0.85rem !important;
-    padding: 8px 6px !important;
+  .trailer-notice {
+    padding: 10px 16px;
+    font-size: 14px;
   }
 }
 
@@ -2845,51 +2481,101 @@ a {
     border-radius: 6px;
   }
 
-  /* Extra small screens */
-  .episode-nav-buttons {
-    flex-direction: column;
-    gap: 10px !important;
+  .skip-trailer-btn {
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 5px 12px;
   }
+}
+.trailer-notice-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 10;
+  text-align: center;
+}
+.yt-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  .episode-btn {
-    width: 100% !important;
-    min-height: 44px !important;
-    font-size: 0.95rem !important;
-    padding: 10px !important;
+.yt-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+  display: block;
+}
+
+/* CHẶN 100% thao tác */
+.yt-interaction-blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+  pointer-events: all;
+  touch-action: none;
+  user-select: none;
+}
+.trailer-notice {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+
+  /* YouTube-style notice with glass effect */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.65)
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 200, 0, 0.25);
+
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-align: center;
+
+  animation: fadeNotice 2.5s ease forwards;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Hiệu ứng mờ dần */
+@keyframes fadeNotice {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -55%);
   }
-
-  .episode-chip-info {
-    width: 100%;
-    text-align: center;
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
   }
-
-  .function-buttons {
-    width: 100%;
+  85% {
+    opacity: 1;
   }
-
-  .function-btn {
-    min-height: 44px !important;
-    font-size: 0.9rem !important;
-    padding: 10px 8px !important;
-  }
-
-  .function-btn .v-icon {
-    size: 20px !important;
-  }
-
-  .btn-text-short {
-    font-size: 0.9rem;
-  }
-
-  /* Episode buttons on very small screens */
-  .episode-col-responsive {
-    padding: 8px !important;
-  }
-
-  .episode-item-btn {
-    min-height: 44px !important;
-    font-size: 0.9rem !important;
-    padding: 10px !important;
+  100% {
+    opacity: 0;
   }
 }
 .modern-player {
@@ -2906,5 +2592,46 @@ a {
   --plyr-control-radius: 8px;
   --plyr-font-size-time: 13px;
 }
+.video-play-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.15)
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+  z-index: 10;
+}
+
+.video-play-overlay:hover {
+  opacity: 0.85;
+}
+.video-started .video-play-overlay {
+  display: none !important;
+}
+
+/* 🔥 chặn overlay ảo của Plyr */
+.plyr__poster {
+  pointer-events: none !important;
+}
+.overlay-text {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+.video-wrapper.video-started {
+  box-shadow:
+    0 0 0 1px rgba(255, 214, 0, 0.25),
+    0 12px 36px rgba(0, 0, 0, 0.85);
+}
+
+.video-wrapper.video-started::before {
+  opacity: 0.9;
+}
 </style>
- 
