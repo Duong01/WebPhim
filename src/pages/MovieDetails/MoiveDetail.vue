@@ -2,10 +2,10 @@
   <v-fade-transition appear>
     <div class="watch-page">
       <v-container class="search-page" fluid>
-         <v-col cols="12" class="text-center" v-if="isLoading">
+        <v-col cols="12" class="text-center" v-if="isLoading">
           <v-progress-circular indeterminate color="primary" size="50" />
         </v-col>
-    <!--<div v-else-if="isLoadingData">
+        <!--<div v-else-if="isLoadingData">
       <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
     </div> -->
         <div v-else>
@@ -21,24 +21,26 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" md="9">
               <!-- VIDEO -->
-              <div 
-              class="video-wrapper modern-player"
-              :class="{ 'video-started': videoStarted }">
+              <div
+                class="video-wrapper modern-player"
+                :class="{ 'video-started': videoStarted }"
+              >
                 <video
-  ref="videoPlayer"
-  class="video-player plyr__video-embed"
-  playsinline
-  webkit-playsinline
-  x5-playsinline
-  preload="metadata"
-  muted
-  autoplay
-  crossorigin="anonymous"
-  disablePictureInPicture
-  controlslist="nodownload noplaybackrate"
-  :poster="movie.thumb_url || ''"
-  @click="playVideoOnClick"
-></video>
+                  ref="videoPlayer"
+                  class="video-player plyr__video-embed"
+                  
+                  :playsinline="!isMobile"
+                  :webkit-playsinline="!isMobile"
+                  
+                  preload="metadata"
+                  muted
+                  autoplay
+                  crossorigin="anonymous"
+                  disablePictureInPicture
+                  controlslist="nodownload noplaybackrate"
+                  :poster="movie.thumb_url || ''"
+                  @click="playVideoOnClick"
+                ></video>
 
                 <!-- Overlay play -->
                 <div
@@ -170,12 +172,12 @@
                 </v-card-title>
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense>
-                    <v-col
-                      v-for="(episode, index) in visibleEpisodes"
-                      :key="index"
-                      cols="6"
-                    >
+                    <v-row dense>
+                      <v-col
+                        v-for="(episode, index) in visibleEpisodes"
+                        :key="index"
+                        cols="6"
+                      >
                         <v-btn
                           block
                           size="small"
@@ -184,7 +186,7 @@
                             index === currentEpisodeIndex
                               ? 'red'
                               : 'grey-darken-2'
-                            "
+                          "
                         >
                           {{
                             episode.name
@@ -217,8 +219,6 @@
                   </div>
                 </v-card-text>
               </v-card>
-
-              
 
               <!-- Thông tin phim -->
               <v-card
@@ -368,7 +368,7 @@
                     class="btnnext"
                   >
                     <v-icon icon="mdi-play" />
-                    {{$t('Đăng nhập để bình luận')}}
+                    {{ $t("Đăng nhập để bình luận") }}
                   </v-btn>
                 </div>
                 <v-text-field
@@ -386,7 +386,7 @@
                 ></v-text-field>
                 <v-divider class="mb-4" color="grey darken-3"></v-divider>
                 <div v-if="comments.length <= 0" class="mb-5 text-center">
-                  {{$t('Chưa có bình luận nào. Hãy là người đầu tiên!')}}
+                  {{ $t("Chưa có bình luận nào. Hãy là người đầu tiên!") }}
                 </div>
                 <div
                   v-else
@@ -419,7 +419,12 @@
                 </div>
               </v-card>
             </v-col>
-            <v-col cols="12" md="3" class="right-panel" v-if="$vuetify.display.smAndUp">
+            <v-col
+              cols="12"
+              md="3"
+              class="right-panel"
+              v-if="$vuetify.display.smAndUp"
+            >
               <!-- THÔNG TIN PHIM -->
               <v-card
                 color="grey-darken-4"
@@ -428,7 +433,10 @@
                 class="mb-4"
                 theme="dark"
               >
-                <v-card-title class="text-h5" style="font-weight: bold; color: #42dfff;">
+                <v-card-title
+                  class="text-h5"
+                  style="font-weight: bold; color: #42dfff"
+                >
                   {{ movie.name }}
                 </v-card-title>
               </v-card>
@@ -439,37 +447,38 @@
                 variant="flat"
                 rounded="lg"
                 theme="dark"
-                
               >
-                <v-card-title class="text-h6"> {{$t('Danh sách tập')}} </v-card-title>
+                <v-card-title class="text-h6">
+                  {{ $t("Danh sách tập") }}
+                </v-card-title>
 
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense>
-                    <v-col
-                      v-for="(episode, index) in visibleEpisodesRight"
-                      :key="index"
-                      cols="6"
-                    >
-                      <v-btn
-                        block
-                        size="small"
-                        :color="
-                          index === currentEpisodeIndex
-                            ? 'red'
-                            : 'grey-darken-2'
-                        "
-                        @click="playEpisode(episode)"
+                    <v-row dense>
+                      <v-col
+                        v-for="(episode, index) in visibleEpisodesRight"
+                        :key="index"
+                        cols="6"
                       >
-                        {{ episode.name || "Trailer" }}
-                      </v-btn>
-                    </v-col>
-                  </v-row>
+                        <v-btn
+                          block
+                          size="small"
+                          :color="
+                            index === currentEpisodeIndex
+                              ? 'red'
+                              : 'grey-darken-2'
+                          "
+                          @click="playEpisode(episode)"
+                        >
+                          {{ episode.name || "Trailer" }}
+                        </v-btn>
+                      </v-col>
+                    </v-row>
                   </v-sheet>
                 </v-card-text>
               </v-card>
             </v-col>
-            
+
             <div ref="lazyCate"></div>
 
             <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
@@ -501,7 +510,7 @@
                             >
                               <v-progress-circular
                                 color="blue-lighten-3"
-                :width="5"
+                                :width="5"
                                 indeterminate
                               ></v-progress-circular>
                             </div>
@@ -668,7 +677,7 @@ export default {
           disabled: false,
           href: "/home",
         },
-        
+
         {
           title: this.slug,
           disabled: true,
@@ -774,12 +783,12 @@ export default {
       }
       if (this.currentEpisodeIndex == -1) {
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-            const epNumber = parseInt(
-              (ep.name.toString().match(/\d+/) || [])[0],
-              10
-            );
-            return epNumber === page;
-          });
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
       }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
@@ -829,12 +838,12 @@ export default {
       }
       if (this.currentEpisodeIndex == -1) {
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-            const epNumber = parseInt(
-              (ep.name.toString().match(/\d+/) || [])[0],
-              10
-            );
-            return epNumber === page;
-          });
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
       }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
@@ -885,16 +894,16 @@ export default {
       // await this.GetComment();
     } catch (err) {
       console.log(err);
-    }finally {
-      this.$store.dispatch('loading/stopLoading')
+    } finally {
+      this.$store.dispatch("loading/stopLoading");
     }
   },
   methods: {
     initPlyr() {
-    if (this.plyr) {
-      this.plyr.destroy();
-      this.plyr = null;
-    }
+  if (this.plyr) {
+    this.plyr.destroy();
+    this.plyr = null;
+  }
 
   this.$nextTick(() => {
     this.plyr = new Plyr(this.$refs.videoPlayer, {
@@ -904,19 +913,16 @@ export default {
         "progress",
         "current-time",
         "mute",
-        "settings",
-        "fullscreen",
+        "fullscreen"
       ],
-      settings: ["speed", "quality"],
-      speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+      fullscreen: {
+        enabled: true,
+        fallback: true,
+        iosNative: true,   // 🔥 QUAN TRỌNG
+      },
       ratio: "16:9",
-      hideControls: false,
-  clickToPlay: true,
+      clickToPlay: true
     });
-    
-    // lưu & restore thời gian xem
-    this.plyr.on("timeupdate", this.saveTime);
-    this.plyr.on("loadedmetadata", this.restoreTime);
   });
 },
     playYoutubeTrailer(url) {
@@ -981,20 +987,19 @@ export default {
       });
     },
     playVideoOnClick() {
-    if (this.videoStarted) return;
+      if (this.videoStarted) return;
 
-    this.playVideo(this.movie.videoUrl);
-  this.videoStarted = true;
+      this.playVideo(this.movie.videoUrl);
+      this.videoStarted = true;
 
-  if (!this.plyr) {
-    this.setupVideo(this.movie.videoUrl);
-  }
-  this.$nextTick(() => {
-    this.plyr.muted = false;
-    this.plyr.play();
-  });
-  
-   },
+      if (!this.plyr) {
+        this.setupVideo(this.movie.videoUrl);
+      }
+      this.$nextTick(() => {
+        this.plyr.muted = false;
+        this.plyr.play();
+      });
+    },
     extractYoutubeId(url) {
       const match = url.match(
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
@@ -1384,34 +1389,30 @@ export default {
     },
     playVideo(url) {
   const video = this.$refs.videoPlayer;
-  this.videoStarted = true;
   if (!video || !url) return;
-  // reset
+
+  this.videoStarted = true;
+
+  // destroy hls cũ
   if (this.hls) {
     this.hls.destroy();
     this.hls = null;
   }
 
+  // reset video element (RẤT QUAN TRỌNG)
   video.pause();
   video.removeAttribute("src");
   video.load();
 
+  // ❗ ÉP render frame đầu tiên (fix đen màn Safari / iOS)
+  const forceRender = () => {
+    video.currentTime = video.currentTime + 0.01;
+    video.removeEventListener("loadeddata", forceRender);
+  };
+  video.addEventListener("loadeddata", forceRender);
+
   if (Hls.isSupported() && url.endsWith(".m3u8")) {
-    this.hls = new Hls({
-      autoStartLoad: true,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
-      backBufferLength: 30,
-
-      enableWorker: true,
-      lowLatencyMode: true,
-
-      capLevelToPlayerSize: true,
-      startLevel: -1, // auto quality
-      abrEwmaFastLive: 3,
-      abrEwmaSlowLive: 9,
-    });
-
+    this.hls = new Hls();
     this.hls.loadSource(url);
     this.hls.attachMedia(video);
 
@@ -1421,29 +1422,15 @@ export default {
         video.play();
       });
     });
-
-    this.hls.on(Hls.Events.ERROR, (event, data) => {
-      if (data.fatal) {
-        switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            this.hls.startLoad();
-            break;
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            this.hls.recoverMediaError();
-            break;
-          default:
-            this.hls.destroy();
-            break;
-        }
-      }
-    });
   } else {
     // Safari iOS native HLS
     video.src = url;
     video.play();
   }
 
-  this.initPlyr();
+  this.$nextTick(() => {
+    this.initPlyr();
+  });
 }
 ,
     DownloadVideo(linkdown) {
@@ -1502,13 +1489,12 @@ export default {
             alert(err);
           }
         );
-      }
-      else{
-        alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"))
+      } else {
+        alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"));
         this.$router.push({
-                path: "/login",
-                query: { redirect: this.$route.fullPath },
-              });
+          path: "/login",
+          query: { redirect: this.$route.fullPath },
+        });
       }
     },
 
@@ -1726,70 +1712,58 @@ export default {
       this.isTrailer = true;
     },
     playEpisode(episode) {
-      try {
-        this.videoStarted = false
-        if (this.plyr) {
-          this.plyr.destroy()
-          this.plyr = null
-        }
+  try {
+    this.isLoading = true;
+    this.videoStarted = false;
 
-        // destroy HLS cũ
-        if (this.hls) {
-          this.hls.destroy()
-          this.hls = null
-        }
-        console.log(episode);
-        this.currentEpisode = episode;
-        this.isLoading = true;
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        if (
-          episode.filename != undefined ||
-          episode.filename != null ||
-          episode.filename != ""
-        ) {
-          this.movie.title = episode.filename;
-        }
-        this.movie.videoUrl = episode.link_embed;
-        this.movie.LinkDown = episode.link_m3u8;
-        const idx = this.movie.pageMovie.findIndex(
-          (ep) => ep.name === episode.name
-        );
-        if (idx !== -1) {
-          this.currentEpisodeIndex = idx;
-        }
-        // this.currentEpisodeIndex = parseInt(episode.name.split('Tập')[1].trim(),10)-1
-        this.movie.page = episode.name;
+    // destroy plyr
+    if (this.plyr) {
+      this.plyr.destroy();
+      this.plyr = null;
+    }
 
-        const normalized = episode.name.replace("Tập ", "tap").trim();
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: this.slug },
-          query: { page: normalized },
-        });
-        this.videoStarted = true;
-        this.playVideo(this.movie.videoUrl);
+    // destroy hls
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = null;
+    }
 
-        if (this.videoKey) {
-          localStorage.removeItem(this.videoKey);
-        }
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-        // cập nhật tập mới
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-          (e) => e.name === episode.name
-        );
+    this.currentEpisode = episode;
+    this.movie.title = episode.filename || this.movie.title;
+    this.movie.page = episode.name;
 
-        // tạo key mới cho tập mới
-        this.videoKey = `movie_${this.slug}_${this.page}`;
+    // URL chuẩn
+    const normalized = episode.name.replace("Tập ", "tap").trim();
+    this.$router.replace({
+      name: "MovieDetail",
+      params: { slug: this.slug },
+      query: { page: normalized },
+    });
 
-        // load video mới
-        this.movie.videoUrl = episode.link_m3u8;
-        this.playVideo(this.movie.videoUrl);
-        this.GetComment();
-        this.isLoading = false;
-      } catch {
-        this.isLoading = false;
-      }
-    },
+    // ❗ CHỈ SET 1 URL DUY NHẤT
+    this.movie.videoUrl = episode.link_m3u8;
+
+    // reset time cũ
+    if (this.videoKey) {
+      localStorage.removeItem(this.videoKey);
+    }
+    this.videoKey = `movie_${this.slug}_${normalized}`;
+
+    // 👉 PLAY 1 LẦN DUY NHẤT
+    this.$nextTick(() => {
+      this.playVideo(this.movie.videoUrl);
+      this.videoStarted = true;
+    });
+
+    this.GetComment();
+    this.isLoading = false;
+  } catch (e) {
+    console.error(e);
+    this.isLoading = false;
+  }
+},
     switchServer(server) {
       this.isLoading = true;
 
@@ -1824,7 +1798,7 @@ export default {
     },
     nextEpisode() {
       if (this.currentEpisodeIndex > 0) {
-        this.videoStarted = false
+        this.videoStarted = false;
         console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex--;
 
@@ -1834,7 +1808,7 @@ export default {
     },
     prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        this.videoStarted = false
+        this.videoStarted = false;
         console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex++;
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
@@ -1891,7 +1865,9 @@ export default {
     idAccount() {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
-
+    isMobile() {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  },
     youtubeEmbedUrl() {
       if (!this.movie.trailer_url) return "";
 
@@ -1907,8 +1883,7 @@ export default {
         : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
     },
     visibleEpisodesRight() {
-      return  this.movie.pageMovie // Hiện tất cả tập
-        
+      return this.movie.pageMovie; // Hiện tất cả tập
     },
     thumbnailUrl() {
       const match = this.movie.videoUrl.match(
@@ -1986,22 +1961,19 @@ export default {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 20px;
-  
+
   /* YouTube-style shadow */
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.6);
-  
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.6);
+
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* Smooth focus state */
   cursor: pointer;
 }
 
 .video-wrapper:hover,
 .video-wrapper:focus-within {
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.12),
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12),
     0 12px 32px rgba(0, 0, 0, 0.8);
   transform: translateY(-1px);
 }
@@ -2039,7 +2011,7 @@ export default {
   border-radius: 12px;
   background: #000;
   display: block;
-  
+
   /* YouTube player smooth appearance */
   animation: playerFadeIn 0.5s ease-out;
 }
@@ -2414,7 +2386,7 @@ a {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
+
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
@@ -2424,12 +2396,12 @@ a {
   font-weight: 500;
   letter-spacing: 0.2px;
   cursor: pointer;
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  
+
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   white-space: nowrap;
@@ -2444,7 +2416,6 @@ a {
 .skip-trailer-btn:active {
   transform: scale(0.98);
 }
-
 
 /* Mobile - YouTube responsive design */
 @media (max-width: 768px) {
@@ -2537,14 +2508,10 @@ a {
   z-index: 4;
 
   /* YouTube-style notice with glass effect */
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.75),
-    rgba(0, 0, 0, 0.65)
-  );
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.65));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  
+
   color: #fff;
   padding: 12px 20px;
   border-radius: 28px;
@@ -2556,8 +2523,7 @@ a {
   text-align: center;
 
   animation: fadeNotice 2.5s ease forwards;
-  box-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.4),
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -2595,11 +2561,7 @@ a {
 .video-play-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.7),
-    rgba(0, 0, 0, 0.15)
-  );
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.15));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2626,9 +2588,7 @@ a {
   color: #ddd;
 }
 .video-wrapper.video-started {
-  box-shadow:
-    0 0 0 1px rgba(255, 214, 0, 0.25),
-    0 12px 36px rgba(0, 0, 0, 0.85);
+  box-shadow: 0 0 0 1px rgba(255, 214, 0, 0.25), 0 12px 36px rgba(0, 0, 0, 0.85);
 }
 
 .video-wrapper.video-started::before {
