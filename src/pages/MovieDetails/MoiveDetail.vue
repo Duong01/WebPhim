@@ -2262,6 +2262,7 @@ export default {
   cursor: pointer;
   z-index: 5;
   transition: background 0.3s ease;
+   backdrop-filter: blur(4px);
 }
 
 .video-play-overlay:hover {
@@ -2271,6 +2272,7 @@ export default {
 .video-play-overlay .v-icon {
   size: 80px !important;
   transition: size 0.3s ease;
+  transform: scale(1.15);
 }
 
 .overlay-text {
@@ -2801,6 +2803,34 @@ a {
     font-size: 0.9rem !important;
     padding: 10px !important;
   }
+}
+.video-wrapper:not(:hover) video::-webkit-media-controls {
+  opacity: 0;
+}
+
+video::-webkit-media-controls {
+  transition: opacity 0.25s ease;
+}
+.video-wrapper.loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    #111 25%,
+    #1a1a1a 37%,
+    #111 63%
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.video-wrapper:focus-within {
+  outline: 2px solid #ffd600;
+  outline-offset: 2px;
 }
 </style>
  
