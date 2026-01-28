@@ -37,7 +37,7 @@
                 
                 <!-- Play overlay khi chưa click -->
                 <div v-if="!videoStarted" class="video-play-overlay" @click="playVideoOnClick">
-                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
+                  <v-icon size="small" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
                 </div>
               </div>
@@ -91,8 +91,8 @@
               </v-card>
               <!-- Nhóm nút + server -->
               <div
-                class="d-flex justify-center align-center my-3"
-                style="gap: 12px"
+                class="d-flex align-center justify-space-between flex-wrap px-4 py-2 function-buttons-wrapper"
+                style="background-color: #1a1a1a; gap: 16px"
               >
                 <!-- Nút chức năng -->
                 <div class="d-flex align-center flex-wrap function-buttons" style="gap: 8px; flex-wrap: wrap">
