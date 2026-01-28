@@ -26,7 +26,7 @@
                 <video
                   ref="videoPlayer"
                   class="video-player"
-                  controls
+                  
                   playsinline
                   webkit-playsinline
                   preload="metadata"
@@ -39,6 +39,35 @@
                 <div v-if="!videoStarted" class="video-play-overlay" @click="playVideoOnClick">
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                </div>
+
+                <!-- Custom controls -->
+                <div class="custom-controls">
+                  <!-- Play / Pause -->
+                  <button @click="togglePlay">
+                    <v-icon>{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</v-icon>
+                  </button>
+
+                  <!-- Time -->
+                  <span class="time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+
+                  <!-- Progress -->
+                  <input
+                    type="range"
+                    min="0"
+                    :max="duration"
+                    step="0.1"
+                    v-model="currentTime"
+                    @input="seek"
+                  />
+
+                  <!-- Volume -->
+                  <v-icon @click="toggleMute">
+                    {{ muted ? 'mdi-volume-off' : 'mdi-volume-high' }}
+                  </v-icon>
+
+                  <!-- Fullscreen -->
+                  <v-icon @click="fullscreen">mdi-fullscreen</v-icon>
                 </div>
               </div>
 
@@ -737,6 +766,12 @@ export default {
       link: "",
       liked: false,
       videoKey: "",
+
+      // contrl video 
+      isPlaying: false,
+      currentTime: 0,
+      duration: 0,
+      muted: false,
     };
   },
   props: ["slug", "page"],
@@ -882,6 +917,45 @@ export default {
     }
   },
   methods: {
+
+    // control video 
+    togglePlay() {
+    const v = this.$refs.videoPlayer
+    if (v.paused) {
+      v.play()
+      this.isPlaying = true
+    } else {
+      v.pause()
+      this.isPlaying = false
+    }
+  },
+  onTimeUpdate() {
+    this.currentTime = this.$refs.videoPlayer.currentTime
+  },
+  onLoaded() {
+    this.duration = this.$refs.videoPlayer.duration
+  },
+  seek() {
+    this.$refs.videoPlayer.currentTime = this.currentTime
+  },
+  toggleMute() {
+    const v = this.$refs.videoPlayer
+    v.muted = !v.muted
+    this.muted = v.muted
+  },
+  fullscreen() {
+    this.$refs.videoPlayer.requestFullscreen()
+  },
+  formatTime(t) {
+    if (!t) return '0:00'
+    const m = Math.floor(t / 60)
+    const s = Math.floor(t % 60).toString().padStart(2, '0')
+    return `${m}:${s}`
+  },
+    // end control video
+
+
+
     extractYoutubeId(url) {
       const match = url.match(
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
@@ -2262,7 +2336,6 @@ export default {
   cursor: pointer;
   z-index: 5;
   transition: background 0.3s ease;
-   backdrop-filter: blur(4px);
 }
 
 .video-play-overlay:hover {
@@ -2272,7 +2345,6 @@ export default {
 .video-play-overlay .v-icon {
   size: 80px !important;
   transition: size 0.3s ease;
-  transform: scale(1.15);
 }
 
 .overlay-text {
@@ -2804,33 +2876,60 @@ a {
     padding: 10px !important;
   }
 }
-.video-wrapper:not(:hover) video::-webkit-media-controls {
+.custom-controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
   opacity: 0;
+  transition: opacity .25s ease;
 }
 
-video::-webkit-media-controls {
-  transition: opacity 0.25s ease;
+.video-wrapper:hover .custom-controls {
+  opacity: 1;
 }
-.video-wrapper.loading::after {
-  content: "";
+
+.custom-controls button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.custom-controls input[type="range"] {
+  flex: 1;
+  height: 4px;
+  appearance: none;
+  background: rgba(255,255,255,.3);
+  border-radius: 4px;
+}
+
+.custom-controls input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffd600;
+  cursor: pointer;
+}
+
+.time {
+  font-size: 12px;
+  color: #ddd;
+  min-width: 80px;
+}
+
+.center-play {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    #111 25%,
-    #1a1a1a 37%,
-    #111 63%
-  );
-  animation: shimmer 1.4s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-.video-wrapper:focus-within {
-  outline: 2px solid #ffd600;
-  outline-offset: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 </style>
  
