@@ -36,28 +36,27 @@
                 ></video>
                 
                 <!-- Play overlay khi chưa click -->
-                <div v-if="!videoStarted" class="video-play-overlay" @click="playVideoOnClick">
-                  <v-icon size="small" color="white">mdi-play-circle</v-icon>
+                <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
+                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
                 </div>
               </div>
 
               <!-- nut next tap và back tap -->
               <div
-                class="d-flex justify-center align-center my-3 episode-nav-buttons"
-                style="gap: 12px; flex-wrap: wrap"
+                class="d-flex justify-center align-center my-3"
+                style="gap: 12px"
               >
                 <v-btn
                   color="grey-darken-2"
                   @click="prevEpisode()"
                   :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
-                  class="episode-btn"
                 >
                   <v-icon start>mdi-chevron-left</v-icon>
-                  <span class="btn-text">{{ $t("Tập trước") }}</span>
+                  {{ $t("Tập trước") }}
                 </v-btn>
 
-                <v-chip color="blue-darken-2" text-color="white" class="episode-chip-info">
+                <v-chip color="blue-darken-2" text-color="white">
                   {{ movie.pageMovie[currentEpisodeIndex]?.name }}
                 </v-chip>
 
@@ -65,9 +64,8 @@
                   color="grey-darken-2"
                   @click="nextEpisode()"
                   :disabled="currentEpisodeIndex <= 0"
-                  class="episode-btn"
                 >
-                  <span class="btn-text">{{ $t("Tập tiếp") }}</span>
+                  {{ $t("Tập tiếp") }}
                   <v-icon end>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
