@@ -133,6 +133,7 @@
                       :key="index"
                       @click="switchServer(server)"
                       :class="{ 'active-tab': tabserver === index }"
+                      size="small"
                     >
                       {{ server.server_name || `Server ${index + 1}` }}
                     </v-tab>
@@ -165,9 +166,9 @@
                     <v-col
                       v-for="(episode, index) in visibleEpisodes"
                       :key="index"
-                      cols="6"
-                      sm="4"
-                      md="3"
+                      cols="4"
+                      sm="6"
+                      md="4"
                       class="episode-col-responsive"
                     >
                         <v-btn
@@ -442,7 +443,7 @@
                 theme="dark"
                 
               >
-                <v-card-title class="text-h6"> {{$t('Danh sách tập')}} </v-card-title>
+                <v-card-title :class="$vuetify.display.smAndDown ? 'text-body-2' : 'text-h6'"> {{$t('Danh sách tập')}} </v-card-title>
 
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
@@ -454,7 +455,7 @@
                     >
                       <v-btn
                         block
-                        size="small"
+                        :size="$vuetify.display.smAndDown ? 'small' : 'default'"
                         :color="
                           index === currentEpisodeIndex
                             ? 'red'
@@ -1836,7 +1837,8 @@ export default {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
         ? this.movie.pageMovie // Hiện tất cả tập
-        : this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+        : this.movie.pageMovie; // Chỉ 20 tập đầu
+        //: this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
     },
     visibleEpisodesRight() {
       return  this.movie.pageMovie // Hiện tất cả tập
@@ -1901,6 +1903,7 @@ export default {
 </script>
 
 <style scoped>
+
 .right-panel {
   position: sticky;
   top: 72px;
@@ -2122,7 +2125,7 @@ export default {
 }
 
 .suggested-title {
-  font-size: 14px;
+  font-size: clamp(12px, 3vw, 16px);
   font-weight: 600;
   line-height: 1.3;
   overflow: hidden;
@@ -2135,7 +2138,7 @@ export default {
 .suggested-meta {
   display: flex;
   gap: 8px;
-  font-size: 12px;
+  font-size: clamp(12px, 3vw, 16px);
   color: #ffd600;
   font-weight: 500;
   flex-wrap: wrap;
@@ -2225,7 +2228,7 @@ export default {
   }
 
   .suggested-title {
-    font-size: 13px;
+    font-size: clamp(12px, 3vw, 16px);
   }
 
   .suggested-meta {
@@ -2263,7 +2266,7 @@ export default {
   }
 
   .suggested-title {
-    font-size: 12px;
+    font-size: clamp(12px, 3vw, 16px);
     -webkit-line-clamp: 2;
   }
 
@@ -2291,7 +2294,7 @@ export default {
   .suggested-nav-btn {
     width: 28px;
     height: 28px;
-    font-size: 16px;
+    font-size: clamp(12px, 3vw, 16px);
   }
 
   .suggested-content-scroll {
@@ -2356,7 +2359,7 @@ export default {
 .overlay-text {
   color: white;
   margin-top: 12px;
-  font-size: 16px;
+  font-size: clamp(12px, 3vw, 16px);
   font-weight: 500;
   text-align: center;
   transition: font-size 0.3s ease;
@@ -2369,7 +2372,7 @@ export default {
   }
 
   .overlay-text {
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 16px);
     margin-top: 10px;
   }
 }
@@ -2381,7 +2384,7 @@ export default {
   }
 
   .overlay-text {
-    font-size: 12px;
+    font-size: clamp(12px, 3vw, 16px);
     margin-top: 8px;
     padding: 0 16px;
   }
@@ -2402,7 +2405,7 @@ a {
 .custom-tabs .v-tab.active-tab {
   color: #000;
   background-color: #f8b230;
-  border-radius: 5px;
+  border-radius: 10px;
   font-weight: bold;
 }
 
@@ -2544,7 +2547,7 @@ a {
   background-color: rgba(0, 0, 0, 0.6);
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: clamp(12px, 3vw, 16px);
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 50%;
@@ -2711,7 +2714,7 @@ a {
 }
 
 .episode-item-btn {
-  min-height: 36px !important;
+  min-height: 25px !important;
   font-size: 0.85rem !important;
   padding: 6px 4px !important;
   white-space: normal;
@@ -2732,7 +2735,7 @@ a {
   color: white;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: clamp(12px, 3vw, 16px);
   cursor: pointer;
 }
 
@@ -2819,7 +2822,7 @@ a {
   }
 
   .episode-item-btn {
-    min-height: 40px !important;
+    min-height: 30px !important;
     font-size: 0.85rem !important;
     padding: 8px 6px !important;
   }
