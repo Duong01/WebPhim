@@ -1919,58 +1919,45 @@ export default {
   overflow: hidden;
   margin-bottom: 20px;
   
-  /* Modern glass-morphism shadow */
+  /* YouTube-style shadow */
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 8px 32px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.6);
   
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Smooth focus state */
   cursor: pointer;
-  
-  /* Prevent overflow of controls */
-  isolation: isolate;
 }
 
 .video-wrapper:hover,
 .video-wrapper:focus-within {
   box-shadow: 
-    0 0 0 2px rgba(255, 0, 0, 0.3),
-    0 12px 48px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.8);
+  transform: translateY(-1px);
 }
 
-.video-wrapper:hover::before {
-  opacity: 0.8;
-}
-
-/* Modern glow border effect */
+/* YouTube-style glow border on hover */
 .video-wrapper::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: 12px;
   background: linear-gradient(
     135deg,
-    rgba(255, 0, 0, 0.2),
-    rgba(255, 50, 50, 0.1),
-    rgba(255, 0, 0, 0.15),
-    transparent
+    rgba(255, 200, 0, 0.15),
+    rgba(255, 61, 0, 0.1),
+    rgba(0, 229, 255, 0.15)
   );
-  filter: blur(12px);
+  filter: blur(8px);
   opacity: 0;
-  z-index: 0;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s ease;
 }
 
-/* Ensure video player is on top of decorative elements */
-.video-wrapper > * {
-  position: relative;
-  z-index: 1;
+.video-wrapper:hover::before {
+  opacity: 0.6;
 }
 
 .video-player,
@@ -2328,92 +2315,36 @@ export default {
   margin-left: 0;
 }
 
-/* Video Controls - Responsive Sizing */
-@media (max-width: 1200px) {
-  .video-player::-webkit-media-controls-panel {
-    height: 55px;
-    padding: 7px 10px;
-  }
-
-  .video-player::-webkit-media-controls-play-button,
-  .video-player::-webkit-media-controls-mute-button,
-  .video-player::-webkit-media-controls-fullscreen-button {
-    width: 34px;
-    height: 34px;
-  }
-
-  .video-player::-webkit-media-controls-timeline {
-    height: 4px;
-    margin: 6px 0;
-  }
-
-  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
-    width: 12px;
-    height: 12px;
-  }
-}
-
 /* Responsive - Tablet */
 @media (max-width: 960px) {
-  .video-wrapper {
-    border-radius: 10px;
+  .suggested-scroll-wrapper {
+    gap: 6px;
   }
 
-  .video-player::-webkit-media-controls-panel {
-    height: 48px;
-    padding: 6px 8px;
+  .suggested-movie-card {
+    width: 170px;
+    min-width: 170px;
   }
 
-  .video-player::-webkit-media-controls-play-button,
-  .video-player::-webkit-media-controls-mute-button,
-  .video-player::-webkit-media-controls-fullscreen-button {
-    width: 32px;
-    height: 32px;
-    padding: 3px;
+  .suggested-nav-btn {
+    width: 36px;
+    height: 36px;
   }
 
-  .video-player::-webkit-media-controls-timeline {
-    height: 3px;
-    margin: 5px 0;
+  .suggested-content-scroll {
+    gap: 12px;
   }
 
-  .video-player::-webkit-media-controls-volume-slider {
-    width: 60px;
-    height: 3px;
+  .suggested-info {
+    padding: 10px;
   }
 
-  /* Overlay adjustments for tablet */
-  .video-play-overlay::before {
-    width: 75px;
-    height: 75px;
-  }
-
-  .video-play-overlay .v-icon {
-    size: 65px !important;
-  }
-
-  .overlay-text {
-    font-size: 15px;
-    margin-top: 14px;
-  }
-
-  /* Function buttons responsive for tablet */
-  .function-buttons-wrapper {
-    padding: 10px 12px !important;
-  }
-
-  .function-btn {
-    padding: 8px 14px !important;
-    min-height: 40px;
+  .suggested-title {
     font-size: 13px;
   }
 
-  .function-btn .v-icon {
-    font-size: 20px;
-  }
-
-  .btn-text-short {
-    font-size: 13px;
+  .suggested-meta {
+    font-size: 11px;
   }
 
   .suggested-category {
@@ -2423,74 +2354,6 @@ export default {
 
 /* Responsive - Mobile */
 @media (max-width: 768px) {
-  .video-wrapper {
-    border-radius: 8px;
-  }
-
-  .video-player::-webkit-media-controls-panel {
-    height: 44px;
-    padding: 5px 6px;
-  }
-
-  .video-player::-webkit-media-controls-play-button,
-  .video-player::-webkit-media-controls-mute-button,
-  .video-player::-webkit-media-controls-fullscreen-button {
-    width: 30px;
-    height: 30px;
-    padding: 2px;
-  }
-
-  .video-player::-webkit-media-controls-timeline {
-    height: 3px;
-    margin: 4px 0;
-  }
-
-  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
-    width: 10px;
-    height: 10px;
-  }
-
-  .video-player::-webkit-media-controls-volume-slider {
-    width: 50px;
-    height: 3px;
-  }
-
-  /* Overlay adjustments for mobile */
-  .video-play-overlay::before {
-    width: 65px;
-    height: 65px;
-  }
-
-  .video-play-overlay .v-icon {
-    size: 55px !important;
-  }
-
-  .overlay-text {
-    font-size: 13px;
-    margin-top: 12px;
-  }
-
-  /* Function buttons responsive for mobile */
-  .function-buttons-wrapper {
-    padding: 8px 10px !important;
-    margin: 10px 0;
-  }
-
-  .function-btn {
-    padding: 8px 12px !important;
-    min-height: 38px;
-    font-size: 12px;
-    flex: 0 1 auto;
-  }
-
-  .function-btn .v-icon {
-    font-size: 18px;
-  }
-
-  .btn-text-short {
-    font-size: 12px;
-  }
-
   .suggested-scroll-wrapper {
     gap: 4px;
     margin-bottom: 12px;
@@ -2530,104 +2393,6 @@ export default {
 
 /* Responsive - Small Mobile */
 @media (max-width: 480px) {
-  .video-wrapper {
-    aspect-ratio: 16 / 9;
-    border-radius: 6px;
-    margin-bottom: 16px;
-  }
-
-  .video-player::-webkit-media-controls-panel {
-    height: 40px;
-    padding: 4px 4px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-  }
-
-  .video-player::-webkit-media-controls-play-button,
-  .video-player::-webkit-media-controls-mute-button,
-  .video-player::-webkit-media-controls-fullscreen-button {
-    width: 28px;
-    height: 28px;
-    padding: 2px;
-    border-radius: 50%;
-  }
-
-  .video-player::-webkit-media-controls-timeline {
-    height: 2px;
-    margin: 4px 0;
-    cursor: pointer;
-  }
-
-  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
-    width: 10px;
-    height: 10px;
-  }
-
-  .video-player::-webkit-media-controls-volume-slider {
-    width: 40px;
-    height: 2px;
-  }
-
-  .video-player::-webkit-media-controls-volume-slider::-webkit-slider-thumb {
-    width: 9px;
-    height: 9px;
-  }
-
-  /* Overlay adjustments for small mobile */
-  .video-play-overlay {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .video-play-overlay::before {
-    width: 50px;
-    height: 50px;
-  }
-
-  .video-play-overlay .v-icon {
-    size: 44px !important;
-  }
-
-  .video-play-overlay:hover .v-icon {
-    size: 50px !important;
-  }
-
-  .overlay-text {
-    font-size: 11px;
-    margin-top: 10px;
-    letter-spacing: 0px;
-  }
-
-  .video-play-overlay:hover .overlay-text {
-    font-size: 12px;
-    letter-spacing: 0px;
-  }
-
-  /* Function buttons responsive for small mobile */
-  .function-buttons-wrapper {
-    padding: 6px 8px !important;
-    margin: 8px 0;
-    border-radius: 6px;
-  }
-
-  .function-buttons {
-    gap: 6px !important;
-  }
-
-  .function-btn {
-    padding: 6px 10px !important;
-    min-height: 36px;
-    font-size: 11px;
-    flex: 1;
-    border-radius: 5px;
-  }
-
-  .function-btn .v-icon {
-    font-size: 16px;
-  }
-
-  .btn-text-short {
-    font-size: 11px;
-  }
-
   .suggested-scroll-wrapper {
     gap: 2px;
     margin-bottom: 8px;
@@ -3061,75 +2826,6 @@ a {
 .suggested-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
-
-/* ===== MODERN FUNCTION BUTTONS STYLING ===== */
-.function-buttons-wrapper {
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  padding: 12px 16px !important;
-  margin: 12px 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.function-buttons-wrapper:hover {
-  background: linear-gradient(135deg, rgba(30, 30, 30, 1), rgba(40, 40, 40, 1));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.function-buttons {
-  gap: 10px !important;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.function-btn {
-  background: linear-gradient(135deg, rgba(50, 50, 50, 1), rgba(40, 40, 40, 1));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 10px 16px !important;
-  color: white;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-}
-
-.function-btn:hover {
-  background: linear-gradient(135deg, rgba(70, 70, 70, 1), rgba(60, 60, 60, 1));
-  border-color: rgba(255, 0, 0, 0.4);
-  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.2);
-  transform: translateY(-2px);
-}
-
-.function-btn:active {
-  transform: translateY(0px);
-  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
-}
-
-.function-btn .v-icon {
-  color: #ff6b6b;
-  transition: all 0.3s ease;
-  font-size: 22px;
-}
-
-.function-btn:hover .v-icon {
-  color: #ff8787;
-  filter: drop-shadow(0 2px 6px rgba(255, 107, 107, 0.4));
-}
-
-.btn-text-short {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
 .v-list-item {
   padding-left: 0 !important;
   padding-right: 0 !important;
