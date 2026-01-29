@@ -735,10 +735,19 @@ export default {
       link: "",
       liked: false,
       videoKey: "",
+      saveTimeInterval: null,
     };
   },
   props: ["slug", "page"],
   beforeUnmount() {
+    // Lưu thời gian xem trước khi rời khỏi
+    this.saveWatchTime();
+    
+    // Dừng save interval
+    if (this.saveTimeInterval) {
+      clearInterval(this.saveTimeInterval);
+    }
+
     // Hủy video HTML5
     if (this.$refs.videoPlayer) {
       this.$refs.videoPlayer.pause();
@@ -807,6 +816,10 @@ export default {
           query: { page: normalized },
         });
       }
+      // Load thời gian xem cho film mới
+      this.$nextTick(() => {
+        this.loadWatchTime();
+      });
       // await this.ListMovieByCate();
       // await this.GetComment();
     },
@@ -871,6 +884,20 @@ export default {
         });
       }
       this.initLazyLoad();
+      
+      // Load thời gian xem từ localStorage
+      this.$nextTick(() => {
+        this.loadWatchTime();
+      });
+      
+      // Bắt đầu save thời gian xem mỗi 5 giây
+      if (this.saveTimeInterval) {
+        clearInterval(this.saveTimeInterval);
+      }
+      this.saveTimeInterval = setInterval(() => {
+        this.saveWatchTime();
+      }, 5000);
+      
       // await this.ListMovieByCate();
       // await this.GetComment();
     } catch (err) {
@@ -880,6 +907,61 @@ export default {
     }
   },
   methods: {
+    // Lưu thời gian xem vào localStorage
+    saveWatchTime() {
+      const video = this.$refs.videoPlayer;
+      if (!video || !this.movie.idMovie) return;
+      
+      const currentTime = video.currentTime;
+      const duration = video.duration;
+      
+      // Chỉ lưu nếu video đã tải được
+      if (isFinite(currentTime) && isFinite(duration) && duration > 0) {
+        const watchData = {
+          movieId: this.movie.idMovie,
+          slug: this.movie.slug,
+          episode: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
+          currentTime: currentTime,
+          duration: duration,
+          timestamp: Date.now()
+        };
+        
+        // Lưu vào localStorage với key duy nhất
+        localStorage.setItem('webphim_watchtime', JSON.stringify(watchData));
+      }
+    },
+    
+    // Load thời gian xem từ localStorage
+    loadWatchTime() {
+      const video = this.$refs.videoPlayer;
+      if (!video || !this.movie.idMovie) return;
+      
+      try {
+        const watchData = localStorage.getItem('webphim_watchtime');
+        if (watchData) {
+          const data = JSON.parse(watchData);
+          
+          // Chỉ load nếu là cùng film và cùng tập
+          if (data.movieId === this.movie.idMovie && 
+              data.episode === this.movie.pageMovie[this.currentEpisodeIndex]?.name) {
+            
+            // Đợi video loadedmetadata để set currentTime
+            const setTime = () => {
+              if (isFinite(data.currentTime) && data.currentTime > 0) {
+                video.currentTime = data.currentTime;
+                console.log(`Đã khôi phục thời gian xem: ${Math.floor(data.currentTime)} giây`);
+              }
+              video.removeEventListener('loadedmetadata', setTime);
+            };
+            
+            video.addEventListener('loadedmetadata', setTime);
+          }
+        }
+      } catch (error) {
+        console.error('Lỗi load thời gian xem:', error);
+      }
+    },
+
     extractYoutubeId(url) {
       const match = url.match(
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
@@ -1837,45 +1919,58 @@ export default {
   overflow: hidden;
   margin-bottom: 20px;
   
-  /* YouTube-style shadow */
+  /* Modern glass-morphism shadow */
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.6);
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Smooth focus state */
   cursor: pointer;
+  
+  /* Prevent overflow of controls */
+  isolation: isolate;
 }
 
 .video-wrapper:hover,
 .video-wrapper:focus-within {
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 12px 32px rgba(0, 0, 0, 0.8);
-  transform: translateY(-1px);
-}
-
-/* YouTube-style glow border on hover */
-.video-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 12px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 200, 0, 0.15),
-    rgba(255, 61, 0, 0.1),
-    rgba(0, 229, 255, 0.15)
-  );
-  filter: blur(8px);
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s ease;
+    0 0 0 2px rgba(255, 0, 0, 0.3),
+    0 12px 48px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
 }
 
 .video-wrapper:hover::before {
-  opacity: 0.6;
+  opacity: 0.8;
+}
+
+/* Modern glow border effect */
+.video-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.2),
+    rgba(255, 50, 50, 0.1),
+    rgba(255, 0, 0, 0.15),
+    transparent
+  );
+  filter: blur(12px);
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* Ensure video player is on top of decorative elements */
+.video-wrapper > * {
+  position: relative;
+  z-index: 1;
 }
 
 .video-player,
@@ -1901,6 +1996,121 @@ export default {
   to {
     opacity: 1;
   }
+}
+
+/* ===== MODERN VIDEO PLAYER CONTROLS ===== */
+.video-player::-webkit-media-controls-panel {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  height: 60px;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+.video-player::-webkit-media-controls-play-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-player::-webkit-media-controls-play-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08);
+}
+
+.video-player::-webkit-media-controls-timeline {
+  background: rgba(255, 255, 255, 0.2);
+  height: 5px;
+  border-radius: 3px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
+  background: #ff0000;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+
+.video-player::-webkit-media-controls-timeline::-webkit-slider-thumb:hover {
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 2px 12px rgba(255, 0, 0, 0.8);
+}
+
+.video-player::-webkit-media-controls-mute-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.video-player::-webkit-media-controls-mute-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08);
+}
+
+.video-player::-webkit-media-controls-volume-slider {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.video-player::-webkit-media-controls-volume-slider::-webkit-slider-thumb {
+  background: #ff0000;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(255, 0, 0, 0.6);
+}
+
+.video-player::-webkit-media-controls-fullscreen-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.video-player::-webkit-media-controls-fullscreen-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08);
+}
+
+.video-player::-webkit-media-controls-enclosure {
+  background: transparent;
+}
+
+/* Firefox video controls styling */
+.video-player {
+  --media-control-background: rgba(0, 0, 0, 0.7);
+  --media-control-color: #fff;
+}
+
+/* Progress bar styling cho Firefox */
+.video-player::cue {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
 }
 
 .suggested-item {
@@ -2118,36 +2328,92 @@ export default {
   margin-left: 0;
 }
 
+/* Video Controls - Responsive Sizing */
+@media (max-width: 1200px) {
+  .video-player::-webkit-media-controls-panel {
+    height: 55px;
+    padding: 7px 10px;
+  }
+
+  .video-player::-webkit-media-controls-play-button,
+  .video-player::-webkit-media-controls-mute-button,
+  .video-player::-webkit-media-controls-fullscreen-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .video-player::-webkit-media-controls-timeline {
+    height: 4px;
+    margin: 6px 0;
+  }
+
+  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 /* Responsive - Tablet */
 @media (max-width: 960px) {
-  .suggested-scroll-wrapper {
-    gap: 6px;
+  .video-wrapper {
+    border-radius: 10px;
   }
 
-  .suggested-movie-card {
-    width: 170px;
-    min-width: 170px;
+  .video-player::-webkit-media-controls-panel {
+    height: 48px;
+    padding: 6px 8px;
   }
 
-  .suggested-nav-btn {
-    width: 36px;
-    height: 36px;
+  .video-player::-webkit-media-controls-play-button,
+  .video-player::-webkit-media-controls-mute-button,
+  .video-player::-webkit-media-controls-fullscreen-button {
+    width: 32px;
+    height: 32px;
+    padding: 3px;
   }
 
-  .suggested-content-scroll {
-    gap: 12px;
+  .video-player::-webkit-media-controls-timeline {
+    height: 3px;
+    margin: 5px 0;
   }
 
-  .suggested-info {
-    padding: 10px;
+  .video-player::-webkit-media-controls-volume-slider {
+    width: 60px;
+    height: 3px;
   }
 
-  .suggested-title {
+  /* Overlay adjustments for tablet */
+  .video-play-overlay::before {
+    width: 75px;
+    height: 75px;
+  }
+
+  .video-play-overlay .v-icon {
+    size: 65px !important;
+  }
+
+  .overlay-text {
+    font-size: 15px;
+    margin-top: 14px;
+  }
+
+  /* Function buttons responsive for tablet */
+  .function-buttons-wrapper {
+    padding: 10px 12px !important;
+  }
+
+  .function-btn {
+    padding: 8px 14px !important;
+    min-height: 40px;
     font-size: 13px;
   }
 
-  .suggested-meta {
-    font-size: 11px;
+  .function-btn .v-icon {
+    font-size: 20px;
+  }
+
+  .btn-text-short {
+    font-size: 13px;
   }
 
   .suggested-category {
@@ -2157,6 +2423,74 @@ export default {
 
 /* Responsive - Mobile */
 @media (max-width: 768px) {
+  .video-wrapper {
+    border-radius: 8px;
+  }
+
+  .video-player::-webkit-media-controls-panel {
+    height: 44px;
+    padding: 5px 6px;
+  }
+
+  .video-player::-webkit-media-controls-play-button,
+  .video-player::-webkit-media-controls-mute-button,
+  .video-player::-webkit-media-controls-fullscreen-button {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+  }
+
+  .video-player::-webkit-media-controls-timeline {
+    height: 3px;
+    margin: 4px 0;
+  }
+
+  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+  }
+
+  .video-player::-webkit-media-controls-volume-slider {
+    width: 50px;
+    height: 3px;
+  }
+
+  /* Overlay adjustments for mobile */
+  .video-play-overlay::before {
+    width: 65px;
+    height: 65px;
+  }
+
+  .video-play-overlay .v-icon {
+    size: 55px !important;
+  }
+
+  .overlay-text {
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  /* Function buttons responsive for mobile */
+  .function-buttons-wrapper {
+    padding: 8px 10px !important;
+    margin: 10px 0;
+  }
+
+  .function-btn {
+    padding: 8px 12px !important;
+    min-height: 38px;
+    font-size: 12px;
+    flex: 0 1 auto;
+  }
+
+  .function-btn .v-icon {
+    font-size: 18px;
+  }
+
+  .btn-text-short {
+    font-size: 12px;
+  }
+
   .suggested-scroll-wrapper {
     gap: 4px;
     margin-bottom: 12px;
@@ -2196,6 +2530,104 @@ export default {
 
 /* Responsive - Small Mobile */
 @media (max-width: 480px) {
+  .video-wrapper {
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  .video-player::-webkit-media-controls-panel {
+    height: 40px;
+    padding: 4px 4px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  }
+
+  .video-player::-webkit-media-controls-play-button,
+  .video-player::-webkit-media-controls-mute-button,
+  .video-player::-webkit-media-controls-fullscreen-button {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+    border-radius: 50%;
+  }
+
+  .video-player::-webkit-media-controls-timeline {
+    height: 2px;
+    margin: 4px 0;
+    cursor: pointer;
+  }
+
+  .video-player::-webkit-media-controls-timeline::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+  }
+
+  .video-player::-webkit-media-controls-volume-slider {
+    width: 40px;
+    height: 2px;
+  }
+
+  .video-player::-webkit-media-controls-volume-slider::-webkit-slider-thumb {
+    width: 9px;
+    height: 9px;
+  }
+
+  /* Overlay adjustments for small mobile */
+  .video-play-overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .video-play-overlay::before {
+    width: 50px;
+    height: 50px;
+  }
+
+  .video-play-overlay .v-icon {
+    size: 44px !important;
+  }
+
+  .video-play-overlay:hover .v-icon {
+    size: 50px !important;
+  }
+
+  .overlay-text {
+    font-size: 11px;
+    margin-top: 10px;
+    letter-spacing: 0px;
+  }
+
+  .video-play-overlay:hover .overlay-text {
+    font-size: 12px;
+    letter-spacing: 0px;
+  }
+
+  /* Function buttons responsive for small mobile */
+  .function-buttons-wrapper {
+    padding: 6px 8px !important;
+    margin: 8px 0;
+    border-radius: 6px;
+  }
+
+  .function-buttons {
+    gap: 6px !important;
+  }
+
+  .function-btn {
+    padding: 6px 10px !important;
+    min-height: 36px;
+    font-size: 11px;
+    flex: 1;
+    border-radius: 5px;
+  }
+
+  .function-btn .v-icon {
+    font-size: 16px;
+  }
+
+  .btn-text-short {
+    font-size: 11px;
+  }
+
   .suggested-scroll-wrapper {
     gap: 2px;
     margin-bottom: 8px;
@@ -2252,50 +2684,119 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 5;
-  transition: background 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(2px);
 }
 
 .video-play-overlay:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.video-play-overlay::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.3), transparent);
+  border-radius: 50%;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
 }
 
 .video-play-overlay .v-icon {
   size: 80px !important;
-  transition: size 0.3s ease;
+  transition: all 0.3s ease;
+  z-index: 10;
+  filter: drop-shadow(0 4px 12px rgba(255, 0, 0, 0.4));
+  animation: playButtonFloat 2s ease-in-out infinite;
+}
+
+.video-play-overlay:hover .v-icon {
+  size: 90px !important;
+  filter: drop-shadow(0 6px 20px rgba(255, 0, 0, 0.6));
+  animation: none;
+  transform: scale(1.1);
+}
+
+@keyframes playButtonFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 .overlay-text {
   color: white;
-  margin-top: 12px;
+  margin-top: 16px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  transition: font-size 0.3s ease;
+  transition: all 0.3s ease;
+  z-index: 10;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.video-play-overlay:hover .overlay-text {
+  color: #ff6b6b;
+  font-size: 17px;
+  letter-spacing: 1px;
 }
 
 /* Tablet - Reduce size */
 @media (max-width: 768px) {
+  .video-play-overlay::before {
+    width: 70px;
+    height: 70px;
+  }
+
   .video-play-overlay .v-icon {
-    size: 50px !important;
+    size: 60px !important;
+  }
+
+  .video-play-overlay:hover .v-icon {
+    size: 70px !important;
   }
 
   .overlay-text {
     font-size: 14px;
-    margin-top: 10px;
+    margin-top: 12px;
   }
 }
 
 /* Mobile - Further reduce size */
 @media (max-width: 480px) {
+  .video-play-overlay::before {
+    width: 60px;
+    height: 60px;
+  }
+
   .video-play-overlay .v-icon {
     size: 48px !important;
+  }
+
+  .video-play-overlay:hover .v-icon {
+    size: 56px !important;
   }
 
   .overlay-text {
@@ -2560,6 +3061,75 @@ a {
 .suggested-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+/* ===== MODERN FUNCTION BUTTONS STYLING ===== */
+.function-buttons-wrapper {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 12px 16px !important;
+  margin: 12px 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.function-buttons-wrapper:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 1), rgba(40, 40, 40, 1));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.function-buttons {
+  gap: 10px !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.function-btn {
+  background: linear-gradient(135deg, rgba(50, 50, 50, 1), rgba(40, 40, 40, 1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 16px !important;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+}
+
+.function-btn:hover {
+  background: linear-gradient(135deg, rgba(70, 70, 70, 1), rgba(60, 60, 60, 1));
+  border-color: rgba(255, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.function-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
+}
+
+.function-btn .v-icon {
+  color: #ff6b6b;
+  transition: all 0.3s ease;
+  font-size: 22px;
+}
+
+.function-btn:hover .v-icon {
+  color: #ff8787;
+  filter: drop-shadow(0 2px 6px rgba(255, 107, 107, 0.4));
+}
+
+.btn-text-short {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
 .v-list-item {
   padding-left: 0 !important;
   padding-right: 0 !important;
