@@ -288,7 +288,7 @@
                                   class="episode-btn"
                                   @click="goToWatch(ep)"
                                 >
-                                  {{ ep.name }}
+                                  {{ formatEpisodeName(ep.name) }}
                                 </v-btn>
                               </v-col>
                             </v-row>
@@ -1270,6 +1270,18 @@ export default {
           console.error("Lỗi lấy bình luận:", err);
         }
       );
+    },
+    formatEpisodeName(episodeName) {
+      // Extract số từ tên tập
+      const match = episodeName.match(/\d+/);
+      if (!match) return episodeName;
+      
+      const episodeNumber = parseInt(match[0], 10);
+      // Format với 2 chữ số (01, 02, ... 09, 10, ...)
+      const formattedNumber = String(episodeNumber).padStart(2, '0');
+      
+      // Thay thế số gốc bằng số có format
+      return episodeName.replace(/\d+/, formattedNumber);
     },
   },
   computed: {

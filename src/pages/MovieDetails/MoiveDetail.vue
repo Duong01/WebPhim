@@ -26,19 +26,79 @@
                 <video
                   ref="videoPlayer"
                   class="video-player"
-                  controls
                   playsinline
                   webkit-playsinline
                   preload="metadata"
-                  muted
+                  :muted="muted"
                   :poster="movie.thumb_url || ''"
-                  @click="playVideoOnClick"
+                  @click="togglePlay"
+                  @timeupdate="onTimeUpdate"
+                  @loadedmetadata="onLoadedMetadata"
+                  @play="onPlay"
+                  @pause="onPause"
                 ></video>
                 
                 <!-- Play overlay khi chưa click -->
                 <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                </div>
+
+                <!-- Custom controls -->
+                <div
+                  class="custom-controls"
+                  :class="{ 'controls-hidden': !showControls }"
+                  @mousemove="showControlsTemporarily"
+                  @mouseleave="startHideControlsTimer"
+                >
+                  <div class="controls-row">
+                    <div class="left-controls">
+                      <v-btn icon class="control-btn" @click="togglePlay">
+                        <v-icon v-if="!isPlaying">mdi-play</v-icon>
+                        <v-icon v-else>mdi-pause</v-icon>
+                      </v-btn>
+
+                      <v-btn icon class="control-btn" @click="prevEpisode">
+                        <v-icon>mdi-skip-previous</v-icon>
+                      </v-btn>
+
+                      <v-btn icon class="control-btn" @click="nextEpisode">
+                        <v-icon>mdi-skip-next</v-icon>
+                      </v-btn>
+
+                      <div class="time-text">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
+                    </div>
+
+                    <div class="progress-wrapper" @click="seek($event)">
+                      <div class="progress-bar">
+                        <div class="progress-filled" :style="{ width: progress + '%' }"></div>
+                      </div>
+                    </div>
+
+                    <div class="right-controls">
+                      <v-btn icon class="control-btn" @click="toggleMute">
+                        <v-icon v-if="muted">mdi-volume-mute</v-icon>
+                        <v-icon v-else-if="volume > 0.5">mdi-volume-high</v-icon>
+                        <v-icon v-else>mdi-volume-medium</v-icon>
+                      </v-btn>
+
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        v-model.number="volume"
+                        @input="setVolume($event.target.value)"
+                        class="volume-slider"
+                        aria-label="Volume"
+                      />
+
+                      <v-btn icon class="control-btn" @click="toggleFullScreen">
+                        <v-icon v-if="isFullscreen">mdi-fullscreen-exit</v-icon>
+                        <v-icon v-else>mdi-fullscreen</v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -463,7 +523,7 @@
                         "
                         @click="playEpisode(episode)"
                       >
-                        {{ episode.name || "Trailer" }}
+                        {{ episode.name.includes("Tập") ? episode.name : "Tập " + episode.name || "Trailer" }}
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -663,6 +723,15 @@ export default {
       trailerPlayable: false,
       mainVideoUrl: "",
       videoStarted: false,
+      isPlaying: false,
+      currentTime: 0,
+      duration: 0,
+      progress: 0,
+      volume: 1,
+      muted: false,
+      isFullscreen: false,
+      showControls: true,
+      hideControlsTimeout: null,
 
       hasLoadedCate: false,
       hasLoadedComment: false,
@@ -766,6 +835,8 @@ export default {
       this.hls.destroy();
       this.hls = null;
     }
+    // remove keyboard listener
+    window.removeEventListener('keydown', this.onKeyDown);
   },
   watch: {
     async slug(newSlug) {
@@ -848,6 +919,11 @@ export default {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === page
           );
+          if(this.currentEpisodeIndex == -1){
+            this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "") === page.replace("0","")
+          );
+          }
         }
       }
       if (this.currentEpisodeIndex == -1) {
@@ -898,6 +974,21 @@ export default {
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
       }, 5000);
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', this.onKeyDown);
+
+      // Show controls on hover (ensure visible when cursor over video)
+      const wrapper = this.$el.querySelector('.video-wrapper');
+      if (wrapper) {
+        wrapper.addEventListener('mouseenter', () => {
+          this.showControls = true;
+          this.clearHideControlsTimer();
+        });
+        wrapper.addEventListener('mouseleave', () => {
+          this.startHideControlsTimer();
+        });
+      }
       
       // await this.ListMovieByCate();
       // await this.GetComment();
@@ -1361,6 +1452,150 @@ export default {
             video.play();
           });
         }
+      }
+    },
+    // --- Custom control methods ---
+    togglePlay() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+
+      if (!this.videoStarted) {
+        this.playVideoOnClick();
+      }
+
+      if (video.paused) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    },
+    onPlay() {
+      this.isPlaying = true;
+      this.showControls = true;
+      this.startHideControlsTimer();
+    },
+    onPause() {
+      this.isPlaying = false;
+      this.showControls = true;
+      this.clearHideControlsTimer();
+    },
+    onTimeUpdate() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      this.currentTime = video.currentTime || 0;
+      this.duration = video.duration || 0;
+      this.progress = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+    },
+    onLoadedMetadata() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      this.duration = video.duration || 0;
+      this.currentTime = video.currentTime || 0;
+      this.progress = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+    },
+    seek(e) {
+      const video = this.$refs.videoPlayer;
+      if (!video || !this.duration) return;
+
+      const bar = e.currentTarget.querySelector('.progress-bar');
+      const rect = bar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+      video.currentTime = ratio * this.duration;
+      this.onTimeUpdate();
+    },
+    formatTime(seconds) {
+      if (!isFinite(seconds) || seconds <= 0) return '00:00';
+      const s = Math.floor(seconds);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      const pad = (n) => String(n).padStart(2, '0');
+      return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+    },
+    toggleMute() {
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      this.muted = !this.muted;
+      video.muted = this.muted;
+      if (!this.muted && video.volume === 0 && this.volume > 0) {
+        video.volume = this.volume;
+      }
+    },
+    setVolume(val) {
+      const video = this.$refs.videoPlayer;
+      const v = Number(val);
+      this.volume = v;
+      if (video) video.volume = v;
+      this.muted = v === 0;
+    },
+    toggleFullScreen() {
+      const wrapper = this.$el.querySelector('.video-wrapper');
+      if (!wrapper) return;
+      const doc = document;
+      if (!this.isFullscreen) {
+        if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+        else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
+        else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
+        this.isFullscreen = true;
+      } else {
+        if (doc.exitFullscreen) doc.exitFullscreen();
+        else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+        else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
+        else if (doc.msExitFullscreen) doc.msExitFullscreen();
+        this.isFullscreen = false;
+      }
+    },
+    // Keyboard shortcuts: left/right or J/L for +/-10s, space toggle play
+    onKeyDown(e) {
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.querySelector(':focus')?.isContentEditable) return;
+
+      const key = e.key.toLowerCase();
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+
+      if (key === 'arrowright' || key === 'l') {
+        e.preventDefault();
+        this.seekBy(10);
+      } else if (key === 'arrowleft' || key === 'j') {
+        e.preventDefault();
+        this.seekBy(-10);
+      } else if (key === ' ' || key === 'spacebar') {
+        e.preventDefault();
+        this.togglePlay();
+      }
+    },
+    seekBy(seconds) {
+      const video = this.$refs.videoPlayer;
+      if (!video || !isFinite(video.duration)) return;
+      let t = (video.currentTime || 0) + seconds;
+      if (t < 0) t = 0;
+      if (t > video.duration) t = video.duration;
+      video.currentTime = t;
+      this.onTimeUpdate();
+      // show controls when user uses keys
+      this.showControlsTemporarily();
+    },
+    showControlsTemporarily() {
+      this.showControls = true;
+      this.clearHideControlsTimer();
+      this.startHideControlsTimer();
+    },
+    startHideControlsTimer() {
+      this.clearHideControlsTimer();
+      // Hide controls after 3s if playing
+      if (this.isPlaying) {
+        this.hideControlsTimeout = setTimeout(() => {
+          this.showControls = false;
+        }, 3000);
+      }
+    },
+    clearHideControlsTimer() {
+      if (this.hideControlsTimeout) {
+        clearTimeout(this.hideControlsTimeout);
+        this.hideControlsTimeout = null;
       }
     },
     DownloadVideo(linkdown) {
@@ -2885,4 +3120,78 @@ a {
     padding: 10px !important;
   }
 }
+
+/* Custom modern controls */
+.custom-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.18));
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.custom-controls.controls-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+}
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.left-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+.control-btn .v-icon {
+  color: #fff;
+}
+.progress-wrapper {
+  flex: 1;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.progress-filled {
+  height: 100%;
+  background: linear-gradient(90deg, #f8b230, #ff6a00);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.volume-slider {
+  width: 90px;
+  height: 28px;
+  background: transparent;
+}
+.time-text {
+  color: #ddd;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .custom-controls { padding: 8px 10px; }
+  .volume-slider { width: 60px; }
+  .time-text { font-size: 12px; }
+}
+
 </style>
