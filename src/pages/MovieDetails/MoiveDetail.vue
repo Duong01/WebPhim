@@ -58,11 +58,11 @@
                         <v-icon v-else>mdi-pause</v-icon>
                       </v-btn>
 
-                      <v-btn icon class="control-btn" @click="prevEpisode">
+                      <v-btn icon class="control-btn" @click="prevEpisode" v-if="$vuetify.display.smAndUp">
                         <v-icon>mdi-skip-previous</v-icon>
                       </v-btn>
 
-                      <v-btn icon class="control-btn" @click="nextEpisode">
+                      <v-btn icon class="control-btn" @click="nextEpisode" v-if="$vuetify.display.smAndUp">
                         <v-icon>mdi-skip-next</v-icon>
                       </v-btn>
 
@@ -82,7 +82,7 @@
                         <v-icon v-else>mdi-volume-medium</v-icon>
                       </v-btn>
 
-                      <input
+                      <!-- <input
                         type="range"
                         min="0"
                         max="1"
@@ -91,7 +91,7 @@
                         @input="setVolume($event.target.value)"
                         class="volume-slider"
                         aria-label="Volume"
-                      />
+                      /> -->
 
                       <v-btn icon class="control-btn" @click="toggleFullScreen">
                         <v-icon v-if="isFullscreen">mdi-fullscreen-exit</v-icon>
