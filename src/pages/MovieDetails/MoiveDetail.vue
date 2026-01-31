@@ -1567,7 +1567,7 @@ export default {
         else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
         else if (doc.msExitFullscreen) doc.msExitFullscreen();
         else if (video && typeof video.webkitExitFullscreen === 'function') {
-          try { video.webkitExitFullscreen(); } catch (e) {}
+          try { video.webkitExitFullscreen(); } catch (e) {console.log(e);}
         }
         this.isFullscreen = false;
       }
