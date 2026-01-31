@@ -837,6 +837,11 @@ export default {
     }
     // remove keyboard listener
     window.removeEventListener('keydown', this.onKeyDown);
+    // remove fullscreen listeners
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
   },
   watch: {
     async slug(newSlug) {
@@ -977,6 +982,11 @@ export default {
 
       // Keyboard shortcuts
       window.addEventListener('keydown', this.onKeyDown);
+      // Fullscreen change listeners (update isFullscreen state across browsers)
+      document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+      document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+      document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
+      document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
 
       // Show controls on hover (ensure visible when cursor over video)
       const wrapper = this.$el.querySelector('.video-wrapper');
@@ -1534,17 +1544,48 @@ export default {
       if (!wrapper) return;
       const doc = document;
       if (!this.isFullscreen) {
+        const video = this.$refs.videoPlayer;
         if (wrapper.requestFullscreen) wrapper.requestFullscreen();
         else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
         else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
         else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
+        else if (video && typeof video.webkitEnterFullscreen === 'function') {
+          // iOS Safari / some WebKit-based players
+          try {
+            video.webkitEnterFullscreen();
+            this.isFullscreen = true;
+            return;
+          } catch (e) {
+            // ignore
+          }
+        }
         this.isFullscreen = true;
       } else {
+        const video = this.$refs.videoPlayer;
         if (doc.exitFullscreen) doc.exitFullscreen();
         else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
         else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
         else if (doc.msExitFullscreen) doc.msExitFullscreen();
+        else if (video && typeof video.webkitExitFullscreen === 'function') {
+          try { video.webkitExitFullscreen(); } catch (e) {}
+        }
         this.isFullscreen = false;
+      }
+    },
+    handleFullscreenChange() {
+      const doc = document;
+      const isFs = !!(
+        doc.fullscreenElement ||
+        doc.webkitFullscreenElement ||
+        doc.mozFullScreenElement ||
+        doc.msFullscreenElement
+      );
+      this.isFullscreen = isFs;
+      if (!isFs) {
+        this.showControls = true;
+        this.clearHideControlsTimer();
+      } else {
+        this.startHideControlsTimer();
       }
     },
     // Keyboard shortcuts: left/right or J/L for +/-10s, space toggle play
