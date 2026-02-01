@@ -34,6 +34,8 @@
                   @click="togglePlay"
                   @timeupdate="onTimeUpdate"
                   @loadedmetadata="onLoadedMetadata"
+                  @waiting="onWaiting"
+                  @canplay="onCanPlay"
                   @play="onPlay"
                   @pause="onPause"
                 ></video>
@@ -42,6 +44,11 @@
                 <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                </div>
+
+                <!-- Loading overlay while video buffers/loads -->
+                <div v-if="videoStarted && !videoLoaded" class="video-loading-overlay">
+                  <v-progress-circular indeterminate color="primary" size="48" />
                 </div>
 
                 <!-- Custom controls -->
@@ -1075,6 +1082,9 @@ export default {
       const video = this.$refs.videoPlayer;
       const iframe = this.$refs.videoIframe;
 
+      // mark as not loaded
+      this.videoLoaded = false;
+
       if (video) {
         video.pause();
         video.removeAttribute("src");
@@ -1418,6 +1428,9 @@ export default {
       const video = this.$refs.videoPlayer;
       if (!video || !url) return;
 
+      // mark as loading until we receive canplay/playing
+      this.videoLoaded = false;
+
       if (this.hls) {
         this.hls.destroy();
         this.hls = null;
@@ -1483,6 +1496,7 @@ export default {
       this.isPlaying = true;
       this.showControls = true;
       this.startHideControlsTimer();
+      this.videoLoaded = true;
     },
     onPause() {
       this.isPlaying = false;
@@ -1502,6 +1516,17 @@ export default {
       this.duration = video.duration || 0;
       this.currentTime = video.currentTime || 0;
       this.progress = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+      this.videoLoaded = true;
+    },
+    onWaiting() {
+      // Browser is buffering or waiting for data
+      this.videoLoaded = false;
+      this.showControls = true;
+      this.clearHideControlsTimer();
+    },
+    onCanPlay() {
+      // Enough data to start playing
+      this.videoLoaded = true;
     },
     seek(e) {
       const video = this.$refs.videoPlayer;
@@ -3234,5 +3259,17 @@ a {
   .volume-slider { width: 60px; }
   .time-text { font-size: 12px; }
 }
+
+/* Loading overlay for video */
+.video-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  background: rgba(0,0,0,0.35);
+}
+
 
 </style>
