@@ -66,10 +66,11 @@
     // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
   },
   userVariables: {
-    // avatar_url: 'YOU CAN DEFINE USER AVATAR URL HERE',
-    // name: 'YOU CAN DEFINE USER NAME HERE',
+    avatar_url: '@/src/assets/file-icon.png',
+    name: 'Uyên Láo',
   },
  }
+ 
 </script>
 <script
  src="https://udify.app/embed.min.js"
@@ -77,12 +78,41 @@
  defer>
 </script>
 <style>
+  /* Make chatbot button fixed on the right bottom and keep chat window fixed when open */
   #dify-chatbot-bubble-button {
     background-color: #1C64F2 !important;
+    position: fixed !important;
+    right: 1.25rem !important;
+    bottom: 1.25rem !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    transform: none !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12) !important;
   }
   #dify-chatbot-bubble-window {
+    position: fixed !important;
+    right: 1.25rem !important;
+    bottom: 5.75rem !important; /* sits above the button */
+    z-index: 99999 !important;
     width: 24rem !important;
     height: 40rem !important;
+    margin: 0 !important;
+    transform: none !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18) !important;
+  }
+
+  /* Responsive adjustments for small screens */
+  @media (max-width: 640px) {
+    #dify-chatbot-bubble-button {
+      right: 0.75rem !important;
+      bottom: 0.75rem !important;
+    }
+    #dify-chatbot-bubble-window {
+      right: 0.5rem !important;
+      bottom: 5.25rem !important;
+      width: calc(100vw - 1rem) !important;
+      height: 80vh !important;
+    }
   }
 </style>
   </body>
