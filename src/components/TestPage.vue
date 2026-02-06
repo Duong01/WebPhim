@@ -4,10 +4,11 @@
 
 <script>
 export default {
-  name: "TestPage"
-}
+  name: "TestPage",
+};
+
+
 </script>
 
 <style>
-
 </style>

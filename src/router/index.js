@@ -225,6 +225,19 @@ router.onError((error) => {
 });
 router.beforeEach((to, from, next) => {
 
+  // Normalize `page` query for MovieDetail: convert numeric `page=125` -> `page=tap125`
+  if (to.name === 'MovieDetail' && to.query && to.query.page) {
+    const p = String(to.query.page);
+    if (!p.startsWith('tap')) {
+      const digits = p.match(/\d+/);
+      if (digits) {
+        const newQuery = { ...to.query, page: 'tap' + digits[0] };
+        return next({ name: to.name, params: to.params, query: newQuery, replace: true });
+      }
+    }
+  }
+
+
   //const isLoggedIn = !!store.state.empInfor;
 
   if (to.meta.requiresAuth) {
@@ -301,6 +314,34 @@ router.beforeEach((to, from, next) => {
     document.head.appendChild(desc)
   }
   desc.setAttribute("content", to.meta.description || defaultDesc)
+
+  // Upsert Open Graph and Twitter meta and canonical link for SPA routes
+  const upsertMeta = (attr, key, content) => {
+    if (!content) return;
+    let selector = attr === 'property' ? `meta[property="${key}"]` : `meta[name="${key}"]`;
+    let el = document.querySelector(selector);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', content);
+  }
+
+  const canonical = document.querySelector('link[rel="canonical"]') || (() => {
+    const l = document.createElement('link');
+    l.setAttribute('rel', 'canonical');
+    document.head.appendChild(l);
+    return l;
+  })();
+  canonical.setAttribute('href', window.location.origin + to.fullPath);
+
+  upsertMeta('property', 'og:title', to.meta.title || defaultTitle);
+  upsertMeta('property', 'og:description', to.meta.description || defaultDesc);
+  upsertMeta('property', 'og:url', window.location.origin + to.fullPath);
+  upsertMeta('name', 'twitter:title', to.meta.title || defaultTitle);
+  upsertMeta('name', 'twitter:description', to.meta.description || defaultDesc);
+  upsertMeta('name', 'twitter:card', 'summary_large_image');
 
 })
 // router.afterEach(() => {
