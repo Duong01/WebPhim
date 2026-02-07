@@ -17,32 +17,32 @@
             :is="Component"
           />
         </router-view>
-        <DifyChatbot  />
 
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
       </v-snackbar>
       </v-main>
+      
+
+      <!-- Chatbot Component -->
+      <Chatbot />
     </v-app>
   </v-theme-provider>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import DifyChatbot from './components/ChatbotWidget.vue'
+import Chatbot from "@/components/Chatbot.vue";
+
 export default {
   name: 'App',
-  components: { DifyChatbot },
+  components: { Chatbot },
   data(){
     return{
       theme: localStorage.getItem('theme') || 'dark',
       showError: false,
       errorMessage: '',
-      // currentUser: {
-      //   id: this.$store.state.empInfor?.ID || '',
-      //   name: this.$store.state.empInfor?.EmpName || '',
-      //   avatar: this.$store.state.empInfor?.Avatar || '',
-      // },
+      
     }
   },
   computed: {
@@ -64,25 +64,13 @@ export default {
     // kiem tra khi ma het session thi tu dong load lai trang
   document.addEventListener("visibilitychange", this.handleVisibility)
   window.addEventListener("pageshow", this.handlePageShow)
-  this.handleKeyboard()
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener(
-      'resize',
-      this.handleKeyboard
-    )
-  }
+  
 },
 beforeUnmount() {
   
   document.removeEventListener("visibilitychange", this.handleVisibility)
   window.removeEventListener("pageshow", this.handlePageShow)
-  if (window.visualViewport) {
-    window.visualViewport.removeEventListener(
-      'resize',
-      this.handleKeyboard
-    )
-  }
+  
 },
   methods: {
     setTheme(newTheme) {
@@ -100,18 +88,7 @@ beforeUnmount() {
     }
   },
 
-  handleKeyboard() {
-    const viewport = window.visualViewport
-    if (!viewport) return
-
-    const keyboardHeight =
-      window.innerHeight - viewport.height - viewport.offsetTop
-
-    document.documentElement.style.setProperty(
-      '--chat-bottom-offset',
-      keyboardHeight > 0 ? `${keyboardHeight + 16}px` : '20px'
-    )
-  },
+  
     
   }
 }
