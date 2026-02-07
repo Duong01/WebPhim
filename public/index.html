@@ -77,6 +77,19 @@
  id="RQOr94OHdTRHpgce"
  defer>
 </script>
+<!-- Fix mobile keyboard viewport: set --vh to window.innerHeight * 0.01 -->
+<script>
+  (function () {
+    function setVh() {
+      document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+    }
+    setVh();
+    window.addEventListener('resize', setVh);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setVh);
+    }
+  })();
+</script>
 <style>
   /* Make chatbot button fixed on the right bottom and keep chat window fixed when open */
   #dify-chatbot-bubble-button {
@@ -99,6 +112,7 @@
     margin: 0 !important;
     transform: none !important;
     box-shadow: 0 12px 32px rgba(0,0,0,0.18) !important;
+    max-height: calc(var(--vh, 1vh) * 90) !important;
   }
 
   /* Responsive adjustments for small screens */
@@ -111,7 +125,9 @@
       right: 0.5rem !important;
       bottom: 5.25rem !important;
       width: calc(90vw - 1rem) !important;
-      height: 60vh !important;
+      /* use --vh variable to avoid 100vh issues when mobile keyboard opens */
+      height: calc(var(--vh, 1vh) * 60) !important;
+      max-height: calc(var(--vh, 1vh) * 90) !important;
     }
   }
 </style>
