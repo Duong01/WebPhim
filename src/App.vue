@@ -17,11 +17,11 @@
             :is="Component"
           />
         </router-view>
-        
+        <DifyChatbot :user="currentUser" />
+
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
       </v-snackbar>
-        <ChatbotWidget />
       </v-main>
     </v-app>
   </v-theme-provider>
@@ -29,15 +29,20 @@
 
 <script>
 import { mapState } from "vuex";
-import ChatbotWidget from './components/ChatbotWidget.vue'
+import DifyChatbot from './components/ChatbotWidget.vue'
 export default {
   name: 'App',
-  components: { ChatbotWidget },
+  components: { DifyChatbot },
   data(){
     return{
       theme: localStorage.getItem('theme') || 'dark',
       showError: false,
-      errorMessage: ''
+      errorMessage: '',
+      currentUser: {
+        id: this.$store.state.empInfor?.ID || '',
+        name: this.$store.state.empInfor?.EmpName || '',
+        avatar: this.$store.state.empInfor?.Avatar || '',
+      },
     }
   },
   computed: {
@@ -59,11 +64,25 @@ export default {
     // kiem tra khi ma het session thi tu dong load lai trang
   document.addEventListener("visibilitychange", this.handleVisibility)
   window.addEventListener("pageshow", this.handlePageShow)
+  this.handleKeyboard()
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener(
+      'resize',
+      this.handleKeyboard
+    )
+  }
 },
 beforeUnmount() {
   
   document.removeEventListener("visibilitychange", this.handleVisibility)
   window.removeEventListener("pageshow", this.handlePageShow)
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener(
+      'resize',
+      this.handleKeyboard
+    )
+  }
 },
   methods: {
     setTheme(newTheme) {
@@ -79,7 +98,20 @@ beforeUnmount() {
     if (e.persisted) {
       this.$store.dispatch("checkResume")
     }
-  }
+  },
+
+  handleKeyboard() {
+    const viewport = window.visualViewport
+    if (!viewport) return
+
+    const keyboardHeight =
+      window.innerHeight - viewport.height - viewport.offsetTop
+
+    document.documentElement.style.setProperty(
+      '--chat-bottom-offset',
+      keyboardHeight > 0 ? `${keyboardHeight + 16}px` : '20px'
+    )
+  },
     
   }
 }
