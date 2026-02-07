@@ -17,7 +17,7 @@
             :is="Component"
           />
         </router-view>
-        <DifyChatbot :user="currentUser" />
+        <DifyChatbot  />
 
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
@@ -38,11 +38,11 @@ export default {
       theme: localStorage.getItem('theme') || 'dark',
       showError: false,
       errorMessage: '',
-      currentUser: {
-        id: this.$store.state.empInfor?.ID || '',
-        name: this.$store.state.empInfor?.EmpName || '',
-        avatar: this.$store.state.empInfor?.Avatar || '',
-      },
+      // currentUser: {
+      //   id: this.$store.state.empInfor?.ID || '',
+      //   name: this.$store.state.empInfor?.EmpName || '',
+      //   avatar: this.$store.state.empInfor?.Avatar || '',
+      // },
     }
   },
   computed: {

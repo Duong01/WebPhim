@@ -21,11 +21,11 @@ export default {
       token: 'RQOr94OHdTRHpgce',
       inputs: {},
       systemVariables: {
-        user_id: this.user?.id || 'guest',
+        //user_id: this.user?.id || 'guest',
       },
       userVariables: {
-        name: this.user?.name || 'Guest',
-        avatar_url: this.user?.avatar || '',
+        //name: this.user?.name || 'Guest',
+        //: this.user?.avatar || '',
       },
     }
 
