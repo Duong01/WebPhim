@@ -19,11 +19,11 @@
           <div class="chatbot-content">
             <iframe
               src="https://udify.app/chatbot/RQOr94OHdTRHpgce"
-              frameborder="0"
               allow="microphone"
-              sandbox="allow-scripts allow-same-origin allow-forms"
+              referrerpolicy="no-referrer"
+              loading="lazy"
               class="chatbot-iframe"
-            ></iframe>
+            />
           </div>
         </div>
       </div>
