@@ -757,6 +757,10 @@ export default {
       localStorage.removeItem("user");
       localStorage.removeItem("name");
       localStorage.removeItem("nameShow");
+      window.difyUser = {
+        avatar_url: '',
+        name: ''
+      }
 
       this.$router.push("/login");
     },

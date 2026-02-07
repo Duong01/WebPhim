@@ -40,6 +40,13 @@ const vuetify = createVuetify({
   },
 })
 
+// sau khi lấy được thông tin user
+window.difyUser = {
+  avatar_url: store.state.empInfor?.Avatar || '',
+  name: store.state.empInfor?.EmpName || '',
+}
+
+
 async function bootstrap() {
   const token = localStorage.getItem("token");
 
