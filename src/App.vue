@@ -21,6 +21,7 @@
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}
       </v-snackbar>
+        <ChatbotWidget />
       </v-main>
     </v-app>
   </v-theme-provider>
@@ -28,8 +29,10 @@
 
 <script>
 import { mapState } from "vuex";
+import ChatbotWidget from './components/ChatbotWidget.vue'
 export default {
   name: 'App',
+  components: { ChatbotWidget },
   data(){
     return{
       theme: localStorage.getItem('theme') || 'dark',
