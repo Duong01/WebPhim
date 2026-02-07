@@ -54,8 +54,6 @@ export default {
   position: fixed !important;
   bottom: 100px !important;
   right: 50px !important;
-  width: 24rem !important;
-  height: 40rem !important;
   z-index: 99999 !important;
   
 }
@@ -72,7 +70,7 @@ body {
 @media (max-width: 768px) {
   #dify-chatbot-bubble-window {
     width: 100vw !important;
-    height: 70vh !important;
+    height: 80vh !important;
     bottom: 100px !important;
     right: 20px !important;
     border-radius: 20px !important;
