@@ -104,6 +104,9 @@ beforeUnmount() {
   color: #fff;
  
 }
+#dify-chatbot-bubble-button {
+  display: none !important;
+}
 .v-btn {
   text-transform: none !important;
 }

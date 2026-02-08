@@ -1,21 +1,18 @@
 <template>
   <div class="chatbot-container">
     <!-- Chatbot Icon Button -->
-    <button class="chatbot-icon-btn" @click="toggleChatbot" :title="$t('common.chat', 'Chat with us')">
-      <img src="@/assets/IT AI.gif" alt="Chatbot" class="chatbot-icon" />
+    <button class="chatbot-icon-btn" @click="openChatbot">
+      <img src="@/assets/IT AI.gif" class="chatbot-icon" />
     </button>
-
     <!-- Chatbot Modal/Dialog -->
-    <transition name="fade">
+    <!-- <transition name="fade">
       <div v-if="isChatbotOpen" class="chatbot-overlay" @click="closeChatbot">
         <div class="chatbot-modal" @click.stop>
-          <!-- Header -->
           <div class="chatbot-header">
-            <h2>{{ $t('common.assistant', 'MOVIES AI') }}</h2>
+            <h4>{{ $t('common.assistant', 'MOVIES AI') }}</h4>
             <button class="close-btn" @click="closeChatbot">✕</button>
           </div>
 
-          <!-- Chatbot iframe -->
           <div class="chatbot-content">
             <iframe
               src="https://udify.app/chatbot/RQOr94OHdTRHpgce"
@@ -27,7 +24,7 @@
           </div>
         </div>
       </div>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
@@ -36,38 +33,74 @@ export default {
   name: 'ChatBot',
   data() {
     return {
-      isChatbotOpen: false
+      avartar: this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || '',
+      name: this.$store?.state?.EmpName || 'Guest',
     }
   },
   methods: {
-    toggleChatbot() {
-      this.isChatbotOpen = !this.isChatbotOpen;
-      // Ngăn scroll khi modal mở
-      if (this.isChatbotOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'auto';
-      }
-    },
-    closeChatbot() {
-      this.isChatbotOpen = false;
-      document.body.style.overflow = 'auto';
-    }
+    openChatbot() {
+       const win = document.getElementById('dify-chatbot-bubble-window')
+        if (win) { 
+          const isHidden = win.style.display === 'none' 
+          win.style.display = isHidden ? 'block' : 'none' } 
+          this.loadChatbot()
+          },
+    
+    
   },
-  beforeUnmount() {
-    document.body.style.overflow = 'auto';
-  }
+  mounted() { 
+      window.difyChatbotConfig = 
+      { 
+        token: 'RQOr94OHdTRHpgce', 
+        inputs: {},
+        userVariables: {
+          name: this.name,
+          //avatar_url: this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || '',
+          avatar_url:this.avartar
+        },
+        } 
+      const script = document.createElement('script')
+       script.src = 'https://udify.app/embed.min.js' 
+       script.defer = true 
+       script.id = 'RQOr94OHdTRHpgce' 
+       document.body.appendChild(script) 
+       }
+
 }
+
+
 </script>
 
-<style scoped>
+<style>
+#dify-chatbot-bubble-button {
+  display: none !important;
+}
+#dify-chatbot-bubble-window {
+  position: fixed !important;
+  width: 380px !important;
+  height: 600px !important;
+  bottom: 90px !important;
+  right: 20px !important;
+  border-radius: 14px !important;
+
+}
+@media (max-width: 480px) {
+  #dify-chatbot-bubble-window {
+    position: fixed;
+    width: 95vw !important;
+    height: 90vh !important;
+    right: 2.5vw !important;
+  }
+}
 .chatbot-container {
   position: fixed;
-  bottom: 70px;
+  bottom: 50px;
   right: 15px;
   z-index: 1000;
 }
-
+body {
+  overflow: hidden;
+}
 /* Chatbot Icon Button - Responsive */
 .chatbot-icon-btn {
   width: 60px;
@@ -99,169 +132,23 @@ export default {
   object-fit: contain;
 }
 
-/* Modal Overlay */
-.chatbot-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 30px;
-  z-index: 2000;
+/* Bubble bình thường */
+#dify-chatbot-bubble-window {
+  position: fixed !important;
+  width: 380px !important;
+  height: 600px !important;
+  bottom: 90px !important;
+  right: 20px !important;
+  border-radius: 14px !important;
+  z-index: 9999 !important;
 }
 
-/* Modal Container */
-.chatbot-modal {
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  width: 90vw;
-  max-width: 500px;
-  height: 80vh;
-  max-height: 700px;
-  overflow: hidden;
+/* ===== FULLSCREEN ===== */
+#dify-chatbot-bubble-window.fullscreen {
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  border-radius: 0 !important;
 }
 
-/* Modal Header */
-.chatbot-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.chatbot-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.close-btn:hover {
-  transform: scale(1.2);
-}
-
-/* Chatbot Content */
-.chatbot-content {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-}
-
-.chatbot-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Animations */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Mobile/Tablet Responsive */
-@media (max-width: 768px) {
-  .chatbot-overlay {
-    justify-content: center;
-    padding-right: 0;
-  }
-
-  .chatbot-container {
-    bottom: 70px;
-    right: 15px;
-  }
-
-  .chatbot-icon-btn {
-    width: 56px;
-    height: 56px;
-  }
-
-  .chatbot-icon {
-    width: 46px;
-    height: 46px;
-  }
-
-  .chatbot-modal {
-    width: 95vw;
-    max-width: none;
-    height: 85vh;
-    max-height: none;
-  }
-
-  .chatbot-header h2 {
-    font-size: 16px;
-  }
-}
-
-/* Small Devices */
-@media (max-width: 480px) {
-  .chatbot-container {
-    bottom: 70px;
-    right: 15px;
-  }
-
-  .chatbot-icon-btn {
-    width: 52px;
-    height: 52px;
-  }
-
-  .chatbot-icon {
-    width: 42px;
-    height: 42px;
-  }
-
-  .chatbot-modal {
-    width: 98vw;
-    height: 90vh;
-    border-radius: 8px;
-  }
-
-  .chatbot-header {
-    padding: 15px;
-  }
-
-  .chatbot-header h2 {
-    font-size: 14px;
-  }
-
-  .close-btn {
-    font-size: 20px;
-  }
-}
-
-/* Landscape Mode */
-@media (max-height: 600px) and (orientation: landscape) {
-  .chatbot-modal {
-    height: 95vh;
-  }
-}
 </style>
