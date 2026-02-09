@@ -33,40 +33,64 @@ export default {
   name: 'ChatBot',
   data() {
     return {
-      avartar: this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || '',
-      name: this.$store?.state?.EmpName || 'Guest',
+      isLoaded: false
     }
   },
-  methods: {
-    openChatbot() {
-       const win = document.getElementById('dify-chatbot-bubble-window')
-        if (win) { 
-          const isHidden = win.style.display === 'none' 
-          win.style.display = isHidden ? 'block' : 'none' } 
-          this.loadChatbot()
-          },
-    
-    
+
+  computed: {
+    avatar() {
+      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || ''
+    },
+    name() {
+      return this.$store.state.EmpName || 'Guest'
+    }
   },
-  mounted() { 
-      window.difyChatbotConfig = 
-      { 
-        token: 'RQOr94OHdTRHpgce', 
-        inputs: {},
+
+  watch: {
+    name(newVal) {
+      if (newVal && !this.isLoaded) {
+        this.initDify()
+      }
+    }
+  },
+
+  mounted() {
+    // phòng trường hợp state đã có sẵn
+    if (this.name && !this.isLoaded) {
+      this.initDify()
+    }
+  },
+
+  methods: {
+    initDify() {
+      this.isLoaded = true
+
+      window.difyChatbotConfig = {
+        token: 'RQOr94OHdTRHpgce',
         userVariables: {
           name: this.name,
-          //avatar_url: this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || '',
-          avatar_url:this.avartar
-        },
-        } 
-      const script = document.createElement('script')
-       script.src = 'https://udify.app/embed.min.js' 
-       script.defer = true 
-       script.id = 'RQOr94OHdTRHpgce' 
-       document.body.appendChild(script) 
-       }
+          avatar_url: this.avatar
+        }
+      }
 
+      if (!document.getElementById('RQOr94OHdTRHpgce')) {
+        const script = document.createElement('script')
+        script.src = 'https://udify.app/embed.min.js'
+        script.id = 'RQOr94OHdTRHpgce'
+        script.defer = true
+        document.body.appendChild(script)
+      }
+    },
+
+    openChatbot() {
+      const win = document.getElementById('dify-chatbot-bubble-window')
+      if (win) {
+        win.style.display = win.style.display === 'none' ? 'block' : 'block'
+      }
+    }
+  }
 }
+
 
 
 </script>
@@ -90,6 +114,10 @@ export default {
     width: 95vw !important;
     height: 90vh !important;
     right: 2.5vw !important;
+  }
+  .chatbot-icon-btn{
+    width: 50px;
+    height: 50px;
   }
 }
 .chatbot-container {
