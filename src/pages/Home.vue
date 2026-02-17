@@ -50,7 +50,7 @@
   </v-col>
 </v-row>
 
-<div class="day-tabs">
+<!-- <div class="day-tabs">
       <v-btn
         v-for="day in days"
         :key="day.value"
@@ -60,27 +60,23 @@
       >
         {{ day.label }}
       </v-btn>
-    </div>
+    </div> -->
 <v-divider :content-offset="[12, 2.5]" opacity=".7">* * *</v-divider>
 <v-slide-group
   show-arrows="desktop"
   class="trending-track"
-  v-if="allMovies.length"
+  v-if="earlyMovies.length"
 >
   <v-slide-group-item
-    v-for="(item, index) in allMovies"
+    v-for="(item, index) in earlyMovies"
     :key="`${item._type}-${index}`"
     class="trending-item"
   >
-    <router-link
-      :to="{ name: 'Movies', params: { slug: item.permalink.split('/').pop() } }"
-      class="trending-link"
-      
-    >
+    
       <v-card class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="item.thumbnail"
+          :src="'https://hoathinh3d.vn'+item.thumbnail"
           aspect-ratio="9/16"
           cover
           eager
@@ -94,8 +90,9 @@
               {{ item.early_screening_time }}
             </template>
             <template v-else>
-              ⭐
+              {{ item.rating }} ⭐
             </template>
+            
           </div>
 
           <template #placeholder>
@@ -107,17 +104,14 @@
 
         <!-- INFO -->
         <div class="trending-info">
-          <div v-if="item._type === 'early'" class="trending-number">
-            {{ item._index + 1 }}
-          </div>
-
+          
           <div class="trending-details">
             <div class="trending-title">
               {{ item.title }}
               
             </div>
             <div class="trending-original">
-              📺 Tập {{ item.latest_episode }}
+              📺 Tập {{ item.current_episode }}
             </div>
           </div>
           <v-tooltip
@@ -128,7 +122,6 @@
         </div>
         
       </v-card>
-    </router-link>
   </v-slide-group-item>
 </v-slide-group>
 
@@ -498,9 +491,7 @@ export default {
     }
   },
   methods: {
-    goMovies(item){
-      this.$store.commit("imageThumbnail",item.thumbnail)
-    },
+    
     changeDay(day) {
       this.daily = day;
       this.ListNewUpdate();
@@ -576,12 +567,23 @@ export default {
 
       this.$refs.sectionRefs.forEach(el => el && observer.observe(el));
     },
+    // async ListNewUpdate(){
+    //   NewUpdate(`?day=${this.daily}`,(dat)=>{
+    //     console.log(dat)
+    //     if(dat.success == true){
+    //         this.earlyMovies = dat.early_movies
+    //         this.regular_movies = dat.regular_movies
+
+    //     }
+    //   }, (err)=>{
+    //     console.log(err)
+    //   })
+    // },
     async ListNewUpdate(){
-      NewUpdate(`?day=${this.daily}`,(dat)=>{
+      NewUpdate(`?action=getTrending`,(dat)=>{
         console.log(dat)
         if(dat.success == true){
-            this.earlyMovies = dat.early_movies
-            this.regular_movies = dat.regular_movies
+            this.earlyMovies = dat.movies
 
         }
       }, (err)=>{
@@ -702,6 +704,15 @@ export default {
         
       
     },
+    goMovies(url) {
+      console.log(url)
+      var slug = url.slug
+      this.$store.commit("imageThumbnail","https://hoathinh3d.vn"+url.thumbnail)
+      this.$router.push({
+        name : 'Movies',
+        params: {slug}
+      })
+    },
     // Chuan SEO
     updateMetaTags(seo) {
       document.title = seo.titleHead || "Phim hay";
@@ -751,20 +762,20 @@ export default {
     
   },
   computed: {
-  allMovies() {
-    return [
-      ...this.earlyMovies.map((m, i) => ({
-        ...m,
-        _type: 'early',
-        _index: i,
-      })),
-      ...this.regular_movies.map((m, i) => ({
-        ...m,
-        _type: 'regular',
-        _index: i,
-      })),
-    ]
-  },
+  // allMovies() {
+  //   return [
+  //     ...this.earlyMovies.map((m, i) => ({
+  //       ...m,
+  //       _type: 'early',
+  //       _index: i,
+  //     })),
+  //     ...this.regular_movies.map((m, i) => ({
+  //       ...m,
+  //       _type: 'regular',
+  //       _index: i,
+  //     })),
+  //   ]
+  // },
 }
 };
 </script>
