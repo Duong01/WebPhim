@@ -76,7 +76,7 @@
       <v-card class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="'https://hoathinh3d.vn'+item.thumbnail"
+          :src="'https://hoathinh3d.vn'+item.cover_image"
           aspect-ratio="9/16"
           cover
           eager
@@ -706,7 +706,7 @@ export default {
     goMovies(url) {
       console.log(url)
       var slug = url.slug
-      this.$store.commit("imageThumbnail","https://hoathinh3d.vn"+url.thumbnail)
+      this.$store.commit("imageThumbnail","https://hoathinh3d.vn"+url.cover_image)
       this.$router.push({
         name : 'Movies',
         params: {slug}
