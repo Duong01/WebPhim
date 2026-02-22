@@ -33,6 +33,11 @@ const routes = [
     },
   },
   {
+    path: '/chatbot',
+    name: 'ChatbotFull',
+    component: () => import('@/components/ChatbotFull.vue')
+  },
+  {
     path: "",
     name: "Layout",
     redirect: "/home",

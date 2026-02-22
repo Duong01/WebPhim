@@ -9,7 +9,7 @@
       <v-row no-gutters class="align-center mb-2">
         <v-col cols="12">
           <h1 class="category-title d-flex align-center">
-            <v-icon size="20" color="#ffcc00" class="mr-2"
+            <v-icon size="20" class="mr-2"
               >mdi-filmstrip</v-icon
             >
             {{$t('Bạn muốn xem gì?')}}
@@ -42,7 +42,7 @@
 <v-row no-gutters class="align-center mt-6 mb-2">
   <v-col cols="12">
     <h1 class="category-title d-flex align-center">
-      <v-icon size="20" color="#ffcc00" class="mr-2">
+      <v-icon size="20" class="mr-2">
         mdi-update
       </v-icon>
       {{ $t('Phim mới cập nhật') }}
@@ -141,7 +141,7 @@
             <v-row class="category-header" align="center" no-gutters>
               <v-col cols="auto">
                 <h1 class="category-title">
-                  <v-icon size="20" color="#ffcc00" class="mr-1"
+                  <v-icon size="20"  class="mr-1"
                     >mdi-filmstrip</v-icon
                   >
                   {{ section.title }}
@@ -253,7 +253,6 @@
                         <template #placeholder>
                           <div class="d-flex align-center justify-center fill-height">
                             <v-progress-circular
-                              color="blue-lighten-3"
                               :width="5"
                               indeterminate
                             ></v-progress-circular>
@@ -807,7 +806,6 @@ export default {
 .movie-title {
   font-size: 14px;
   font-weight: 600;
-  color: white;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -875,7 +873,6 @@ a {
   font-size: 14px;
   font-weight: bold;
   line-height: 1.2;
-  color: white;
   margin-top: 10px;
   text-overflow: ellipsis;
   white-space: normal;
@@ -1152,7 +1149,6 @@ a {
 .trending-title {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -1263,6 +1259,7 @@ a {
 }
 
 .ad-banner-content {
+  color: #fff;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -1272,7 +1269,6 @@ a {
 }
 
 .ad-banner-icon {
-  color: white !important;
   flex-shrink: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   animation: float 3s ease-in-out infinite;
@@ -1284,8 +1280,8 @@ a {
 }
 
 .ad-banner-text {
+  color: #fff;
   flex: 1;
-  color: white;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -1305,7 +1301,6 @@ a {
 }
 
 .ad-banner-arrow {
-  color: white !important;
   flex-shrink: 0;
   opacity: 0.8;
   transition: transform 0.3s ease;

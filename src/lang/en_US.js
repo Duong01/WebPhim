@@ -181,5 +181,9 @@ export default
   "Năm ↓": "Year ↓",
   "Thời gian cập nhật": "Update Time",
   "Vui lòng đăng nhập để sử dụng chức năng này": "Please log in to use this feature",
-  "Tài khoản của bạn đã hết hạn đăng nhập": "Your login session has expired"
+  "Tài khoản của bạn đã hết hạn đăng nhập": "Your login session has expired",
+  "Click để xem phim": "Click to watch",
+  "Tập trước": "Previous episode",
+  "Tập tiếp": "Next episode",
+  "Xem trailer chính thức": "Watch official trailer",
 }

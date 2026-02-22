@@ -1645,7 +1645,7 @@ export default {
       this.showControlsTemporarily();
     },
     showControlsTemporarily() {
-      this.showControls = true;
+          this.showControls = true;
       this.clearHideControlsTimer();
       this.startHideControlsTimer();
     },
@@ -1655,7 +1655,7 @@ export default {
       if (this.isPlaying) {
         this.hideControlsTimeout = setTimeout(() => {
           this.showControls = false;
-        }, 3000);
+        }, 1500);
       }
     },
     clearHideControlsTimer() {

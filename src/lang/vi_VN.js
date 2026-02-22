@@ -181,7 +181,9 @@ export default
   "Năm ↓": "Năm ↓",
   "Thời gian cập nhật": "Thời gian cập nhật",
   "Vui lòng đăng nhập để sử dụng chức năng này": "Vui lòng đăng nhập để sử dụng chức năng này",
-  "Tài khoản của bạn đã hết hạn đăng nhập": "Tài khoản của bạn đã hết hạn đăng nhập"
-
-
+  "Tài khoản của bạn đã hết hạn đăng nhập": "Tài khoản của bạn đã hết hạn đăng nhập",
+  "Click để xem phim": "Click để xem phim",
+  "Tập trước": "Tập trước",
+  "Tập tiếp": "Tập tiếp",
+  "Xem trailer chính thức": "Xem trailer chính thức",
 }

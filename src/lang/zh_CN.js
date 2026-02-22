@@ -181,6 +181,10 @@ export default
   "Năm ↓": "年份 ↓",
   "Thời gian cập nhật": "更新时间",
   "Vui lòng đăng nhập để sử dụng chức năng này": "请登录以使用此功能",
-  "Tài khoản của bạn đã hết hạn đăng nhập": "您的账号登录已过期"
+  "Tài khoản của bạn đã hết hạn đăng nhập": "您的账号登录已过期",
+  "Click để xem phim": "点击观看",
+  "Tập trước": "上一集",
+  "Tập tiếp": "下一集",
+  "Xem trailer chính thức": "观看官方预告片",
 
 }

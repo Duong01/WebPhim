@@ -1,18 +1,22 @@
 <template>
   <div class="chatbot-container">
     <!-- Chatbot Icon Button -->
-    <button class="chatbot-icon-btn" @click="openChatbot">
-      <img src="@/assets/IT AI.gif" class="chatbot-icon" />
+    <button class="chatbot-icon-btn" @click="toggleChatbot" :title="$t('common.chat', 'Chat with us')">
+      <img src="@/assets/IT AI.gif" alt="Chatbot" class="chatbot-icon" />
     </button>
+
     <!-- Chatbot Modal/Dialog -->
-    <!-- <transition name="fade">
+    <transition name="fade">
       <div v-if="isChatbotOpen" class="chatbot-overlay" @click="closeChatbot">
         <div class="chatbot-modal" @click.stop>
+          <!-- Header -->
           <div class="chatbot-header">
-            <h4>{{ $t('common.assistant', 'MOVIES AI') }}</h4>
-            <button class="close-btn" @click="closeChatbot">✕</button>
+            <h4>MOVIES AI</h4>
+            <v-icon  @click="openFullscreen" class="fullscreen-btn">mdi-fullscreen</v-icon>
+            <v-icon  @click="closeChatbot" class="close-btn">mdi-close</v-icon>
           </div>
 
+          <!-- Chatbot iframe -->
           <div class="chatbot-content">
             <iframe
               src="https://udify.app/chatbot/RQOr94OHdTRHpgce"
@@ -24,7 +28,7 @@
           </div>
         </div>
       </div>
-    </transition> -->
+    </transition>
   </div>
 </template>
 
@@ -33,72 +37,37 @@ export default {
   name: 'ChatBot',
   data() {
     return {
-      isLoaded: false
+      isChatbotOpen: false
     }
   },
-
-  computed: {
-    avatar() {
-      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || ''
-    },
-    name() {
-      return this.$store.state.EmpName || 'Guest'
-    }
-  },
-
-  watch: {
-    name(newVal) {
-      if (newVal && !this.isLoaded) {
-        this.initDify()
-      }
-    }
-  },
-
-  mounted() {
-    // phòng trường hợp state đã có sẵn
-    if (this.name && !this.isLoaded) {
-      this.initDify()
-    }
-  },
-
   methods: {
-    initDify() {
-      this.isLoaded = true
-
-      window.difyChatbotConfig = {
-        token: 'RQOr94OHdTRHpgce',
-        userVariables: {
-          name: this.name,
-          avatar_url: this.avatar
-        }
-      }
-
-      if (!document.getElementById('RQOr94OHdTRHpgce')) {
-        const script = document.createElement('script')
-        script.src = 'https://udify.app/embed.min.js'
-        script.id = 'RQOr94OHdTRHpgce'
-        script.defer = true
-        document.body.appendChild(script)
+    toggleChatbot() {
+      this.isChatbotOpen = !this.isChatbotOpen;
+      // Ngăn scroll khi modal mở
+      if (this.isChatbotOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
       }
     },
+    closeChatbot() {
+      this.isChatbotOpen = false;
+      document.body.style.overflow = 'auto';
+    },
+    openFullscreen() {
+  this.closeChatbot()
 
-    openChatbot() {
-      const win = document.getElementById('dify-chatbot-bubble-window')
-      if (win) {
-        win.style.display = win.style.display === 'none' ? 'block' : 'block'
-      }
-    }
+  // nếu dùng vue router
+  this.$router.push('/chatbot')
+}
+  },
+  beforeUnmount() {
+    document.body.style.overflow = 'auto';
   }
 }
-
-
-
 </script>
 
 <style>
-#dify-chatbot-bubble-button {
-  display: none !important;
-}
 #dify-chatbot-bubble-window {
   position: fixed !important;
   width: 380px !important;
@@ -108,27 +77,13 @@ export default {
   border-radius: 14px !important;
 
 }
-@media (max-width: 480px) {
-  #dify-chatbot-bubble-window {
-    position: fixed;
-    width: 95vw !important;
-    height: 90vh !important;
-    right: 2.5vw !important;
-  }
-  .chatbot-icon-btn{
-    width: 50px;
-    height: 50px;
-  }
-}
 .chatbot-container {
   position: fixed;
   bottom: 50px;
   right: 15px;
   z-index: 1000;
 }
-body {
-  overflow: hidden;
-}
+
 /* Chatbot Icon Button - Responsive */
 .chatbot-icon-btn {
   width: 60px;
@@ -160,23 +115,172 @@ body {
   object-fit: contain;
 }
 
-/* Bubble bình thường */
-#dify-chatbot-bubble-window {
-  position: fixed !important;
-  width: 380px !important;
-  height: 600px !important;
-  bottom: 90px !important;
-  right: 20px !important;
-  border-radius: 14px !important;
-  z-index: 9999 !important;
+/* Modal Overlay */
+.chatbot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 30px;
+  z-index: 2000;
 }
 
-/* ===== FULLSCREEN ===== */
-#dify-chatbot-bubble-window.fullscreen {
-  inset: 0 !important;
-  width: 100vw !important;
-  height: 100dvh !important;
-  border-radius: 0 !important;
+/* Modal Container */
+.chatbot-modal {
+  display: flex;
+  flex-direction: column;
+  background: black;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: 90vw;
+  max-width: 450px;
+  height: 80vh;
+  max-height: 700px;
+  overflow: hidden;
 }
 
+/* Modal Header */
+.chatbot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.chatbot-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.close-btn,
+.fullscreen-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.close-btn:hover,
+.fullscreen-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Chatbot Content */
+.chatbot-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.chatbot-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Animations */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Mobile/Tablet Responsive */
+@media (max-width: 768px) {
+  .chatbot-overlay {
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .chatbot-container {
+    bottom: 70px;
+    right: 15px;
+  }
+
+  .chatbot-icon-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .chatbot-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .chatbot-modal {
+    width: 95vw;
+    max-width: none;
+    height: 85vh;
+    max-height: none;
+  }
+
+  .chatbot-header h4 {
+    font-size: 14px;
+  }
+}
+
+/* Small Devices */
+@media (max-width: 480px) {
+  .chatbot-container {
+    bottom: 70px;
+    right: 15px;
+  }
+
+  .chatbot-icon-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .chatbot-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .chatbot-modal {
+    width: 98vw;
+    height: 90vh;
+    border-radius: 8px;
+  }
+
+  .chatbot-header {
+    padding: 10px;
+  }
+
+  .chatbot-header h4 {
+    font-size: 12px;
+  }
+
+  .close-btn,
+  .fullscreen-btn {
+    font-size: 16px;
+  }
+}
+
+/* Landscape Mode */
+@media (max-height: 600px) and (orientation: landscape) {
+  .chatbot-modal {
+    height: 95vh;
+  }
+}
 </style>

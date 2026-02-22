@@ -101,7 +101,6 @@ beforeUnmount() {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #fff;
  
 }
 #dify-chatbot-bubble-button {
