@@ -1115,6 +1115,7 @@ export default {
               PostMoviesFavorite(
                 this.movieFavorite,
                 (dat) => {
+                  console.log(dat);
                   if (dat.data.status == "success") {
                     alert("🎬 " + dat.data.message);
                   } else {
