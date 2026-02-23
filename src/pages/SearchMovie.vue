@@ -145,15 +145,15 @@
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
-                  :src="getOptimizedImage(movie.thumb_url)"
-                  :lazy-src="getOptimizedImage(movie.thumb_url)"
+                  :src="getOptimizedImage(movie.poster_url)"
+                  :lazy-src="getOptimizedImage(movie.poster_url)"
                   :alt="movie.name"
-                  spect-ratio="16/9"
                   class="movie-image"
-                  width="100%"
-                  eight="300"
+                  aspect-ratio="3/4"
+                  contain
+                  max-height="420"
                   transition="fade-transition"
-                  cover
+                  
                 >
                 <template #default>
                   <v-card-subtitle class="text-left" style="margin-top: 5px;color: white;">
@@ -596,9 +596,9 @@ export default {
   opacity: 1;
 }
 .movie-image {
-  width: 440px;
-  height: 250px;
-  object-fit: cover;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   border-radius: 8px 0 0 8px;
   transition: opacity 0.5s ease-in;
   opacity: 1;
