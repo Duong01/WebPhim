@@ -28,7 +28,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log("API ERROR: ", error)
+    console.log("API ERROR: ", error.response)
     if (error.status === 401) {
         alert(this.$t("Tài khoản của bạn đã hết hạn đăng nhập"))
         localStorage.removeItem("token");
