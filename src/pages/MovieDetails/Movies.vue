@@ -20,8 +20,8 @@
             <!-- Banner Image -->
             <v-img
               v-else
-              :src="getOptimizedImage(movie.thumb_url)"
-              :lazy-src="getOptimizedImage(movie.thumb_url)"
+              :src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
+              :lazy-src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
               :alt="`Poster phim ${movie.name}`"
               class="banner-img"
               cover
@@ -738,7 +738,7 @@ export default {
       if (this.movie?.servers?.length) {
         this.currentServer = this.movie.servers[0].server_name;
       }
-
+      this.addSchema();
       //this.playVideo(this.movie.videoUrl);
 
       this.ListMovieByCate();
@@ -751,6 +751,21 @@ export default {
     }
   },
   methods: {
+
+    addSchema(){
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.text = JSON.stringify({
+        "@content": "https://schema.org",
+        "@type": "Movies",
+        name: this.movie.title + " Tập"+ this.movie.page,
+        image: this.movie.thumb_url,
+        description: this.movie.description,
+        embedUrl: window.location.href
+      });
+      document.head.appendChild(script);
+    },
+
     timeAgo(timestamp) {
       const time = new Date(timestamp).getTime();
       const now = Date.now();

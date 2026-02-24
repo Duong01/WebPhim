@@ -2,8 +2,8 @@
 <v-fade-transition appear>
     <div class="page-enter">
       <div style="width: 100%">
-    <keep-alive include="CarouselPage">
-      <CarouselPage />
+    <keep-alive>
+      <CarouselPage v-once />
     </keep-alive>
     <div style="overflow-x: auto; white-space: nowrap; margin-top: 10px;">
       <v-row no-gutters class="align-center mb-2">
@@ -73,13 +73,13 @@
     class="trending-item"
   >
     
-      <v-card class="trending-card" elevation="0" @click="goMovies(item)">
+      <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
           :src="'https://hoathinh3d.vn'+item.cover_image"
           aspect-ratio="9/16"
           cover
-          eager
+          loading="lazy"
           class="trending-poster"
           transition="fade-transition"
           referrerpolicy="no-referrer"
@@ -192,7 +192,7 @@
                   >
                     <v-card
                       class="mx-auto  movie-card"
-                      
+                      role="button"
                     >
                       <v-img
                         :src="getOptimizedImage(item.thumb_url, section.id)"
@@ -203,7 +203,6 @@
                         class="movie-img"
                         height="250"
                         loading="lazy"
-                        eager="false"
                         aspect-ratio="2/3"
                         cover
                       >
@@ -261,7 +260,7 @@
                       </v-img>
 
                       <div>
-                          <v-card-title class="movie-title text-left">{{ item.name }}</v-card-title>
+                          <v-card-title  class="movie-title text-left">{{ item.name }}</v-card-title>
 
                           <v-card-text class="movie-info text-left">
                               <!-- <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
@@ -483,6 +482,11 @@ export default {
       this.$nextTick(() => {
         this.observeSections();
       });
+
+      const link = document.createElement("link");
+      link.rel = "canonical";
+      link.href = window.location.href;
+      document.head.appendChild(link);
     }catch(err){
       console.log(err)
     }finally {
@@ -580,7 +584,6 @@ export default {
     // },
     async ListNewUpdate(){
       NewUpdate(`?action=getTrending`,(dat)=>{
-        console.log(dat)
         if(dat.success == true){
             this.earlyMovies = dat.movies
 
@@ -597,12 +600,11 @@ export default {
         try{
             const response = await  fetch(sectionId);
             const result = await response.json();
-            console.log(result);
 
               if (result.status === "success" || result.status == true) {
                 this.link = "link1";
                 section.listMovie = result.items.slice(0,12);
-
+                this.addStructuredData(section.listMovie);
                 // this.isLoading = false;
                 section.loading = false;
                 section.loaded = true;
@@ -648,7 +650,6 @@ export default {
           try{
             const response = await  fetch(sectionId);
             const result = await response.json();
-            console.log(result);
 
               if (result.status === "success" || result.status == true) {
                 this.link = "link1";
@@ -657,6 +658,7 @@ export default {
                 if (result.data.seoOnPage) {
                   this.updateMetaTags(result.data.seoOnPage);
                 }
+                this.addStructuredData(section.listMovie);
                 // this.isLoading = false;
                 section.loading = false;
                 section.loaded = true;
@@ -686,6 +688,27 @@ export default {
         
       }
     },
+    addStructuredData(movies) {
+      const oldScript = document.getElementById("movie-schema");
+      if (oldScript) oldScript.remove(); // tránh trùng
+
+      const script = document.createElement("script");
+      script.id = "movie-schema";
+      script.type = "application/ld+json";
+
+      script.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: movies.slice(0, 10).map((m, i) => ({
+          "@type": "Movie",
+          position: i + 1,
+          name: m.name,
+          image: m.thumb_url
+        }))
+      });
+
+      document.head.appendChild(script);
+    },
     getOptimizedImage(imagePath) {
       if(imagePath.includes("https://phimimg.com/upload")){
         return `${
@@ -704,7 +727,6 @@ export default {
       
     },
     goMovies(url) {
-      console.log(url)
       var slug = url.slug
       this.$store.commit("imageThumbnail","https://hoathinh3d.vn"+url.cover_image)
       this.$router.push({
@@ -925,7 +947,9 @@ a {
   display: block;
   transition: transform 0.35s ease;
 }
-
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
 /* zoom nhẹ khi hover card */
 .movie-card:hover .movie-img img,
 .movie-card:hover .movie-img .v-image__image {

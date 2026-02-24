@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "@/router";
 
 const api = axios.create({
   baseURL: "/api",
@@ -35,7 +36,10 @@ api.interceptors.response.use(
         localStorage.removeItem("user");
         localStorage.removeItem("name");
         localStorage.removeItem("nameShow");
-      window.location.href = "/login";
+        router.push({
+          path: "/login",
+          query: { redirect: router.currentRoute.value.fullPath }
+        });
     }
     return Promise.reject(error);
   }

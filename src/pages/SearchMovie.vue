@@ -52,8 +52,8 @@
                       width="auto"
                     >
                       <v-img
-                        :src="getOptimizedImage(movie.thumb_url)"
-                        :lazy-src="getOptimizedImage(movie.thumb_url)"
+                        :src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.poster_url) : getOptimizedImage(movie.thumb_url)"
+                        :lazy-src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.poster_url) : getOptimizedImage(movie.thumb_url)"
                         :alt="movie.name"
                         spect-ratio="16/9"
                         class="movie-image"
@@ -145,8 +145,8 @@
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
+                  :src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
+                  :lazy-src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
                   :alt="movie.name"
                   class="movie-image"
                   aspect-ratio="3/4"
@@ -488,7 +488,13 @@ export default {
       this.movieFavorite.IDMovies = movie._id
       this.movieFavorite.slug = movie.slug
       this.movieFavorite.currentPage = movie.episode_current
-      this.movieFavorite.UrlMovies = movie.thumb_url
+      if (this.link == ""){
+        this.movieFavorite.UrlMovies = 'https://img.ophim.live/uploads/movies/' + movie.thumb_url
+
+      }
+      else{
+        this.movieFavorite.UrlMovies = 'https://phimimg.com/'+movie.poster_url
+      }
       this.movieFavorite.origin_name = movie.origin_name
       this.movieFavorite.name = movie.name
       this.movieFavorite.year = movie.year

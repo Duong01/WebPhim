@@ -28,7 +28,9 @@ import "intersection-observer"
 import ResizeObserver from "resize-observer-polyfill"
 import vue3GoogleLogin from 'vue3-google-login'
 
+
 import { CheckSession } from "@/model/api";
+import { createHead } from '@vueuse/head'
 
 const vuetify = createVuetify({
   components,
@@ -118,6 +120,7 @@ async function bootstrap() {
   app.use(vue3GoogleLogin,{
     clientId: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com"
   })
+  app.use(createHead)
   app.mount('#app');
 }
 

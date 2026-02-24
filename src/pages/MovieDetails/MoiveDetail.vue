@@ -720,6 +720,7 @@ import {
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
+import { useHead } from '@vueuse/head';
 export default {
   name: "MovieDetail",
   data() {
@@ -986,7 +987,7 @@ export default {
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
       }, 5000);
-
+      this.updateMeta();
       // Keyboard shortcuts
       window.addEventListener('keydown', this.onKeyDown);
       // Fullscreen change listeners (update isFullscreen state across browsers)
@@ -1016,6 +1017,18 @@ export default {
     }
   },
   methods: {
+    updateMeta(){
+      useHead({
+        title: this.movie.title+ " Tập "+ this.movie.page + "Vietsub HD",
+        meta:[
+          {name: "description", content: "Xem"+this.movie.title+ " tập "+ this.movie.page + " viétub, chất lượng cao"},
+          {property: "og:title", content: this.movie.title},
+          {property: "og:description", content: this.movie.description},
+          {property: "og:image", content: this.movie.thumb_url},
+          {property: "og:url", content: window.location.href},
+        ],
+      })
+    },
     // Lưu thời gian xem vào localStorage
     saveWatchTime() {
       const video = this.$refs.videoPlayer;
