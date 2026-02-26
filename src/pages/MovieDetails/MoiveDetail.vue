@@ -457,7 +457,8 @@
                   :key="index"
                   class="d-flex align-start mb-5"
                 >
-                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="avatar" v-if="avatar != ''"></v-avatar>
+                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" v-else>
                     <v-icon color="white">mdi-account</v-icon>
                   </v-avatar>
                   <div class="flex-grow-1">
@@ -2138,7 +2139,9 @@ export default {
     idAccount() {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
-
+    avatar(){
+      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || "";
+    },
     youtubeEmbedUrl() {
       if (!this.movie.trailer_url) return "";
 
