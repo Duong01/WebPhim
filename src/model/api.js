@@ -54,7 +54,8 @@ let urlHomeUpdateNew = "https://hoathinh3d.vn/api/movies.php"
 
 //let urlApi = "http://apiwebphim.somee.com/api"
 
-export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
+//export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
+export const urlImage = "https://img.ophim.live/uploads/movies/"
 export const urlImage1 = "https://phimapi.com/image.php?url="
 
  export const ListmovieNew= (params, success, error) => http1.GetNew(`${URL}`, params, success, error)

@@ -186,5 +186,6 @@ export default
   "Tập trước": "上一集",
   "Tập tiếp": "下一集",
   "Xem trailer chính thức": "观看官方预告片",
+  "Chiếu rạp": "电影院上映"
 
 }

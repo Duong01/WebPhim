@@ -23,6 +23,7 @@
               clearable
               variant="outlined"
               density="compact"
+              @keyup.enter="applyFilters"
             />
           </v-col>
 
@@ -37,6 +38,7 @@
               clearable
               variant="outlined"
               density="compact"
+              @keyup.enter="applyFilters"
             />
           </v-col>
 
@@ -49,6 +51,7 @@
               clearable
               variant="outlined"
               density="compact"
+              @keyup.enter="applyFilters"
             />
           </v-col>
 
@@ -63,6 +66,7 @@
               clearable
               variant="outlined"
               density="compact"
+              @keyup.enter="applyFilters"
             />
           </v-col>
 
@@ -76,10 +80,22 @@
               :label="$t('Sắp xếp')"
               variant="outlined"
               density="compact"
+              @keyup.enter="applyFilters"
             />
           </v-col>
           
-
+          <v-col cols="12" sm="12" md="4" class="p-1">
+            <v-text-field
+              v-model="filters.keyword"
+              :label="$t('Tìm tên phim...')"
+              prepend-inner-icon="mdi-magnify"
+              variant="outlined"
+              density="compact"
+              clearable
+              hide-details
+              @keyup.enter="applyFilters"
+            />
+          </v-col>
           <!-- 🧭 Nút Lọc -->
           <v-col cols="12"  class="p-0">
             <v-btn
@@ -108,6 +124,7 @@ export default {
   data() {
     return {
       filters: {
+        keyword:"",
         year: "",
         lang: "",
         category: "",

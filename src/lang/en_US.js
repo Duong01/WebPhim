@@ -186,4 +186,5 @@ export default
   "Tập trước": "Previous episode",
   "Tập tiếp": "Next episode",
   "Xem trailer chính thức": "Watch official trailer",
+  "Chiếu rạp": "Cinema release",
 }

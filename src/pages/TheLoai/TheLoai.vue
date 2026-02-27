@@ -79,7 +79,30 @@
                               }}
                             </v-icon>
                           </v-btn> -->
+<div class="badge-container">
+                          <!-- hiển thị bên trái -->
+                          <v-btn
+                            size="small"
+                            variant="flat"
+                            class="badge-top-left"
+                          >
+                            {{Number(movie.tmdb.vote_average).toFixed(1)}}
+                            <v-icon
+                            icon="mdi-star"
+                            end
+                            ></v-icon>
+                          </v-btn>
 
+                          <!-- hiển thị bên phải -->
+                          <v-btn
+                            icon
+                            size="small"
+                            variant="flat"
+                            class="badge-top-right"
+                          >
+                            {{movie.quality}}
+                          </v-btn>
+                           </div>
                           <div class="movie-overlay" aria-hidden="true"></div>
 
                           <div class="movie-play" aria-hidden="true">
@@ -248,6 +271,7 @@ export default {
       MessageErr: '',
       
       filters: {
+        keyword: "",
         year: "",
         lang: "",
         category: "",
@@ -283,7 +307,7 @@ export default {
       }
       this.loading = true;
       this.movies = [];
-      Categoris1(`${path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
+      Categoris1(`${path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
         if (result.status === 'success' || result.status === true) {
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
@@ -549,5 +573,31 @@ export default {
 .movie-title{
   font-size: 14px;
 }
+.badge-top-left,
+.badge-top-right,
+.badge-bottom-left,
+.badge-bottom-right {
+  position: absolute !important;
+  background: rgba(105, 105, 105, 0.6) !important;
+  color: orange !important;
+  font-size: 12px !important;
+  padding: 2px 10px !important;
+  border-radius: 10px;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  font-weight: 600 !important;
+}
 
+/* 4 góc */
+.badge-top-left {
+  top: 6px;
+  left: 6px;
+}
+
+.badge-top-right {
+  top: 6px;
+  right: 6px;
+  background-color: rgb(204, 35, 35) !important;
+}
 </style>

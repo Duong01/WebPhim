@@ -8,7 +8,7 @@
         <v-divider class="my-4" />
       </v-col>
     </v-row>
-
+    <FilterMovie @filter-changed="onFilterChanged" />
     <v-row justify="center">
       <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -324,6 +324,7 @@
 
 <script>
 import { Search, Search1, urlImage, urlImage1,PostMoviesFavorite } from "@/model/api";
+import FilterMovie from "@/pages/FilterMovie.vue"
 //import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "SearchMovie",
@@ -351,8 +352,18 @@ export default {
         name: '',
         year: '',
         lang:''
-      }
+      },
+      filters: {
+        year: "",
+        lang: "",
+        category: "",
+        country: "",
+        sortOption: "modified.time"
+      },
     };
+  },
+  components:{
+    FilterMovie
   },
   watch: {
     "$route.query.keyword": {
@@ -373,6 +384,11 @@ export default {
     },
   },
   methods: {
+    onFilterChanged(newFilters) {
+      this.filters = { ...newFilters };
+      this.currentPage = 1;
+      this.SearchMovie(this.path);
+    },
     SearchMovie(query) {
       return new Promise((resolve,reject) => {
         const timer = setTimeout(() => {
@@ -533,7 +549,7 @@ export default {
 
     getOptimizedImage(imagePath) {
       if (this.link == "") {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+        return `${this.urlImage + encodeURIComponent(imagePath)}`;
       } else {
         return `${
           this.urlImage1 +

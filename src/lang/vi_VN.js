@@ -186,4 +186,5 @@ export default
   "Tập trước": "Tập trước",
   "Tập tiếp": "Tập tiếp",
   "Xem trailer chính thức": "Xem trailer chính thức",
+  "Chiếu rạp": "Chiếu rạp"
 }

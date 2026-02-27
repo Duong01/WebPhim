@@ -94,6 +94,16 @@ const routes = [
         },
       },
       {
+        path: "/phim-chieu-rap",
+        name: "PhimChieuRap",
+        component: () => import("@/pages/PhimChieuRap/PhimChieuRap.vue"),
+        meta: {
+            title: "Phim bộ hay nhất - Web Phim Online",
+            description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
+            keepAlive: true
+        },
+      },
+      {
         path: "search",
         name: "SearchMovie",
         component: () => import("@/pages/SearchMovie.vue"),

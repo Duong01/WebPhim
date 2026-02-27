@@ -3,12 +3,13 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-         {{$t('Danh sách phim:')}}  {{ titlePage }}
+          {{$t('Danh sách phim:')}} {{ titlePage }}
         </h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
     <FilterMovie @filter-changed="onFilterChanged" />
+
     <v-row justify="center">
       <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -22,7 +23,7 @@
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 
@@ -66,6 +67,7 @@
                         height="250"
                         width="100%"
                         cover
+                        loading="lazy"
                       >
                         <template #default>
                           <!-- <v-btn
@@ -84,7 +86,7 @@
                               }}
                             </v-icon>
                           </v-btn> -->
-<div class="badge-container">
+                            <div class="badge-container">
                           <!-- hiển thị bên trái -->
                           <v-btn
                             size="small"
@@ -164,7 +166,8 @@
                 </v-col>
               </v-row>
 
-        <!-- <router-link
+<!-- 
+        <router-link
           v-for="movie in movies"
           :key="movie.id"
           :to="{ name: 'Movies', params: { slug: movie.slug } }"
@@ -245,11 +248,10 @@
 </template>
 
 <script>
-import { urlImage1, ListMovieByCate1,ListMovieNew1 } from '@/model/api'
+import { urlImage, ListMovieByCateHome } from '@/model/api'
 import FilterMovie from "@/pages/FilterMovie.vue"
 export default {
-  name: 'PhimNew',
-  props: ['path'],
+  name: 'PhimChieuRap',
   data() {
     return {
       loading: true,
@@ -257,23 +259,22 @@ export default {
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
-      urlImage: urlImage1,
+      path: 'phim-chieu-rap',
+      urlImage: urlImage,
       titlePage: '',
-      link1: '',
       MessageErr: '',
 
       filters: {
-        keyword: "",
         year: "",
         lang: "",
         category: "",
         country: "",
-        sortOption: "year"
+        sortOption: "modified.time"
       },
     }
   },
   mounted() {
-    this.ListMovie(this.path)
+    this.ListMovie()
   },
   components:{
     FilterMovie
@@ -282,10 +283,9 @@ export default {
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
-      this.ListMovie(this.path);
+      this.ListMovie();
     },
-
-    ListMovie(path) {
+    ListMovie() {
       if(this.filters.year == null || this.filters.year == undefined){
         this.filters.year = ''
       }
@@ -300,15 +300,13 @@ export default {
       }
       this.loading = true;
       this.movies = [];
-      if(path.includes('phim-moi-cap-nhat')){
-        ListMovieNew1(`${path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
+      ListMovieByCateHome(`danh-sach/${this.path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=24`, (result) => {
         if (result.status === 'success' || result.status == true) {
-          this.movies = result.items
-          this.titlePage = "Phim mới cập nhật"
-          this.link1 = 'link1'
-          // if (result.data.seoOnPage) {
-          //       this.updateMetaTags(result.data.seoOnPage)
-          //     }
+          this.movies = result.data.items
+          this.titlePage = result.data.titlePage
+          if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
           this.loading = false
         }
         else{
@@ -320,36 +318,12 @@ export default {
         this.loading = false
           this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
       })
-      }
-      else{
-        ListMovieByCate1(`${path}?page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
-        if (result.status === 'success' || result.status == true) {
-          this.movies = result.data.items
-          this.titlePage = "Phim mới cập nhật"
-          // if (result.data.seoOnPage) {
-          //       this.updateMetaTags(result.data.seoOnPage)
-          //     }
-          this.loading = false
-        }
-      }, (err) => {
-        console.log(err)
-      })
-      }
-      
     },
     getOptimizedImage(imagePath) {
-      // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
-      if(this.link1 == 'link1'){
-        return `${this.urlImage + encodeURIComponent(imagePath)}`
-      }
-      else{
-      return `${this.urlImage + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`
-
-      }
-
+      return `${this.urlImage  + encodeURIComponent(imagePath)}`
     },
 
-      // return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+      //return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
 
     // Chuan SEO
     updateMetaTags(seo) {
@@ -391,12 +365,8 @@ export default {
   watch: {
     currentPage() {
       this.loading = true
-      this.ListMovie(this.path)
+      this.ListMovie()
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
-    path(newPath) {
-      this.loading = true
-      this.ListMovie(newPath)
     }
   }
 }
@@ -573,8 +543,6 @@ export default {
 }
 
 
-
-
 .movie-overlay {
   position: absolute;
   inset: 0;
@@ -634,4 +602,3 @@ export default {
   background-color: rgb(204, 35, 35) !important;
 }
 </style>
-

@@ -143,13 +143,15 @@
         <v-icon start size="18">mdi-calendar</v-icon>
           {{ $t("Lịch chiếu") }}
         </v-btn>
-        <!--<v-btn
+        <v-btn
           text
-          :to="{ path: '/favorite' }"
-          :class="{ 'text-green': $route.path === '/favorite' }"
+          :to="{ path: '/phim-chieu-rap' }"
+          :class="{ 'text-green': $route.path === '/phim-chieu-rap' }"
         >
-          {{ $t("Đã lưu") }}
-        </v-btn> -->
+        <v-icon start size="18">mdi-calendar</v-icon>
+          {{ $t("Chiếu rạp") }}
+        
+        </v-btn>
       </v-toolbar-items>
 
       <!-- Search + Language + Profile -->
@@ -480,6 +482,13 @@
           >
             <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Lịch chiếu") }}</v-list-item-title>
           </v-list-item>
+          <v-list-item
+            :to="{ path: '/phim-chieu-rap' }"
+            :class="{ 'text-green': $route.path === '/phim-chieu-rap' }"
+          >
+            <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Chiếu rạp") }}</v-list-item-title>
+          </v-list-item>
+          
         <!-- Theme (chuyển theme) -->
         <v-list-item @click="changeTheme">
           <v-list-item-icon>
