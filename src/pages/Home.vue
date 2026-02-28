@@ -76,7 +76,7 @@
       <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="'https://hoathinh3d.vn'+item.cover_image"
+          :src="'https://hoathinh3d.vn'+item.thumbnail"
           aspect-ratio="9/16"
           cover
           loading="lazy"
@@ -1110,7 +1110,7 @@ a {
 
 /* CARD */
 .trending-card {
-  width: 180px;
+  width: 250px;
   background: #111;
   border-radius: 14px;
   overflow: hidden;
@@ -1358,6 +1358,9 @@ a {
 }
 
 @media (max-width: 768px) {
+  .trending-card{
+    width: 180px;
+  }
   .ad-banner-container {
     display: flex;
     flex-wrap: nowrap;
