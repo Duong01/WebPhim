@@ -2,8 +2,9 @@
   <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
-        <router-view v-slot="{ Component, route }">
+        <router-view />
           <!-- Component cần cache -->
+        <!-- <router-view v-slot="{ Component, route }">
           <keep-alive>
             <component
               v-if="route.meta.keepAlive"
@@ -11,12 +12,12 @@
             />
           </keep-alive>
 
-          <!-- Component không cache -->
           <component
             v-if="!route.meta.keepAlive"
             :is="Component"
           />
-        </router-view>
+        </router-view> -->
+          <!-- Component không cache -->
 
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}

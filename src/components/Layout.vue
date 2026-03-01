@@ -13,7 +13,19 @@
 
     <div class="main">
       <div class="content">
-        <router-view />
+        
+        <router-view v-slot="{ Component, route }">
+          <transition name="fade-slide" mode="out-in">
+          <keep-alive>
+          
+            <component
+              v-if="route.meta.keepAlive"
+              :is="Component"
+              :key="route.name"
+            />
+          </keep-alive>
+          </transition>
+        </router-view>
       </div>
     </div>
     <hr/>
@@ -70,5 +82,18 @@ export default {
     width: 100%;
   }
 }
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.35s ease;
+}
 
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>
