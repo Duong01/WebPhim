@@ -457,7 +457,7 @@
                   :key="index"
                   class="d-flex align-start mb-5"
                 >
-                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="avatar" v-if="avatar != ''"></v-avatar>
+                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar" v-if="comment.Avartar != '' && comment.Avartar != null"></v-avatar>
                   <v-avatar size="44" class="me-3" color="blue-grey-darken-3" v-else>
                     <v-icon color="white">mdi-account</v-icon>
                   </v-avatar>
