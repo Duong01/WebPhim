@@ -141,7 +141,7 @@
             <v-row class="category-header" align="center" no-gutters>
               <v-col cols="auto">
                 <h1 class="category-title">
-                  <v-icon size="20"  class="mr-1"
+                  <v-icon size="20" color="orange-darken-2" class="mr-1"
                     >mdi-filmstrip</v-icon
                   >
                   {{ section.title }}
@@ -863,6 +863,9 @@ a {
   opacity: 0;
   transform: scale(0.95);
 }
+.v-img {
+  contain: content;
+}
 .v-img img {
   transition: opacity 0.5s ease-in-out;
 }
@@ -1442,6 +1445,17 @@ a {
   .ad-banner-title {
     font-size: 12px;
   }
+}
+.trending-track,
+.ad-banner-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS mượt hơn */
+}
+.movie-card,
+.trending-card,
+.ad-banner-card {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 </style>

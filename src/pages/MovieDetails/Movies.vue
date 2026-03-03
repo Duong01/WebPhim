@@ -717,7 +717,7 @@ export default {
 
   watch: {
     async slug(newSlug) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      //window.scrollTo({ top: 0, behavior: "smooth" });
       this.isLoading = true;
       await this.MoveInfor1(newSlug);
       this.isLoading = false;
