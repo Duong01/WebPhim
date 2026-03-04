@@ -191,92 +191,87 @@
                     
                   >
                     <v-card
-                      class="mx-auto  movie-card"
-                      role="button"
-                    >
-                      <v-img
-                        :src="getOptimizedImage(item.thumb_url, section.id)"
-                        :lazy-src="
-                          getOptimizedImage(item.thumb_url, section.id)
-                        "
-                        :alt="`Poster phim ${item.name}`"
-                        class="movie-img"
-                        height="250"
-                        loading="lazy"
-                        aspect-ratio="2/3"
-                        cover
-                      >
-                        <template #default>
-                           <div class="badge-container">
-                          <!-- hiển thị bên trái -->
-                          <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-top-left"
-                          >
-                            {{item.episode_current}}
-                          </v-btn>
+  class="mx-auto movie-card"
+  role="button"
+>
+  <v-img
+    :src="getOptimizedImage(item.thumb_url, section.id)"
+    :lazy-src="getOptimizedImage(item.thumb_url, section.id)"
+    :alt="`Poster phim ${item.name}`"
+    class="movie-img"
+    height="250"
+    loading="lazy"
+    aspect-ratio="2/3"
+    cover
+  >
+    <!-- BADGE -->
+    <div class="badge-container">
+      <v-btn icon size="x-small" variant="flat" class="badge-top-left">
+        {{ item.episode_current }}
+      </v-btn>
 
-                          <!-- hiển thị bên phải -->
-                          <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-top-right"
-                          >
-                            {{item.quality}}
-                          </v-btn>
-                           </div>
+      <v-btn icon size="x-small" variant="flat" class="badge-top-right">
+        {{ item.quality }}
+      </v-btn>
+    </div>
 
-                          <div class="movie-overlay" aria-hidden="true"></div>
+    <!-- OVERLAY -->
+    <div class="movie-overlay"></div>
 
-                          <div class="movie-play" aria-hidden="true">
-                            <svg
-                              width="64"
-                              height="64"
-                              viewBox="0 0 64 64"
-                              xmlns="http://www.w3.org/2000/svg"
-                              aria-hidden="true"
-                            >
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="30"
-                                fill="rgba(0,0,0,0.55)"
-                              />
-                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                            </svg>
-                          </div>
-                        </template>
-                        <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              :width="5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
-                      </v-img>
+    <!-- PLAY BUTTON -->
+    <div class="movie-play">
+      <v-icon size="42">mdi-play-circle</v-icon>
+    </div>
 
-                      <div>
-                          <v-card-title  class="movie-title text-left">{{ item.name }}</v-card-title>
+    <!-- EXPAND CONTENT -->
+    <div class="movie-expand">
+      <div class="movie-actions">
+        <v-btn icon size="small" class="action-btn primary">
+          <v-icon size="18">mdi-play</v-icon>
+        </v-btn>
 
-                          <v-card-text class="movie-info text-left">
-                              <!-- <div class="category-wrap" v-for="(cate, ind) in getCategoriesToShow(item.category)" :key="ind">
-                                {{ cate.name }} 
-                                <span  v-if="ind < getCategoriesToShow(item.category).length -1">
-                                  ,
-                                </span>
-                              </div> -->
-                              
-                              <span>{{ item.lang }}</span>
-                              <span> - {{ item.year }}</span>
-                          </v-card-text>
-                        <v-card-text class="text-grey text-truncate text-left" style="font-size: 12px; padding-bottom:10px; padding-top: 0;margin-top: 0;"> {{timeAgo(item.modified.time)}}</v-card-text>
-                      </div>
-                      
-                    </v-card>
+        <v-btn icon size="small" class="action-btn">
+          <v-icon size="18">mdi-plus</v-icon>
+        </v-btn>
+
+        <v-btn icon size="small" class="action-btn">
+          <v-icon size="18">mdi-heart-outline</v-icon>
+        </v-btn>
+      </div>
+
+      <div class="movie-meta">
+        <span class="rating">⭐ {{ item.tmdb?.vote_average || '8.5' }}</span>
+        <span class="dot"></span>
+        <span>{{ item.lang }}</span>
+        <span class="dot"></span>
+        <span>{{ item.year }}</span>
+      </div>
+
+      <div class="movie-genres">
+        <span
+          v-for="(cate, ind) in getCategoriesToShow(item.category)"
+          :key="ind"
+          class="genre"
+        >
+          {{ cate.name }}
+        </span>
+      </div>
+    </div>
+  </v-img>
+
+  <!-- TITLE -->
+  <div class="movie-bottom">
+    <v-card-title class="movie-title text-left">
+      {{ item.name }}
+    </v-card-title>
+    <v-card-title class="movie-originname text-left">
+      {{ item.origin_name }}
+    </v-card-title>
+    <v-card-text class="movie-time text-left">
+      {{ timeAgo(item.modified.time) }}
+    </v-card-text>
+  </div>
+</v-card>
                   </router-link>
                 </v-col>
               </v-row>
@@ -808,10 +803,10 @@ export default {
 }
 
 .category-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-  text-transform: capitalize;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  margin-bottom: 8px;
 }
 
 .view-all {
@@ -876,7 +871,7 @@ a {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .v-card:hover {
-  transform: scale(1.05);
+  transform: scale(0.85);
   box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
 }
 .movie-info {
@@ -930,9 +925,13 @@ a {
 /* container card */
 .movie-card {
   position: relative;
-  will-change: transform;
+  border-radius: 16px;
   overflow: hidden;
-  border-radius: 8px;
+  background: #141414;
+  transition:
+    transform .45s cubic-bezier(.22,1,.36,1),
+    box-shadow .45s ease,
+    opacity .3s ease;
 }
 
 /* v-img wrapper */
@@ -951,14 +950,22 @@ a {
   transition: transform 0.35s ease;
 }
 .movie-card:hover {
-  transform: translateY(-6px) scale(1.02);
-}
-/* zoom nhẹ khi hover card */
-.movie-card:hover .movie-img img,
-.movie-card:hover .movie-img .v-image__image {
-  transform: scale(1.04);
+  transform: translateY(-12px) scale(0.85);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.8),
+    0 0 40px rgba(255,255,255,0.05);
+  z-index: 20;
 }
 
+.movie-img img,
+.movie-img .v-image__image {
+  transition: transform .7s cubic-bezier(.22,1,.36,1);
+}
+
+.movie-card:hover .movie-img img,
+.movie-card:hover .movie-img .v-image__image {
+  transform: scale(1.05);
+}
 /* overlay mờ (ẩn mặc định) */
 .movie-overlay {
   position: absolute;
@@ -1039,7 +1046,6 @@ a {
 .badge-bottom-left,
 .badge-bottom-right {
   position: absolute !important;
-  background: rgba(105, 105, 105, 0.6) !important;
   /* color: #fff !important; */
   font-size: 12px !important;
   padding: 2px 10px !important;
@@ -1048,6 +1054,11 @@ a {
   width: auto;
   height: auto;
   font-weight: 600 !important;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  padding: 4px 12px !important;
 }
 
 /* 4 góc */
@@ -1113,20 +1124,20 @@ a {
 
 /* CARD */
 .trending-card {
-  width: 250px;
-  background: #111;
-  border-radius: 14px;
+  width: 260px;
+  border-radius: 18px;
   overflow: hidden;
-  margin-right: 12px;
-  transition: transform 0.25s ease;
-   display: flex;
-  flex-direction: column;
+  background: #141414;
+  transition:
+    transform .4s cubic-bezier(.22,1,.36,1),
+    box-shadow .4s ease;
 }
 
 .trending-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-10px) scale(1.06);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.8);
 }
-
 /* POSTER */
 .trending-poster {
   background: radial-gradient(#222, #000);
@@ -1240,11 +1251,19 @@ a {
   cursor: pointer;
   min-height: 110px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.08);
+  transition:
+    transform .4s cubic-bezier(.22,1,.36,1),
+    box-shadow .4s ease;
 }
 
 .ad-banner-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+   transform: translateY(-8px);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.6);
 }
 
 .ad-banner-card:active {
@@ -1457,5 +1476,177 @@ a {
   will-change: transform;
   transform: translateZ(0);
 }
+.page-enter {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 40%),
+    radial-gradient(circle at 85% 0%, rgba(255,255,255,0.04), transparent 40%),
+    linear-gradient(to bottom, #111 0%, #0a0a0a 40%, #000 100%);
+}
+.movie-list:hover .movie-card {
+  /* opacity: .45; */
+  transform: scale(.96);
+}
 
+.movie-list .movie-card:hover {
+  opacity: 1 !important;
+  transform: translateY(-12px) scale(1.1);
+}
+@keyframes fadeUpModern {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.movie-list,
+.trending-track {
+  animation: fadeUpModern .7s ease forwards;
+}
+/* CARD */
+.movie-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #141414;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+
+.movie-card:hover {
+  transform: translateY(-10px) scale(1.07);
+  z-index: 20;
+}
+
+/* OVERLAY */
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.9) 0%,
+    rgba(0,0,0,.6) 40%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.movie-card:hover .movie-overlay {
+  opacity: 1;
+}
+
+/* PLAY ICON */
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.8);
+  opacity: 0;
+  transition: all .3s ease;
+  color: white;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* EXPAND */
+.movie-expand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all .35s cubic-bezier(.22,1,.36,1);
+}
+
+.movie-card:hover .movie-expand {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ACTION BUTTON */
+.movie-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.action-btn {
+  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.15);
+  transition: .2s;
+}
+
+.action-btn:hover {
+  background: rgba(255,255,255,.2) !important;
+  transform: scale(1.1);
+}
+
+.action-btn.primary {
+  background: #e50914 !important;
+  color: white !important;
+}
+
+/* META */
+.movie-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #ddd;
+  margin-bottom: 6px;
+}
+
+.movie-meta .dot {
+  width: 4px;
+  height: 4px;
+  background: #aaa;
+  border-radius: 50%;
+}
+
+/* GENRE */
+.movie-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.genre {
+  font-size: 10px;
+  padding: 3px 8px;
+  background: rgba(255,255,255,.08);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+/* BOTTOM */
+.movie-bottom {
+  padding: 6px 8px 10px;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.movie-originname{
+  font-size: 12px;
+  padding-top: 0;
+
+  color: #ccc;
+}
+
+.movie-time {
+  font-size: 11px;
+  color: #aaa;
+  padding-top: 0;
+}
 </style>

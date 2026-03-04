@@ -28,7 +28,7 @@
               loading="eager"
             >
               <!-- Overlay Gradient -->
-              <!-- <div class="banner-overlay"></div> -->
+              <div class="banner-overlay"></div>
 
               <!-- Placeholder Loading -->
               <template #placeholder>
@@ -107,6 +107,13 @@
                           </v-chip>
                           <v-chip variant="flat" size="small">
                             {{ movies.quality }}
+                          </v-chip>
+                          <v-chip size="small" color="amber-darken-2" variant="flat">
+                            ⭐ {{ movies.tmdb?.vote_average || '8.5' }}
+                          </v-chip>
+
+                          <v-chip size="small" color="green-darken-2" variant="flat">
+                            👁 {{ movies.view || '12.5K' }}
                           </v-chip>
                         </div>
                         <!-- <el-collapse v-model="activeNames" v-if="$vuetify.display.smAndDown">
@@ -406,11 +413,7 @@
                                 }"
                                 class="text-decoration-none"
                               >
-                                <v-card
-                                  elevation="2"
-                                  class="bg-grey-darken-4"
-                                  hover
-                                >
+                                <v-card class="suggest-card" elevation="0">
                                   <v-img
                                     :lazy-src="
                                       getOptimizedImage(suggested.thumb_url)
@@ -1702,8 +1705,17 @@ export default {
 }
 .episode-btn {
   border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
+  transition: all .25s ease;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.4);
 }
+.episode-btn.v-btn--active {
+  background: linear-gradient(45deg,#ffb700,#ff8c00) !important;
+  color: black !important;
+}
+
 .divider {
   font-size: 11px;
   margin: 0 8px;
@@ -1774,11 +1786,13 @@ export default {
 }
 
 .watch-now {
-  background: #ffd76b !important;
+  background: linear-gradient(45deg,#ffd76b,#ffb700) !important;
   color: black !important;
-  font-weight: 700;
-  padding: 10px 26px;
-  border-radius: 30px;
+  font-weight: 800;
+  font-size: 18px;
+  border-radius: 999px;
+  padding: 12px 34px;
+  transition: all .3s cubic-bezier(.22,1,.36,1);
 }
 .tab.active {
   font-weight: 700;
@@ -1843,16 +1857,10 @@ export default {
 .poster-wrapper:hover .poster-img {
   transform: scale(1.06);
 }
-.watch-now {
-  font-weight: 700;
-  font-size: 18px;
-  border-radius: 999px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
 
 .watch-now:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(255, 180, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(255,180,0,.5);
 }
 
 .watch-now:active {
@@ -1861,5 +1869,60 @@ export default {
 .episode-list {
   max-height: calc(5 * 70px);
   overflow-y: auto;
+}
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.7) 40%, transparent 70%),
+    linear-gradient(to right, rgba(0,0,0,.8) 0%, transparent 60%);
+  z-index: 2;
+}
+.poster-card {
+  background: transparent !important;
+  margin-top: -120px;
+  position: relative;
+  z-index: 5;
+}
+
+.poster-wrapper {
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,.7);
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+
+.poster-wrapper:hover {
+  transform: translateY(-8px) scale(1.03);
+}
+.v-tabs {
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.v-tab {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.v-tab.v-tab--selected {
+  color: #ffd76b !important;
+}
+.suggest-card {
+  background: #141414;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+
+.suggest-card:hover {
+  transform: translateY(-8px) scale(1.04);
+}
+.search-page {
+  animation: pageFade .5s ease;
+}
+
+@keyframes pageFade {
+  from { opacity:0; transform: translateY(15px);}
+  to { opacity:1; transform: translateY(0);}
 }
 </style>
