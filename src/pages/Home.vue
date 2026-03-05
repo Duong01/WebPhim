@@ -219,9 +219,9 @@
     <div class="movie-overlay"></div>
 
     <!-- PLAY BUTTON -->
-    <div class="movie-play" v-if="$vuetify.display.smAndUp">
+    <!-- <div class="movie-play" v-if="$vuetify.display.smAndUp">
       <v-icon size="42">mdi-play-circle</v-icon>
-    </div>
+    </div> -->
 
     <!-- EXPAND CONTENT -->
     <div class="movie-expand">
@@ -462,7 +462,18 @@ export default {
       ],
       daily: "",
       earlyMovies:[],
-      regular_movies:[]
+      regular_movies:[],
+      movieFavorite:{
+        IDAccount :this.$store.state.empInfor.ID || localStorage.getItem("name"),
+        IDMovies: '',
+        slug: '',
+        currentPage: '',
+        UrlMovies: '',
+        origin_name: '',
+        name: '',
+        year: '',
+        lang:''
+      },
 
     };
   },

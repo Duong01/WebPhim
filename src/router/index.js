@@ -88,7 +88,6 @@ const routes = [
         meta: {
             title: "Phim bộ hay nhất - Web Phim Online",
             description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
-            keepAlive: true,
             auth: true,
             requiresAuth: true
         },

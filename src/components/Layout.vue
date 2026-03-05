@@ -16,14 +16,19 @@
         
         <router-view v-slot="{ Component, route }">
           <transition name="fade-slide" mode="out-in">
-          <keep-alive>
-          
+          <keep-alive v-if="route.meta.keepAlive">
             <component
-              v-if="route.meta.keepAlive"
               :is="Component"
               :key="route.name"
             />
           </keep-alive>
+
+          <component
+            v-else
+            :is="Component"
+            :key="route.fullPath"
+          />
+
           </transition>
         </router-view>
       </div>
