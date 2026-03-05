@@ -293,7 +293,8 @@
 import {
   urlImage,
   urlImage1,
-  NewUpdate
+  NewUpdate,
+  PostMoviesFavorite
 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 
