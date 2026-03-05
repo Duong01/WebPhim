@@ -1117,7 +1117,17 @@ export default {
       this.movieFavorite.IDMovies = this.movie.idMovie;
       this.movieFavorite.slug = this.movie.slug;
       this.movieFavorite.currentPage = this.movie.page;
-      this.movieFavorite.UrlMovies = this.movie.thumb_url;
+      if (this.movie.thumb_url.includes("img.ophim.live")) {
+        this.movieFavorite.UrlMovies = this.movie.thumb_url;
+      }
+      else{
+        if(this.movie.thumb_url.includes("https://phimimg.com/upload")){
+          this.movieFavorite.UrlMovies = this.urlImage1 + this.movie.thumb_url;
+        }
+        else{
+          this.movieFavorite.UrlMovies = this.urlImage1 + "https://phimimg.com/" + this.movie.thumb_url;
+        }
+      }
       this.movieFavorite.origin_name = this.movie.origin_name;
       this.movieFavorite.name = this.movie.name;
       this.movieFavorite.year = this.movie.year;
