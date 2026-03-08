@@ -123,7 +123,7 @@ export default
 'Bạn không có phim nào đã được lưu': '您沒有保存任何電影',
 'Lịch chiếu':'放映时间',
 
-"Phim mới cập nhật": "最新更新影片",
+"BXH HTTQ THỊNH HÀNH": "最新更新影片",
   "PHIM VIỆT NAM": "越南电影",
   "PHIM MỚI": "最新电影",
   "PHIM TÌNH CẢM": "爱情电影",

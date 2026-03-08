@@ -123,7 +123,7 @@ export default
 'Bạn không có phim nào đã được lưu': 'You do not have any movies saved',
 'Lịch chiếu':'Showtimes',
 
-"Phim mới cập nhật": "Recently Updated Movies",
+"BXH HTTQ THỊNH HÀNH": "BXH HTTQ HOT",
   "PHIM VIỆT NAM": "Vietnamese Movies",
   "PHIM MỚI": "New Movies",
   "PHIM TÌNH CẢM": "Romance Movies",

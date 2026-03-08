@@ -123,7 +123,8 @@ export default
   'Bạn không có phim nào đã được lưu': 'Bạn không có phim nào đã được lưu',
 'Lịch chiếu':'Lịch chiếu',
 
-"Phim mới cập nhật": "Phim mới cập nhật",
+"BXH HTTQ THỊNH HÀNH": "BXH HTTQ THỊNH HÀNH",
+"Mãn Nhãn với Phim Chiếu Rạp":"Mãn Nhãn với Phim Chiếu Rạp",
   "PHIM VIỆT NAM": "PHIM VIỆT NAM",
   "PHIM MỚI": "PHIM MỚI",
   "PHIM TÌNH CẢM": "PHIM TÌNH CẢM",

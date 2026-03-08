@@ -1442,7 +1442,6 @@ export default {
       const video = this.$refs.videoPlayer;
       if (!video || !url) return;
 
-      // mark as loading until we receive canplay/playing
       this.videoLoaded = false;
 
       if (this.hls) {
@@ -1451,9 +1450,17 @@ export default {
       }
 
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        this.hls = new Hls();
+
+        this.hls = new Hls({
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          startLevel: -1,
+          capLevelToPlayerSize: true
+        });
+
         this.hls.loadSource(url);
         this.hls.attachMedia(video);
+
       } else {
         video.src = url;
       }
@@ -1476,19 +1483,20 @@ export default {
     },
     playVideoOnClick() {
       if (!this.videoStarted) {
-        // Setup video data khi user click play (lazy loading)
-        if (this.movie.videoUrl && !this.hlsInstance) {
-          this.setupVideo(this.movie.videoUrl);
+
+        this.videoStarted = true
+
+        if (this.movie.videoUrl && !this.hls) {
+          this.setupVideo(this.movie.videoUrl)
         }
 
-        this.videoStarted = true;
-        const video = this.$refs.videoPlayer;
-        if (video) {
-          video.muted = false;
-          video.play().catch(() => {
-            video.play();
-          });
-        }
+        const video = this.$refs.videoPlayer
+
+        setTimeout(() => {
+          video.muted = false
+          video.play().catch(()=>{})
+        }, 800)
+
       }
     },
     // --- Custom control methods ---

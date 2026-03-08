@@ -97,7 +97,8 @@ beforeUnmount() {
 
 <style>
 #app {
-  font-family: "Roboto", sans-serif;
+  
+  font-family: "Roboto", sans-serif !important;
   font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -41,11 +41,9 @@
     <!-- PHIM MỚI CẬP NHẬT -->
 <v-row no-gutters class="align-center mt-6 mb-2">
   <v-col cols="12">
-    <h1 class="category-title d-flex align-center">
-      <v-icon size="20" class="mr-2">
-        mdi-update
-      </v-icon>
-      {{ $t('Phim mới cập nhật') }}
+    <h1 class="category-title d-flex align-center" style="color: orange">
+      
+      {{ $t('BXH HTTQ THỊNH HÀNH') }}
     </h1>
   </v-col>
 </v-row>
@@ -85,6 +83,9 @@
           referrerpolicy="no-referrer"
         >
           <!-- BADGE -->
+          <div class="trending-rank" :class="'rank-' + (index + 1)">
+            {{ index + 1 }}
+          </div>
           <div class="trending-rating">
             <template v-if="item._type === 'early'">
               {{ item.early_screening_time }}
@@ -332,7 +333,18 @@ export default {
             params: { path: "phim-moi-cap-nhat-v3" },
           },
         },
-        
+        /*{
+          title: this.$t("Mãn Nhãn với Phim Chiếu Rạp"),
+          id: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
+          name: "PhimNew",
+          listMovie: [],
+          content: "",
+          loaded: false,
+          link: { 
+            name: "PhimNew",
+            params: { path: "phim-moi-cap-nhat-v3" },
+          },
+        },*/
         {
           title: this.$t("PHIM VIỆT NAM"),
           id: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=12",
@@ -1684,5 +1696,61 @@ a {
   font-size: 11px;
   color: #aaa;
   padding-top: 0;
+}
+.trending-rank{
+  position:absolute;
+  bottom:-5px;
+  left:8px;
+  font-size:42px;
+  font-weight:900;
+  line-height:1;
+  text-shadow:2px 2px 6px rgba(0,0,0,0.6);
+}
+
+/* TOP 1 */
+.rank-1{
+  color:#ff3b30;
+}
+
+/* TOP 2 */
+.rank-2{
+  color:#ff9500;
+}
+
+/* TOP 3 */
+.rank-3{
+  color:#ffd60a;
+}
+.rank-4{
+  color:#9bb6ad;
+}
+.rank-5{
+  color:#df95df;
+}
+.rank-6{
+  color:#b85e6a;
+}
+.rank-7{
+  color:#ffffff;
+}
+.rank-8{
+  color:#2c9690;
+}
+.rank-9{
+  color:#ebc89b;
+}
+.rank-10{
+  color:#8eb48d;
+}
+.rank-11{
+  color:#8da2ac;
+}
+.rank-12{
+  color:#ebc89b;
+}
+
+
+.trending-rank:not(.rank-1):not(.rank-2):not(.rank-3):not(.rank-4):not(.rank-5):not(.rank-6):not(.rank-7):not(.rank-8):not(.rank-9):not(.rank-10):not(.rank-11):not(.rank-12) {
+  color:#ffffff;
 }
 </style>
