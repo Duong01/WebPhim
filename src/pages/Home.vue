@@ -766,41 +766,41 @@ export default {
       })
     },
     // Chuan SEO
-    updateMetaTags(seo) {
-      document.title = seo.titleHead || "Phim hay";
+    // updateMetaTags(seo) {
+    //   document.title = seo.titleHead || "Phim hay";
 
-      const removeOldMeta = (key, attr = "name") => {
-        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-        old.forEach((tag) => tag.remove());
-      };
+    //   const removeOldMeta = (key, attr = "name") => {
+    //     const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
+    //     old.forEach((tag) => tag.remove());
+    //   };
 
-      const setMeta = (key, content, attr = "name") => {
-        if (!content) return;
-        const meta = document.createElement("meta");
-        meta.setAttribute(attr, key);
-        meta.setAttribute("content", content);
-        document.head.appendChild(meta);
-      };
+    //   const setMeta = (key, content, attr = "name") => {
+    //     if (!content) return;
+    //     const meta = document.createElement("meta");
+    //     meta.setAttribute(attr, key);
+    //     meta.setAttribute("content", content);
+    //     document.head.appendChild(meta);
+    //   };
 
-      // Xóa cũ
-      removeOldMeta("description");
-      removeOldMeta("og:title", "property");
-      removeOldMeta("og:description", "property");
-      removeOldMeta("og:type", "property");
-      removeOldMeta("og:image", "property");
+    //   // Xóa cũ
+    //   removeOldMeta("description");
+    //   removeOldMeta("og:title", "property");
+    //   removeOldMeta("og:description", "property");
+    //   removeOldMeta("og:type", "property");
+    //   removeOldMeta("og:image", "property");
 
-      // Thêm mới
-      setMeta("description", seo.descriptionHead);
-      setMeta("og:title", seo.titleHead, "property");
-      setMeta("og:description", seo.descriptionHead, "property");
-      setMeta("og:type", seo.og_type || "website", "property");
+    //   // Thêm mới
+    //   setMeta("description", seo.descriptionHead);
+    //   setMeta("og:title", seo.titleHead, "property");
+    //   setMeta("og:description", seo.descriptionHead, "property");
+    //   setMeta("og:type", seo.og_type || "website", "property");
 
-      if (Array.isArray(seo.og_image)) {
-        seo.og_image.forEach((img) => {
-          setMeta("og:image", img, "property");
-        });
-      }
-    },
+    //   if (Array.isArray(seo.og_image)) {
+    //     seo.og_image.forEach((img) => {
+    //       setMeta("og:image", img, "property");
+    //     });
+    //   }
+    // },
     onImageLoad(index) {
       this.$nextTick(() => {
         const imgRef = this.$refs["img_" + index];
