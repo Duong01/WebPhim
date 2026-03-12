@@ -6,31 +6,34 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import 'bootstrap/dist/css/bootstrap.css'
+/* =========================
+   CSS
+========================= */
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
-import { BootstrapVue3 } from 'bootstrap-vue-3'
-
-import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
+
+/* =========================
+   Libraries
+========================= */
+import { BootstrapVue3 } from 'bootstrap-vue-3'
+import ElementPlus from 'element-plus'
+import vue3GoogleLogin from 'vue3-google-login'
+import { createHead } from '@vueuse/head'
 
 import i18n from '@/lang'
+import { CheckSession } from "@/model/api"
 
-import 'vuetify/styles'
+/* =========================
+   Vuetify
+========================= */
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-
-import "intersection-observer"
-import ResizeObserver from "resize-observer-polyfill"
-import vue3GoogleLogin from 'vue3-google-login'
-
-
-import { CheckSession } from "@/model/api";
-import { createHead } from '@vueuse/head'
 
 const vuetify = createVuetify({
   components,
@@ -38,90 +41,119 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',
     aliases,
-    sets: { mdi },
-  },
+    sets: { mdi }
+  }
 })
 
-// sau khi lấy được thông tin user
+/* =========================
+   Polyfills
+========================= */
+import "intersection-observer"
+import ResizeObserver from "resize-observer-polyfill"
+
+if (!window.ResizeObserver) {
+  window.ResizeObserver = ResizeObserver
+}
+
+/* =========================
+   Reload logic
+========================= */
+
+// reload khi tab inactive lâu
+let lastHiddenTime = 0
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    lastHiddenTime = Date.now()
+  } else {
+    const diff = Date.now() - lastHiddenTime
+    if (diff > 60 * 60 * 1000) {
+      window.location.reload()
+    }
+  }
+})
+
+// reload khi có mạng lại
+window.addEventListener("online", () => {
+  window.location.reload()
+})
+
+/* =========================
+   Ignore ResizeObserver warning
+========================= */
+window.addEventListener("error", (e) => {
+  if (
+    e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+    e.message.includes('ResizeObserver loop limit exceeded')
+  ) {
+    e.stopImmediatePropagation()
+    console.warn('ResizeObserver warning ignored.')
+  }
+})
+
+/* =========================
+   User info for chatbot
+========================= */
 window.difyUser = {
   avatar_url: store.state.empInfor?.Avatar || '',
   name: store.state.empInfor?.EmpName || '',
 }
 
+/* =========================
+   Track user activity
+========================= */
+const updateActivity = () => {
+  store.commit("UPDATE_ACTIVE_TIME")
+}
 
+document.addEventListener("click", updateActivity)
+document.addEventListener("keydown", updateActivity)
+window.addEventListener("scroll", updateActivity)
+
+/* =========================
+   Bootstrap App
+========================= */
 async function bootstrap() {
-  const token = localStorage.getItem("token");
+
+  const token = localStorage.getItem("token")
 
   if (token) {
     try {
-      await CheckSession((res) =>{
-        console.log(res)
+      await CheckSession((res) => {
         if (res.data.status === "success") {
-        store.commit("setEmpInfor", res.data.data);
-        store.commit("setAvatar", res.data.data.Avatar);
-      } else {
-        // localStorage.removeItem("token");
-        // localStorage.removeItem("favoriteMovies");
-        // localStorage.removeItem("user");
-      }
-      });
-      
-      
+          store.commit("setEmpInfor", res.data.data)
+          store.commit("setAvatar", res.data.data.Avatar)
+        }
+      })
     } catch (err) {
-      console.error(err)
-    //   localStorage.removeItem("token");
-    //   localStorage.removeItem("favoriteMovies");
-    //   localStorage.removeItem("user");
+      console.error("CheckSession error:", err)
     }
   }
-  document.addEventListener("click", () => {
-    store.commit("UPDATE_ACTIVE_TIME")
-  })
-  
-  document.addEventListener("keydown", () => {
-    store.commit("UPDATE_ACTIVE_TIME")
-  })
-  
-  window.addEventListener("scroll", () => {
-    store.commit("UPDATE_ACTIVE_TIME")
-  })
 
-  const app = createApp(App);
+  const app = createApp(App)
 
-  // ===== Global error handler =====
+  /* ===== Global Vue error handler ===== */
   app.config.errorHandler = (err, vm, info) => {
-    console.error("Lỗi Vue:", err, info)
-    app.config.globalProperties.$emit?.(
-      "show-error",
-      err.message || "Có lỗi xảy ra"
-    )
+    console.error("Vue error:", err, info)
   }
 
-  window.addEventListener('error', function (e) {
-    if (
-      e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
-      e.message.includes('ResizeObserver loop limit exceeded')
-    ) {
-      e.stopImmediatePropagation();
-      console.warn('⚠️ ResizeObserver warning ignored.');
-    }
-  });
+  /* =========================
+     Use plugins
+  ========================= */
 
-  if (!window.ResizeObserver) {
-    window.ResizeObserver = ResizeObserver;
-  }
+  app.use(router)
+  app.use(store)
+  app.use(BootstrapVue3)
+  app.use(ElementPlus)
+  app.use(i18n)
+  app.use(vuetify)
+  app.use(createHead())
 
-  app.use(router);
-  app.use(store);
-  app.use(BootstrapVue3);
-  app.use(ElementPlus);
-  app.use(i18n);
-  app.use(vuetify);
-  app.use(vue3GoogleLogin,{
+  app.use(vue3GoogleLogin, {
     clientId: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com"
   })
-  app.use(createHead)
-  app.mount('#app');
+
+  app.mount('#app')
 }
 
-bootstrap(); // 🚀 KHỞI ĐỘNG APP
+bootstrap()

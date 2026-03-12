@@ -333,9 +333,9 @@ export default {
             params: { path: "phim-moi-cap-nhat-v3" },
           },
         },
-        /*{
+        {
           title: this.$t("Mãn Nhãn với Phim Chiếu Rạp"),
-          id: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
+          id: "https://ophim1.com/v1/api/danh-sach/phim-chieu-rap?sort_field=year&sort_type=desc&category=hanh-dong,tinh-cam&country=trung-quoc,han-quoc,au-my,viet-nam&page=1&limit=24",
           name: "PhimNew",
           listMovie: [],
           content: "",
@@ -344,7 +344,7 @@ export default {
             name: "PhimNew",
             params: { path: "phim-moi-cap-nhat-v3" },
           },
-        },*/
+        },
         {
           title: this.$t("PHIM VIỆT NAM"),
           id: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&sort_field=year&sort_type=desc&limit=12",
@@ -735,12 +735,16 @@ export default {
           encodeURIComponent(imagePath)
         }`;
       }
+      
       else{
         return `${
           this.urlImage1 +
           "https://phimimg.com/" +
           encodeURIComponent(imagePath)
         }`;
+      
+        
+        
       }
         
       

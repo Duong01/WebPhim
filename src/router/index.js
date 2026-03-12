@@ -14,6 +14,15 @@ const routes = [
     },
   },
   {
+    path: "/home1",
+    name: "Home1Page",
+    component: () => import("@/pages/Home1"),
+    meta: {
+      title: "Trang chủ - Web Phim Online",
+      description: "Xem phim online miễn phí chất lượng cao.",
+    },
+  },
+  {
     path: "/register",
     name: "RegisterPage",
     component: () => import("@/components/Register"),
