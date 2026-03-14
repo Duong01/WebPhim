@@ -112,7 +112,10 @@ export default {
           type: "slider",
           url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
           movies: [],
-          link: { name: "HoatHinh" },
+          link: {
+            name: "HoatHinh",
+            params: { path: "hoat-hinh" },
+          },
           loaded: false,
         },
 

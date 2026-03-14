@@ -2,7 +2,6 @@
   <div class="section-wrapper">
     <div class="category-header">
       <div class="title-group">
-        <v-icon size="20" class="title-icon"> mdi-filmstrip </v-icon>
 
         <h2 class="category-title">
           {{ title }}
@@ -33,9 +32,6 @@ export default {
     type: String,
     movies: Array,
     link: Object,
-  },
-  mounted(){
-    console.log(this.movies)
   },
 
   components: {
