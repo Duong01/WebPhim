@@ -1,25 +1,36 @@
 <template>
-  <div class="row-scroll">
-    <template v-if="movies && movies.length">
-      <div class="row-container">
-        <v-btn icon class="arrow left" v-if="showLeft" @click="scrollLeft">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
+  <div class="movie-row">
+    <div class="row-wrapper">
+      <!-- LEFT -->
+      <v-btn
+        v-show="showLeft"
+        icon
+        class="arrow arrow-left"
+        @click="scrollLeft"
+      >
+        <v-icon size="28">mdi-chevron-left</v-icon>
+      </v-btn>
 
-        <div class="row-scroll" ref="row" @scroll="checkScroll">
+      <!-- SLIDER -->
+      <div class="movie-scroll" ref="scroll" @scroll="checkScroll">
+        <template v-if="movies && movies.length">
           <div v-for="movie in movies" :key="movie.slug" class="movie-card">
             <div class="card-inner">
+              <router-link
+                      :to="{ name: 'Movies', params: { slug: movie.slug } }"
+                      class="movie-link" 
+                    >
               <v-img
                 :src="getImage(movie.thumb_url)"
-                height="250"
-                loading="lazy"
+                height="200"
                 aspect-ratio="2/3"
                 cover
+                loading="lazy"
                 class="poster"
               >
                 <template #placeholder>
                   <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular indeterminate :width="5" />
+                    <v-progress-circular indeterminate />
                   </div>
                 </template>
 
@@ -40,235 +51,266 @@
                   {{ movie.episode_current || "Full" }}
                 </div>
               </v-img>
+              <!-- TITLE BELOW IMAGE -->
+              <div class="movie-title">
+                {{ movie.name }}
+              </div>
 
-              <!-- HOVER OVERLAY -->
+              <div class="movie-meta">
+                ⭐ {{ movie.tmdb?.vote_average || 8.5 }} • {{ movie.year }}
+              </div>
+
+              <!-- HOVER INFO -->
               <div class="hover-overlay">
                 <div class="info">
-                  <h4 class="title">
-                    {{ movie.name }}
-                  </h4>
-
-                  <div class="meta">
-                    ⭐ {{ movie.tmdb?.vote_average || 8.5 }} • {{ movie.year }}
-                  </div>
-
                   <div class="actions">
-                    <router-link
-                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
                     
-                  >
-                    <v-btn icon size="small">
-                      <v-icon>mdi-play</v-icon>
+                      <v-btn icon size="small">
+                        <v-icon>mdi-play</v-icon>
+                      </v-btn>
+                    <v-btn icon size="small" @click.stop.prevent="handleFavorite(movie)">
+                      <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
+                        {{indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline'}}
+                      </v-icon>
                     </v-btn>
-                    </router-link>
-
-                    <v-btn icon size="small">
-                      <v-icon>mdi-plus</v-icon>
-                    </v-btn>
-
-                    <v-btn icon size="small">
-                      <v-icon>mdi-heart-outline</v-icon>
-                    </v-btn>
-                    <div class="genres">
-                      {{
-                        movie.category
-                          ?.slice(0, 2)
-                          .map((c) => c.name)
-                          .join(" • ")
-                      }}
-                    </div>
                   </div>
                 </div>
               </div>
+                    </router-link>
+
             </div>
           </div>
-        </div>
+        </template>
+      </div>
 
-        <v-btn icon class="arrow right" v-if="showRight" @click="scrollRight">
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-      </div>
-    </template>
-    <template v-else>
-      <v-btn icon class="arrow left" v-if="showLeft" @click="scrollLeft">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-      <div v-for="i in skeletonCount" :key="i" class="movie-card">
-        <div class="skeleton-poster"></div>
-      </div>
-      <v-btn icon class="arrow right" v-if="showRight" @click="scrollRight">
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-    </template>
+      <!-- RIGHT -->
+      <v-btn
+        v-show="showRight"
+        icon
+        class="arrow arrow-right"
+        @click="scrollRight"
+      >
+        <v-icon size="28">mdi-chevron-right</v-icon>
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
-import { urlImage1 } from "@/model/api";
+import { urlImage1,CheckSession,PostMoviesFavorite } from "@/model/api";
+
 export default {
   props: ["movies"],
 
   data() {
     return {
-      urlImage1: urlImage1,
-      hover: null,
-      showLeft:false,
-      showRight:false,
-      skeletonCount: 8,
+      urlImage1,
+      indexClick: 1,
+      showLeft: false,
+      showRight: true,
+      movieFavorite: {
+        IDAccount:
+          this.$store.state.empInfor.ID || localStorage.getItem("name"),
+        IDMovies: "",
+        slug: "",
+        currentPage: "",
+        UrlMovies: "",
+        origin_name: "",
+        name: "",
+        year: "",
+        lang: "",
+      },
     };
   },
 
-  mounted(){
-    this.$nextTick(()=>{
-      this.checkScroll()
-    })
-  },
-
-  watch:{
-    movies(){
-      this.$nextTick(()=>{
-        this.checkScroll()
-      })
-    }
+  mounted() {
+    this.$nextTick(() => {
+      this.checkScroll();
+      window.addEventListener("resize", this.checkScroll);
+    });
   },
 
   methods: {
-    getImage(imagePath) {
-      if (imagePath.includes("https://phimimg.com/upload")) {
-        return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
-      } else {
-        return `${
-          this.urlImage1 +
-          "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
-        }`;
-      }
-    },
-    scrollLeft() {
-      const el = this.$refs.row;
-      if (!el) return;
+    getImage(path) {
+      if (!path) return "";
 
-      const width = el.clientWidth;
+      if (path.includes("https://phimimg.com/upload")) {
+        return this.urlImage1 + encodeURIComponent(path);
+      }
+
+      return this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(path);
+    },
+
+    scrollLeft() {
+      const el = this.$refs.scroll;
 
       el.scrollBy({
-        left: -width * 0.8,
+        left: -el.clientWidth * 0.9,
         behavior: "smooth",
       });
     },
 
     scrollRight() {
-      const el = this.$refs.row;
-      if (!el) return;
-
-      const width = el.clientWidth;
+      const el = this.$refs.scroll;
 
       el.scrollBy({
-        left: width * 0.8,
+        left: el.clientWidth * 0.9,
         behavior: "smooth",
       });
     },
 
-    checkScroll(){
+    checkScroll() {
+      const el = this.$refs.scroll;
+      if (!el) return;
 
-      const el = this.$refs.row
-      if(!el) return
+      this.showLeft = el.scrollLeft > 5;
 
-      this.showLeft = el.scrollLeft > 5
-      this.showRight = el.scrollWidth > el.clientWidth + el.scrollLeft + 5
-
-    }
+      this.showRight = el.scrollWidth > el.clientWidth + el.scrollLeft + 5;
+    },
+    handleFavorite(movie) {
+            this.indexClick ++;
+      this.movieFavorite.IDMovies = movie.idMovie;
+      this.movieFavorite.slug = movie.slug;
+      this.movieFavorite.currentPage = movie.page;
+      if (movie.thumb_url.includes("img.ophim.live")) {
+        this.movieFavorite.UrlMovies = movie.thumb_url;
+      } else {
+        if (movie.thumb_url.includes("https://phimimg.com/upload")) {
+          this.movieFavorite.UrlMovies = this.urlImage1 + movie.thumb_url;
+        } else {
+          this.movieFavorite.UrlMovies =
+            this.urlImage1 + "https://phimimg.com/" + movie.thumb_url;
+        }
+      }
+      this.movieFavorite.origin_name = movie.origin_name;
+      this.movieFavorite.name = movie.name;
+      this.movieFavorite.year = movie.year;
+      this.movieFavorite.lang = movie.lang;
+      const token = localStorage.getItem("token");
+      if (token) {
+        CheckSession(
+          (dat) => {
+            if (dat.data.status == "success") {
+              this.$store.commit("setEmpInfor", dat.data.data);
+              this.$store.commit("setAvatar", dat.data.data.Avatar);
+              PostMoviesFavorite(
+                this.movieFavorite,
+                (dat) => {
+                  if (dat.data.status == "success") {
+                    alert("🎬 " + dat.data.message);
+                  } else {
+                    alert(dat.data.message);
+                  }
+                },
+                (err) => {
+                  console.log(err);
+                },
+              );
+            } else {
+              alert(dat.data.message);
+              // this.$router.push({
+              //   path: "/login",
+              //   query: { redirect: this.$route.fullPath },
+              // });
+            }
+          },
+          (err) => {
+            alert(err);
+          },
+        );
+      } else {
+        alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"));
+        this.$router.push({
+          path: "/login",
+          query: { redirect: this.$route.fullPath },
+        });
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-/* CONTAINER */
-
-.row-container {
+.movie-row {
   position: relative;
-  padding: 0 24px;
+}
+
+/* WRAPPER */
+
+.row-wrapper {
+  position: relative;
+
   overflow: visible;
 }
-.row-container:hover .arrow {
-  opacity: 1;
-}
-@media (max-width: 600px) {
-  .row-container {
-    padding: 0 12px;
-  }
-}
 
-/* ROW SCROLL */
+/* SCROLL */
 
-.row-scroll {
+.movie-scroll {
   display: flex;
 
-  gap: 16px;
-
-  padding-bottom: 10px;
+  gap: 18px;
 
   overflow-x: auto;
-  overflow-y: visible;
 
-  scroll-snap-type: x mandatory;
+  padding: 10px 20px;
+
+  scroll-behavior: smooth;
 
   scrollbar-width: none;
-  scroll-behavior: smooth;
 }
 
-.row-scroll::-webkit-scrollbar {
+.movie-scroll::-webkit-scrollbar {
   display: none;
 }
 
-/* MOVIE CARD */
+/* CARD */
 
 .movie-card {
   flex: 0 0 auto;
-  width: 240px;
-  min-height: 200px;
 
-  scroll-snap-align: start;
-
-  cursor: pointer;
+  width: 260px;
+  position: relative;
 }
 
 .card-inner {
   position: relative;
   border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  overflow: visible;
+
+  transition: 0.35s;
 }
 
-/* HOVER EFFECT */
+.movie-card:hover {
+  z-index: 20;
+}
 
 .movie-card:hover .card-inner {
-  transform: scale(1.18) translateY(-10px);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.6);
-
-  z-index: 20;
+  transform: scale(1.15) translateY(-10px);
 }
 
 /* POSTER */
 
 .poster {
-  width: 100%;
-  height: 100%;
   border-radius: 12px;
 
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* HOVER OVERLAY */
+/* HOVER */
 
 .hover-overlay {
   position: absolute;
+
   inset: 0;
 
   display: flex;
+
   align-items: flex-end;
 
-  padding: 14px;
+  padding: 12px;
+
+  border-radius: 12px;
 
   background: linear-gradient(
     to top,
@@ -279,32 +321,34 @@ export default {
 
   opacity: 0;
 
-  transition: opacity 0.3s ease;
+  transition: 0.3s;
 }
 
 .movie-card:hover .hover-overlay {
   opacity: 1;
 }
 
-/* INFO */
+/* TEXT */
 
 .title {
-  font-size: 14px;
+  font-size: 15px;
 
   font-weight: 600;
-
-  color: white;
 }
 
 .meta {
   font-size: 12px;
 
-  opacity: 0.85;
-
-  margin-top: 2px;
+  opacity: 0.8;
 }
 
-/* ACTION BUTTONS */
+.genres {
+  font-size: 11px;
+
+  opacity: 0.7;
+}
+
+/* ACTION */
 
 .actions {
   display: flex;
@@ -314,191 +358,137 @@ export default {
   margin-top: 6px;
 }
 
-/* ARROWS */
-
-.arrow {
-  position: absolute;
-  top: 40%;
-
-  width: 42px;
-  height: 42px;
-
-  background: rgba(0,0,0,.6);
-
-  border-radius: 50%;
-
-  color: white;
-
-  z-index: 10;
-
-  opacity: .9;   /* luôn thấy */
-  transition: .25s;
-}
-.row-container:hover .arrow {
-  opacity: 1;
-  transform: scale(1.15);
-}
-
-.left{
-  left:0;
-  background:linear-gradient(
-    to right,
-    rgba(0,0,0,.8),
-    transparent
-  );
-}
-
-.right{
-  right:0;
-  background:linear-gradient(
-    to left,
-    rgba(0,0,0,.8),
-    transparent
-  );
-}
-
-@media (max-width: 600px) {
-  .arrow {
-    display: none;
-  }
-}
-
-/* SKELETON */
-
-.skeleton-poster {
-  width: 100%;
-
-  aspect-ratio: 2/3;
-
-  border-radius: 10px;
-
-  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 37%, #1a1a1a 63%);
-
-  background-size: 400% 100%;
-
-  animation: skeleton 1.3s infinite;
-}
-
-@keyframes skeleton {
-  0% {
-    background-position: 100% 0;
-  }
-
-  100% {
-    background-position: -100% 0;
-  }
-}
-
-/* RESPONSIVE */
-
-/* Mobile */
-
-@media (max-width: 600px) {
-  .movie-card {
-    width: 140px;
-  }
-}
-
-/* Tablet */
-
-@media (min-width: 600px) and (max-width: 900px) {
-  .movie-card {
-    width: 180px;
-  }
-}
-
-/* Laptop */
-
-@media (min-width: 900px) and (max-width: 1200px) {
-  .movie-card {
-    width: 220px;
-  }
-}
-
-/* Desktop */
-
-@media (min-width: 1200px) {
-  .movie-card {
-    width: 260px;
-  }
-}
 .actions button {
   width: 32px;
   height: 32px;
 
-  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
 
-  border: 1px solid rgba(255, 255, 255, 0.5);
-
-  backdrop-filter: blur(5px);
-
-  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
-.movie-card:hover::before {
-  content: "";
-  position: absolute;
-  inset: -10px;
 
-  border-radius: 14px;
+/* BADGES */
 
-  background: rgba(0, 0, 0, 0.4);
-
-  filter: blur(20px);
-
-  z-index: -1;
-}
 .badges {
   position: absolute;
+
   top: 8px;
   left: 8px;
 
   display: flex;
+
   gap: 6px;
 }
+
 .badge {
   font-size: 11px;
-  font-weight: 600;
 
   padding: 3px 6px;
 
   border-radius: 6px;
-
-  backdrop-filter: blur(6px);
 }
+
 .quality {
   background: #ff3d00;
   color: white;
 }
+
 .lang {
   background: rgba(0, 0, 0, 0.7);
   color: white;
 }
+
+/* EPISODE */
+
 .episode {
   position: absolute;
+
   bottom: 8px;
   right: 8px;
 
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
   font-size: 12px;
-  font-weight: 500;
 
-  color: white;
-
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.6);
 
   padding: 4px 8px;
 
   border-radius: 6px;
 
-  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.genres {
-  font-size: 11px;
-  color: #b3b3b3;
 
-  margin-top: 4px;
+/* ARROWS */
+
+.arrow {
+  position: absolute;
+
+  top: 40%;
+
+  width: 50px;
+  height: 50px;
+
+  background: rgba(0, 0, 0, 0.75);
+
+  color: white;
+
+  border-radius: 50%;
+
+  z-index: 30;
+}
+
+.arrow-left {
+  left: 0;
+}
+
+.arrow-right {
+  right: 0;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .movie-card {
+    width: 150px;
+  }
+
+  .arrow {
+    display: none;
+  }
+}
+.movie-title {
+  font-size: 14px;
+
+  font-weight: 600;
+
+  margin-top: 6px;
+
+  line-height: 1.3;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 2;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+.movie-meta {
+  font-size: 12px;
+
+  opacity: 0.75;
+
+  margin-top: 2px;
+}
+@media (max-width: 768px) {
+  .hover-overlay {
+    display: none;
+  }
+}
+.movie-link{
+  text-decoration:none;
+  color:inherit;
 }
 </style>

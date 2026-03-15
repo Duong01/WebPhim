@@ -11,7 +11,6 @@
         @load="imageLoaded = true"
       />
     </transition>
-
     <!-- CONTENT -->
     <div class="hero-content">
       <div class="left">
@@ -32,7 +31,7 @@
           </router-link>
 
           <button class="btn-icon" @click="handleFavorite(currentMovie)">
-            <v-icon >
+            <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
                 {{indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline'}}
                 </v-icon>
           </button>
@@ -239,10 +238,10 @@ export default {
       this.movieFavorite.IDMovies = movie.idMovie;
       this.movieFavorite.slug = movie.slug;
       this.movieFavorite.currentPage = movie.page;
-      if (this.movie.thumb_url.includes("img.ophim.live")) {
+      if (movie.thumb_url.includes("img.ophim.live")) {
         this.movieFavorite.UrlMovies = movie.thumb_url;
       } else {
-        if (this.movie.thumb_url.includes("https://phimimg.com/upload")) {
+        if (movie.thumb_url.includes("https://phimimg.com/upload")) {
           this.movieFavorite.UrlMovies = this.urlImage1 + movie.thumb_url;
         } else {
           this.movieFavorite.UrlMovies =

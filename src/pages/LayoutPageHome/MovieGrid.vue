@@ -1,8 +1,13 @@
 <template>
   <div class="movie-grid">
+
     <!-- LOADING -->
     <template v-if="!movies || !movies.length">
-      <div v-for="i in skeletonCount" :key="i" class="movie-card">
+      <div
+        v-for="i in skeletonCount"
+        :key="i"
+        class="movie-card"
+      >
         <div class="skeleton"></div>
       </div>
     </template>
@@ -11,257 +16,244 @@
     <template v-else>
 
       <div
-        v-for="movie in movies.slice(0, 8)"
+        v-for="movie in movies"
         :key="movie.slug"
         class="movie-card"
       >
-      <router-link
-        :to="{ name: 'Movies', params: { slug: movie.slug } }"
-        
-      >
-        <v-img
-          :src="getImage(movie.thumb_url)"
-          aspect-ratio="16/9"
-          cover
-          class="poster"
+
+        <router-link
+          :to="{ name:'Movies', params:{ slug: movie.slug } }"
+          class="movie-link"
         >
-          <!-- BADGES -->
-          <div class="badges">
-            <span class="badge quality">
-              {{ movie.quality || "HD" }}
-            </span>
 
-            <span class="badge lang">
-              {{ movie.lang || "Vietsub" }}
-            </span>
+          <!-- POSTER -->
+          <div class="poster-wrapper">
+
+            <v-img
+              :src="getImage(movie.thumb_url)"
+              aspect-ratio="2/3"
+              cover
+              loading="lazy"
+              height="169"
+              class="poster"
+            />
+
+            <!-- BADGES -->
+            <div class="badges">
+
+              <span class="badge quality">
+                {{ movie.quality || "HD" }}
+              </span>
+
+              <span class="badge lang">
+                {{ movie.lang || "Vietsub" }}
+              </span>
+
+            </div>
+
+            <!-- EPISODE -->
+            <div class="episode">
+              ▶ {{ movie.episode_current || "Full" }}
+            </div>
+
           </div>
 
-          <!-- EPISODE -->
-          <div class="episode">▶ {{ movie.episode_current || "Full" }}</div>
-        </v-img>
+          <!-- INFO -->
+          <div class="info">
 
-        <!-- INFO -->
-        <div class="info">
-          <h3 class="title">
-            {{ movie.name }}
-          </h3>
+            <div class="title">
+              {{ movie.name }}
+            </div>
 
-          <div class="meta">
-            <span class="rating">
-              ⭐ {{ movie.tmdb?.vote_average || "8.5" }}
-            </span>
+            <div class="meta">
 
-            <span class="year">
-              {{ movie.year }}
-            </span>
+              <span class="rating">
+                ⭐ {{ movie.tmdb?.vote_average || "8.5" }}
+              </span>
 
-            <span class="time">
-              {{ movie.time || "120m" }}
-            </span>
+              <span class="year">
+                {{ movie.year }}
+              </span>
+
+              <span class="time">
+                {{ movie.time || "120m" }}
+              </span>
+
+            </div>
+
+            <div class="genres">
+              {{
+                movie.category
+                  ?.slice(0,2)
+                  .map(c => c.name)
+                  .join(" • ")
+              }}
+            </div>
+
           </div>
 
-          <div class="genres">
-            {{
-              movie.category
-                ?.slice(0, 2)
-                .map((c) => c.name)
-                .join(" • ")
-            }}
-          </div>
-        </div>
-      </router-link>
+        </router-link>
+
       </div>
+
     </template>
+
   </div>
 </template>
 
 <script>
-import { urlImage1 } from "@/model/api";
+import { urlImage1 } from "@/model/api"
 
 export default {
-  props: ["movies"],
 
-  data() {
-    return {
+  props:["movies"],
+
+  data(){
+    return{
+
       urlImage1,
-      skeletonCount: 8,
-    };
+
+      skeletonCount:8
+
+    }
   },
 
-  methods: {
-    getImage(path) {
-      if (!path) return "";
+  methods:{
 
-      if (path.includes("http")) return path;
+    getImage(path){
 
-      return this.urlImage1 + "https://phimimg.com/" + path;
-    },
-  },
-};
+      if(!path) return ""
+
+      if(path.includes("http"))
+        return path
+
+      return this.urlImage1 +
+        "https://phimimg.com/" +
+        path
+
+    }
+
+  }
+
+}
 </script>
 
 <style scoped>
+
 /* GRID */
 
-.movie-grid {
-  display: grid;
+.movie-grid{
 
-  grid-template-columns: repeat(4, 1fr);
+  display:grid;
 
-  gap: 16px;
+  grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+
+  gap:24px;
+
 }
 
 /* CARD */
 
-.movie-card {
-  position: relative;
+.movie-card{
 
-  cursor: pointer;
+  position:relative;
 
-  overflow: hidden;
+  transition:.35s;
 
-  border-radius: 12px;
-
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-.movie-card:hover {
-  transform: scale(1.06);
+.movie-card:hover{
 
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+  transform:translateY(-6px);
+
+}
+
+/* LINK */
+
+.movie-link{
+
+  text-decoration:none;
+
+  color:inherit;
+
+  display:block;
+
 }
 
 /* POSTER */
 
-.poster {
-  border-radius: 12px;
-}
+.poster-wrapper{
 
-/* OVERLAY */
+  position:relative;
 
-.overlay {
-  position: absolute;
-
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  padding: 18px;
-
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-}
-
-.overlay h3 {
-  color: white;
-
-  font-size: 16px;
-
-  font-weight: 700;
-}
-
-/* SKELETON */
-
-.skeleton {
-  width: 100%;
-
-  aspect-ratio: 16/9;
-
-  border-radius: 12px;
-
-  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 37%, #1a1a1a 63%);
-
-  background-size: 400% 100%;
-
-  animation: skeleton 1.2s infinite;
-}
-
-@keyframes skeleton {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -100% 0;
-  }
-}
-
-/* RESPONSIVE */
-
-/* tablet */
-
-@media (max-width: 1100px) {
-  .movie-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* mobile */
-
-@media (max-width: 700px) {
-  .movie-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-.info{
-  padding:10px 6px 4px;
-}
-
-.title{
-  font-size:15px;
-  font-weight:600;
-
-  color:white;
-
-  line-height:1.35;
-
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
+  border-radius:14px;
 
   overflow:hidden;
+
 }
-.meta{
-  display:flex;
-  gap:10px;
 
-  margin-top:4px;
+.poster{
 
-  font-size:12px;
+  border-radius:14px;
 
-  color:#b3b3b3;
+  transition:.4s;
+
 }
-.genres{
-  font-size:11px;
-  color:#888;
 
-  margin-top:3px;
+.movie-card:hover .poster{
+
+  transform:scale(1.06);
+
 }
+
+/* BADGES */
+
 .badges{
+
   position:absolute;
+
   top:8px;
   left:8px;
 
   display:flex;
-  gap:6px;
-}
-.badge{
-  font-size:11px;
-  font-weight:600;
 
-  padding:3px 6px;
+  gap:6px;
+
+}
+
+.badge{
+
+  font-size:11px;
+
+  padding:3px 7px;
 
   border-radius:6px;
 
-  backdrop-filter:blur(6px);
+  font-weight:600;
+
 }
+
 .quality{
+
   background:#ff3d00;
+
   color:white;
+
 }
+
 .lang{
-  background:rgba(0,0,0,.7);
+
+  background:rgba(0,0,0,.75);
+
   color:white;
+
 }
+
+/* EPISODE */
+
 .episode{
+
   position:absolute;
 
   bottom:8px;
@@ -276,26 +268,70 @@ export default {
   border-radius:6px;
 
   color:white;
-}
-.movie-grid{
-  display:grid;
 
-  grid-template-columns:
-    repeat(auto-fill,minmax(240px,1fr));
-
-  gap:20px;
 }
-.movie-card:hover{
-  transform:translateY(-6px) scale(1.03);
 
-  box-shadow:
-    0 15px 40px rgba(0,0,0,.7);
+/* INFO */
+
+.info{
+
+  padding:10px 4px 0;
+
 }
+
+.title{
+
+  font-size:15px;
+
+  font-weight:600;
+
+  line-height:1.35;
+
+  display:-webkit-box;
+
+  -webkit-line-clamp:2;
+
+  -webkit-box-orient:vertical;
+
+  overflow:hidden;
+
+}
+
+/* META */
+
+.meta{
+
+  display:flex;
+
+  gap:10px;
+
+  margin-top:4px;
+
+  font-size:12px;
+
+  color:#b3b3b3;
+
+}
+
+.genres{
+
+  font-size:11px;
+
+  color:#888;
+
+  margin-top:3px;
+
+}
+
+/* SKELETON */
+
 .skeleton{
-  width:100%;
-  aspect-ratio:16/9;
 
-  border-radius:12px;
+  width:100%;
+
+  aspect-ratio:2/3;
+
+  border-radius:14px;
 
   background:linear-gradient(
     110deg,
@@ -307,5 +343,49 @@ export default {
   background-size:200% 100%;
 
   animation:skeleton 1.2s infinite;
+
 }
+
+@keyframes skeleton{
+
+  0%{
+    background-position:100% 0;
+  }
+
+  100%{
+    background-position:-100% 0;
+  }
+
+}
+
+/* RESPONSIVE */
+
+@media (max-width:900px){
+
+.movie-grid{
+
+  grid-template-columns:
+    repeat(auto-fill,minmax(160px,1fr));
+
+}
+
+}
+
+@media (max-width:600px){
+
+.movie-grid{
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:16px;
+
+}
+
+.title{
+  font-size:14px;
+}
+
+}
+
 </style>

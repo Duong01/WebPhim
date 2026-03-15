@@ -3,7 +3,7 @@
   <v-col cols="12">
     <h1 class="category-title d-flex align-center" style="color: orange">
       
-      🔥 {{ $t('BXH HTTQ THỊNH HÀNH') }}
+      🔥 {{ $t('Hoạt Hình Trung Quốc – Bảng Xếp Hạng Thịnh Hành') }}
     </h1>
   </v-col>
 </v-row>

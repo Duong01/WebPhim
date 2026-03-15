@@ -107,86 +107,101 @@ export default {
       ],
 
       sections: [
-        {
-          title: "🎬 PHIM ĐỀ CỬ",
-          type: "slider",
-          url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "HoatHinh",
-            params: { path: "hoat-hinh" },
-          },
-          loaded: false,
-        },
+  {
+    title: "Phim Đề Cử – Những Tác Phẩm Không Thể Bỏ Lỡ",
+    type: "slider",
+    url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "HoatHinh",
+      params: { path: "hoat-hinh" },
+    },
+    loaded: false,
+  },
 
-        {
-          title: "🔥 PHIM THỊNH HÀNH",
-          type: "slider",
-          url: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
-          movies: [],
-          link: {
-            name: "PhimNew",
-            params: { path: "phim-moi-cap-nhat-v3" },
-          },
-          loaded: false,
-        },
+  {
+    title: "Phim Đang Thịnh Hành – Xu Hướng Xem Nhiều Nhất Hiện Nay",
+    type: "slider",
+    url: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
+    movies: [],
+    link: {
+      name: "PhimNew",
+      params: { path: "phim-moi-cap-nhat-v3" },
+    },
+    loaded: false,
+  },
 
-        {
-          title: "🇻🇳 PHIM VIỆT NAM",
-          type: "grid",
-          url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "QuocGia",
-            params: { path: "viet-nam" },
-          },
-          loaded: false,
-        },
-        {
-          title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
-          type: "large",
-          url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "",
-            params: { path: "" },
-          },
-          loaded: false,
-        },
-        {
-          title: "🇨🇳 PHIM TRUNG QUỐC",
-          type: "grid",
-          url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "QuocGia",
-            params: { path: "trung-quoc" },
-          },
-          loaded: false,
-        },
-        {
-          title: "📊 BẢNG XẾP HẠNG PHIM",
-          type: "dashboard",
-          url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "QuocGia",
-            params: { path: "trung-quoc" },
-          },
-          loaded: false,
-        },
-        {
-          title: "🇰🇷 PHIM HÀN QUỐC",
-          type: "grid",
-          url: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "QuocGia",
-            params: { path: "han-quoc" },
-          },
-          loaded: false,
-        },
-      ],
+  {
+    title: "Điện Ảnh Việt Nam – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
+    type: "grid",
+    url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "QuocGia",
+      params: { path: "viet-nam" },
+    },
+    loaded: false,
+  },
+
+  {
+    title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
+    type: "large",
+    url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "",
+      params: { path: "" },
+    },
+    loaded: false,
+  },
+
+  {
+    title: "Phim Trung Quốc – Những Siêu Phẩm Hoa Ngữ Đáng Xem",
+    type: "grid",
+    url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "QuocGia",
+      params: { path: "trung-quoc" },
+    },
+    loaded: false,
+  },
+
+  {
+    title: "Bảng Xếp Hạng Phim – Những Tựa Phim Được Yêu Thích Nhất",
+    type: "dashboard",
+    url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "QuocGia",
+      params: { path: "trung-quoc" },
+    },
+    loaded: false,
+  },
+
+  {
+    title: "Phim Hàn Quốc – Những Câu Chuyện Lay Động Trái Tim",
+    type: "grid",
+    url: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&limit=12",
+    movies: [],
+    link: {
+      name: "QuocGia",
+      params: { path: "han-quoc" },
+    },
+    loaded: false,
+  },
+  {
+    title: "Mãn Nhãn với Phim Chiếu Rạp",
+    type: "grid",
+    url: "https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?country=viet-nam,trung-quoc,han-quoc,au-my&page=1&limit=12",
+    movies: [],
+    link: {
+      name: "QuocGia",
+      params: { path: "han-quoc" },
+    },
+    loaded: false,
+  },
+],
     };
   },
 
