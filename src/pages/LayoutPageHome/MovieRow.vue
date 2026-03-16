@@ -81,6 +81,13 @@
             </div>
           </div>
         </template>
+
+        <template v-else>
+          <div v-for="i in skeletonCount" :key="i" class="movie-card">
+            <div class="skeleton-poster"></div>
+          </div>
+          
+        </template>
       </div>
 
       <!-- RIGHT -->
@@ -108,6 +115,7 @@ export default {
       indexClick: 1,
       showLeft: false,
       showRight: true,
+      skeletonCount:8,
       movieFavorite: {
         IDAccount:
           this.$store.state.empInfor.ID || localStorage.getItem("name"),

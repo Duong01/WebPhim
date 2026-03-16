@@ -44,11 +44,15 @@
         :key="i"
         class="category-item"
       >
+      <router-link :to="c.router" class="category-link">
         <span class="rank">{{ i+1 }}.</span>
-
+        <v-icon :color="c.arrow.includes('up') ? 'green' : 'red'">
+          {{ c.arrow }}
+        </v-icon>
         <span class="tag" :class="c.color">
           {{ c.name }}
         </span>
+      </router-link>
       </div>
     </div>
 
@@ -74,9 +78,33 @@
 </template>
 <script>
 export default{
-    props:["hotMovies","favoriteMovies","categories","comments"],
   data(){
     return{
+      hotMovies:[
+        { name:"The Batman", img:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onM.jpg" },
+        { name:"The Flash", img:"https://image.tmdb.org/t/p/w500/8aM2qUoXW7jTnH7rPz9rYtLqLh.jpg" },
+        { name:"Black Panther: Wakanda Forever", img:"https://image.tmdb.org/t/p/w500/sv1xJUazXeYqALFehM0uL4DGLw.jpg" },
+        { name:"Avatar: The Way of Water", img:"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+      ],
+      favoriteMovies:[
+        { name:"The Batman", img:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onM.jpg" },
+        { name:"The Flash", img:"https://image.tmdb.org/t/p/w500/8aM2qUoXW7jTnH7rPz9rYtLqLh.jpg" },
+        { name:"Black Panther: Wakanda Forever", img:"https://image.tmdb.org/t/p/w500/sv1xJUazXeYqALFehM0uL4DGLw.jpg" },
+        { name:"Avatar: The Way of Water", img:"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+      ],
+      categories:[
+        { name:"Hành động", router:"the-loai/hanh-dong", arrow:"mdi-arrow-up-right", color:"red" },
+        { name:"Tâm lý", router:"the-loai/tam-ly", arrow:"mdi-arrow-up-right", color:"blue" },
+        { name:"Tình cảm", router:"the-loai/tinh-cam", arrow:"mdi-arrow-up-right", color:"pink" },
+        { name:"Hài hước", router:"the-loai/hai-huoc", arrow:"mdi-arrow-down-right", color:"blue" },
+        { name:"Kinh dị", router:"the-loai/kinh-di", arrow:"mdi-arrow-up-right", color:"green" }
+      ],
+      comments:[
+        { user:"Nguyễn Văn A", text:"Bộ phim này thật tuyệt vời!", avatar:"https://randomuser.me/api/portraits/men/1.jpg" },
+        { user:"Trần Thị B", text:"Tôi rất thích diễn xuất của diễn viên chính.", avatar:"https://randomuser.me/api/portraits/women/2.jpg" },
+        { user:"Lê Văn C", text:"Cốt truyện hơi yếu nhưng hiệu ứng đẹp.", avatar:"https://randomuser.me/api/portraits/men/3.jpg" },
+        { user:"Phạm Thị D", text:"Âm nhạc trong phim rất hay!", avatar:"https://randomuser.me/api/portraits/women/4.jpg" },
+      ]
     }
   }
 }
@@ -118,7 +146,7 @@ export default{
 
 .list-item{
   display:flex;
-
+  padding: 10px;
   align-items:center;
 
   gap:12px;
@@ -160,10 +188,12 @@ export default{
   align-items:center;
   gap:12px;
   margin-bottom:16px;
+  padding: 10px;
 }
 
 .tag{
   padding:8px 18px;
+  margin-left: 20px;
 
   border-radius:30px;
 
@@ -245,5 +275,7 @@ export default{
 .panel:hover{
   box-shadow:0 10px 40px rgba(255,0,60,.15);
 }
-
+.category-link{
+  text-decoration: none;
+}
 </style>

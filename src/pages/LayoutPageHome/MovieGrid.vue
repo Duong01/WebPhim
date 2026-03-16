@@ -113,7 +113,7 @@ export default {
 
       urlImage1,
 
-      skeletonCount:8
+      skeletonCount:12
 
     }
   },
