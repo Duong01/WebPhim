@@ -139,6 +139,7 @@ export default {
   },
 
   methods: {
+    
     getImage(path) {
       if (!path) return "";
 

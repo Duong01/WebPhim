@@ -23,19 +23,23 @@
 
         <p class="desc">{{ currentMovie.content?.slice(0, 150) }}...</p>
 
-        <div class="actions">
+        <div class="actions" v-if="currentMovie">
           <router-link
+            class="btn-play"
             :to="{ name: 'Movies', params: { slug: currentMovie.slug } }"
           >
-            <button class="btn-play">▶ Xem Ngay</button>
+            ▶ Xem Ngay
           </router-link>
 
           <button class="btn-icon" @click="handleFavorite(currentMovie)">
             <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
-                {{indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline'}}
-                </v-icon>
+              {{ indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline' }}
+            </v-icon>
           </button>
-          <button class="btn-icon" @click="shareMovie()"><v-icon>mdi-share-variant</v-icon></button>
+
+          <button class="btn-icon" @click="shareMovie()">
+            <v-icon>mdi-share-variant</v-icon>
+          </button>
         </div>
       </div>
 
@@ -386,7 +390,7 @@ export default {
 }
 
 .title {
-  font-size: 48px;
+  font-size: 28px;
   font-weight: 800;
   color: white;
 }
@@ -456,10 +460,21 @@ export default {
   right: 30px;
 
   display: flex;
-  gap: 12px;
-}
+  gap: 10px;
+  overflow-x:auto;
+  overflow-y:hidden;
 
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+.thumbs::-webkit-scrollbar{
+  display:none;
+}
+.thumbs{
+  scrollbar-width:none;
+}
 .thumb {
+  flex:0 0 auto;
   width: 60px;
   height: 90px;
 
@@ -470,7 +485,7 @@ export default {
   cursor: pointer;
 
   opacity: 0.7;
-
+  scroll-snap-align:start;
   transition: 0.3s;
 }
 

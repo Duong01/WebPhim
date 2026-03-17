@@ -16,7 +16,7 @@
     <template v-else>
 
       <div
-        v-for="movie in movies"
+        v-for="movie in getCategoriesToShow(movies)"
         :key="movie.slug"
         class="movie-card"
       >
@@ -36,7 +36,13 @@
               loading="lazy"
               height="169"
               class="poster"
-            />
+            >
+            <template #placeholder>
+                  <div class="d-flex align-center justify-center fill-height">
+                    <v-progress-circular indeterminate />
+                  </div>
+                </template>
+            </v-img>
 
             <!-- BADGES -->
             <div class="badges">
@@ -119,7 +125,14 @@ export default {
   },
 
   methods:{
-
+    getCategoriesToShow(item){
+      const isMobile = this.$vuetify.display.xs
+    if (isMobile) {
+        return item.slice(0, 8);  // Mobile → 8 item
+      } else {
+        return item;
+      }
+    },
     getImage(path){
 
       if(!path) return ""
