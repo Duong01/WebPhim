@@ -62,32 +62,19 @@ export default {
       }
     },
   mounted() {
-    // kiem tra khi ma het session thi tu dong load lai trang
-  document.addEventListener("visibilitychange", this.handleVisibility)
-  window.addEventListener("pageshow", this.handlePageShow)
   
 },
 beforeUnmount() {
   
-  document.removeEventListener("visibilitychange", this.handleVisibility)
-  window.removeEventListener("pageshow", this.handlePageShow)
   
 },
   methods: {
     setTheme(newTheme) {
       this.theme = newTheme
     },
-    handleVisibility() {
-    if (document.visibilityState === "visible") {
-      this.$store.dispatch("checkResume")
-    }
-  },
+    
 
-  handlePageShow(e) {
-    if (e.persisted) {
-      this.$store.dispatch("checkResume")
-    }
-  },
+  
 
   
     

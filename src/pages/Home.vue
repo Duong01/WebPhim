@@ -18,6 +18,7 @@
       :type="section.type"
       :movies="section.movies"
       :link="section.link"
+      :loading="!section.loaded"
     />
   </div>
 </template>
@@ -42,7 +43,7 @@ export default {
   data() {
     return {
       trending: [],
-
+      cache: new Map(),
       categories: [
         {
           title: this.$t("PHIM MỚI"),
@@ -107,144 +108,167 @@ export default {
       ],
 
       sections: [
-  {
-    title: "Phim Đề Cử – Những Tác Phẩm Không Thể Bỏ Lỡ",
-    type: "slider",
-    url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
-    movies: [],
-    link: {
-      name: "HoatHinh",
-      params: { path: "hoat-hinh" },
-    },
-    loaded: false,
-  },
+        {
+          title: "Phim Đề Cử – Những Tác Phẩm Không Thể Bỏ Lỡ",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "HoatHinh",
+            params: { path: "hoat-hinh" },
+          },
+          loaded: false,
+        },
 
-  {
-    title: "Phim Đang Thịnh Hành – Xu Hướng Xem Nhiều Nhất Hiện Nay",
-    type: "slider",
-    url: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
-    movies: [],
-    link: {
-      name: "PhimNew",
-      params: { path: "phim-moi-cap-nhat-v3" },
-    },
-    loaded: false,
-  },
+        {
+          title: "Phim Đang Thịnh Hành – Xu Hướng Xem Nhiều Nhất Hiện Nay",
+          type: "spotlight",
+          url: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1",
+          movies: [],
+          link: {
+            name: "PhimNew",
+            params: { path: "phim-moi-cap-nhat-v3" },
+          },
+          loaded: false,
+        },
 
-  {
-    title: "Điện Ảnh Việt Nam – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
-    movies: [],
-    link: {
-      name: "QuocGia",
-      params: { path: "viet-nam" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Phim lẻ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=12",
-    movies: [],
-    link: {
-      name: "PhimLe",
-      params: { path: "phim-le" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Mãn Nhãn với Phim Chiếu Rạp",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?country=viet-nam,trung-quoc&sort_field=year&page=1&limit=12",
-    movies: [],
-    link: {
-      name: "PhimChieuRap",
-      params: { path: "phim-chieu-rap" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
-    type: "large",
-    url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&category=hai-huoc&limit=12",
-    movies: [],
-    link: {
-      name: "",
-      params: { path: "" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Phim bộ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=12",
-    movies: [],
-    link: {
-      name: "PhimBo",
-      params: { path: "phim-bo" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Phim Trung Quốc – Những Siêu Phẩm Hoa Ngữ Đáng Xem",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
-    movies: [],
-    link: {
-      name: "QuocGia",
-      params: { path: "trung-quoc" },
-    },
-    loaded: false,
-  },
+        {
+          title: "Điện Ảnh Việt Nam – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/quoc-gia/viet-nam?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "viet-nam" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Phim lẻ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=12",
+          movies: [],
+          link: {
+            name: "PhimLe",
+            params: { path: "phim-le" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Mãn Nhãn với Phim Chiếu Rạp",
+          type: "spotlight",
+          url: "https://phimapi.com/v1/api/danh-sach/phim-chieu-rap?country=viet-nam,trung-quoc&sort_field=year&page=1&limit=12",
+          movies: [],
+          link: {
+            name: "PhimChieuRap",
+            params: { path: "phim-chieu-rap" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
+          type: "large",
+          url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&category=hai-huoc&limit=12",
+          movies: [],
+          link: {
+            name: "",
+            params: { path: "" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Phim bộ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/danh-sach/phim-bo?page=1&sort_field=year&sort_type=desc&limit=12",
+          movies: [],
+          link: {
+            name: "PhimBo",
+            params: { path: "phim-bo" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Phim Trung Quốc – Những Siêu Phẩm Hoa Ngữ Đáng Xem",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "trung-quoc" },
+          },
+          loaded: false,
+        },
 
-  {
-    title: "Bảng Xếp Hạng Phim – Những Tựa Phim Được Yêu Thích Nhất",
-    type: "dashboard",
-    url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
-    movies: [],
-    link: {
-      name: "QuocGia",
-      params: { path: "trung-quoc" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Phim bom tấn – Những Tác Phẩm Không Thể Bỏ Lỡ",
-    type: "slider",
-    url: "https://phimapi.com/v1/api/danh-sach/phim-thuyet-minh?page=1&category=hanh-dong&sort_field=year&sort_type=desc&&limit=12",
-    movies: [],
-    link: {
-      name: "HoatHinh",
-      params: { path: "hoat-hinh" },
-    },
-    loaded: false,
-  },
-  {
-    title: "Phim Hàn Quốc – Những Câu Chuyện Lay Động Trái Tim",
-    type: "grid",
-    url: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&limit=12",
-    movies: [],
-    link: {
-      name: "QuocGia",
-      params: { path: "han-quoc" },
-    },
-    loaded: false,
-  },
-  
-],
+        {
+          title: "Bảng Xếp Hạng Phim – Những Tựa Phim Được Yêu Thích Nhất",
+          type: "dashboard",
+          url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "trung-quoc" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Phim bom tấn – Những Tác Phẩm Không Thể Bỏ Lỡ",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/danh-sach/phim-thuyet-minh?page=1&category=hanh-dong&sort_field=year&sort_type=desc&&limit=12",
+          movies: [],
+          link: {
+            name: "HoatHinh",
+            params: { path: "hoat-hinh" },
+          },
+          loaded: false,
+        },
+        {
+          title: "Phim Hàn Quốc – Những Câu Chuyện Lay Động Trái Tim",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/quoc-gia/han-quoc?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "han-quoc" },
+          },
+          loaded: false,
+        },
+      ],
     };
   },
 
   mounted() {
     this.ListNewUpdate();
-    // this.sections.forEach((section) => {
-    //   this.loadSection(section);
-    // });
+
+    this.sections.slice(0, 3).forEach((s) => {
+      this.loadSection(s);
+    });
+
     this.initLazyLoad();
   },
 
   methods: {
+    normalizeMovies(raw) {
+      return (raw || []).map((m) => ({
+        id: m._id || m.id,
+        title: m.name,
+        originalTitle: m.origin_name,
+        thumb_url: this.getImage(m.thumb_url),
+        poster_url: this.getImage(m.poster_url),
+        rating: m.tmdb?.vote_average || 0,
+        year: m.year,
+        quality: m.quality || "HD",
+        lang: m.lang || "Vietsub",
+        episode: m.episode_current || "Full",
+        slug: m.slug,
+      }));
+    },
+
+    getImage(path) {
+      if (!path) return "";
+      if (path.includes("http")) return path;
+      return "https://phimimg.com/" + path;
+    },
+
     async ListNewUpdate() {
       NewUpdate(
         `?action=getTrending`,
@@ -262,13 +286,25 @@ export default {
 
     async loadSection(section) {
       try {
-        const res = await fetch(section.url);
+        if (this.cache.has(section.url)) {
+          section.movies = this.cache.get(section.url);
+          section.loaded = true;
+          return;
+        }
 
+        const res = await fetch(section.url);
         const data = await res.json();
 
-        section.movies = data.items || data.data?.items || [];
+        const raw = data.items || data.data?.items || [];
+        const movies = this.normalizeMovies(raw);
+
+        section.movies = movies;
+        this.cache.set(section.url, movies);
+
+        section.loaded = true;
       } catch (err) {
         console.log(err);
+        section.loaded = true;
       }
     },
     initLazyLoad() {
@@ -288,7 +324,7 @@ export default {
           });
         },
         {
-          rootMargin: "200px",
+          rootMargin: "400px",
         },
       );
 

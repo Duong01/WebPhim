@@ -10,84 +10,106 @@
       >
         <v-icon size="28">mdi-chevron-left</v-icon>
       </v-btn>
-
       <!-- SLIDER -->
       <div class="movie-scroll" ref="scroll" @scroll="checkScroll">
-        <template v-if="movies && movies.length">
-          <div v-for="movie in movies" :key="movie.slug" class="movie-card">
-            <div class="card-inner">
-              <router-link
-                      :to="{ name: 'Movies', params: { slug: movie.slug } }"
-                      class="movie-link" 
-                    >
-              <v-img
-                :src="getImage(movie.thumb_url)"
-                height="200"
-                aspect-ratio="2/3"
-                cover
-                loading="lazy"
-                class="poster"
-              >
-                <template #placeholder>
-                  <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular indeterminate />
-                  </div>
-                </template>
-
-                <!-- BADGES -->
-                <div class="badges">
-                  <span class="badge quality">
-                    {{ movie.quality || "HD" }}
-                  </span>
-
-                  <span class="badge lang">
-                    {{ movie.lang || "Vietsub" }}
-                  </span>
-                </div>
-
-                <!-- EPISODE -->
-                <div class="episode">
-                  <v-icon size="14">mdi-play-circle</v-icon>
-                  {{ movie.episode_current || "Full" }}
-                </div>
-              </v-img>
-              <!-- TITLE BELOW IMAGE -->
-              <div class="movie-title">
-                {{ movie.name }}
-              </div>
-
-              <div class="movie-meta">
-                ⭐ {{ movie.tmdb?.vote_average || 8.5 }} • {{ movie.year }}
-              </div>
-
-              <!-- HOVER INFO -->
-              <div class="hover-overlay">
-                <div class="info">
-                  <div class="actions">
-                    
-                      <v-btn icon size="small">
-                        <v-icon>mdi-play</v-icon>
-                      </v-btn>
-                    <v-btn icon size="small" @click.stop.prevent="handleFavorite(movie)">
-                      <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
-                        {{indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline'}}
-                      </v-icon>
-                    </v-btn>
-                  </div>
-                </div>
-              </div>
-                    </router-link>
-
-            </div>
+        <!-- SKELETON -->
+        <template v-if="loading">
+          <div
+            v-for="i in skeletonCount"
+            :key="i"
+            class="movie-card"
+          >
+            <div class="skeleton"></div>
+          </div>
+        </template>
+        <template v-else-if="movies.length === 0">
+          <div
+            v-for="i in skeletonCount"
+            :key="i"
+            class="movie-card"
+          >
+            <v-img
+              class="mx-auto"
+              :src="imageError"
+            ></v-img>
           </div>
         </template>
 
         <template v-else>
-          <div v-for="i in skeletonCount" :key="i" class="movie-card">
-            <div class="skeleton-poster"></div>
+
+          <div v-for="(movie, key) in movies" :key="key" class="movie-card">
+            <div class="card-inner">
+              <router-link
+                :to="{ name: 'Movies', params: { slug: movie.slug } }"
+                class="movie-link"
+              >
+                <v-img
+                  :src="movie.thumb_url"
+                  height="200"
+                  aspect-ratio="2/3"
+                  cover
+                  class="poster"
+                >
+                  <template #placeholder>
+                    <div class="d-flex align-center justify-center fill-height">
+                      <v-progress-circular indeterminate />
+                    </div>
+                  </template>
+
+                  <!-- BADGES -->
+                  <div class="badges">
+                    <span class="badge quality">
+                      {{ movie.quality || "HD" }}
+                    </span>
+
+                    <span class="badge lang">
+                      {{ movie.lang || "Vietsub" }}
+                    </span>
+                  </div>
+
+                  <!-- EPISODE -->
+                  <div class="episode">
+                    <v-icon size="14">mdi-play-circle</v-icon>
+                    {{ movie.episode_current || "Full" }}
+                  </div>
+                </v-img>
+                <!-- TITLE BELOW IMAGE -->
+                <div class="movie-title">
+                  {{ movie.name }}
+                </div>
+
+                <div class="movie-meta">
+                  ⭐ {{ movie.tmdb?.vote_average || 8.5 }} • {{ movie.year }}
+                </div>
+
+                <!-- HOVER INFO -->
+                <div class="hover-overlay">
+                  <div class="info">
+                    <div class="actions">
+                      <v-btn icon size="small">
+                        <v-icon>mdi-play</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        size="small"
+                        @click.stop.prevent="handleFavorite(movie)"
+                      >
+                        <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
+                          {{
+                            indexClick % 2 === 0
+                              ? "mdi-heart"
+                              : "mdi-heart-outline"
+                          }}
+                        </v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </div>
+              </router-link>
+            </div>
           </div>
-          
         </template>
+        
       </div>
 
       <!-- RIGHT -->
@@ -104,18 +126,19 @@
 </template>
 
 <script>
-import { urlImage1,CheckSession,PostMoviesFavorite } from "@/model/api";
-
+import { urlImage1, CheckSession, PostMoviesFavorite } from "@/model/api";
+import imageError from "@/assets/imageError.png";
 export default {
   props: ["movies"],
 
   data() {
     return {
+      imageError: imageError,
       urlImage1,
       indexClick: 1,
       showLeft: false,
       showRight: true,
-      skeletonCount:8,
+      skeletonCount: 8,
       movieFavorite: {
         IDAccount:
           this.$store.state.empInfor.ID || localStorage.getItem("name"),
@@ -139,15 +162,17 @@ export default {
   },
 
   methods: {
-    
-    getImage(path) {
-      if (!path) return "";
+    getImage(path){
 
-      if (path.includes("https://phimimg.com/upload")) {
-        return this.urlImage1 + encodeURIComponent(path);
-      }
+      if(!path) return ""
 
-      return this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(path);
+      if(path.includes("http"))
+        return path
+
+      return this.urlImage1 +
+        "https://phimimg.com/" +
+        path
+
     },
 
     scrollLeft() {
@@ -177,7 +202,7 @@ export default {
       this.showRight = el.scrollWidth > el.clientWidth + el.scrollLeft + 5;
     },
     handleFavorite(movie) {
-            this.indexClick ++;
+      this.indexClick++;
       this.movieFavorite.IDMovies = movie.idMovie;
       this.movieFavorite.slug = movie.slug;
       this.movieFavorite.currentPage = movie.page;
@@ -496,8 +521,8 @@ export default {
     display: none;
   }
 }
-.movie-link{
-  text-decoration:none;
-  color:inherit;
+.movie-link {
+  text-decoration: none;
+  color: inherit;
 }
 </style>

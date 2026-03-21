@@ -15,7 +15,12 @@
       </router-link>
     </div>
 
-    <component :is="componentType" :movies="movies" />
+    <component :is="componentType" :movies="movies" :loading="loading" />
+      <v-divider
+    :thickness="2"
+    class="border-opacity-25"
+    color="success"
+  ></v-divider>
   </div>
 </template>
 
@@ -25,6 +30,8 @@ import MovieGrid from "./MovieGrid.vue";
 import MovieRanking from "./MovieRanking.vue";
 import MovieSlide from "./MovieSlide.vue";
 import MovieDashboard from "./MovieDashboard.vue";
+import MovieSpotlightVue from './MovieSpotlight.vue';
+
 
 export default {
   props: {
@@ -32,6 +39,7 @@ export default {
     type: String,
     movies: Array,
     link: Object,
+    loading: Boolean
   },
 
   components: {
@@ -40,6 +48,7 @@ export default {
     MovieRanking,
     MovieSlide,
     MovieDashboard,
+    MovieSpotlightVue,
   },
 
   computed: {
@@ -61,7 +70,7 @@ export default {
           return "MovieContinue";
 
         case "spotlight":
-          return "MovieSpotlight";
+          return "MovieSpotlightVue";
 
         case "dashboard":
           return "MovieDashboard";

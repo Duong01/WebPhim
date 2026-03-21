@@ -2,7 +2,7 @@
   <div class="movie-grid">
 
     <!-- LOADING -->
-    <template v-if="!movies || !movies.length">
+    <template v-if="loading">
       <div
         v-for="i in skeletonCount"
         :key="i"
@@ -12,6 +12,18 @@
       </div>
     </template>
 
+<template v-else-if="movies.length === 0">
+          <div
+            v-for="i in skeletonCount"
+            :key="i"
+            class="movie-card"
+          >
+            <v-img
+              class="mx-auto"
+              :src="imageError"
+            ></v-img>
+          </div>
+        </template>
     <!-- MOVIES -->
     <template v-else>
 
@@ -30,7 +42,7 @@
           <div class="poster-wrapper">
 
             <v-img
-              :src="getImage(movie.thumb_url)"
+              :src="movie.thumb_url"
               aspect-ratio="2/3"
               cover
               loading="lazy"
@@ -109,6 +121,7 @@
 
 <script>
 import { urlImage1 } from "@/model/api"
+import imageError from "@/assets/imageError.png";
 
 export default {
 
@@ -116,7 +129,7 @@ export default {
 
   data(){
     return{
-
+      imageError: imageError,
       urlImage1,
 
       skeletonCount:12

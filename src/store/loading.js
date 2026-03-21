@@ -39,18 +39,7 @@ const actions = {
     alert("⏳ Hết thời gian chờ (2 phút). Vui lòng thử lại!");
   },
 
-  checkResume({ state, commit }) {
-    const now = Date.now()
-    const MAX_IDLE = 60 * 60 * 1000 // 60 phút
-
-    if (now - state.lastActive > MAX_IDLE) {
-
-      window.location.reload()
-      return
-    }
-
-    commit("UPDATE_ACTIVE_TIME")
-  }
+  
 };
 
 const getters = {

@@ -52,7 +52,7 @@
           :class="{ active: index === activeIndex }"
           @click="setMovie(index)"
         >
-          <img :src="getImage(movie.thumb_url)" />
+          <img :src="movie.thumb_url" />
         </div>
       </div>
     </div>
