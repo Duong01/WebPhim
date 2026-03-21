@@ -250,15 +250,15 @@ export default {
     normalizeMovies(raw) {
       return (raw || []).map((m) => ({
         id: m._id || m.id,
-        title: m.name,
-        originalTitle: m.origin_name,
+        name: m.name,
+        origin_name: m.origin_name,
         thumb_url: this.getImage(m.thumb_url),
         poster_url: this.getImage(m.poster_url),
         rating: m.tmdb?.vote_average || 0,
         year: m.year,
         quality: m.quality || "HD",
         lang: m.lang || "Vietsub",
-        episode: m.episode_current || "Full",
+        episode_current: m.episode_current || "Full",
         slug: m.slug,
       }));
     },

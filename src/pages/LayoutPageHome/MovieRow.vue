@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="movie-meta">
-                  ⭐ {{ movie.tmdb?.vote_average || 8.5 }} • {{ movie.year }}
+                  ⭐ {{ movie.rating || 8.5 }} • {{ movie.year }}
                 </div>
 
                 <!-- HOVER INFO -->

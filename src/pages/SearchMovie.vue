@@ -292,6 +292,27 @@
               </v-btn>
               <div class="mt-1 text-caption">Twitter</div>
             </v-col>
+            <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('tiktok')"
+              class="bg-grey-darken-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="white"
+              >
+                <path
+                  d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
+                />
+              </svg>
+            </v-btn>
+            <div class="mt-1 text-caption">TikTok</div>
+          </v-col>
           </v-row>
 
           <v-card
@@ -497,6 +518,29 @@ export default {
       const domain = window.location.origin;
       this.shareUrl = `${domain}/movie/${movie.slug}` 
       this.shareDialog = true;
+    },
+    shareTo(platform) {
+      // const url = encodeURIComponent(shareUrl.value);
+      // const text = encodeURIComponent("Xem phim này nè!");
+      let shareLink = "";
+
+      switch (platform) {
+        case "facebook":
+          shareLink = `https://www.facebook.com/sharer/sharer.php`;
+          break;
+        case "youtube":
+          shareLink = `https://www.youtube.com/`;
+          break;
+        case "twitter":
+          shareLink = `https://twitter.com`;
+          break;
+        case "tiktok":
+          shareLink = `https://www.tiktok.com/`;
+          break;
+      }
+      // const shareUrl = window.location.href;
+
+      window.open(shareLink, "_blank");
     },
 
     handleFavorite(movie){

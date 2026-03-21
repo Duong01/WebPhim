@@ -24,22 +24,21 @@
         <p class="desc">{{ currentMovie.content?.slice(0, 150) }}...</p>
 
         <div class="actions" v-if="currentMovie">
-          <router-link
-            class="btn-play"
-            :to="{ name: 'Movies', params: { slug: currentMovie.slug } }"
-          >
+          <v-btn class="btn-play" @click="goDetail(currentMovie)">
             ▶ Xem Ngay
-          </router-link>
+          </v-btn>
 
-          <button class="btn-icon" @click="handleFavorite(currentMovie)">
-            <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
-              {{ indexClick % 2 === 0 ? 'mdi-heart' : 'mdi-heart-outline' }}
-            </v-icon>
-          </button>
+          <div class="icon-group">
+            <button class="btn-icon" @click="handleFavorite(currentMovie)">
+              <v-icon :color="indexClick % 2 === 0 ? 'red' : 'white'">
+                {{ indexClick % 2 === 0 ? "mdi-heart" : "mdi-heart-outline" }}
+              </v-icon>
+            </button>
 
-          <button class="btn-icon" @click="shareMovie()">
-            <v-icon>mdi-share-variant</v-icon>
-          </button>
+            <button class="btn-icon" @click="shareMovie()">
+              <v-icon>mdi-share-variant</v-icon>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -59,105 +58,104 @@
 
     <!-- Dialog share -->
     <v-dialog v-model="shareDialog" max-width="500">
-            <v-card
-              class="pa-4"
-              style="background-color: #1e1e1e; color: white"
+      <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
+        <v-card-title class="text-h6 justify-center">{{
+          $t("Chia sẻ")
+        }}</v-card-title>
+
+        <v-row class="justify-center mt-4" dense>
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('facebook')"
+              class="bg-grey-darken-4"
             >
-              <v-card-title class="text-h6 justify-center">{{
-                $t("Chia sẻ")
-              }}</v-card-title>
+              <v-icon icon="mdi-facebook" />
+            </v-btn>
+            <div class="mt-1 text-caption">Facebook</div>
+          </v-col>
 
-              <v-row class="justify-center mt-4" dense>
-                <v-col cols="3" class="text-center">
-                  <v-btn
-                    icon
-                    size="large"
-                    @click="shareTo('facebook')"
-                    class="bg-grey-darken-4"
-                  >
-                    <v-icon icon="mdi-facebook" />
-                  </v-btn>
-                  <div class="mt-1 text-caption">Facebook</div>
-                </v-col>
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('youtube')"
+              class="bg-grey-darken-4"
+            >
+              <v-icon icon="mdi-youtube" />
+            </v-btn>
+            <div class="mt-1 text-caption">YouTube</div>
+          </v-col>
 
-                <v-col cols="3" class="text-center">
-                  <v-btn
-                    icon
-                    size="large"
-                    @click="shareTo('youtube')"
-                    class="bg-grey-darken-4"
-                  >
-                    <v-icon icon="mdi-youtube" />
-                  </v-btn>
-                  <div class="mt-1 text-caption">YouTube</div>
-                </v-col>
+          <v-col cols="3" class="text-center">
+            <v-btn icon size="large" @click="copyLink" class="bg-grey-darken-4">
+              <v-icon icon="mdi-link-variant" />
+            </v-btn>
+            <div class="mt-1 text-caption">Copy link</div>
+          </v-col>
 
-                <v-col cols="3" class="text-center">
-                  <v-btn
-                    icon
-                    size="large"
-                    @click="copyLink"
-                    class="bg-grey-darken-4"
-                  >
-                    <v-icon icon="mdi-link-variant" />
-                  </v-btn>
-                  <div class="mt-1 text-caption">Copy link</div>
-                </v-col>
-
-                <v-col cols="3" class="text-center">
-                  <v-btn
-                    icon
-                    size="large"
-                    @click="shareTo('twitter')"
-                    class="bg-grey-darken-4"
-                  >
-                    <v-icon icon="mdi-twitter" />
-                  </v-btn>
-                  <div class="mt-1 text-caption">Twitter</div>
-                </v-col>
-                <v-col cols="3" class="text-center">
-                  <v-btn
-                    icon
-                    size="large"
-                    @click="shareTo('tiktok')"
-                    class="bg-grey-darken-4"
-                  >
-                    <v-icon icon="mdi-tiktok" />
-                  </v-btn>
-                  <div class="mt-1 text-caption">TikTok</div>
-                </v-col>
-              </v-row>
-
-              <v-card
-                class="mt-4 px-3 py-2 d-flex align-center"
-                style="background-color: #2a2a2a; border-radius: 8px"
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('twitter')"
+              class="bg-grey-darken-4"
+            >
+              <v-icon icon="mdi-twitter" />
+            </v-btn>
+            <div class="mt-1 text-caption">Twitter</div>
+          </v-col>
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('tiktok')"
+              class="bg-grey-darken-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="white"
               >
-                <span
-                  class="text-truncate"
-                  style="color: #facc15; max-width: 100%"
-                >
-                  {{ shareUrl }}
-                </span>
-                <v-spacer />
-                <v-btn icon @click="copyLink" size="small">
-                  <v-icon icon="mdi-content-copy" />
-                </v-btn>
-              </v-card>
+                <path
+                  d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
+                />
+              </svg>
+            </v-btn>
+            <div class="mt-1 text-caption">TikTok</div>
+          </v-col>
+        </v-row>
 
-              <v-btn
-                icon
-                class="position-absolute"
-                style="top: 8px; right: 8px"
-                @click="shareDialog = false"
-              >
-                <v-icon icon="mdi-close" />
-              </v-btn>
-            </v-card>
-          </v-dialog>
+        <v-card
+          class="mt-4 px-3 py-2 d-flex align-center"
+          style="background-color: #2a2a2a; border-radius: 8px"
+        >
+          <span class="text-truncate" style="color: #facc15; max-width: 100%">
+            {{ shareUrl }}
+          </span>
+          <v-spacer />
+          <v-btn icon @click="copyLink" size="small">
+            <v-icon icon="mdi-content-copy" />
+          </v-btn>
+        </v-card>
+
+        <v-btn
+          icon
+          class="position-absolute"
+          style="top: 8px; right: 8px"
+          @click="shareDialog = false"
+        >
+          <v-icon icon="mdi-close" />
+        </v-btn>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
-import { urlImage1,CheckSession,PostMoviesFavorite, } from "@/model/api";
+import { urlImage1, CheckSession, PostMoviesFavorite } from "@/model/api";
 
 export default {
   props: ["movies"],
@@ -169,7 +167,7 @@ export default {
       imageLoaded: false,
       slider: null,
       shareDialog: false,
-      indexClick:1,
+      indexClick: 1,
       movieFavorite: {
         IDAccount:
           this.$store.state.empInfor.ID || localStorage.getItem("name"),
@@ -230,7 +228,12 @@ export default {
         }
       }, 5000);
     },
-
+    goDetail(movie) {
+      this.$router.push({
+        name: "Movies",
+        params: { slug: movie.slug },
+      });
+    },
     setMovie(index) {
       this.activeIndex = index;
       clearInterval(this.slider);
@@ -238,7 +241,7 @@ export default {
     },
 
     handleFavorite(movie) {
-            this.indexClick ++;
+      this.indexClick++;
       this.movieFavorite.IDMovies = movie.idMovie;
       this.movieFavorite.slug = movie.slug;
       this.movieFavorite.currentPage = movie.page;
@@ -274,7 +277,7 @@ export default {
                 },
                 (err) => {
                   console.log(err);
-                },
+                }
               );
             } else {
               alert(dat.data.message);
@@ -286,7 +289,7 @@ export default {
           },
           (err) => {
             alert(err);
-          },
+          }
         );
       } else {
         alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"));
@@ -419,13 +422,14 @@ export default {
   margin-top: 20px;
   display: flex;
   gap: 12px;
+  flex-direction: column;
+  align-items: center;
 }
 
 .btn-play {
   background: #ff0000;
   color: white;
 
-  padding: 12px 24px;
 
   border: none;
 
@@ -435,7 +439,11 @@ export default {
 
   cursor: pointer;
 }
-
+.icon-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
 .btn-icon {
   width: 42px;
   height: 42px;
@@ -461,20 +469,20 @@ export default {
 
   display: flex;
   gap: 10px;
-  overflow-x:auto;
-  overflow-y:hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
-.thumbs::-webkit-scrollbar{
-  display:none;
+.thumbs::-webkit-scrollbar {
+  display: none;
 }
-.thumbs{
-  scrollbar-width:none;
+.thumbs {
+  scrollbar-width: none;
 }
 .thumb {
-  flex:0 0 auto;
+  flex: 0 0 auto;
   width: 60px;
   height: 90px;
 
@@ -485,7 +493,7 @@ export default {
   cursor: pointer;
 
   opacity: 0.7;
-  scroll-snap-align:start;
+  scroll-snap-align: start;
   transition: 0.3s;
 }
 

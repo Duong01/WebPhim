@@ -86,7 +86,7 @@
             <div class="meta">
 
               <span class="rating">
-                ⭐ {{ movie.tmdb?.vote_average || "8.5" }}
+                ⭐ {{ movie.rating || "8.5" }}
               </span>
 
               <span class="year">
