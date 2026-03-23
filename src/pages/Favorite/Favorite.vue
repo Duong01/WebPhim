@@ -61,93 +61,57 @@
     <!-- ================= MOVIE GRID ================= -->
 
     <v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
-  <v-col
-    v-for="movie in filteredMovies"
-    :key="movie.IDMovies"
-    cols="6"
-    sm="4"
-    md="3"
-    lg="2"
-  >
-    <router-link
-      :to="{ name: 'Movies', params: { slug: movie.slug } }"
-      class="movie-link"
-    >
-      <v-card class="movie-card">
+      <v-col
+        v-for="movie in filteredMovies"
+        :key="movie.id"
+        cols="6"
+        sm="6"
+        md="3"
+        lg="3"
+      >
+        <router-link
+          :to="{ name: 'Movies', params: { slug: movie.slug } }"
+          class="movie-link"
+        >
+          <v-card class="movie-card" elevation="0">
+            <v-img
+              :src="getOptimizedImage(movie.UrlMovies)"
+              height="270"
+              cover
+              class="movie-poster"
+            >
+              <!-- overlay -->
+              <div class="hover-overlay">
+                <v-btn icon>
+                  <v-icon size="40">mdi-play</v-icon>
+                </v-btn>
 
-        <!-- POSTER -->
-        <div class="poster-wrapper">
-          <v-img
-            :src="getOptimizedImage(movie.UrlMovies)"
-            class="movie-poster"
-            cover
-          />
+                <v-btn icon @click.stop.prevent="handleFavorite(movie)">
+                  <v-icon color="red">mdi-heart</v-icon>
+                </v-btn>
+              </div>
 
-          <!-- overlay -->
-          <div class="hover-overlay">
-            <v-btn icon class="btn-play">
-              <v-icon size="40">mdi-play</v-icon>
-            </v-btn>
+              <!-- badge -->
+              <div class="movie-badges">
+                <span class="badge quality">HD</span>
+                <span class="badge lang">{{ movie.lang }}</span>
+              </div>
+            </v-img>
 
-            <v-btn icon @click.stop.prevent="handleFavorite(movie)">
-              <v-icon color="red">mdi-heart</v-icon>
-            </v-btn>
-          </div>
+            <v-card-text class="movie-info">
+              <div class="movie-title">
+                {{ movie.name }}
+              </div>
 
-          <!-- badge -->
-          <div class="top-badges">
-            <span class="badge quality">HD</span>
-            <span class="badge lang">{{ movie.lang }}</span>
-            <span class="badge hot" v-if="movie.year >= 2025">🔥 NEW</span>
-          </div>
-
-          <!-- episode -->
-          <div class="episode-badge">
-            {{ movie.episode_current || "Full" }}
-          </div>
-
-          <!-- rating -->
-          <div class="rating">
-            ⭐ {{ (Math.random()*3+7).toFixed(1) }}
-          </div>
-        </div>
-
-        <!-- INFO -->
-        <v-card-text class="movie-info">
-
-          <div class="movie-title">
-            {{ movie.name }}
-          </div>
-
-          <div class="movie-sub">
-            {{ movie.origin_name }}
-          </div>
-
-          <!-- meta -->
-          <div class="meta-row">
-            <span>{{ movie.year }}</span>
-            <span>•</span>
-            <span>23m</span>
-            <span>•</span>
-            <span>CN</span>
-          </div>
-
-          <!-- genre -->
-          <div class="genre-list">
-            <span class="genre-item">Action</span>
-            <span class="genre-item">Drama</span>
-          </div>
-
-          <!-- progress -->
-          <div class="progress-bar">
-            <div class="progress"></div>
-          </div>
-
-        </v-card-text>
-      </v-card>
-    </router-link>
-  </v-col>
-</v-row>
+              <div class="movie-sub">
+                <span>{{ movie.origin_name }}</span>
+                <span>{{ movie.year }}</span>
+              </div>
+            </v-card-text>
+          </v-card>
+        </router-link>
+      </v-col>
+    </v-row>
 
     <!-- LOAD MORE TRIGGER -->
     <div ref="loadMoreTrigger" v-show="movies.length" class="load-more-trigger">
@@ -449,59 +413,281 @@ export default {
 <style scoped>
 .favorite-page {
   min-height: 100vh;
-  padding: 40px 12px;
-  background: radial-gradient(circle at top, #1b1d2b, #0f111a);
-  color: #fff;
+  padding: 40px 10px;
 }
 
-/* CARD */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* grid */
+
+.movie-grid {
+  row-gap: 20px;
+}
+
+/* card */
 .movie-card {
-  border-radius: 18px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #181a24;
-  transition: all 0.4s ease;
-  position: relative;
-}
-
-.movie-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-}
-
-/* POSTER */
-.poster-wrapper {
-  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .movie-poster {
   aspect-ratio: 2/3;
+  width: 100%;
 }
 
-.movie-poster img {
-  transition: transform 0.5s;
+.movie-info {
+  padding: 10px;
+  min-height: 70px;
 }
 
-.movie-card:hover .movie-poster img {
-  transform: scale(1.12);
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
 /* gradient */
-.poster-wrapper::after {
-  content: "";
+
+.poster-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.95), transparent 60%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.2),
+    transparent
+  );
+  opacity: 0.8;
+}
+
+/* play */
+
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  color: white;
+  transition: 0.25s;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* favorite */
+
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+/* badges */
+
+.movie-badges {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge.quality {
+  background: #ff3d00;
+  color: white;
+}
+
+.badge.lang {
+  background: #2196f3;
+  color: white;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-sub {
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.movie-link {
+  text-decoration: none;
+}
+
+/* empty */
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #aaa;
+}
+
+/* animation */
+
+.fade-scale-enter-active {
+  transition: all 0.35s ease;
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-grid .v-col {
+  display: flex;
+}
+.fade-scale-enter-active {
+  transition: all 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+}
+
+.fade-scale-leave-active {
+  transition: all 0.25s ease;
+  position: absolute;
+}
+
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-poster img {
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.08);
+}
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.poster-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95),
+    rgba(0, 0, 0, 0.4),
+    transparent
+  );
+  transition: opacity 0.35s ease;
+}
+
+.movie-card:hover .poster-gradient {
+  opacity: 0.6;
+}
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  color: white;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.35s ease;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+
+  border-radius: 50%;
+
+  transition: transform 0.25s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.15);
+}
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.badge.quality {
+  background: #ff3d00;
+}
+
+.badge.lang {
+  background: #2196f3;
+}
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  transition: color 0.25s ease;
+}
+
+.movie-card:hover .movie-title {
+  color: #ff9800;
+}
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  color: #aaa;
+  font-size: 14px;
 }
 
 /* overlay */
 .hover-overlay {
   position: absolute;
   inset: 0;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
-  gap: 12px;
-  justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,.6);
+  justify-content: center;
+  gap: 12px;
   opacity: 0;
   transition: 0.3s;
 }
@@ -510,122 +696,31 @@ export default {
   opacity: 1;
 }
 
-/* play button */
-.btn-play {
-  background: red;
-  color: white;
-}
-
-/* badges */
-.top-badges {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  display: flex;
-  gap: 6px;
-}
-
-.badge {
-  font-size: 11px;
-  padding: 3px 7px;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-.badge.quality {
-  background: #ff3d00;
-}
-
-.badge.lang {
-  background: #1976d2;
-}
-
-.badge.hot {
-  background: #e53935;
-}
-
-/* episode */
-.episode-badge {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background: #e53935;
-  font-size: 12px;
-  padding: 3px 7px;
-  border-radius: 6px;
-}
-
-/* rating */
-.rating {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0,0,0,.7);
-  padding: 3px 7px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-/* info */
-.movie-info {
-  padding: 12px;
-}
-
-.movie-title {
-  font-size: 14px;
-  font-weight: 600;
-  height: 38px;
+/* card đẹp hơn */
+.movie-card {
+  border-radius: 16px;
   overflow: hidden;
+  background: #111;
+  transition: 0.35s;
 }
 
-.movie-sub {
-  font-size: 12px;
-  opacity: 0.7;
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
-/* meta */
-.meta-row {
-  font-size: 12px;
-  color: #aaa;
+/* image zoom */
+.movie-poster img {
+  transition: 0.5s;
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.1);
+}
+.load-more-trigger {
+  height: 80px;
   display: flex;
-  gap: 5px;
-  margin-top: 4px;
-}
-
-/* genre */
-.genre-list {
-  margin-top: 6px;
-  display: flex;
-  gap: 5px;
-}
-
-.genre-item {
-  font-size: 10px;
-  background: rgba(255,255,255,0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-/* progress */
-.progress-bar {
-  margin-top: 8px;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-}
-
-.progress {
-  width: 40%;
-  height: 100%;
-  background: red;
-}
-
-/* animation */
-.fade-scale-enter-active {
-  transition: all 0.4s ease;
-}
-
-.fade-scale-enter-from {
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  justify-content: center;
+  align-items: center;
 }
 </style>
