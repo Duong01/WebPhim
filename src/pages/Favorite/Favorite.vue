@@ -73,67 +73,42 @@
           :to="{ name: 'Movies', params: { slug: movie.slug } }"
           class="movie-link"
         >
-          <v-card class="movie-card">
-  <v-img
-    :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
-    class="movie-poster"
-    cover
-  >
-    <!-- gradient -->
-    <div class="poster-gradient"></div>
+          <v-card class="movie-card" elevation="0">
+            <v-img
+              :src="getOptimizedImage(movie.UrlMovies)"
+              height="270"
+              cover
+              class="movie-poster"
+            >
+              <!-- overlay -->
+              <div class="hover-overlay">
+                <v-btn icon>
+                  <v-icon size="40">mdi-play</v-icon>
+                </v-btn>
 
-    <!-- top badges -->
-    <div class="top-badges">
-      <span class="badge quality">{{ movie.quality || "HD" }}</span>
-      <span class="badge episode">{{ movie.episode_current }}</span>
-    </div>
+                <v-btn icon @click.stop.prevent="handleFavorite(movie)">
+                  <v-icon color="red">mdi-heart</v-icon>
+                </v-btn>
+              </div>
 
-    <!-- rating -->
-    <div class="rating">
-      ⭐ {{ Number(movie.tmdb?.vote_average || 0).toFixed(1) }}
-    </div>
+              <!-- badge -->
+              <div class="movie-badges">
+                <span class="badge quality">HD</span>
+                <span class="badge lang">{{ movie.lang }}</span>
+              </div>
+            </v-img>
 
-    <!-- overlay -->
-    <div class="hover-overlay">
-      <v-btn icon>
-        <v-icon size="40">mdi-play-circle</v-icon>
-      </v-btn>
+            <v-card-text class="movie-info">
+              <div class="movie-title">
+                {{ movie.name }}
+              </div>
 
-      <v-btn icon @click.stop.prevent="handleFavorite(movie)">
-        <v-icon color="red">mdi-heart</v-icon>
-      </v-btn>
-    </div>
-  </v-img>
-
-  <v-card-text class="movie-info">
-    <div class="movie-title">
-      {{ movie.name }}
-    </div>
-
-    <div class="movie-sub">
-      <span>{{ movie.origin_name }}</span>
-      <span>{{ movie.year }}</span>
-    </div>
-
-    <!-- extra info -->
-    <div class="movie-meta">
-      <span>⏱ {{ movie.time }}</span>
-      <span>🌍 {{ movie.country?.[0]?.name }}</span>
-    </div>
-
-    <!-- category -->
-    <div class="movie-category">
-      <v-chip
-        v-for="c in movie.category"
-        :key="c.id"
-        size="x-small"
-        class="mr-1"
-      >
-        {{ c.name }}
-      </v-chip>
-    </div>
-  </v-card-text>
-</v-card>
+              <div class="movie-sub">
+                <span>{{ movie.origin_name }}</span>
+                <span>{{ movie.year }}</span>
+              </div>
+            </v-card-text>
+          </v-card>
         </router-link>
       </v-col>
     </v-row>
@@ -154,7 +129,7 @@
 </template>
 
 <script>
-import { urlImage1, PostMoviesFavorite,MoveInfor  } from "@/model/api";
+import { urlImage1, PostMoviesFavorite } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
 import { getFavorites } from "@/utils/favorite";
 
@@ -178,7 +153,6 @@ export default {
       search: "",
       snackbar: false,
       snackbarText: "",
-      movieCache: {},
 
       sortItems: [
         { title: "Mới nhất", value: "new" },
@@ -209,10 +183,6 @@ export default {
   },
   mounted() {
     try {
-      const cache = localStorage.getItem("movieCache");
-      if (cache) {
-        this.movieCache = JSON.parse(cache);
-      }
       this.ListMovie();
       this.$store.dispatch("loading/stopLoading");
     } catch (err) {
@@ -281,131 +251,49 @@ export default {
     //     },
     //   );
     // },
-    // ListMovie(isLoadMore = false) {
-    //   if (isLoadMore) {
-    //     this.loadingMore = true;
-    //   } else {
-    //     this.loading = true;
-    //     this.movies = [];
-    //   }
-
-    //   const params = {
-    //     idAccount: this.idAccount,
-    //     page: this.currentPage,
-    //   };
-
-    //   getFavorites(
-    //     params,
-    //     (dat) => {
-    //       if (dat.data.status === "success") {
-    //         const newMovies = dat.data.data.map((m) => ({
-    //           ...m,
-    //           isFavorite: true,
-    //         }));
-
-    //         if (isLoadMore) {
-    //           this.movies = [...this.movies, ...newMovies];
-    //         } else {
-    //           this.movies = newMovies;
-    //         }
-
-    //         // check hết data chưa
-    //         if (newMovies.length < this.moviesPerPage) {
-    //           this.isLastPage = true;
-    //         }
-    //       }
-
-    //       this.loading = false;
-    //       this.loadingMore = false;
-    //     },
-    //     () => {
-    //       this.loading = false;
-    //       this.loadingMore = false;
-    //     }
-    //   );
-    // },
-    async ListMovie(isLoadMore = false) {
-    if (isLoadMore) {
-      this.loadingMore = true;
-    } else {
-      this.loading = true;
-      this.movies = [];
-    }
-
-    const params = {
-      idAccount: this.idAccount,
-      page: this.currentPage,
-    };
-
-    getFavorites(
-      params,
-      async (res) => {
-        if (res.data.status === "success") {
-          const list = res.data.data;
-
-          // 🔥 CALL API DETAIL SONG SONG
-          const detailPromises = list.map(
-  (m) =>
-    new Promise((resolve) => {
-      // ✅ nếu đã có cache thì dùng luôn
-      if (this.movieCache[m.slug]) {
-        return resolve({
-          ...m,
-          ...this.movieCache[m.slug],
-          isFavorite: true,
-        });
+    ListMovie(isLoadMore = false) {
+      if (isLoadMore) {
+        this.loadingMore = true;
+      } else {
+        this.loading = true;
+        this.movies = [];
       }
 
-      // ❌ chưa có thì gọi API
-      MoveInfor(
-        m.slug,
-        (detail) => {
-          if (detail.status === "success" || detail.status === true) {
-            const item = detail.data.item;
+      const params = {
+        idAccount: this.idAccount,
+        page: this.currentPage,
+      };
 
-            // ✅ lưu cache
-            this.movieCache[m.slug] = item;
-
-      // ✅ lưu cache LOCAL (THÊM DÒNG NÀY NGAY DƯỚI)
-      localStorage.setItem(
-        "movieCache",
-        JSON.stringify(this.movieCache)
-      );
-            resolve({
+      getFavorites(
+        params,
+        (dat) => {
+          if (dat.data.status === "success") {
+            const newMovies = dat.data.data.map((m) => ({
               ...m,
-              ...item,
               isFavorite: true,
-            });
-          } else {
-            resolve(m);
+            }));
+
+            if (isLoadMore) {
+              this.movies = [...this.movies, ...newMovies];
+            } else {
+              this.movies = newMovies;
+            }
+
+            // check hết data chưa
+            if (newMovies.length < this.moviesPerPage) {
+              this.isLastPage = true;
+            }
           }
+
+          this.loading = false;
+          this.loadingMore = false;
         },
-        () => resolve(m)
-      );
-    })
-);
-          const fullMovies = await Promise.all(detailPromises);
-
-          if (isLoadMore) {
-            this.movies = [...this.movies, ...fullMovies];
-          } else {
-            this.movies = fullMovies;
-          }
-
-          if (fullMovies.length < this.moviesPerPage) {
-            this.isLastPage = true;
-          }
+        () => {
+          this.loading = false;
+          this.loadingMore = false;
         }
-
-        this.loading = false;
-        this.loadingMore = false;
-      },
-      () => {
-        this.loading = false;
-        this.loadingMore = false;
-      }
-    );
-  },
+      );
+    },
     initObserver() {
       if (!this.$refs.loadMoreTrigger) {
         console.log("❌ chưa có trigger");
@@ -525,51 +413,281 @@ export default {
 <style scoped>
 .favorite-page {
   min-height: 100vh;
-  padding: 40px 16px;
-  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-  color: #fff;
+  padding: 40px 10px;
 }
 
-/* GRID */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* grid */
+
 .movie-grid {
-  row-gap: 24px;
+  row-gap: 20px;
 }
 
-/* CARD */
+/* card */
 .movie-card {
-  border-radius: 18px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #111;
-  transition: all 0.35s ease;
-  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.movie-poster {
+  aspect-ratio: 2/3;
+  width: 100%;
+}
+
+.movie-info {
+  padding: 10px;
+  min-height: 70px;
 }
 
 .movie-card:hover {
-  transform: translateY(-10px) scale(1.04);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
-/* POSTER */
-.movie-poster {
-  aspect-ratio: 2/3;
-}
+/* gradient */
 
-/* GRADIENT */
 .poster-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.2),
+    transparent
+  );
+  opacity: 0.8;
 }
 
-/* OVERLAY */
+/* play */
+
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  color: white;
+  transition: 0.25s;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* favorite */
+
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+/* badges */
+
+.movie-badges {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge.quality {
+  background: #ff3d00;
+  color: white;
+}
+
+.badge.lang {
+  background: #2196f3;
+  color: white;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-sub {
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.movie-link {
+  text-decoration: none;
+}
+
+/* empty */
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #aaa;
+}
+
+/* animation */
+
+.fade-scale-enter-active {
+  transition: all 0.35s ease;
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-grid .v-col {
+  display: flex;
+}
+.fade-scale-enter-active {
+  transition: all 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+}
+
+.fade-scale-leave-active {
+  transition: all 0.25s ease;
+  position: absolute;
+}
+
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-poster img {
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.08);
+}
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.poster-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95),
+    rgba(0, 0, 0, 0.4),
+    transparent
+  );
+  transition: opacity 0.35s ease;
+}
+
+.movie-card:hover .poster-gradient {
+  opacity: 0.6;
+}
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  color: white;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.35s ease;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+
+  border-radius: 50%;
+
+  transition: transform 0.25s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.15);
+}
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.badge.quality {
+  background: #ff3d00;
+}
+
+.badge.lang {
+  background: #2196f3;
+}
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  transition: color 0.25s ease;
+}
+
+.movie-card:hover .movie-title {
+  color: #ff9800;
+}
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* overlay */
 .hover-overlay {
   position: absolute;
   inset: 0;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
-  gap: 10px;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  gap: 12px;
   opacity: 0;
   transition: 0.3s;
 }
@@ -578,87 +696,27 @@ export default {
   opacity: 1;
 }
 
-/* BADGES */
-.top-badges {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  display: flex;
-  gap: 6px;
+/* card đẹp hơn */
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: 0.35s;
 }
 
-.badge {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-weight: 600;
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
-.badge.quality {
-  background: #ff3d00;
+/* image zoom */
+.movie-poster img {
+  transition: 0.5s;
 }
 
-.badge.episode {
-  background: #673ab7;
+.movie-card:hover .movie-poster img {
+  transform: scale(1.1);
 }
-
-/* RATING */
-.rating {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(0,0,0,0.7);
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 12px;
-}
-
-/* INFO */
-.movie-info {
-  padding: 12px;
-}
-
-.movie-title {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.movie-sub {
-  font-size: 12px;
-  color: #aaa;
-  display: flex;
-  justify-content: space-between;
-}
-
-/* EXTRA INFO */
-.movie-meta {
-  font-size: 12px;
-  margin-top: 6px;
-  display: flex;
-  justify-content: space-between;
-  color: #bbb;
-}
-
-/* CATEGORY */
-.movie-category {
-  margin-top: 6px;
-}
-
-/* CHIP */
-.v-chip {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-}
-
-/* EMPTY */
-.empty-state {
-  text-align: center;
-  padding: 100px 20px;
-  color: #aaa;
-}
-
-/* LOADER */
 .load-more-trigger {
   height: 80px;
   display: flex;
