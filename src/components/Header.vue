@@ -614,7 +614,6 @@ export default {
       this.$store.state.EmpName || localStorage.getItem("nameShow");
     const history = JSON.parse(localStorage.getItem("HisSearch"));
     this.movieSuggestions = history ? history : [];
-    console.log(this.movieSuggestions);
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.handleScroll);

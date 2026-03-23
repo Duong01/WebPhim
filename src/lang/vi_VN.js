@@ -108,10 +108,10 @@ export default
   'Việt Nam': 'Việt Nam',
   'TV Show': 'TV Show',
 
-  'Danh sách phim của bạn': 'Danh sách phim của bạn',
+  'Danh sách phim của bạn': 'Danh sách phim yêu thích',
   'Bạn không có dữ liệu nào được lưu':'Bạn không có dữ liệu nào được lưu',
   'Bạn muốn xem gì?': 'Bạn muốn xem gì?',
-  'Danh sách phim của bạn!': 'Danh sách phim của bạn!',
+  'Danh sách phim của bạn!': 'Danh sách phim yêu thích!',
   'Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet': 'Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet',
   '⏳ Hết thời gian chờ. Vui lòng thử lại!': '⏳ Hết thời gian chờ. Vui lòng thử lại!',
   'Lọc':'Lọc',

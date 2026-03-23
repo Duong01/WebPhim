@@ -1,178 +1,158 @@
 <template>
   <v-container class="favorite-page" fluid>
+    <!-- HEADER + TOOLBAR -->
+    <v-row class="mb-12" align="center">
+      <v-col cols="12" md="12">
+        <h2 class="page-title">🎬 {{ $t("Danh sách phim của bạn") }}</h2>
+      </v-col>
 
-    <!-- Header -->
-    <v-row justify="center" class="mb-6">
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="search"
+          placeholder="Tìm phim..."
+          prepend-inner-icon="mdi-magnify"
+          clearable
+          dense
+          variant="solo"
+        />
+      </v-col>
+
+      <v-col cols="12" md="6" class="text-md-right">
+        <v-select
+          v-model="filters.sortOption"
+          :items="sortItems"
+          dense
+          variant="solo"
+          hide-details
+        />
+      </v-col>
+    </v-row>
+
+    <!-- STATS -->
+    <v-row class="mb-2">
       <v-col cols="12">
-        <h2 class="page-title text-center">
-          {{ $t("Danh sách phim của bạn") }}
-        </h2>
-        <v-divider class="my-4" />
+        <div class="stats-bar">
+          <span>🎬 {{ filteredMovies.length }} phim</span>
+          <span>📄 Trang {{ currentPage }}</span>
+        </div>
       </v-col>
     </v-row>
 
     <!-- ================= LOADING ================= -->
 
     <v-row v-if="loading">
-      <v-col
-        v-for="n in 12"
-        :key="n"
-        cols="6"
-        sm="6"
-        md="3"
-        lg="3"
-      >
-        <v-skeleton-loader
-          type="image"
-          class="rounded-lg"
-        />
+      <v-col v-for="n in 12" :key="n" cols="6" sm="6" md="3" lg="3">
+        <v-skeleton-loader type="image" class="rounded-lg" />
       </v-col>
     </v-row>
 
     <!-- ================= EMPTY ================= -->
 
     <div v-else-if="movies.length === 0" class="empty-state">
+      <v-icon size="80"> mdi-movie-off </v-icon>
 
-      <v-icon size="80">
-        mdi-movie-off
-      </v-icon>
+      <h3 class="mt-4">Bạn chưa lưu phim nào</h3>
 
-      <h3 class="mt-4">
-        Bạn chưa lưu phim nào
-      </h3>
+      <p>Hãy khám phá và thêm phim vào danh sách yêu thích</p>
 
-      <p>
-        Hãy khám phá và thêm phim vào danh sách yêu thích
-      </p>
-
-      <v-btn
-        color="red"
-        class="mt-4"
-        to="/home"
-      >
-        Khám phá phim
-      </v-btn>
-
+      <v-btn color="red" class="mt-4" to="/home"> Khám phá phim </v-btn>
     </div>
 
     <!-- ================= MOVIE GRID ================= -->
 
-    <v-row
-      v-else
-      tag="transition-group"
-      name="fade-scale"
-      class="movie-grid"
-      align="stretch"
+    <v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
+  <v-col
+    v-for="movie in filteredMovies"
+    :key="movie.IDMovies"
+    cols="6"
+    sm="4"
+    md="3"
+    lg="2"
+  >
+    <router-link
+      :to="{ name: 'Movies', params: { slug: movie.slug } }"
+      class="movie-link"
     >
+      <v-card class="movie-card">
 
-      <v-col
-        v-for="movie in movies"
-        :key="movie.id"
-        cols="6"
-        sm="6"
-        md="3"
-        lg="3"
-      >
+        <!-- POSTER -->
+        <div class="poster-wrapper">
+          <v-img
+            :src="getOptimizedImage(movie.UrlMovies)"
+            class="movie-poster"
+            cover
+          />
 
-        <router-link
-          :to="{ name: 'Movies', params: { slug: movie.slug } }"
-          class="movie-link"
-        >
+          <!-- overlay -->
+          <div class="hover-overlay">
+            <v-btn icon class="btn-play">
+              <v-icon size="40">mdi-play</v-icon>
+            </v-btn>
 
-          <v-card
-            class="movie-card"
-            elevation="0"
-          >
+            <v-btn icon @click.stop.prevent="handleFavorite(movie)">
+              <v-icon color="red">mdi-heart</v-icon>
+            </v-btn>
+          </div>
 
-            <!-- Poster -->
+          <!-- badge -->
+          <div class="top-badges">
+            <span class="badge quality">HD</span>
+            <span class="badge lang">{{ movie.lang }}</span>
+            <span class="badge hot" v-if="movie.year >= 2025">🔥 NEW</span>
+          </div>
 
-            <v-img
-  :src="getOptimizedImage(movie.UrlMovies)"
-  :lazy-src="getOptimizedImage(movie.UrlMovies)"
-  :alt="movie.name"
-  aspect-ratio="16/9"
-  cover
-  transition="fade-transition"
-                        height="270"
-                        width="100%"
-  class="movie-poster"
->
+          <!-- episode -->
+          <div class="episode-badge">
+            {{ movie.episode_current || "Full" }}
+          </div>
 
-              <!-- Gradient overlay -->
+          <!-- rating -->
+          <div class="rating">
+            ⭐ {{ (Math.random()*3+7).toFixed(1) }}
+          </div>
+        </div>
 
-              <div class="poster-gradient"></div>
+        <!-- INFO -->
+        <v-card-text class="movie-info">
 
-              <!-- Play icon -->
+          <div class="movie-title">
+            {{ movie.name }}
+          </div>
 
-              <div class="movie-play">
-                <v-icon size="50">
-                  mdi-play-circle-outline
-                </v-icon>
-              </div>
+          <div class="movie-sub">
+            {{ movie.origin_name }}
+          </div>
 
-              <!-- Favorite button -->
+          <!-- meta -->
+          <div class="meta-row">
+            <span>{{ movie.year }}</span>
+            <span>•</span>
+            <span>23m</span>
+            <span>•</span>
+            <span>CN</span>
+          </div>
 
-              <v-btn
-                icon
-                size="small"
-                class="favorite-btn"
-                @click.stop.prevent="handleFavorite(movie)"
-              >
-                <v-icon
-                  :color="movie.isFavorite ? 'red' : 'white'"
-                >
-                  {{ movie.isFavorite
-                    ? "mdi-heart"
-                    : "mdi-heart-outline" }}
-                </v-icon>
-              </v-btn>
+          <!-- genre -->
+          <div class="genre-list">
+            <span class="genre-item">Action</span>
+            <span class="genre-item">Drama</span>
+          </div>
 
-              <!-- Badges -->
+          <!-- progress -->
+          <div class="progress-bar">
+            <div class="progress"></div>
+          </div>
 
-              <div class="movie-badges">
+        </v-card-text>
+      </v-card>
+    </router-link>
+  </v-col>
+</v-row>
 
-                <span class="badge quality">
-                  HD
-                </span>
-
-                <span class="badge lang">
-                  {{ movie.lang }}
-                </span>
-
-              </div>
-
-            </v-img>
-
-            <!-- Movie info -->
-
-            <v-card-text class="movie-info">
-
-              <div class="movie-title">
-                {{ movie.name }}
-              </div>
-
-              <div class="movie-sub">
-
-                <span class="origin">
-                  {{ movie.origin_name }}
-                </span>
-
-                <span class="year">
-                  {{ movie.year }}
-                </span>
-
-              </div>
-
-            </v-card-text>
-
-          </v-card>
-
-        </router-link>
-
-      </v-col>
-
-    </v-row>
-
+    <!-- LOAD MORE TRIGGER -->
+    <div ref="loadMoreTrigger" v-show="movies.length" class="load-more-trigger">
+      <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+    </div>
     <!-- ================= PAGINATION ================= -->
 
     <v-pagination
@@ -181,7 +161,6 @@
       :length="Math.ceil(totalMovies / moviesPerPage)"
       class="mt-6 justify-center"
     />
-
   </v-container>
 </template>
 
@@ -204,7 +183,18 @@ export default {
       titlePage: "",
       MessageErr: "",
 
+      loadingMore: false,
+      isLastPage: false,
       // Bộ lọc
+      search: "",
+      snackbar: false,
+      snackbarText: "",
+
+      sortItems: [
+        { title: "Mới nhất", value: "new" },
+        { title: "Năm", value: "year" },
+        { title: "Tên", value: "name" },
+      ],
 
       filters: {
         year: "",
@@ -230,10 +220,16 @@ export default {
   mounted() {
     try {
       this.ListMovie();
+      this.$store.dispatch("loading/stopLoading");
     } catch (err) {
       console.log(err);
     } finally {
       this.$store.dispatch("loading/stopLoading");
+    }
+  },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
     }
   },
   methods: {
@@ -259,48 +255,113 @@ export default {
         },
         (err) => {
           console.log(err);
-        },
+        }
       );
     },
 
-    ListMovie() {
-      this.loading = true;
-      this.movies = [];
-      var movie = {
+    // ListMovie() {
+
+    //   this.loading = true;
+    //   this.movies = [];
+    //   var movie = {
+    //     idAccount: this.idAccount,
+    //     page: this.currentPage,
+    //   };
+    //   getFavorites(
+    //     movie,
+    //     (dat) => {
+    //       if (dat.data.status === "success") {
+    //         this.movies = dat.data.data;
+    //         this.movies = dat.data.data.map((m) => ({
+    //           ...m,
+    //           isFavorite: true, // vì đang ở trang favorite
+    //         }));
+    //       } else {
+    //         this.MessageErr = dat.data.message;
+    //       }
+    //       this.loading = false;
+    //     },
+    //     (err) => {
+    //       console.log(err);
+    //       this.loading = false;
+    //     },
+    //   );
+    // },
+    ListMovie(isLoadMore = false) {
+      if (isLoadMore) {
+        this.loadingMore = true;
+      } else {
+        this.loading = true;
+        this.movies = [];
+      }
+
+      const params = {
         idAccount: this.idAccount,
         page: this.currentPage,
       };
+
       getFavorites(
-        movie,
+        params,
         (dat) => {
           if (dat.data.status === "success") {
-            this.movies = dat.data.data;
-            this.movies = dat.data.data.map((m) => ({
+            const newMovies = dat.data.data.map((m) => ({
               ...m,
-              isFavorite: true, // vì đang ở trang favorite
+              isFavorite: true,
             }));
-          } else {
-            this.MessageErr = dat.data.message;
+
+            if (isLoadMore) {
+              this.movies = [...this.movies, ...newMovies];
+            } else {
+              this.movies = newMovies;
+            }
+
+            // check hết data chưa
+            if (newMovies.length < this.moviesPerPage) {
+              this.isLastPage = true;
+            }
           }
+
           this.loading = false;
+          this.loadingMore = false;
         },
-        (err) => {
-          console.log(err);
+        () => {
           this.loading = false;
-        },
+          this.loadingMore = false;
+        }
       );
+    },
+    initObserver() {
+      if (!this.$refs.loadMoreTrigger) {
+        console.log("❌ chưa có trigger");
+        return;
+      }
+
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+
+      this.observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+
+        if (entry.isIntersecting && !this.loadingMore && !this.isLastPage) {
+          console.log("👉 LOAD PAGE", this.currentPage + 1);
+
+          this.currentPage++;
+          this.ListMovie(true);
+        }
+      });
+
+      this.observer.observe(this.$refs.loadMoreTrigger);
     },
     getOptimizedImage(imagePath) {
       if (imagePath.includes("img.ophim.live")) {
         return imagePath;
       }
-      return imagePath;
-      // return `${
-      //   imagePath.includes("https://phimimg.com/upload")
-      //     ? this.urlImage1 + imagePath
-      //     : this.urlImage1 + "https://phimimg.com/" + imagePath
-      // }`;
-      // }
+      return `${
+        imagePath.includes("https://phimimg.com/upload")
+          ? this.urlImage + imagePath
+          : this.urlImage + "https://phimimg.com/" + imagePath
+      }`;
     },
 
     applyFilters() {
@@ -349,8 +410,34 @@ export default {
     idAccount() {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
+    filteredMovies() {
+      let list = [...this.movies];
+
+      // search
+      if (this.search) {
+        list = list.filter((m) =>
+          m.name.toLowerCase().includes(this.search.toLowerCase())
+        );
+      }
+
+      // sort
+      if (this.filters.sortOption === "year") {
+        list.sort((a, b) => b.year - a.year);
+      }
+
+      if (this.filters.sortOption === "name") {
+        list.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      return list;
+    },
   },
   watch: {
+    movies() {
+      this.$nextTick(() => {
+        this.initObserver();
+      });
+    },
     currentPage() {
       this.loading = true;
       this.ListMovie();
@@ -360,273 +447,185 @@ export default {
 </script>
 
 <style scoped>
-
-.favorite-page{
-  min-height:100vh;
-  padding:40px 10px;
+.favorite-page {
+  min-height: 100vh;
+  padding: 40px 12px;
+  background: radial-gradient(circle at top, #1b1d2b, #0f111a);
+  color: #fff;
 }
 
-.page-title{
-  font-size:28px;
-  font-weight:700;
+/* CARD */
+.movie-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #181a24;
+  transition: all 0.4s ease;
+  position: relative;
 }
 
-/* grid */
-
-.movie-grid{
-  row-gap:20px;
+.movie-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.9);
 }
 
-/* card */
-.movie-card{
-  border-radius:14px;
-  overflow:hidden;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  flex:1;
+/* POSTER */
+.poster-wrapper {
+  position: relative;
 }
 
-.movie-poster{
-  aspect-ratio:2/3;
-  width:100%;
+.movie-poster {
+  aspect-ratio: 2/3;
 }
 
-.movie-info{
-  padding:10px;
-  min-height:70px;
+.movie-poster img {
+  transition: transform 0.5s;
 }
 
-
-.movie-card:hover{
-  transform:translateY(-6px) scale(1.02);
-  box-shadow:0 12px 30px rgba(0,0,0,.6);
+.movie-card:hover .movie-poster img {
+  transform: scale(1.12);
 }
-
 
 /* gradient */
-
-.poster-gradient{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.85),
-    rgba(0,0,0,.2),
-    transparent
-  );
-  opacity:.8;
+.poster-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.95), transparent 60%);
 }
 
-/* play */
-
-.movie-play{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(.9);
-  opacity:0;
-  color:white;
-  transition:.25s;
+/* overlay */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,.6);
+  opacity: 0;
+  transition: 0.3s;
 }
 
-.movie-card:hover .movie-play{
-  opacity:1;
-  transform:translate(-50%,-50%) scale(1);
+.movie-card:hover .hover-overlay {
+  opacity: 1;
 }
 
-/* favorite */
-
-.favorite-btn{
-  position:absolute;
-  top:8px;
-  right:8px;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(5px);
+/* play button */
+.btn-play {
+  background: red;
+  color: white;
 }
 
 /* badges */
-
-.movie-badges{
-  position:absolute;
-  bottom:8px;
-  left:8px;
-  display:flex;
-  gap:6px;
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
 }
 
-.badge{
-  font-size:11px;
-  padding:2px 6px;
-  border-radius:4px;
-  font-weight:600;
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
-.badge.quality{
-  background:#ff3d00;
-  color:white;
+.badge.quality {
+  background: #ff3d00;
 }
 
-.badge.lang{
-  background:#2196f3;
-  color:white;
+.badge.lang {
+  background: #1976d2;
 }
 
-
-.movie-title{
-  font-size:14px;
-  font-weight:600;
-  color:white;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.badge.hot {
+  background: #e53935;
 }
 
-.movie-sub{
-  font-size:12px;
-  color:#aaa;
-  display:flex;
-  justify-content:space-between;
-  margin-top:4px;
+/* episode */
+.episode-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #e53935;
+  font-size: 12px;
+  padding: 3px 7px;
+  border-radius: 6px;
 }
 
-.movie-link{
-  text-decoration:none;
+/* rating */
+.rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,.7);
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 12px;
 }
 
-/* empty */
+/* info */
+.movie-info {
+  padding: 12px;
+}
 
-.empty-state{
-  text-align:center;
-  padding:80px 20px;
-  color:#aaa;
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  height: 38px;
+  overflow: hidden;
+}
+
+.movie-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* meta */
+.meta-row {
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+/* genre */
+.genre-list {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+}
+
+.genre-item {
+  font-size: 10px;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* progress */
+.progress-bar {
+  margin-top: 8px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+}
+
+.progress {
+  width: 40%;
+  height: 100%;
+  background: red;
 }
 
 /* animation */
-
-.fade-scale-enter-active{
-  transition:all .35s ease;
+.fade-scale-enter-active {
+  transition: all 0.4s ease;
 }
 
-.fade-scale-enter-from{
-  opacity:0;
-  transform:scale(.9);
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
 }
-.movie-grid .v-col{
-  display:flex;
-}
-.fade-scale-enter-active{
-  transition: all .45s cubic-bezier(.22,.61,.36,1);
-}
-
-.fade-scale-enter-from{
-  opacity:0;
-  transform:translateY(20px) scale(.96);
-}
-
-.fade-scale-leave-active{
-  transition:all .25s ease;
-  position:absolute;
-}
-
-.fade-scale-leave-to{
-  opacity:0;
-  transform:scale(.9);
-}
-.movie-poster img{
-  transition:transform .6s cubic-bezier(.22,.61,.36,1);
-}
-
-.movie-card:hover .movie-poster img{
-  transform:scale(1.08);
-}
-.movie-card{
-  border-radius:16px;
-  overflow:hidden;
-  background:#111;
-  transition:
-    transform .35s cubic-bezier(.22,.61,.36,1),
-    box-shadow .35s cubic-bezier(.22,.61,.36,1);
-}
-
-.movie-card:hover{
-  transform:translateY(-8px) scale(1.03);
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.7),
-    0 0 0 1px rgba(255,255,255,.05);
-}
-.poster-gradient{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.95),
-    rgba(0,0,0,.4),
-    transparent
-  );
-  transition:opacity .35s ease;
-}
-
-.movie-card:hover .poster-gradient{
-  opacity:.6;
-}
-.movie-play{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(.8);
-  opacity:0;
-  color:white;
-  transition:
-    transform .35s cubic-bezier(.22,.61,.36,1),
-    opacity .35s ease;
-}
-
-.movie-card:hover .movie-play{
-  opacity:1;
-  transform:translate(-50%,-50%) scale(1);
-}
-.favorite-btn{
-  position:absolute;
-  top:10px;
-  right:10px;
-
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(8px);
-
-  border-radius:50%;
-
-  transition:transform .25s ease;
-}
-
-.favorite-btn:hover{
-  transform:scale(1.15);
-}
-.badge{
-  font-size:11px;
-  padding:3px 7px;
-  border-radius:6px;
-  font-weight:600;
-  backdrop-filter:blur(4px);
-}
-
-.badge.quality{
-  background:#ff3d00;
-}
-
-.badge.lang{
-  background:#2196f3;
-}
-.movie-title{
-  font-size:14px;
-  font-weight:600;
-  color:white;
-  transition:color .25s ease;
-}
-
-.movie-card:hover .movie-title{
-  color:#ff9800;
-}
-
 </style>

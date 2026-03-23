@@ -1,26 +1,32 @@
 <template>
   <v-container class="search-page" fluid>
-    <v-row justify="center" class="mb-6">
+    <!-- <v-row justify="center" class="mb-6">
       <v-col cols="12">
-        <h2 class="text-center">
-          {{$t('Danh sách phim:')}} {{ titlePage }}
-        </h2>
+        <h2 class="text-center">{{ $t("Danh sách phim:") }} {{ titlePage }}</h2>
         <v-divider class="my-4" />
+      </v-col>
+    </v-row> -->
+
+    <FilterMovie @filter-changed="onFilterChanged" />
+    <v-row class="mb-6" align="center">
+      <v-col cols="12" md="6" class="text-md-left">
+        <h2 class="page-title">🎬 {{ titlePage }}</h2>
+      </v-col>
+
+      <v-col cols="12" md="6" class="text-md-right">
+        <span class="stats-bar"> {{ movies.length }} phim </span>
       </v-col>
     </v-row>
 
-    <FilterMovie @filter-changed="onFilterChanged" />
-
-
-
     <v-row justify="center">
-      <v-col cols="12" class="text-center" v-if="loading">
-        <v-progress-circular indeterminate color="primary" size="50" />
-      </v-col>
+      
 
-      <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+      <v-col cols="12">
+        <v-alert
+          v-if="movies.length === 0 && MessageErr == ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
@@ -30,149 +36,110 @@
           </router-link>
         </v-alert>
 
-        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+        <v-alert
+          v-else-if="movies.length === 0 && MessageErr != ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             MessageErr
           }}</strong
           >".
         </v-alert>
 
-        <v-row
-                no-gutters
-                tag="transition-group"
-                name="fade-scale"
-                class="movie-list"
-              >
-                <v-col
-                  v-for="movie in movies"
-                  :key="movie.id"
-                  cols="6"
-                  sm="6"
-                  md="3"
-                  style="padding: 10px"
-                >
-                  
-                  <router-link
-                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
-                    class="text-decoration-none"
-                  >
-                    <v-card
-                      class="mx-auto bg-dark movie-card"
-                      width="auto"
-                    >
-                      <v-img
-                        :src="getOptimizedImage(movie.poster_url)"
-                        :lazy-src="getOptimizedImage(movie.poster_url)"
-                        :alt="movie.name"
-                        spect-ratio="16/9"
-                        class="movie-image"
-                        transition="fade-transition"
-                        height="250"
-                        width="100%"
-                        cover
-                      >
-                        <template #default>
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
-                          >
-                            <v-icon>
-                              {{
-                                isFavorite(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn> -->
-                          <div class="badge-container">
-                          <!-- hiển thị bên trái -->
-                          <v-btn
-                            size="small"
-                            variant="flat"
-                            class="badge-top-left"
-                          >
-                            {{Number(movie.tmdb.vote_average).toFixed(1)}}
-                            <v-icon
-                            icon="mdi-star"
-                            end
-                            ></v-icon>
-                          </v-btn>
+        <v-row v-else class="movie-grid">
+  <v-col
+    v-for="movie in movies"
+    :key="movie.slug"
+    cols="6"
+    sm="4"
+    md="3"
+    lg="2"
+  >
+    <router-link
+      :to="{ name: 'Movies', params: { slug: movie.slug } }"
+      class="movie-link"
+    >
+      <v-card class="movie-card">
+  <div class="poster-wrapper">
+    <v-img
+      :src="getOptimizedImage(movie.poster_url)"
+      height="300"
+      cover
+    />
 
-                          <!-- hiển thị bên phải -->
-                          <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-top-right"
-                          >
-                            {{movie.quality}}
-                          </v-btn>
-                           </div>
-                          <div class="movie-overlay" aria-hidden="true"></div>
+    <!-- overlay -->
+    <div class="gradient-overlay"></div>
 
-                          <div class="movie-play" aria-hidden="true">
-                            <svg
-                              width="64"
-                              height="64"
-                              viewBox="0 0 64 64"
-                              xmlns="http://www.w3.org/2000/svg"
-                              aria-hidden="true"
-                            >
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="30"
-                                fill="rgba(0,0,0,0.55)"
-                              />
-                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                            </svg>
-                          </div>
-                        </template>
-                        <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="blue-lighten-3"
-                :width="5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
-                      </v-img>
+    <!-- hover play -->
+    <div class="hover-overlay">
+      <v-icon size="50">mdi-play-circle</v-icon>
+    </div>
 
-                      <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
-                        {{
-                          movie.episode_current === "Tập 0"
-                            ? `Full - ${movie.lang}`
-                            : `${movie.episode_current} - ${movie.lang}`
-                        }}
-                      </v-card-subtitle>
+    <!-- TOP BADGE -->
+    <div class="top-badges">
+      <span class="badge quality">{{ movie.quality }}</span>
+      <span class="badge lang">{{ movie.lang }}</span>
+    </div>
 
-                      <v-card-title class="movie-title">{{
-                        movie.name
-                      }}</v-card-title>
+    <!-- EPISODE -->
+    <div class="episode-badge">
+      {{ movie.episode_current }}
+    </div>
 
-                      <v-card-text class="movie-info">
-                        <div class="text-grey text-truncate">
-                          <v-icon size="14" class="mr-1"
-                            >mdi-tag</v-icon
-                          >
-                          {{ movie.origin_name }} ({{ movie.year }})
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </router-link>
-                </v-col>
-              </v-row>
+    <!-- RATING -->
+    <div class="rating">
+      ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
+    </div>
+  </div>
 
-        <v-pagination
+  <v-card-text class="movie-info">
+    <!-- TITLE -->
+    <div class="movie-title">
+      {{ movie.name }}
+    </div>
+
+    <!-- SUB -->
+    <div class="movie-sub">
+      {{ movie.origin_name }}
+    </div>
+
+    <!-- META -->
+    <div class="meta-row">
+      <span>{{ movie.year }}</span>
+      <span>•</span>
+      <span>{{ movie.time }}</span>
+      <span>•</span>
+      <span>{{ movie.country[0]?.name }}</span>
+    </div>
+
+    <!-- GENRE -->
+    <div class="genre-list">
+      <span
+        v-for="c in movie.category.slice(0,2)"
+        :key="c.id"
+        class="genre-item"
+      >
+        {{ c.name }}
+      </span>
+    </div>
+  </v-card-text>
+</v-card>
+    </router-link>
+  </v-col>
+</v-row>
+          <div
+        ref="loadMoreTrigger"
+        v-show="movies.length"
+        class="load-more-trigger"
+      >
+        <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+      </div>
+
+        <!-- <v-pagination
           v-model="currentPage"
           :length="Math.ceil(totalMovies / moviesPerPage)"
           class="my-4 justify-center"
-        />
+        /> -->
       </v-col>
     </v-row>
   </v-container>
@@ -180,7 +147,7 @@
   
   <script>
 import { urlImage1, ListMovieByCate1 } from "@/model/api";
-import FilterMovie from "@/pages/FilterMovie.vue"
+import FilterMovie from "@/pages/FilterMovie.vue";
 export default {
   name: "HoatHinh",
   data() {
@@ -193,86 +160,150 @@ export default {
       path: "hoat-hinh",
       urlImage: urlImage1,
       titlePage: "",
-      MessageErr: '',
-
-      // Bộ lọc
+      MessageErr: "",
       
+      loadingMore: false,
+      isLastPage: false,
+      observer: null,
+      observerInited: false,
+      // Bộ lọc
+
       filters: {
         keyword: "",
         year: "",
         lang: "",
         category: "",
         country: "",
-        sortOption: "modified.time"
+        sortOption: "modified.time",
       },
-
-      
     };
   },
-  components:{
-    FilterMovie
+  components: {
+    FilterMovie,
   },
   mounted() {
     this.ListMovie();
   },
   methods: {
-
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
       this.ListMovie();
     },
 
-    ListMovie() {
+    ListMovie(isLoadMore = false) {
+      if (isLoadMore) {
+        this.loadingMore = true;
+      } else {
+        this.loading = true;
+        this.movies = [];
+        this.isLastPage = false;
+      }
 
-      if(this.filters.year == null || this.filters.year == undefined || this.filters.year == ''){
-        this.filters.year = ''
+      if (
+        this.filters.year == null ||
+        this.filters.year == undefined ||
+        this.filters.year == ""
+      ) {
+        this.filters.year = "";
       }
-      if(this.filters.lang == null || this.filters.lang == undefined|| this.filters.lang == ''){
-        this.filters.lang = ''
+      if (
+        this.filters.lang == null ||
+        this.filters.lang == undefined ||
+        this.filters.lang == ""
+      ) {
+        this.filters.lang = "";
       }
-      if(this.filters.category == null || this.filters.category == undefined ||  this.filters.category == ''){
-        this.filters.category = ''
+      if (
+        this.filters.category == null ||
+        this.filters.category == undefined ||
+        this.filters.category == ""
+      ) {
+        this.filters.category = "";
       }
-      if(this.filters.country == null || this.filters.country == undefined || this.filters.country == ''){
-        this.filters.country = 'trung-quoc'
+      if (
+        this.filters.country == null ||
+        this.filters.country == undefined ||
+        this.filters.country == ""
+      ) {
+        this.filters.country = "trung-quoc";
       }
       this.loading = true;
+      //  CHỈ reset khi load page 1
+    if (this.currentPage === 1) {
       this.movies = [];
+    }
       ListMovieByCate1(
-        
         `${this.path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
         (result) => {
           if (result.status === "success" || result.status == true) {
-            this.movies = result.data.items;
+            const newMovies = result.data.items;
+            if (isLoadMore) {
+              this.movies = [...this.movies, ...newMovies];
+            } else {
+              this.movies = newMovies;
+            }
+
             this.titlePage = result.data.titlePage;
+            // check hết data
+            if (newMovies.length < this.moviesPerPage) {
+              this.isLastPage = true;
+            }
             if (result.data.seoOnPage) {
               this.updateMetaTags(result.data.seoOnPage);
             }
             this.loading = false;
-          }
-          else{
-            this.loading = false
-          this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
+            this.loadingMore = false;
+          } else {
+            this.loading = false;
+            this.loadingMore = false;
+            this.MessageErr = this.$t(
+              "Không có dữ liệu được hiển thị, vui lòng tải lại trang"
+            );
           }
         },
         (err) => {
           console.log(err);
-          this.loading = false
-          this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
+          this.loading = false;
+          this.loadingMore = false;
+          this.MessageErr = this.$t(
+            "Hết thời gian chờ, vui lòng tải lại trang"
+          );
         }
       );
     },
-    getOptimizedImage(imagePath) {
-      return `${ this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath) }`;
-    },
+    initObserver() {
+      if (this.observerInited) return;
+      if (!this.$refs.loadMoreTrigger) return;
 
+      this.observerInited = true;
+
+      this.observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+
+        if (
+          entry.isIntersecting &&
+          !this.loadingMore &&
+          !this.isLastPage &&
+          !this.loading
+        ) {
+          this.currentPage++;
+          this.ListMovie(true);
+        }
+      });
+
+      this.observer.observe(this.$refs.loadMoreTrigger);
+    },
+    getOptimizedImage(imagePath) {
+      return `${
+        this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)
+      }`;
+    },
 
     applyFilters() {
       this.currentPage = 1;
       this.ListMovie();
-      this.showFilter= false
-      
+      this.showFilter = false;
     },
     //return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}&w=384&q=100`;
     // Chuan SEO
@@ -313,11 +344,18 @@ export default {
     },
   },
   watch: {
-    currentPage() {
-      this.loading = true;
-      this.ListMovie();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
+    movies() {
+    if (!this.observerInited) {
+      this.$nextTick(() => {
+        this.initObserver();
+      });
+    }
+  },
+    // currentPage() {
+    //   this.loading = true;
+    //   this.ListMovie();
+    //   window.scrollTo({ top: 0, behavior: 'smooth' });
+    // },
   },
 };
 </script>
@@ -331,13 +369,18 @@ export default {
 
 .movie-card {
   border: none;
-  border-radius: 8px;
-  transition: transform 0.2s;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #181a24;
+  transition: all 0.35s ease;
+  position: relative;
 }
 
 .movie-card:hover {
   transform: translateY(-3px);
   color: orange;
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
 }
 .movie-image-loaded {
   opacity: 1;
@@ -529,7 +572,7 @@ export default {
 .v-text-field {
   color: white;
 }
-.movie-title{
+.movie-title {
   font-size: 14px;
 }
 .badge-top-left,
@@ -558,6 +601,268 @@ export default {
   top: 6px;
   right: 6px;
   background-color: rgb(204, 35, 35) !important;
+}
+.movie-grid {
+  row-gap: 20px;
+}
+
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: 0.35s;
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: 0.3s;
+
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+.movie-badges {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.load-more-trigger {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* poster */
+.poster-wrapper {
+  position: relative;
+}
+
+/* gradient overlay */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.9), transparent 60%);
+}
+/* badge */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  background: rgba(0,0,0,.7);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.badge.hot {
+  background: #e53935;
+}
+
+/* rating */
+.rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 13px;
+  background: rgba(0,0,0,.7);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 36px;
+  overflow: hidden;
+}
+
+.movie-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* genre */
+.genre-list {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.genre-item {
+  font-size: 10px;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* progress */
+.progress-bar {
+  margin-top: 8px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+.progress {
+  width: 40%;
+  height: 100%;
+  background: red;
+  border-radius: 3px;
+}
+.movie-link{
+  text-decoration: none;
+}
+.movie-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #14151c;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+}
+
+/* poster */
+.poster-wrapper {
+  position: relative;
+}
+
+/* gradient */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.95), transparent 60%);
+}
+
+/* hover */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,.6);
+  opacity: 0;
+  transition: .3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* badge */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(0,0,0,.7);
+}
+
+.badge.lang {
+  background: #1976d2;
+}
+
+/* episode */
+.episode-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #e53935;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* rating */
+.rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,.7);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* info */
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 38px;
+  overflow: hidden;
+}
+
+.movie-sub {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* meta */
+.meta-row {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+  display: flex;
+  gap: 5px;
+}
+
+/* genre */
+.genre-list {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.genre-item {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.1);
 }
 </style>
   
