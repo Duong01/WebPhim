@@ -94,7 +94,6 @@ async function generate() {
   // Ghi file sitemap.xml vào public
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap, 'utf8');
 
-  console.log('✅ Sitemap generated at public/sitemap.xml');
 }
 
 generate().catch((e) => {

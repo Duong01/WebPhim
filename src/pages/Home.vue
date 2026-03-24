@@ -5,11 +5,16 @@
     </keep-alive>
 
     <!-- CATEGORY QUICK -->
+    <keep-alive>
     <CategoryQuick :items="categories" />
-    <!-- HERO -->
-    <HeroBanner v-if="trending.length" :movie="trending" />
+    </keep-alive>
 
+    <!-- HERO -->
+    <keep-alive>
+    <HeroBanner v-if="trending.length" :movie="trending" />
+    </keep-alive>
     <!-- MOVIE SECTIONS -->
+    <keep-alive>
     <SectionWrapper
       v-for="(section, index) in sections"
       :key="section.title"
@@ -20,6 +25,7 @@
       :link="section.link"
       :loading="!section.loaded"
     />
+    </keep-alive>
   </div>
 </template>
 
@@ -274,7 +280,6 @@ export default {
         `?action=getTrending`,
         (dat) => {
           if (dat.success == true) {
-            console.log(dat);
             this.trending = dat.movies;
           }
         },
@@ -324,7 +329,7 @@ export default {
           });
         },
         {
-          rootMargin: "400px",
+          rootMargin: "80px",
         },
       );
 

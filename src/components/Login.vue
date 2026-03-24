@@ -183,7 +183,6 @@ export default {
       LoginGoogle(
         { Token: googleToken },
         (dat) => {
-          console.log(dat)
           if (dat.data.status === "success") {
 
             // xoa du lieu cu

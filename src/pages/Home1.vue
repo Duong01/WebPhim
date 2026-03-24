@@ -758,7 +758,6 @@ export default {
       })
     },
     handleFavorite(movie){
-      console.log(movie)
       this.movieFavorite.IDMovies = movie._id
       this.movieFavorite.slug = movie.slug
       this.movieFavorite.currentPage = movie.episode_current
@@ -767,7 +766,6 @@ export default {
       this.movieFavorite.name = movie.name
       this.movieFavorite.year = movie.year
       this.movieFavorite.lang = movie.lang
-      console.log(this.movieFavorite)
       PostMoviesFavorite(this.movieFavorite, (dat) =>{
         if(dat.data.status == "success"){
           alert("🎬 " + dat.data.message)

@@ -181,7 +181,6 @@ export default {
      this.loading = true;
       if (!this.isValid) return;
         Register(this.registerForm,(dat) =>{
-            console.log(dat)
             if(dat.status == 200 && dat.data.status == true){
                 this.snackbar = true;
                 this.snackbarMessage = this.$t('Đăng ký thành công! Bạn sẽ được chuyển đến trang đăng nhập.');

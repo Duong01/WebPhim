@@ -63,7 +63,13 @@
       :src="getOptimizedImage(movie.poster_url)"
       height="300"
       cover
-    />
+    >
+    <template #placeholder>
+                    <div class="d-flex align-center justify-center fill-height">
+                      <v-progress-circular indeterminate />
+                    </div>
+                  </template>
+    </v-img>
 
     <!-- overlay -->
     <div class="gradient-overlay"></div>

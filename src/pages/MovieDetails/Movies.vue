@@ -648,6 +648,7 @@ import {
   GetComments,
   CheckSession,
   PostMoviesFavorite,
+  UpdateMoviesFavorite
 } from "@/model/api";
 //import { toggleFavorite, isFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
@@ -749,7 +750,6 @@ export default {
 
       //await this.ListMovieByCate();
       //await this.GetComment();
-      console.log(this.currentEpisodeIndex);
     },
   },
   async mounted() {
@@ -763,10 +763,9 @@ export default {
       }
       this.addSchema();
       //this.playVideo(this.movie.videoUrl);
-
+      this.UpdateMoviesFavorite();
       this.ListMovieByCate();
       this.GetComment();
-      console.log(this.currentEpisodeIndex);
     } catch (err) {
       console.log(err);
     } finally {
@@ -813,7 +812,6 @@ export default {
         MoveInfor(
           slug,
           (result) => {
-            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "";
               this.movies = result.movie;
@@ -928,7 +926,6 @@ export default {
         MoveInfor1(
           slug,
           (result) => {
-            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "link";
               this.movies = result.movie;
@@ -1037,6 +1034,26 @@ export default {
         );
       });
     },
+    UpdateMoviesFavorite(){
+      const data = {
+        IDMovies: this.movies._id,
+        slug: this.movies.slug,
+        currentPage: this.movies.episode_current,
+        UrlMovies: this.movies.thumb_url,
+        poster_url: this.movies.poster_url,
+        origin_name: this.movies.origin_name,
+        name: this.movies.name,
+        year: this.movies.year,
+        lang: this.movies.lang,
+        time: this.movies.time,
+        quality: this.movies.quality,
+        vote_average: this.movies.tmdb.vote_average,
+      }
+      UpdateMoviesFavorite(data, () => {
+      }, (err) => {
+        console.log(err);
+      })
+    },
 
     loadMore() {
       if (!this.movie?.pageMovie) return;
@@ -1069,7 +1086,6 @@ export default {
       window.open(shareLink, "_blank");
     },
     goToWatch(ep) {
-      console.log(this.movies);
       var page = "01";
       if (ep == "first") {
         page = "01";
@@ -1098,7 +1114,6 @@ export default {
     },
     formatEpisode(text) {
       // Ví dụ: "Tập 1" → "tap01"
-      console.log(text);
       let num = parseInt(text.replace(/\D/g, ""), 10);
       const matchFraction = text.match(/\((\d+)\s*\/\s*(\d+)\)/);
       if (matchFraction) {
@@ -1110,7 +1125,6 @@ export default {
     },
     playVideo(url) {
       const video = this.$refs.videoPlayer;
-      console.log(url);
       if (!video) return;
       // ======== Nguồn phimapi.com ========
       if (url.includes("player.phimapi.com/player/?url=")) {
@@ -1155,8 +1169,6 @@ export default {
       window.open(linkdown);
     },
     handleFavorite() {
-      // let aa = toggleFavorite(this.movie);
-      // console.log(aa);
       this.liked = !this.liked;
       this.movieFavorite.IDMovies = this.movie.idMovie;
       this.movieFavorite.slug = this.movie.slug;

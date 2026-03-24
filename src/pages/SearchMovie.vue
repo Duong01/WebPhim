@@ -467,7 +467,6 @@ export default {
           clearTimeout(timer);
           if (result.status == "success" || result.status == true) {
             if ( result.data.items != null && result.data.items.length != 0) {
-              console.log(result)
               this.link = "link1"
                 this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
@@ -544,7 +543,6 @@ export default {
     },
 
     handleFavorite(movie){
-      console.log(movie)
       this.movieFavorite.IDMovies = movie._id
       this.movieFavorite.slug = movie.slug
       this.movieFavorite.currentPage = movie.episode_current
@@ -559,7 +557,6 @@ export default {
       this.movieFavorite.name = movie.name
       this.movieFavorite.year = movie.year
       this.movieFavorite.lang = movie.lang
-      console.log(this.movieFavorite)
       PostMoviesFavorite(this.movieFavorite, (dat) =>{
         if(dat.data.status == "success"){
           alert("🎬 " + dat.data.message)

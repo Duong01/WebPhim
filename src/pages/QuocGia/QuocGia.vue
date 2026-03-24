@@ -296,36 +296,7 @@ export default {
       this.ListMovie(this.path);
     },
     ListMovie(path) {
-      // if(path.includes("page=1&limit=20")){
-      //   CityDetail1(`${path}`, (result) => {
-      //   if (result.status === 'success') {
-      //     this.link1 = 'link2'
-      //     this.movies = result.data.items
-      //     this.titlePage = result.data.titlePage
-      //     if (result.data.seoOnPage) {
-      //       this.updateMetaTags(result.data.seoOnPage)
-      //     }
-      //     this.loading = false
-      //   }
-      // }, (err) => {
-      //   console.log(err)
-      // })
-      // }
-      // else{
-      //   CityDetail(`${path}?page=${this.currentPage}`, (result) => {
-      //       if (result.status === 'success') {
-      //         this.link1 = '';
-      //         this.movies = result.data.items
-      //         this.titlePage = result.data.titlePage
-      //         if (result.data.seoOnPage) {
-      //           this.updateMetaTags(result.data.seoOnPage)
-      //         }
-      //         this.loading = false
-      //       }
-      //     }, (err) => {
-      //       console.log(err)
-      //     })
-      //   }
+      
       if(this.filters.year == null || this.filters.year == undefined){
         this.filters.year = ''
       }

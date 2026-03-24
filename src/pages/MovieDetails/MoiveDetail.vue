@@ -878,7 +878,6 @@ export default {
       window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(newSlug);
       if (this.page) {
-        console.log(this.page);
         if (this.page == "01") {
           this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
         } else {
@@ -913,7 +912,6 @@ export default {
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
 
       this.setupVideo(this.movie.videoUrl);
-      console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
 
@@ -984,7 +982,6 @@ export default {
       //this.playVideo(this.movie.videoUrl);
 
       //this.bindVideoEvents();
-      console.log(this.currentEpisodeIndex);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
 
@@ -1093,7 +1090,6 @@ export default {
             const setTime = () => {
               if (isFinite(data.currentTime) && data.currentTime > 0) {
                 video.currentTime = data.currentTime;
-                console.log(`Đã khôi phục thời gian xem: ${Math.floor(data.currentTime)} giây`);
               }
               video.removeEventListener('loadedmetadata', setTime);
             };
@@ -1160,7 +1156,6 @@ export default {
         MoveInfor(
           slug,
           (result) => {
-            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "";
               this.movie.page = result.movie.episode_current;
@@ -1284,7 +1279,6 @@ export default {
         MoveInfor1(
           slug,
           (result) => {
-            console.log(result);
             if (result.status == true || result.status == "success") {
               this.link = "link";
               this.movie.page = result.movie.episode_current;
@@ -1980,7 +1974,6 @@ export default {
       GetComments(
         movie,
         (res) => {
-          console.log(res);
           if (res.data.status == "success") {
             this.comments = res.data.data;
           } else {
@@ -2106,7 +2099,6 @@ export default {
     },
     nextEpisode() {
       if (this.currentEpisodeIndex > 0) {
-        console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex--;
 
         const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
@@ -2115,7 +2107,6 @@ export default {
     },
     prevEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        console.log(this.currentEpisodeIndex);
         this.currentEpisodeIndex++;
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(prevEp);

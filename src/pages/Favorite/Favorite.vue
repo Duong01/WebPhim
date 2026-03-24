@@ -1,32 +1,40 @@
 <template>
   <v-container class="favorite-page" fluid>
     <!-- HEADER + TOOLBAR -->
-    <v-row class="mb-12" align="center">
-      <v-col cols="12" md="12">
-        <h2 class="page-title">🎬 {{ $t("Danh sách phim của bạn") }}</h2>
-      </v-col>
+    <!-- HEADER -->
+    <div class="header-bar">
+      <div class="header-left" v-show="$vuetify.display.smAndUp">
+        <h2>🎬 Danh sách yêu thích</h2>
+        <span class="sub">{{ filteredMovies.length }} phim</span>
+      </div>
 
-      <v-col cols="12" md="6">
+      <div class="header-right">
         <v-text-field
           v-model="search"
           placeholder="Tìm phim..."
           prepend-inner-icon="mdi-magnify"
-          clearable
-          dense
-          variant="solo"
+          variant="solo-filled"
+          density="compact"
+          hide-details
+          width="200"
         />
-      </v-col>
-
-      <v-col cols="12" md="6" class="text-md-right">
         <v-select
           v-model="filters.sortOption"
           :items="sortItems"
-          dense
-          variant="solo"
+          item-title="title"
+          item-value="value"
+          label="Sắp xếp"
+          variant="solo-filled"
+          density="compact"
           hide-details
+          clearable
+          width="200"
+          hint="Pick your favorite states"
         />
-      </v-col>
-    </v-row>
+        
+        
+      </div>
+    </div>
 
     <!-- STATS -->
     <v-row class="mb-2">
@@ -74,41 +82,66 @@
           class="movie-link"
         >
           <v-card class="movie-card" elevation="0">
-            <v-img
-              :src="getOptimizedImage(movie.UrlMovies)"
-              height="270"
-              cover
-              class="movie-poster"
-            >
-              <!-- overlay -->
-              <div class="hover-overlay">
-                <v-btn icon>
-                  <v-icon size="40">mdi-play</v-icon>
-                </v-btn>
+  <div class="poster-wrapper">
+    <v-img
+      :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
+      class="movie-poster"
+      cover
+      height="270"
+    />
 
-                <v-btn icon @click.stop.prevent="handleFavorite(movie)">
-                  <v-icon color="red">mdi-heart</v-icon>
-                </v-btn>
-              </div>
+    <!-- overlay -->
+    <div class="hover-overlay">
+      <v-btn icon>
+        <v-icon size="40">mdi-play</v-icon>
+      </v-btn>
 
-              <!-- badge -->
-              <div class="movie-badges">
-                <span class="badge quality">HD</span>
-                <span class="badge lang">{{ movie.lang }}</span>
-              </div>
-            </v-img>
+      <v-btn icon @click.stop.prevent="handleFavorite(movie)">
+        <v-icon :color="indexClick % 1 === 0 ? 'red' : 'white'">
+                          {{
+                            indexClick % 1 === 0
+                              ? "mdi-heart"
+                              : "mdi-heart-outline"
+                          }}
+                        </v-icon>
+      </v-btn>
+    </div>
 
-            <v-card-text class="movie-info">
-              <div class="movie-title">
-                {{ movie.name }}
-              </div>
+    <!-- TOP BADGE -->
+    <div class="top-badges">
+      <span class="badge quality">{{ movie.quality || "NA" }}</span>
+      <span class="badge lang">{{ movie.lang || "NA" }}</span>
+    </div>
 
-              <div class="movie-sub">
-                <span>{{ movie.origin_name }}</span>
-                <span>{{ movie.year }}</span>
-              </div>
-            </v-card-text>
-          </v-card>
+    <!-- EPISODE -->
+    <div class="episode">
+      {{ movie.currentPage || "NA" }}
+    </div>
+
+    <!-- BOTTOM INFO -->
+    <div class="bottom-info">
+      ⭐ {{ movie.vote_average && movie.vote_average !== "0" ? movie.vote_average : "NA" }}
+      <span>{{ movie.year || "NA" }}</span>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <v-card-text class="movie-info">
+    <div class="movie-title">
+      {{ movie.name || "NA" }}
+    </div>
+
+    <div class="movie-sub">
+      <span>{{ movie.origin_name || "NA" }}</span>
+    </div>
+
+    <!-- EXTRA INFO -->
+    <div class="movie-extra">
+      <span>⏱ {{ movie.time || "NA" }}</span>
+      <span>📅 {{ formatDate(movie.Daycreate) }}</span>
+    </div>
+  </v-card-text>
+</v-card>
         </router-link>
       </v-col>
     </v-row>
@@ -139,6 +172,7 @@ export default {
     return {
       loading: true,
       currentPage: 1,
+      indexClick: 1,
       moviesPerPage: 20,
       totalMovies: 100,
       movies: [],
@@ -146,6 +180,11 @@ export default {
       urlImage: urlImage1,
       titlePage: "",
       MessageErr: "",
+      sortItems: [
+        { title: "Mới nhất", value: "new" },
+        { title: "A-Z", value: "name" },
+        { title: "Năm", value: "year" }
+      ],
 
       loadingMore: false,
       isLastPage: false,
@@ -153,12 +192,6 @@ export default {
       search: "",
       snackbar: false,
       snackbarText: "",
-
-      sortItems: [
-        { title: "Mới nhất", value: "new" },
-        { title: "Năm", value: "year" },
-        { title: "Tên", value: "name" },
-      ],
 
       filters: {
         year: "",
@@ -197,8 +230,16 @@ export default {
     }
   },
   methods: {
+    formatDate(date) {
+  if (!date) return "NA";
+  try {
+    return new Date(date).toLocaleDateString();
+  } catch {
+    return "NA";
+  }
+},
     handleFavorite(movie) {
-      console.log(movie);
+      this.indexClick++;
       this.movieFavorite.IDAccount = this.idAccount;
       this.movieFavorite.IDMovies = movie.IDMovies;
       this.movieFavorite.slug = movie.slug;
@@ -296,7 +337,6 @@ export default {
     },
     initObserver() {
       if (!this.$refs.loadMoreTrigger) {
-        console.log("❌ chưa có trigger");
         return;
       }
 
@@ -308,7 +348,6 @@ export default {
         const entry = entries[0];
 
         if (entry.isIntersecting && !this.loadingMore && !this.isLastPage) {
-          console.log("👉 LOAD PAGE", this.currentPage + 1);
 
           this.currentPage++;
           this.ListMovie(true);
@@ -721,6 +760,162 @@ export default {
   height: 80px;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+.poster-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.movie-poster {
+  aspect-ratio: 2/3;
+  transition: transform 0.5s ease;
+}
+.movie-card:hover .movie-poster {
+  transform: scale(1.12);
+}
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* mobile vẫn click được */
+@media (hover: none) {
+  .hover-overlay {
+    opacity: 1;
+    background: rgba(0,0,0,0.3);
+  }
+}
+
+/* badges */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 5px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+.quality {
+  background: #ff3d00;
+}
+
+.lang {
+  background: #2196f3;
+}
+
+/* episode */
+.episode {
+  position: absolute;
+  bottom: 35px;
+  left: 8px;
+  background: rgba(0,0,0,0.7);
+  padding: 3px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+/* bottom info */
+.bottom-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+/* info */
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-sub {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* extra */
+.movie-extra {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+}
+
+/* hover card */
+.movie-card {
+  border-radius: 16px;
+  background: #111;
+  transition: all 0.35s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.7);
+}
+/* HEADER */
+.header-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(15, 15, 15, 0.8);
+
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.header-left h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header-left .sub {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
   align-items: center;
 }
 </style>

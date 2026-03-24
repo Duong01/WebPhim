@@ -242,7 +242,7 @@ export default {
 
     handleFavorite(movie) {
       this.indexClick++;
-      this.movieFavorite.IDMovies = movie.idMovie;
+      this.movieFavorite.IDMovies = movie._id;
       this.movieFavorite.slug = movie.slug;
       this.movieFavorite.currentPage = movie.page;
       if (movie.thumb_url.includes("img.ophim.live")) {
