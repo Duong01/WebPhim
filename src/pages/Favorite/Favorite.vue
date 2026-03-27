@@ -918,4 +918,9 @@ export default {
   gap: 10px;
   align-items: center;
 }
+@media (max-width: 768px) {
+  .hover-overlay {
+    display: none;
+  }
+}
 </style>
