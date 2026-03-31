@@ -1467,10 +1467,16 @@ export default {
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
 
         this.hls = new Hls({
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
-          startLevel: -1,
-          capLevelToPlayerSize: true
+          maxBufferLength: 60,          // Tải trước tối thiểu 60 giây
+          maxMaxBufferLength: 300,       // Cho phép tải trước tối đa lên đến 5 phút nếu mạng nhanh
+          maxBufferSize: 150 * 1000 * 1000, // Giới hạn bộ nhớ đệm 150MB để tránh tràn RAM nhưng vẫn đủ cho HD
+          enableWorker: true,            // Chạy trong worker để không gây lag giao diện (UI)
+          startLevel: -1,                // Tự động chọn chất lượng tốt nhất lúc khởi đầu
+          capLevelToPlayerSize: true,    // Giới hạn chất lượng theo kích thước màn hình để tiết kiệm băng thông
+          fragLoadingMaxRetry: 10,       // Thử lại nhiều lần hơn khi lỗi tải phân đoạn
+          fragLoadingRetryDelay: 1000,   // Chờ 1 giây trước khi thử lại
+          manifestLoadingRetryDelay: 1000,
+          appendErrorMaxRetry: 10        // Thử lại khi gặp lỗi ghi dữ liệu vào buffer
         });
 
         this.hls.loadSource(url);
