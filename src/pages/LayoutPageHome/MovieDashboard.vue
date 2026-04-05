@@ -1,20 +1,21 @@
 <template>
-  <div class="trend-wrapper">
+  <div class="trend-wrapper" >
 
     <!-- HOT MOVIES -->
     <div class="panel">
       <h3 class="panel-title">🔥 SÔI NỔI NHẤT</h3>
 
       <div
-        v-for="(movie,i) in hotMovies"
+        v-for="(movie,i) in movies.slice(0,4)"
         :key="i"
         class="list-item"
       >
         <span class="rank">{{ i+1 }}.</span>
 
-        <img :src="movie.img" class="thumb"/>
+        <img :src="movie.thumb_url" class="thumb" @click="goMovie(movie)" />
 
         <div class="name">{{ movie.name }}</div>
+        
       </div>
     </div>
 
@@ -29,14 +30,14 @@
       >
         <span class="rank">{{ i+1 }}.</span>
 
-        <img :src="movie.img" class="thumb"/>
+        <img :src="'https://phimimg.com/' + movie.thumb_url" class="thumb" @click="goMovie(movie)"/>
 
         <div class="name">{{ movie.name }}</div>
       </div>
     </div>
 
     <!-- HOT CATEGORY -->
-    <div class="panel">
+    <div class="panel" v-show="$vuetify.display.smAndUp">
       <h3 class="panel-title">📂 THỂ LOẠI HOT</h3>
 
       <div
@@ -57,7 +58,7 @@
     </div>
 
     <!-- COMMENTS -->
-    <div class="panel">
+    <div class="panel" v-show="$vuetify.display.smAndUp">
       <h3 class="panel-title">⚡ BÌNH LUẬN MỚI</h3>
 
       <div
@@ -78,6 +79,7 @@
 </template>
 <script>
 export default{
+  props:["movies"],
   data(){
     return{
       hotMovies:[
@@ -87,10 +89,7 @@ export default{
         { name:"Avatar: The Way of Water", img:"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
       ],
       favoriteMovies:[
-        { name:"The Batman", img:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onM.jpg" },
-        { name:"The Flash", img:"https://image.tmdb.org/t/p/w500/8aM2qUoXW7jTnH7rPz9rYtLqLh.jpg" },
-        { name:"Black Panther: Wakanda Forever", img:"https://image.tmdb.org/t/p/w500/sv1xJUazXeYqALFehM0uL4DGLw.jpg" },
-        { name:"Avatar: The Way of Water", img:"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+        
       ],
       categories:[
         { name:"Hành động", router:"the-loai/hanh-dong", arrow:"mdi-arrow-up-right", color:"red" },
@@ -105,6 +104,17 @@ export default{
         { user:"Lê Văn C", text:"Cốt truyện hơi yếu nhưng hiệu ứng đẹp.", avatar:"https://randomuser.me/api/portraits/men/3.jpg" },
         { user:"Phạm Thị D", text:"Âm nhạc trong phim rất hay!", avatar:"https://randomuser.me/api/portraits/women/4.jpg" },
       ]
+    }
+  },
+  async mounted(){
+    const res = await fetch("https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=4");
+        const data = await res.json();
+
+        this.favoriteMovies = data.items || data.data?.items || [];
+  },
+  methods:{
+    goMovie(movie){
+      this.$router.push({ name: "Movies", params: { slug: movie.slug } });
     }
   }
 }
@@ -278,4 +288,5 @@ export default{
 .category-link{
   text-decoration: none;
 }
+
 </style>

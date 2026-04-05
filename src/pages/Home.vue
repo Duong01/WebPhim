@@ -24,6 +24,7 @@
       :movies="section.movies"
       :link="section.link"
       :loading="!section.loaded"
+      
     />
     </keep-alive>
   </div>
@@ -208,7 +209,7 @@ export default {
         {
           title: "Bảng Xếp Hạng Phim – Những Tựa Phim Được Yêu Thích Nhất",
           type: "dashboard",
-          url: "https://phimapi.com/v1/api/quoc-gia/trung-quoc?page=1&limit=12",
+          url: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1&limit=4",
           movies: [],
           link: {
             name: "QuocGia",
