@@ -28,7 +28,7 @@
           density="compact"
           hide-details
           clearable
-          width="200"
+          max-width="150"
           hint="Pick your favorite states"
         />
         
@@ -78,7 +78,7 @@
         lg="3"
       >
         <router-link
-          :to="{ name: 'Movies', params: { slug: movie.slug } }"
+          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
           class="movie-link"
         >
           <v-card class="movie-card" elevation="0">
