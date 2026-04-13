@@ -2484,7 +2484,7 @@ export default {
 .suggested-meta {
   display: flex;
   gap: 8px;
-  font-size: clamp(12px, 3vw, 16px);
+  font-size: clamp(10px, 3vw, 13px);
   color: #ffd600;
   font-weight: 500;
   flex-wrap: wrap;
