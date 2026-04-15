@@ -126,7 +126,7 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
  // get movies Favorite
  export const GetMoviesFavorite = (params, success, error) => http.Get(`/AccountApi/GetFavoriteMovies`, params,success, error)
  export const UpdateMoviesFavorite = (params, success, error) => http.Post(`/AccountApi/UpdateMovieFavorite`, params,success, error)
- export const Tracking = (params, success, error) => http.Get(`/AccountApi/Tracking`, params,success, error)
+ export const Tracking = (params, success, error) => http.Post(`/AccountApi/Tracking`, params,success, error)
 
  // insert movies favorite
  export const PostMoviesFavorite = (params, success, error) => http.Post(`/AccountApi/InsertFavoriteMovies`, params,success, error)
