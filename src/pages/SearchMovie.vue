@@ -27,6 +27,82 @@
             }}</v-btn>
           </router-link>
         </v-alert>
+        
+        <template v-else-if="movies.length <= 6">
+          <router-link
+            v-for="movie in movies"
+            :key="'list-' + (movie.slug || movie._id)"
+            :to="{ name: 'Movies', params: { slug: movie.slug } }"
+            class="text-decoration-none"
+          >
+            <v-card class="mb-5 overflow-hidden movie-list-card" elevation="4" hover>
+              <v-row no-gutters>
+                <v-col cols="12" sm="4" md="3">
+                  <div class="poster-wrapper h-100">
+                    <v-img
+                      :src="getOptimizedImage(movie.poster_url.includes('upload/vod') ? movie.thumb_url : movie.poster_url)"
+                      :lazy-src="getOptimizedImage(movie.poster_url.includes('upload/vod') ? movie.thumb_url : movie.poster_url)"
+                      :alt="movie.name"
+                      class="movie-image h-100"
+                      cover
+                      min-height="250"
+                    >
+                      <template #placeholder>
+                        <div class="d-flex align-center justify-center fill-height">
+                          <v-progress-circular indeterminate />
+                        </div>
+                      </template>
+                    </v-img>
+                    <div class="episode-badge">{{ movie.episode_current }}</div>
+                    <div class="top-badges">
+                      <span class="badge quality">{{ movie.quality || "FHD" }}</span>
+                      <span class="badge lang">{{ movie.lang }}</span>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col cols="12" sm="8" md="9" class="pa-4 d-flex flex-column">
+                  <h3 class="text-left text-white mb-1">{{ movie.name }}</h3>
+                  <div class="genre-section mb-3">
+                    <v-chip
+                      v-for="(genre, index) in movie.category"
+                      :key="index"
+                      class="ma-1"
+                      label
+                      size="small"
+                      color="grey-darken-3"
+                      text-color="white"
+                    >
+                      {{ genre.name }}
+                    </v-chip>
+                  </div>
+                  <div class="meta-info mb-2 d-flex align-center flex-wrap text-grey-lighten-1">
+                    <v-icon size="18" class="me-1" color="orange">mdi-star</v-icon>
+                    <span class="me-4 text-orange font-weight-bold">{{ Number(movie.tmdb?.vote_average || 0).toFixed(1) }}</span>
+                    <v-icon size="18" class="me-1">mdi-calendar</v-icon>
+                    <span class="me-4">{{ movie.year }}</span>
+                    <v-icon size="18" class="me-1" v-if="movie.time">mdi-clock-outline</v-icon>
+                    <span class="me-4" v-if="movie.time">{{ movie.time }}</span>
+                  </div>
+                  <p class="text-body-2 description-text text-grey-lighten-1 mb-4">
+                    {{ $t("Miêu tả") }}: <span v-html="movie.origin_name"></span>
+                  </p>
+                  
+                  <div class="mt-auto action-buttons pt-4">
+                    <v-btn variant="flat" color="red-darken-1" class="me-3 text-none" prepend-icon="mdi-play-circle">
+                      {{ $t("Xem ngay") }}
+                    </v-btn>
+                    <v-btn @click.prevent.stop="shareMovie(movie)" variant="outlined" color="grey-lighten-2" class="me-3 text-none" prepend-icon="mdi-share-variant">
+                      {{ $t("Chia sẻ") }}
+                    </v-btn>
+                    <v-btn @click.prevent.stop="handleFavorite(movie)" variant="outlined" color="grey-lighten-2" class="text-none" prepend-icon="mdi-bookmark">
+                      {{ $t("Xem sau") }}
+                    </v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card>
+          </router-link>
+        </template>
         <v-row v-else class="movie-grid">
           <v-col
             v-for="movie in movies"
@@ -1289,5 +1365,18 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.movie-list-card {
+  background-color: #14151c !important;
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+}
+.movie-list-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+.text-none {
+  text-transform: none !important;
 }
 </style>
