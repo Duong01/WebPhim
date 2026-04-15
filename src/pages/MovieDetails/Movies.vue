@@ -792,18 +792,25 @@ export default {
       const time = new Date(timestamp).getTime();
       const now = Date.now();
 
-      if (time > now) {
-        return this.$t("Vừa xong");
-      }
+      if (time > now) return "Vừa xong";
+
       const diff = now - time;
+
       const minutes = Math.floor(diff / 60000);
-      if (minutes < 1) return this.$t("Vừa xong");
-      if (minutes < 60) return `${minutes} ${this.$t("phút trước")}`;
+      if (minutes < 1) return "Vừa xong";
+      if (minutes < 60) return `${minutes} phút trước`;
 
       const hours = Math.floor(minutes / 60);
-      if (hours < 24) return `${hours} ${this.$t("giờ trước")}`;
+      if (hours < 24) return `${hours} giờ trước`;
+
       const days = Math.floor(hours / 24);
-      return `${days} ${this.$t("ngày trước")}`;
+      if (days < 30) return `${days} ngày trước`;
+
+      const months = Math.floor(days / 30);
+      if (months < 12) return `${months} tháng trước`;
+
+      const years = Math.floor(months / 12);
+      return `${years} năm trước`;
     },
 
     // Call API

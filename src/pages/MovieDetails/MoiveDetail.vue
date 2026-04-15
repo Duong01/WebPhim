@@ -2,10 +2,10 @@
   <v-fade-transition appear>
     <div class="watch-page">
       <v-container class="search-page" fluid>
-         <v-col cols="12" class="text-center" v-if="isLoading">
+        <v-col cols="12" class="text-center" v-if="isLoading">
           <v-progress-circular indeterminate color="primary" size="50" />
         </v-col>
-    <!--<div v-else-if="isLoadingData">
+        <!--<div v-else-if="isLoadingData">
       <p style="text-align: center;">{{$t('Hết thời gian yêu cầu, vui lòng kiểm tra lại đường truyền internet')}}</p>
     </div> -->
         <div v-else>
@@ -39,16 +39,27 @@
                   @play="onPlay"
                   @pause="onPause"
                 ></video>
-                
+
                 <!-- Play overlay khi chưa click -->
-                <div v-if="!videoStarted && $vuetify.display.mdAndUp" class="video-play-overlay" @click="playVideoOnClick">
+                <div
+                  v-if="!videoStarted && $vuetify.display.mdAndUp"
+                  class="video-play-overlay"
+                  @click="playVideoOnClick"
+                >
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
-                  <p class="overlay-text">{{ $t('Click để xem phim') }}</p>
+                  <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
                 </div>
 
                 <!-- Loading overlay while video buffers/loads -->
-                <div v-if="videoStarted && !videoLoaded" class="video-loading-overlay">
-                  <v-progress-circular indeterminate color="primary" size="48" />
+                <div
+                  v-if="videoStarted && !videoLoaded"
+                  class="video-loading-overlay"
+                >
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="48"
+                  />
                 </div>
 
                 <!-- Custom controls -->
@@ -65,27 +76,45 @@
                         <v-icon v-else>mdi-pause</v-icon>
                       </v-btn>
 
-                      <v-btn icon class="control-btn" @click="prevEpisode" v-if="$vuetify.display.smAndUp">
+                      <v-btn
+                        icon
+                        class="control-btn"
+                        @click="prevEpisode"
+                        v-if="$vuetify.display.smAndUp"
+                      >
                         <v-icon>mdi-skip-previous</v-icon>
                       </v-btn>
 
-                      <v-btn icon class="control-btn" @click="nextEpisode" v-if="$vuetify.display.smAndUp">
+                      <v-btn
+                        icon
+                        class="control-btn"
+                        @click="nextEpisode"
+                        v-if="$vuetify.display.smAndUp"
+                      >
                         <v-icon>mdi-skip-next</v-icon>
                       </v-btn>
 
-                      <div class="time-text">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
+                      <div class="time-text">
+                        {{ formatTime(currentTime) }} /
+                        {{ formatTime(duration) }}
+                      </div>
                     </div>
 
                     <div class="progress-wrapper" @click="seek($event)">
                       <div class="progress-bar">
-                        <div class="progress-filled" :style="{ width: progress + '%' }"></div>
+                        <div
+                          class="progress-filled"
+                          :style="{ width: progress + '%' }"
+                        ></div>
                       </div>
                     </div>
 
                     <div class="right-controls">
                       <v-btn icon class="control-btn" @click="toggleMute">
                         <v-icon v-if="muted">mdi-volume-mute</v-icon>
-                        <v-icon v-else-if="volume > 0.5">mdi-volume-high</v-icon>
+                        <v-icon v-else-if="volume > 0.5"
+                          >mdi-volume-high</v-icon
+                        >
                         <v-icon v-else>mdi-volume-medium</v-icon>
                       </v-btn>
 
@@ -160,24 +189,43 @@
                 style="background-color: #1a1a1a; gap: 16px"
               >
                 <!-- Nút chức năng -->
-                <div class="d-flex align-center flex-wrap function-buttons" style="gap: 8px; flex-wrap: wrap">
-                  <v-btn variant="text" @click="getTrailer()" class="function-btn">
+                <div
+                  class="d-flex align-center flex-wrap function-buttons"
+                  style="gap: 8px; flex-wrap: wrap"
+                >
+                  <v-btn
+                    variant="text"
+                    @click="getTrailer()"
+                    class="function-btn"
+                  >
                     <v-icon start icon="mdi-youtube" />
                     <span class="btn-text-short">Trailer</span>
                   </v-btn>
                   <v-btn variant="text" @click="shareMovie" class="function-btn"
-                    ><v-icon start icon="mdi-share-variant" /><span class="btn-text-short">{{
-                      $t("Chia sẻ")
-                    }}</span></v-btn
+                    ><v-icon start icon="mdi-share-variant" /><span
+                      class="btn-text-short"
+                      >{{ $t("Chia sẻ") }}</span
+                    ></v-btn
                   >
-                  <v-btn variant="text" @click="ResponseError" class="function-btn"
-                    ><v-icon start icon="mdi-flag" /><span class="btn-text-short">{{ $t("Báo lỗi") }}</span></v-btn
+                  <v-btn
+                    variant="text"
+                    @click="ResponseError"
+                    class="function-btn"
+                    ><v-icon start icon="mdi-flag" /><span
+                      class="btn-text-short"
+                      >{{ $t("Báo lỗi") }}</span
+                    ></v-btn
                   >
-                  <v-btn variant="text" @click="handleFavorite" class="function-btn"
+                  <v-btn
+                    variant="text"
+                    @click="handleFavorite"
+                    class="function-btn"
                     ><v-icon
                       start
                       :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
-                    /><span class="btn-text-short">{{ $t("Xem sau") }}</span></v-btn
+                    /><span class="btn-text-short">{{
+                      $t("Xem sau")
+                    }}</span></v-btn
                   >
                 </div>
 
@@ -229,15 +277,15 @@
                 </v-card-title>
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense class="episode-row">
-                    <v-col
-                      v-for="(episode, index) in visibleEpisodes"
-                      :key="index"
-                      cols="4"
-                      sm="6"
-                      md="4"
-                      class="episode-col-responsive"
-                    >
+                    <v-row dense class="episode-row">
+                      <v-col
+                        v-for="(episode, index) in visibleEpisodes"
+                        :key="index"
+                        cols="4"
+                        sm="6"
+                        md="4"
+                        class="episode-col-responsive"
+                      >
                         <v-btn
                           block
                           size="small"
@@ -246,7 +294,7 @@
                             index === currentEpisodeIndex
                               ? 'red'
                               : 'grey-darken-2'
-                            "
+                          "
                           class="episode-item-btn"
                         >
                           {{
@@ -280,8 +328,6 @@
                   </div>
                 </v-card-text>
               </v-card>
-
-              
 
               <!-- Thông tin phim -->
               <v-card
@@ -431,7 +477,7 @@
                     class="btnnext"
                   >
                     <v-icon icon="mdi-play" />
-                    {{$t('Đăng nhập để bình luận')}}
+                    {{ $t("Đăng nhập để bình luận") }}
                   </v-btn>
                 </div>
                 <v-text-field
@@ -449,7 +495,7 @@
                 ></v-text-field>
                 <v-divider class="mb-4" color="grey darken-3"></v-divider>
                 <div v-if="comments.length <= 0" class="mb-5 text-center">
-                  {{$t('Chưa có bình luận nào. Hãy là người đầu tiên!')}}
+                  {{ $t("Chưa có bình luận nào. Hãy là người đầu tiên!") }}
                 </div>
                 <div
                   v-else
@@ -457,8 +503,19 @@
                   :key="index"
                   class="d-flex align-start mb-5"
                 >
-                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar" v-if="comment.Avartar != '' && comment.Avartar != null"></v-avatar>
-                  <v-avatar size="44" class="me-3" color="blue-grey-darken-3" v-else>
+                  <v-avatar
+                    size="44"
+                    class="me-3"
+                    color="blue-grey-darken-3"
+                    :image="comment.Avartar"
+                    v-if="comment.Avartar != '' && comment.Avartar != null"
+                  ></v-avatar>
+                  <v-avatar
+                    size="44"
+                    class="me-3"
+                    color="blue-grey-darken-3"
+                    v-else
+                  >
                     <v-icon color="white">mdi-account</v-icon>
                   </v-avatar>
                   <div class="flex-grow-1">
@@ -483,7 +540,12 @@
                 </div>
               </v-card>
             </v-col>
-            <v-col cols="12" md="3" class="right-panel" v-if="$vuetify.display.smAndUp">
+            <v-col
+              cols="12"
+              md="3"
+              class="right-panel"
+              v-if="$vuetify.display.smAndUp"
+            >
               <!-- THÔNG TIN PHIM -->
               <v-card
                 color="grey-darken-4"
@@ -492,15 +554,15 @@
                 class="mb-4"
                 theme="dark"
               >
-                <v-card-title class="text-h5" style="font-weight: bold; color: #42dfff;">
+                <v-card-title
+                  class="text-h5"
+                  style="font-weight: bold; color: #42dfff"
+                >
                   {{ movie.name }}
-                  
                 </v-card-title>
-                <v-tooltip
-                    activator="parent"
-                    location="top"
+                <v-tooltip activator="parent" location="top"
                   >{{ movie.name }}
-                  </v-tooltip>
+                </v-tooltip>
               </v-card>
 
               <!-- DANH SÁCH TẬP -->
@@ -509,48 +571,59 @@
                 variant="flat"
                 rounded="lg"
                 theme="dark"
-                
               >
-                <v-card-title :class="$vuetify.display.smAndDown ? 'text-body-2' : 'text-h6'"> {{$t('Danh sách tập')}} </v-card-title>
+                <v-card-title
+                  :class="
+                    $vuetify.display.smAndDown ? 'text-body-2' : 'text-h6'
+                  "
+                >
+                  {{ $t("Danh sách tập") }}
+                </v-card-title>
 
                 <v-card-text>
                   <v-sheet class="episode-list mt-4" elevation="0">
-                  <v-row dense>
-                    <v-col
-                      v-for="(episode, index) in visibleEpisodesRight"
-                      :key="index"
-                      cols="6"
-                    >
-                      <v-btn
-                        block
-                        :size="$vuetify.display.smAndDown ? 'small' : 'default'"
-                        :color="
-                          index === currentEpisodeIndex
-                            ? 'red'
-                            : 'grey-darken-2'
-                        "
-                        @click="playEpisode(episode)"
+                    <v-row dense>
+                      <v-col
+                        v-for="(episode, index) in visibleEpisodesRight"
+                        :key="index"
+                        cols="6"
                       >
-                        {{ episode.name.includes("Tập") ? episode.name : "Tập " + episode.name || "Trailer" }}
-                      </v-btn>
-                    </v-col>
-                  </v-row>
+                        <v-btn
+                          block
+                          :size="
+                            $vuetify.display.smAndDown ? 'small' : 'default'
+                          "
+                          :color="
+                            index === currentEpisodeIndex
+                              ? 'red'
+                              : 'grey-darken-2'
+                          "
+                          @click="playEpisode(episode)"
+                        >
+                          {{
+                            episode.name.includes("Tập")
+                              ? episode.name
+                              : "Tập " + episode.name || "Trailer"
+                          }}
+                        </v-btn>
+                      </v-col>
+                    </v-row>
                   </v-sheet>
                 </v-card-text>
               </v-card>
             </v-col>
-            
+
             <div ref="lazyCate"></div>
 
             <!-- Gợi ý phim - Responsive Scroll Layout -->
             <v-col cols="12">
               <div class="suggested-movies my-8">
                 <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
-                
+
                 <!-- Scroll container -->
                 <div class="suggested-scroll-wrapper">
                   <!-- Left nav button -->
-                  <button 
+                  <button
                     class="suggested-nav-btn suggested-nav-left"
                     @click="scrollSuggestedLeft"
                     aria-label="Scroll left"
@@ -559,7 +632,10 @@
                   </button>
 
                   <!-- Scrollable content -->
-                  <div ref="suggestedScrollContainer" class="suggested-content-scroll">
+                  <div
+                    ref="suggestedScrollContainer"
+                    class="suggested-content-scroll"
+                  >
                     <router-link
                       v-for="suggested in suggestedMovies"
                       :key="suggested._id"
@@ -585,13 +661,20 @@
 
                         <!-- Card info -->
                         <div class="suggested-info">
-                          <div class="suggested-title">{{ suggested.name }}</div>
+                          <div class="suggested-title">
+                            {{ suggested.name }}
+                          </div>
                           <div class="suggested-meta">
-                            <span class="suggested-episode">{{ suggested.episode_current }}</span>
-                            <span class="suggested-lang">{{ suggested.lang }}</span>
+                            <span class="suggested-episode">{{
+                              suggested.episode_current
+                            }}</span>
+                            <span class="suggested-lang">{{
+                              suggested.lang
+                            }}</span>
                           </div>
                           <div class="suggested-category">
-                            {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                            {{ suggested.category[0]?.name }} •
+                            {{ suggested.year }}
                           </div>
                         </div>
                       </div>
@@ -599,7 +682,7 @@
                   </div>
 
                   <!-- Right nav button -->
-                  <button 
+                  <button
                     class="suggested-nav-btn suggested-nav-right"
                     @click="scrollSuggestedRight"
                     aria-label="Scroll right"
@@ -670,26 +753,26 @@
                   <div class="mt-1 text-caption">Twitter</div>
                 </v-col>
                 <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('tiktok')"
-              class="bg-grey-darken-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                fill="white"
-              >
-                <path
-                  d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
-                />
-              </svg>
-            </v-btn>
-            <div class="mt-1 text-caption">TikTok</div>
-          </v-col>
+                  <v-btn
+                    icon
+                    size="large"
+                    @click="shareTo('tiktok')"
+                    class="bg-grey-darken-4"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="22"
+                      height="22"
+                      fill="white"
+                    >
+                      <path
+                        d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
+                      />
+                    </svg>
+                  </v-btn>
+                  <div class="mt-1 text-caption">TikTok</div>
+                </v-col>
               </v-row>
 
               <v-card
@@ -739,10 +822,11 @@ import {
   AddComment,
   PostMoviesFavorite,
   CheckSession,
+  Tracking,
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
-import { useHead } from '@vueuse/head';
+import { useHead } from "@vueuse/head";
 export default {
   name: "MovieDetail",
   data() {
@@ -779,7 +863,7 @@ export default {
           disabled: false,
           href: "/home",
         },
-        
+
         {
           title: this.slug,
           disabled: true,
@@ -842,7 +926,7 @@ export default {
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
     this.saveWatchTime();
-    
+
     // Dừng save interval
     if (this.saveTimeInterval) {
       clearInterval(this.saveTimeInterval);
@@ -866,12 +950,24 @@ export default {
       this.hls = null;
     }
     // remove keyboard listener
-    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener("keydown", this.onKeyDown);
     // remove fullscreen listeners
-    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
-    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
+    document.removeEventListener(
+      "fullscreenchange",
+      this.handleFullscreenChange
+    );
+    document.removeEventListener(
+      "webkitfullscreenchange",
+      this.handleFullscreenChange
+    );
+    document.removeEventListener(
+      "mozfullscreenchange",
+      this.handleFullscreenChange
+    );
+    document.removeEventListener(
+      "MSFullscreenChange",
+      this.handleFullscreenChange
+    );
   },
   watch: {
     async slug(newSlug) {
@@ -898,12 +994,12 @@ export default {
       }
       if (this.currentEpisodeIndex == -1) {
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-            const epNumber = parseInt(
-              (ep.name.toString().match(/\d+/) || [])[0],
-              10
-            );
-            return epNumber === page;
-          });
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
       }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
@@ -921,6 +1017,7 @@ export default {
           query: { page: normalized },
         });
       }
+      this.Tracking();
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
         this.loadWatchTime();
@@ -952,21 +1049,21 @@ export default {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === page
           );
-          if(this.currentEpisodeIndex == -1){
+          if (this.currentEpisodeIndex == -1) {
             this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "") === page.replace("0","")
-          );
+              (ep) => ep.name.replace("Tập ", "") === page.replace("0", "")
+            );
           }
         }
       }
       if (this.currentEpisodeIndex == -1) {
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-            const epNumber = parseInt(
-              (ep.name.toString().match(/\d+/) || [])[0],
-              10
-            );
-            return epNumber === page;
-          });
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
       }
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
@@ -992,13 +1089,14 @@ export default {
           query: { page: normalized },
         });
       }
+      this.Tracking();
       this.initLazyLoad();
-      
+
       // Load thời gian xem từ localStorage
       this.$nextTick(() => {
         this.loadWatchTime();
       });
-      
+
       // Bắt đầu save thời gian xem mỗi 5 giây
       if (this.saveTimeInterval) {
         clearInterval(this.saveTimeInterval);
@@ -1008,54 +1106,82 @@ export default {
       }, 5000);
       this.updateMeta();
       // Keyboard shortcuts
-      window.addEventListener('keydown', this.onKeyDown);
+      window.addEventListener("keydown", this.onKeyDown);
       // Fullscreen change listeners (update isFullscreen state across browsers)
-      document.addEventListener('fullscreenchange', this.handleFullscreenChange);
-      document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
-      document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
-      document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
+      document.addEventListener(
+        "fullscreenchange",
+        this.handleFullscreenChange
+      );
+      document.addEventListener(
+        "webkitfullscreenchange",
+        this.handleFullscreenChange
+      );
+      document.addEventListener(
+        "mozfullscreenchange",
+        this.handleFullscreenChange
+      );
+      document.addEventListener(
+        "MSFullscreenChange",
+        this.handleFullscreenChange
+      );
 
       // Show controls on hover (ensure visible when cursor over video)
-      const wrapper = this.$el.querySelector('.video-wrapper');
+      const wrapper = this.$el.querySelector(".video-wrapper");
       if (wrapper) {
-        wrapper.addEventListener('mouseenter', () => {
+        wrapper.addEventListener("mouseenter", () => {
           this.showControls = true;
           this.clearHideControlsTimer();
         });
-        wrapper.addEventListener('mouseleave', () => {
+        wrapper.addEventListener("mouseleave", () => {
           this.startHideControlsTimer();
         });
       }
-      
+
       // await this.ListMovieByCate();
       // await this.GetComment();
     } catch (err) {
       console.log(err);
-    }finally {
-      this.$store.dispatch('loading/stopLoading')
+    } finally {
+      this.$store.dispatch("loading/stopLoading");
     }
-  },
+  }, 
   methods: {
-    updateMeta(){
+    Tracking() {
+      Tracking(
+        { page: window.location.href },
+        () => {},
+        (err) => console.log(err)
+      );
+    },
+
+    updateMeta() {
       useHead({
-        title: this.movie.title+ " Tập "+ this.movie.page + "Vietsub HD",
-        meta:[
-          {name: "description", content: "Xem"+this.movie.title+ " tập "+ this.movie.page + " viétub, chất lượng cao"},
-          {property: "og:title", content: this.movie.title},
-          {property: "og:description", content: this.movie.description},
-          {property: "og:image", content: this.movie.thumb_url},
-          {property: "og:url", content: window.location.href},
+        title: this.movie.title + " Tập " + this.movie.page + "Vietsub HD",
+        meta: [
+          {
+            name: "description",
+            content:
+              "Xem" +
+              this.movie.title +
+              " tập " +
+              this.movie.page +
+              " viétub, chất lượng cao",
+          },
+          { property: "og:title", content: this.movie.title },
+          { property: "og:description", content: this.movie.description },
+          { property: "og:image", content: this.movie.thumb_url },
+          { property: "og:url", content: window.location.href },
         ],
-      })
+      });
     },
     // Lưu thời gian xem vào localStorage
     saveWatchTime() {
       const video = this.$refs.videoPlayer;
       if (!video || !this.movie.idMovie) return;
-      
+
       const currentTime = video.currentTime;
       const duration = video.duration;
-      
+
       // Chỉ lưu nếu video đã tải được
       if (isFinite(currentTime) && isFinite(duration) && duration > 0) {
         const watchData = {
@@ -1064,41 +1190,43 @@ export default {
           episode: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
           currentTime: currentTime,
           duration: duration,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
-        
+
         // Lưu vào localStorage với key duy nhất
-        localStorage.setItem('webphim_watchtime', JSON.stringify(watchData));
+        localStorage.setItem("webphim_watchtime", JSON.stringify(watchData));
       }
     },
-    
+
     // Load thời gian xem từ localStorage
     loadWatchTime() {
       const video = this.$refs.videoPlayer;
       if (!video || !this.movie.idMovie) return;
-      
+
       try {
-        const watchData = localStorage.getItem('webphim_watchtime');
+        const watchData = localStorage.getItem("webphim_watchtime");
         if (watchData) {
           const data = JSON.parse(watchData);
-          
+
           // Chỉ load nếu là cùng film và cùng tập
-          if (data.movieId === this.movie.idMovie && 
-              data.episode === this.movie.pageMovie[this.currentEpisodeIndex]?.name) {
-            
+          if (
+            data.movieId === this.movie.idMovie &&
+            data.episode ===
+              this.movie.pageMovie[this.currentEpisodeIndex]?.name
+          ) {
             // Đợi video loadedmetadata để set currentTime
             const setTime = () => {
               if (isFinite(data.currentTime) && data.currentTime > 0) {
                 video.currentTime = data.currentTime;
               }
-              video.removeEventListener('loadedmetadata', setTime);
+              video.removeEventListener("loadedmetadata", setTime);
             };
-            
-            video.addEventListener('loadedmetadata', setTime);
+
+            video.addEventListener("loadedmetadata", setTime);
           }
         }
       } catch (error) {
-        console.error('Lỗi load thời gian xem:', error);
+        console.error("Lỗi load thời gian xem:", error);
       }
     },
 
@@ -1134,22 +1262,29 @@ export default {
       }
     },
     timeAgo(timestamp) {
-      const time = new Date(timestamp).getTime();
-      const now = Date.now();
+  const time = new Date(timestamp).getTime();
+  const now = Date.now();
 
-      if (time > now) {
-        return "Vừa xong";
-      }
-      const diff = now - time;
-      const minutes = Math.floor(diff / 60000);
-      if (minutes < 1) return "Vừa xong";
-      if (minutes < 60) return `${minutes} phút trước`;
+  if (time > now) return "Vừa xong";
 
-      const hours = Math.floor(minutes / 60);
-      if (hours < 24) return `${hours} giờ trước`;
-      const days = Math.floor(hours / 24);
-      return `${days} ngày trước`;
-    },
+  const diff = now - time;
+
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "Vừa xong";
+  if (minutes < 60) return `${minutes} phút trước`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} giờ trước`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} ngày trước`;
+
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} tháng trước`;
+
+  const years = Math.floor(months / 12);
+  return `${years} năm trước`;
+},
     // Call API
     MoveInfor(slug) {
       return new Promise((resolve, reject) => {
@@ -1465,23 +1600,21 @@ export default {
       }
 
       if (Hls.isSupported() && url.endsWith(".m3u8")) {
-
         this.hls = new Hls({
-          maxBufferLength: 60,          // Tải trước tối thiểu 60 giây
-          maxMaxBufferLength: 300,       // Cho phép tải trước tối đa lên đến 5 phút nếu mạng nhanh
+          maxBufferLength: 60, // Tải trước tối thiểu 60 giây
+          maxMaxBufferLength: 300, // Cho phép tải trước tối đa lên đến 5 phút nếu mạng nhanh
           maxBufferSize: 150 * 1000 * 1000, // Giới hạn bộ nhớ đệm 150MB để tránh tràn RAM nhưng vẫn đủ cho HD
-          enableWorker: true,            // Chạy trong worker để không gây lag giao diện (UI)
-          startLevel: -1,                // Tự động chọn chất lượng tốt nhất lúc khởi đầu
-          capLevelToPlayerSize: true,    // Giới hạn chất lượng theo kích thước màn hình để tiết kiệm băng thông
-          fragLoadingMaxRetry: 10,       // Thử lại nhiều lần hơn khi lỗi tải phân đoạn
-          fragLoadingRetryDelay: 1000,   // Chờ 1 giây trước khi thử lại
+          enableWorker: true, // Chạy trong worker để không gây lag giao diện (UI)
+          startLevel: -1, // Tự động chọn chất lượng tốt nhất lúc khởi đầu
+          capLevelToPlayerSize: true, // Giới hạn chất lượng theo kích thước màn hình để tiết kiệm băng thông
+          fragLoadingMaxRetry: 10, // Thử lại nhiều lần hơn khi lỗi tải phân đoạn
+          fragLoadingRetryDelay: 1000, // Chờ 1 giây trước khi thử lại
           manifestLoadingRetryDelay: 1000,
-          appendErrorMaxRetry: 10        // Thử lại khi gặp lỗi ghi dữ liệu vào buffer
+          appendErrorMaxRetry: 10, // Thử lại khi gặp lỗi ghi dữ liệu vào buffer
         });
 
         this.hls.loadSource(url);
         this.hls.attachMedia(video);
-
       } else {
         video.src = url;
       }
@@ -1496,7 +1629,6 @@ export default {
       if (!video) return;
 
       // Nếu là lần đầu click hoặc chuyển tập thì unmute
-      
 
       video.play().catch(() => {
         video.play();
@@ -1504,20 +1636,18 @@ export default {
     },
     playVideoOnClick() {
       if (!this.videoStarted) {
-
-        this.videoStarted = true
+        this.videoStarted = true;
 
         if (this.movie.videoUrl && !this.hls) {
-          this.setupVideo(this.movie.videoUrl)
+          this.setupVideo(this.movie.videoUrl);
         }
 
-        const video = this.$refs.videoPlayer
+        const video = this.$refs.videoPlayer;
 
         setTimeout(() => {
-          video.muted = false
-          video.play().catch(()=>{})
-        }, 800)
-
+          video.muted = false;
+          video.play().catch(() => {});
+        }, 800);
       }
     },
     // --- Custom control methods ---
@@ -1551,14 +1681,16 @@ export default {
       if (!video) return;
       this.currentTime = video.currentTime || 0;
       this.duration = video.duration || 0;
-      this.progress = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+      this.progress =
+        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
     },
     onLoadedMetadata() {
       const video = this.$refs.videoPlayer;
       if (!video) return;
       this.duration = video.duration || 0;
       this.currentTime = video.currentTime || 0;
-      this.progress = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+      this.progress =
+        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
       this.videoLoaded = true;
     },
     onWaiting() {
@@ -1575,7 +1707,7 @@ export default {
       const video = this.$refs.videoPlayer;
       if (!video || !this.duration) return;
 
-      const bar = e.currentTarget.querySelector('.progress-bar');
+      const bar = e.currentTarget.querySelector(".progress-bar");
       const rect = bar.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const ratio = Math.max(0, Math.min(1, clickX / rect.width));
@@ -1583,12 +1715,12 @@ export default {
       this.onTimeUpdate();
     },
     formatTime(seconds) {
-      if (!isFinite(seconds) || seconds <= 0) return '00:00';
+      if (!isFinite(seconds) || seconds <= 0) return "00:00";
       const s = Math.floor(seconds);
       const h = Math.floor(s / 3600);
       const m = Math.floor((s % 3600) / 60);
       const sec = s % 60;
-      const pad = (n) => String(n).padStart(2, '0');
+      const pad = (n) => String(n).padStart(2, "0");
       return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
     },
     toggleMute() {
@@ -1608,16 +1740,17 @@ export default {
       this.muted = v === 0;
     },
     toggleFullScreen() {
-      const wrapper = this.$el.querySelector('.video-wrapper');
+      const wrapper = this.$el.querySelector(".video-wrapper");
       if (!wrapper) return;
       const doc = document;
       if (!this.isFullscreen) {
         const video = this.$refs.videoPlayer;
         if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+        else if (wrapper.webkitRequestFullscreen)
+          wrapper.webkitRequestFullscreen();
         else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
         else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
-        else if (video && typeof video.webkitEnterFullscreen === 'function') {
+        else if (video && typeof video.webkitEnterFullscreen === "function") {
           // iOS Safari / some WebKit-based players
           try {
             video.webkitEnterFullscreen();
@@ -1634,8 +1767,12 @@ export default {
         else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
         else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
         else if (doc.msExitFullscreen) doc.msExitFullscreen();
-        else if (video && typeof video.webkitExitFullscreen === 'function') {
-          try { video.webkitExitFullscreen(); } catch (e) {console.log(e);}
+        else if (video && typeof video.webkitExitFullscreen === "function") {
+          try {
+            video.webkitExitFullscreen();
+          } catch (e) {
+            console.log(e);
+          }
         }
         this.isFullscreen = false;
       }
@@ -1659,19 +1796,24 @@ export default {
     // Keyboard shortcuts: left/right or J/L for +/-10s, space toggle play
     onKeyDown(e) {
       const tag = document.activeElement && document.activeElement.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.querySelector(':focus')?.isContentEditable) return;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        document.querySelector(":focus")?.isContentEditable
+      )
+        return;
 
       const key = e.key.toLowerCase();
       const video = this.$refs.videoPlayer;
       if (!video) return;
 
-      if (key === 'arrowright' || key === 'l') {
+      if (key === "arrowright" || key === "l") {
         e.preventDefault();
         this.seekBy(10);
-      } else if (key === 'arrowleft' || key === 'j') {
+      } else if (key === "arrowleft" || key === "j") {
         e.preventDefault();
         this.seekBy(-10);
-      } else if (key === ' ' || key === 'spacebar') {
+      } else if (key === " " || key === "spacebar") {
         e.preventDefault();
         this.togglePlay();
       }
@@ -1688,7 +1830,7 @@ export default {
       this.showControlsTemporarily();
     },
     showControlsTemporarily() {
-          this.showControls = true;
+      this.showControls = true;
       this.clearHideControlsTimer();
       this.startHideControlsTimer();
     },
@@ -1763,13 +1905,12 @@ export default {
             alert(err);
           }
         );
-      }
-      else{
-        alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"))
+      } else {
+        alert(this.$t("Vui lòng đăng nhập để sử dụng chức năng này"));
         this.$router.push({
-                path: "/login",
-                query: { redirect: this.$route.fullPath },
-              });
+          path: "/login",
+          query: { redirect: this.$route.fullPath },
+        });
       }
     },
 
@@ -1862,23 +2003,23 @@ export default {
     shareMovie() {
       this.shareDialog = true;
     },
-    
+
     scrollSuggestedLeft() {
       const container = this.$refs.suggestedScrollContainer;
       if (container) {
-        container.scrollBy({ 
-          left: -280, 
-          behavior: "smooth" 
+        container.scrollBy({
+          left: -280,
+          behavior: "smooth",
         });
       }
     },
-    
+
     scrollSuggestedRight() {
       const container = this.$refs.suggestedScrollContainer;
       if (container) {
-        container.scrollBy({ 
-          left: 280, 
-          behavior: "smooth" 
+        container.scrollBy({
+          left: 280,
+          behavior: "smooth",
         });
       }
     },
@@ -1898,7 +2039,7 @@ export default {
         case "twitter":
           shareLink = `https://twitter.com`;
           break;
-          case "tiktok":
+        case "tiktok":
           shareLink = `https://www.tiktok.com/`;
           break;
       }
@@ -2168,8 +2309,10 @@ export default {
     idAccount() {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
-    avatar(){
-      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || "";
+    avatar() {
+      return (
+        this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || ""
+      );
     },
     youtubeEmbedUrl() {
       if (!this.movie.trailer_url) return "";
@@ -2184,11 +2327,10 @@ export default {
       return this.showAllEpisodes
         ? this.movie.pageMovie // Hiện tất cả tập
         : this.movie.pageMovie; // Chỉ 20 tập đầu
-        //: this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+      //: this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
     },
     visibleEpisodesRight() {
-      return  this.movie.pageMovie // Hiện tất cả tập
-        
+      return this.movie.pageMovie; // Hiện tất cả tập
     },
     thumbnailUrl() {
       const match = this.movie.videoUrl.match(
@@ -2249,7 +2391,6 @@ export default {
 </script>
 
 <style scoped>
-
 .right-panel {
   position: sticky;
   top: 72px;
@@ -2267,22 +2408,19 @@ export default {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 20px;
-  
+
   /* YouTube-style shadow */
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.6);
-  
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.6);
+
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* Smooth focus state */
   cursor: pointer;
 }
 
 .video-wrapper:hover,
 .video-wrapper:focus-within {
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.12),
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12),
     0 12px 32px rgba(0, 0, 0, 0.8);
   transform: translateY(-1px);
 }
@@ -2320,7 +2458,7 @@ export default {
   border-radius: 12px;
   background: #000;
   display: block;
-  
+
   /* YouTube player smooth appearance */
   animation: playerFadeIn 0.5s ease-out;
 }
@@ -2376,7 +2514,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   flex: 1;
   min-width: 0;
-  
+
   /* Hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -3243,7 +3381,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.18));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.18));
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .custom-controls.controls-hidden {
@@ -3273,7 +3411,7 @@ a {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -3300,9 +3438,15 @@ a {
 }
 
 @media (max-width: 768px) {
-  .custom-controls { padding: 8px 10px; }
-  .volume-slider { width: 60px; }
-  .time-text { font-size: 12px; }
+  .custom-controls {
+    padding: 8px 10px;
+  }
+  .volume-slider {
+    width: 60px;
+  }
+  .time-text {
+    font-size: 12px;
+  }
 }
 
 /* Loading overlay for video */
@@ -3313,8 +3457,6 @@ a {
   align-items: center;
   justify-content: center;
   z-index: 25;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
 }
-
-
 </style>

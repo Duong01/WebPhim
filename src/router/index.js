@@ -1,5 +1,6 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
+import { Tracking } from "@/model/api";
 // import { CheckSession } from "@/model/api";
 // import store from "@/store";
 
@@ -246,6 +247,15 @@ router.onError((error) => {
     window.location.reload();
   }
 });
+
+router.afterEach((to) => {
+  Tracking(
+    { page: to.fullPath }, 
+    () => {},
+    (err) => console.log(err)
+  )
+})
+
 router.beforeEach((to, from, next) => {
 
   // Normalize `page` query for MovieDetail: convert numeric `page=125` -> `page=tap125`

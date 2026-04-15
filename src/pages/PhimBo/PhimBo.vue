@@ -112,8 +112,7 @@
       <span>{{ movie.year }}</span>
       <span>•</span>
       <span>{{ movie.time }}</span>
-      <span>•</span>
-      <span>{{ movie.country[0]?.name }}</span>
+      
     </div>
 
     <!-- GENRE -->

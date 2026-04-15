@@ -27,222 +27,107 @@
             }}</v-btn>
           </router-link>
         </v-alert>
-        <v-row
-                no-gutters
-                tag="transition-group"
-                name="fade-scale"
-                class="movie-list"
-                v-if="movies.length >=5"
-              >
-                <v-col
-                  v-for="movie in movies"
-                  :key="movie.id"
-                  cols="6"
-                  sm="6"
-                  md="3"
-                  style="padding: 10px"
-                >
-                  
-                  <router-link
-                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
-                    class="text-decoration-none"
+        <v-row v-else class="movie-grid">
+          <v-col
+            v-for="movie in movies"
+            :key="movie.slug || movie._id"
+            cols="6"
+            sm="4"
+            md="3"
+            lg="2"
+          >
+            <router-link
+              :to="{ name: 'Movies', params: { slug: movie.slug } }"
+              class="movie-link"
+            >
+              <v-card class="movie-card">
+                <div class="poster-wrapper">
+                  <v-img
+                    :src="
+                      getOptimizedImage(
+                        movie.poster_url.includes('upload/vod')
+                          ? movie.thumb_url
+                          : movie.poster_url
+                      )
+                    "
+                    height="300"
+                    cover
                   >
-                    <v-card
-                      class="mx-auto bg-dark movie-card"
-                      width="auto"
-                    >
-                      <v-img
-                        :src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.poster_url) : getOptimizedImage(movie.thumb_url)"
-                        :lazy-src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.poster_url) : getOptimizedImage(movie.thumb_url)"
-                        :alt="movie.name"
-                        spect-ratio="16/9"
-                        class="movie-image"
-                        transition="fade-transition"
-                        height="250"
-                        width="100%"
-                        cover
+                    <template #placeholder>
+                      <div
+                        class="d-flex align-center justify-center fill-height"
                       >
-                        <template #default>
-                          <v-btn
-                          icon
-                          size="small"
-                          variant="flat"
-                          class="favorite-btn"
-                          @click.stop.prevent="handleFavorite(movie)"
-                        >
-                          <!-- :color="isFavoriteMovie(movie) ? 'red' : ''" -->
-                      
-                          <v-icon>
-                            <!-- {{ isFavoriteMovie(movie)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline" }} -->
-                                  mdi-heart-outline
-                          </v-icon>
-                          
-                        </v-btn>
+                        <v-progress-circular indeterminate />
+                      </div>
+                    </template>
+                  </v-img>
 
-                          <div class="movie-overlay" aria-hidden="true"></div>
+                  <div class="gradient-overlay"></div>
 
-                          <div class="movie-play" aria-hidden="true">
-                            <svg
-                              width="64"
-                              height="64"
-                              viewBox="0 0 64 64"
-                              xmlns="http://www.w3.org/2000/svg"
-                              aria-hidden="true"
-                            >
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="30"
-                                fill="rgba(0,0,0,0.55)"
-                              />
-                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                            </svg>
-                          </div>
-                        </template>
-                        <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="blue-lighten-3"
-                :width="5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
-                      </v-img>
+                  <div class="hover-overlay">
+                    <v-icon size="50">mdi-play-circle</v-icon>
+                  </div>
 
-                      <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
-                        {{
-                          movie.lang + " - " + movie.episode_current
-                        }}
-                      </v-card-subtitle>
+                  <div class="top-badges">
+                    <span class="badge quality">{{
+                      movie.quality || "FHD"
+                    }}</span>
+                    <span class="badge lang">{{ movie.lang }}</span>
+                  </div>
 
-                      <v-card-title class="movie-title text-body-2 text-wrap">{{
-                        movie.name
-                      }}</v-card-title>
+                  <div class="episode-badge">
+                    {{ movie.episode_current }}
+                  </div>
 
-                      <v-card-text class="movie-info">
-                        <div class="text-grey text-truncate">
-                          <v-icon size="14" class="mr-1"
-                            >mdi-tag</v-icon
-                          >
-                          {{ movie.origin_name }} ({{ movie.year }})
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </router-link>
-                </v-col>
-              </v-row>
-        <router-link
-          v-else
-          v-for="movie in movies"
-          :key="movie.id"
-          :to="{ name: 'Movies', params: { slug: movie.slug } }"
-          class="text-decoration-none"
+                  <div
+                    class="rating"
+                    v-if="movie.tmdb && movie.tmdb.vote_average"
+                  >
+                    ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
+                  </div>
+                </div>
+
+                <v-card-text class="movie-info">
+                  <div class="movie-title">
+                    {{ movie.name }}
+                  </div>
+                  <div class="movie-sub">
+                    {{ movie.origin_name }}
+                  </div>
+                  <div class="meta-row">
+                    <span>{{ movie.year }}</span>
+                    <span v-if="movie.time">•</span>
+                    <span v-if="movie.time">{{ movie.time }}</span>
+                  </div>
+                  <div class="genre-list" v-if="movie.category">
+                    <span
+                      v-for="c in movie.category.slice(0, 2)"
+                      :key="c.id || c.name"
+                      class="genre-item"
+                    >
+                      {{ c.name }}
+                    </span>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </router-link>
+          </v-col>
+        </v-row>
+        <div
+          ref="loadMoreTrigger"
+          v-show="movies.length > 0 && !isLastPage"
+          class="load-more-trigger"
         >
-          <v-card class="mb-5 overflow-hidden movie-car" elevation="4" hover>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-img
-                  :src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
-                  :lazy-src="movie.poster_url.includes('upload/vod') ? getOptimizedImage(movie.thumb_url) : getOptimizedImage(movie.poster_url)"
-                  :alt="movie.name"
-                  class="movie-image"
-                  aspect-ratio="3/4"
-                  contain
-                  max-height="420"
-                  transition="fade-transition"
-                  
-                >
-                <template #default>
-                  <v-card-subtitle class="text-left" style="margin-top: 5px;color: white;">
-                  {{
-                    movie.lang + " - " + movie.episode_current
-                  }}
-                </v-card-subtitle>
-                </template>
-                <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="blue-lighten-3"
-                :width="5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
-                </v-img>
-              </v-col>
-              <v-col cols="12" md="8" class="pa-4">
-                
-                 <h3 class="text-left">{{ movie.name }} </h3>
-                <!--<h5 class="text-left">{{movie.lang + " - " + movie.episode_current}}</h5> -->
-                <div class="genre-section mb-3">
-                  <v-chip
-                    v-for="(genre, index) in movie.category"
-                    :key="index"
-                    class="ma-1"
-                    label
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </div>
-
-                <div class="meta-info mb-2 d-flex align-center flex-wrap">
-                  <v-rating
-                    v-model="valueRate"
-                    active-color="orange"
-                    color="orange-lighten-1"
-                  ></v-rating>
-                  <v-icon size="18" class="me-1 text-grey">mdi-calendar</v-icon>
-                  <span class="me-4">{{ movie.year }}</span>
-                </div>
-
-                <p class="text-body-2 description-text">
-                  {{ $t("Miêu tả") }}:  
-                  <span v-html="movie.origin_name"></span>
-                </p>
-
-                <div class="action-buttons mt-4">
-                  <v-btn
-                    variant="flat"
-                    color="primary"
-                    class="me-2"
-                    prepend-icon="mdi-play-circle"
-                  >
-                    {{ $t("Xem ngay") }}
-                  </v-btn>
-                  <v-btn
-                    @click.stop.prevent="shareMovie(movie)"
-                    variant="outlined"
-                    prepend-icon="mdi-share-variant"
-                  >
-                    {{ $t("Chia sẻ") }}
-                  </v-btn>
-                  <v-btn
-                    @click.stop.prevent="handleFavorite(movie)"
-                    variant="outlined"
-                    prepend-icon="mdi-bookmark"
-                  >
-                    {{ $t("Xem sau") }}
-                  </v-btn>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </router-link>
-
-        <v-pagination
-          v-model="currentPage"
-          :length="Math.ceil(totalMovies / moviesPerPage)"
-          class="my-4 justify-center"
-        />
+          <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+        </div>
       </v-col>
 
       <!-- dialog share -->
       <v-dialog v-model="shareDialog" max-width="500">
         <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
-          <v-card-title class="text-h6 justify-center">{{$t('Chia sẻ')}}</v-card-title>
+          <v-card-title class="text-h6 justify-center">{{
+            $t("Chia sẻ")
+          }}</v-card-title>
 
           <v-row class="justify-center mt-4" dense>
             <v-col cols="3" class="text-center">
@@ -293,26 +178,26 @@
               <div class="mt-1 text-caption">Twitter</div>
             </v-col>
             <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('tiktok')"
-              class="bg-grey-darken-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                fill="white"
+              <v-btn
+                icon
+                size="large"
+                @click="shareTo('tiktok')"
+                class="bg-grey-darken-4"
               >
-                <path
-                  d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
-                />
-              </svg>
-            </v-btn>
-            <div class="mt-1 text-caption">TikTok</div>
-          </v-col>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                  fill="white"
+                >
+                  <path
+                    d="M12.75 2h2.5c.1 1.2.6 2.3 1.5 3.2.9.9 2 1.4 3.2 1.5v2.6c-1.4-.1-2.7-.5-3.9-1.2v5.6c0 3.4-2.7 6.1-6.1 6.1S4 17.1 4 13.7 6.7 7.6 10.1 7.6c.3 0 .6 0 .9.1v2.7c-.3-.1-.6-.2-.9-.2-1.9 0-3.5 1.6-3.5 3.5S8.2 17.2 10.1 17.2s3.5-1.6 3.5-3.5V2z"
+                  />
+                </svg>
+              </v-btn>
+              <div class="mt-1 text-caption">TikTok</div>
+            </v-col>
           </v-row>
 
           <v-card
@@ -344,8 +229,14 @@
 
 
 <script>
-import { Search, Search1, urlImage, urlImage1,PostMoviesFavorite } from "@/model/api";
-import FilterMovie from "@/pages/FilterMovie.vue"
+import {
+  Search,
+  Search1,
+  urlImage,
+  urlImage1,
+  PostMoviesFavorite,
+} from "@/model/api";
+import FilterMovie from "@/pages/FilterMovie.vue";
 //import {  toggleFavorite } from "@/utils/favorite";
 export default {
   name: "SearchMovie",
@@ -360,31 +251,36 @@ export default {
       totalMovies: 100,
       valueRate: 5,
       path: "",
+      loadingMore: false,
+      isLastPage: false,
+      observer: null,
+      observerInited: false,
       link: "",
       shareDialog: false,
       shareUrl: "",
-      movieFavorite:{
-        IDAccount :this.$store.state.empInfor.ID || localStorage.getItem("name"),
-        IDMovies: '',
-        slug: '',
-        currentPage: '',
-        UrlMovies: '',
-        origin_name: '',
-        name: '',
-        year: '',
-        lang:''
+      movieFavorite: {
+        IDAccount:
+          this.$store.state.empInfor.ID || localStorage.getItem("name"),
+        IDMovies: "",
+        slug: "",
+        currentPage: "",
+        UrlMovies: "",
+        origin_name: "",
+        name: "",
+        year: "",
+        lang: "",
       },
       filters: {
         year: "",
         lang: "",
         category: "",
         country: "",
-        sortOption: "modified.time"
+        sortOption: "modified.time",
       },
     };
   },
-  components:{
-    FilterMovie
+  components: {
+    FilterMovie,
   },
   watch: {
     "$route.query.keyword": {
@@ -393,30 +289,33 @@ export default {
         document.title = `${this.$t("Kết quả tìm kiếm: ")} ${query}`;
         this.loading = true;
         this.path = query;
-
+        this.currentPage = 1;
+        this.observerInited = false;
         await this.SearchMovie1(query);
       },
     },
-    async currentPage(newpage) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      this.loading = true;
-      this.currentPage = newpage;
-      await this.SearchMovie1(this.path);
+    movies() {
+      if (!this.observerInited) {
+        this.$nextTick(() => {
+          this.initObserver();
+        });
+      }
     },
   },
   methods: {
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
-      this.SearchMovie(this.path);
+      this.observerInited = false;
+      this.SearchMovie1(this.path);
     },
     SearchMovie(query) {
-      return new Promise((resolve,reject) => {
+      return new Promise((resolve, reject) => {
         const timer = setTimeout(() => {
-        this.loading = false;
-        alert(this.$t("⏳ Hết thời gian chờ. Vui lòng thử lại!"));
-        reject(new Error("Timeout"));
-      }, 120000);
+          this.loading = false;
+          alert(this.$t("⏳ Hết thời gian chờ. Vui lòng thử lại!"));
+          reject(new Error("Timeout"));
+        }, 120000);
         Search(
           { keyword: query },
           (result) => {
@@ -424,8 +323,6 @@ export default {
             if (result.status == "success" || result.status == true) {
               this.link = "";
               if (result.data.items.length != 0 && result.data.items != null) {
-                
-
                 this.movies = result.data.items.sort((a, b) => {
                   return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
                 });
@@ -433,89 +330,139 @@ export default {
                   this.updateMetaTags(result.data.seoOnPage);
                 }
                 this.loading = false;
-                resolve(true)
-                
+                this.isLastPage = true;
+                resolve(true);
               } else {
                 this.movies = [];
-              this.loading = false;
-
+                this.loading = false;
+                this.isLastPage = true;
               }
-            } 
-           
-            reject(result)
+            } else {
+              this.loading = false;
+              reject(result);
+            }
           },
           (err) => {
             clearTimeout(timer);
-          console.log(err);
-            
-            
+            this.loading = false;
+            console.log(err);
+            reject(err);
           }
         );
       });
     },
-    SearchMovie1(query) {
-      return new Promise((resolve, reject) =>{
+    SearchMovie1(query, isLoadMore = false) {
+      if (isLoadMore) {
+        this.loadingMore = true;
+      } else {
+        this.loading = true;
+        this.movies = [];
+        this.isLastPage = false;
+      }
+      return new Promise((resolve, reject) => {
         const timer = setTimeout(() => {
-        this.loading = false;
-        alert(this.$t("⏳ Hết thời gian chờ . Vui lòng thử lại!"));
-        reject(new Error("Timeout"));
-      }, 120000);
-          Search1(
-        { keyword: query, page: this.currentPage, limit: 20 },
-        (result) => {
-          
-          clearTimeout(timer);
-          if (result.status == "success" || result.status == true) {
-            if ( result.data.items != null && result.data.items.length != 0) {
-              this.link = "link1"
-                this.movies = result.data.items.sort((a, b) => {
-                return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
-              });
-              if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage);
+          this.loading = false;
+          this.loadingMore = false;
+          alert(this.$t("⏳ Hết thời gian chờ . Vui lòng thử lại!"));
+          reject(new Error("Timeout"));
+        }, 120000);
+        Search1(
+          {
+            keyword: query,
+            page: this.currentPage,
+            limit: 20,
+            sort_field: this.filters.sortOption,
+            sort_lang: this.filters.lang,
+            category: this.filters.category,
+            country: this.filters.country,
+            year: this.filters.year,
+          },
+          (result) => {
+            clearTimeout(timer);
+            if (result.status == "success" || result.status == true) {
+              if (result.data.items != null && result.data.items.length != 0) {
+                this.link = "link1";
+                const sortedItems = result.data.items.sort((a, b) => {
+                  return parseInt(b.year) - parseInt(a.year);
+                });
+
+                if (isLoadMore) {
+                  this.movies = [...this.movies, ...sortedItems];
+                } else {
+                  this.movies = sortedItems;
+                }
+
+                if (result.data.items.length < this.moviesPerPage) {
+                  this.isLastPage = true;
+                }
+
+                if (result.data.seoOnPage) {
+                  this.updateMetaTags(result.data.seoOnPage);
+                }
+                this.loading = false;
+                this.loadingMore = false;
+                resolve(true);
+              } else {
+                if (!isLoadMore) {
+                  this.loading = true;
+                  this.link = "";
+                  this.SearchMovie(query).then(resolve).catch(reject);
+                } else {
+                  this.isLastPage = true;
+                  this.loadingMore = false;
+                  resolve(true);
+                }
               }
-              this.loading = false;
-              resolve(true)
-              
-              
             } else {
-              // this.movies = [];
-              // this.loading = false;
-              this.loading = true
+              if (!isLoadMore) {
+                this.link = "";
+                this.loading = true;
+                this.SearchMovie(query).then(resolve).catch(reject);
+              } else {
+                this.loadingMore = false;
+                reject();
+              }
+            }
+          },
+          (err) => {
+            console.log(err);
+            clearTimeout(timer);
+            if (!isLoadMore) {
               this.link = "";
-              this.SearchMovie(query)
-              .then(resolve)
-              .catch(reject);
-              resolve(true)
+              this.SearchMovie(query).then(resolve).catch(reject);
+            } else {
+              this.loadingMore = false;
+              reject(err);
             }
           }
-          else{
-            this.link = "";
-            this.loading = true
-                this.SearchMovie(query)
-                .then(resolve)
-                .catch(reject);
-          }
-          reject()
-        },
-        (err) => {
-          // clearTimeout(timer);
-          // console.log(err);
-          console.log(err);
-            clearTimeout(timer);
-            this.link = "";
-            this.SearchMovie(query)
-            .then(resolve)
-            .catch(reject);
-        }
-      );
-      })
-      
+        );
+      });
     },
+    initObserver() {
+      if (this.observerInited) return;
+      if (!this.$refs.loadMoreTrigger) return;
 
+      this.observerInited = true;
+
+      this.observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+
+        if (
+          entry.isIntersecting &&
+          !this.loadingMore &&
+          !this.isLastPage &&
+          !this.loading
+        ) {
+          this.currentPage++;
+          this.SearchMovie1(this.path, true);
+        }
+      });
+
+      this.observer.observe(this.$refs.loadMoreTrigger);
+    },
     shareMovie(movie) {
       const domain = window.location.origin;
-      this.shareUrl = `${domain}/movie/${movie.slug}` 
+      this.shareUrl = `${domain}/movie/${movie.slug}`;
       this.shareDialog = true;
     },
     shareTo(platform) {
@@ -542,33 +489,34 @@ export default {
       window.open(shareLink, "_blank");
     },
 
-    handleFavorite(movie){
-      this.movieFavorite.IDMovies = movie._id
-      this.movieFavorite.slug = movie.slug
-      this.movieFavorite.currentPage = movie.episode_current
-      if (this.link == ""){
-        this.movieFavorite.UrlMovies = 'https://img.ophim.live/uploads/movies/' + movie.thumb_url
-
+    handleFavorite(movie) {
+      this.movieFavorite.IDMovies = movie._id;
+      this.movieFavorite.slug = movie.slug;
+      this.movieFavorite.currentPage = movie.episode_current;
+      if (this.link == "") {
+        this.movieFavorite.UrlMovies =
+          "https://img.ophim.live/uploads/movies/" + movie.thumb_url;
+      } else {
+        this.movieFavorite.UrlMovies =
+          "https://phimimg.com/" + movie.poster_url;
       }
-      else{
-        this.movieFavorite.UrlMovies = 'https://phimimg.com/'+movie.poster_url
-      }
-      this.movieFavorite.origin_name = movie.origin_name
-      this.movieFavorite.name = movie.name
-      this.movieFavorite.year = movie.year
-      this.movieFavorite.lang = movie.lang
-      PostMoviesFavorite(this.movieFavorite, (dat) =>{
-        if(dat.data.status == "success"){
-          alert("🎬 " + dat.data.message)
-          
+      this.movieFavorite.origin_name = movie.origin_name;
+      this.movieFavorite.name = movie.name;
+      this.movieFavorite.year = movie.year;
+      this.movieFavorite.lang = movie.lang;
+      PostMoviesFavorite(
+        this.movieFavorite,
+        (dat) => {
+          if (dat.data.status == "success") {
+            alert("🎬 " + dat.data.message);
+          } else {
+            alert(dat.data.message);
+          }
+        },
+        (err) => {
+          console.log(err);
         }
-        else{
-          alert(dat.data.message)
-        }
-
-      }, (err) =>{
-        console.log(err)
-      })
+      );
     },
 
     toggleFavorite(movie) {
@@ -582,7 +530,6 @@ export default {
       }
     },
     copyLink() {
-      
       navigator.clipboard.writeText(this.shareUrl).then(() => {
         alert(this.$t("Đã sao chép liên kết!"));
       });
@@ -832,6 +779,345 @@ export default {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+.movie-title {
+  font-size: 14px;
+}
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.favorite-btn {
+  /* position: relative; */
+  z-index: 4;
+}
+@media (max-width: 600px) {
+  .action-buttons {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 10px;
+    scrollbar-width: thin; /* Firefox */
+  }
+
+  .action-buttons::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+.movie-grid {
+  row-gap: 20px;
+}
+
+.movie-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #14151c;
+  transition: all 0.4s ease;
+  position: relative;
+  text-align: left;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+}
+
+/* poster */
+.poster-wrapper {
+  position: relative;
+}
+
+/* gradient */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent 60%);
+}
+
+/* hover */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* badge */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.badge.lang {
+  background: #1976d2;
+}
+
+/* episode */
+.episode-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #e53935;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* rating */
+.rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* info */
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 38px;
+  overflow: hidden;
+  color: white;
+}
+
+.movie-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  color: white;
+}
+
+/* meta */
+.meta-row {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+  display: flex;
+  gap: 5px;
+  color: white;
+}
+
+/* genre */
+.genre-list {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.genre-item {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+.movie-link {
+  text-decoration: none;
+}
+.load-more-trigger {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+  
+
+.rating-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.genre-section {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.genre-item {
+  border-radius: 5px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+}
+
+.meta-info {
+  font-size: 0.95rem;
+}
+
+.description-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.action-buttons {
+  border-top: 1px solid #444;
+  padding-top: 1rem;
+}
+.d-flex {
+  display: flex !important;
+  align-items: flex-start;
+}
+.b-card-body {
+  text-align: left;
+}
+
+.genre-section,
+.meta-info,
+.description-text {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.genre-item {
+  display: inline-block;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-start;
+}
+.overflow-hidden {
+  background-color: #111218;
+  color: #fff;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.overflow-hidden:hover {
+  transform: scale(1.01);
+  box-shadow: 0 5px 12px rgba(255, 255, 255, 0.05);
+}
+.search-page {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  color: #fff;
+}
+
+.movie-card {
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  background-color: #1e1f29;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.08);
+}
+
+.movie-image {
+  border-radius: 12px 0 0 12px;
+  transition: opacity 0.5s ease;
+}
+
+.genre-section {
+  flex-wrap: wrap;
+}
+
+.genre-section .v-chip {
+  background-color: #2e2f3a;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.description-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  -webkit-line-clamp: 4;
+}
+
+.meta-info .v-icon {
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.v-btn {
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+.v-list-item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
+  pointer-events: none; /* không chặn click */
+}
+
+.movie-card:hover .movie-overlay {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.movie-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* show play khi hover */
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 .movie-title{
   font-size: 14px;
   
@@ -859,5 +1145,149 @@ export default {
   .action-buttons::-webkit-scrollbar {
     height: 6px;
   }
+}
+.movie-grid {
+  row-gap: 20px;
+}
+
+.movie-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #14151c;
+  transition: all 0.4s ease;
+  position: relative;
+  text-align: left;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+}
+
+/* poster */
+.poster-wrapper {
+  position: relative;
+}
+
+/* gradient */
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.95), transparent 60%);
+}
+
+/* hover */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,.6);
+  opacity: 0;
+  transition: .3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* badge */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(0,0,0,.7);
+}
+
+.badge.lang {
+  background: #1976d2;
+}
+
+/* episode */
+.episode-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #e53935;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* rating */
+.rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,.7);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* info */
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 38px;
+  overflow: hidden;
+  color: white;
+}
+
+.movie-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  color: white;
+}
+
+/* meta */
+.meta-row {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+  display: flex;
+  gap: 5px;
+  color: white;
+}
+
+/* genre */
+.genre-list {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.genre-item {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+.movie-link {
+  text-decoration: none;
+}
+.load-more-trigger {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 </style>
