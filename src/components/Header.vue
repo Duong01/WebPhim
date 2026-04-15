@@ -704,7 +704,6 @@ export default {
         history.unshift({ name: this.searchQuery });
         history = history.slice(0, 5);
         localStorage.setItem("HisSearch", JSON.stringify(history));
-        this.searchQuery = "";
         this.menuVisible = false;
       }
     },

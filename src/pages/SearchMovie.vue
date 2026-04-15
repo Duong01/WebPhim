@@ -861,13 +861,15 @@ export default {
 .favorite-btn {
   position: absolute;
   top: 8px;
-  left: 8px;
-  z-index: 2;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.favorite-btn {
-  /* position: relative; */
+  right: 8px;
   z-index: 4;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  transition: all 0.2s ease;
+}
+.favorite-btn:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
 }
 @media (max-width: 600px) {
   .action-buttons {
