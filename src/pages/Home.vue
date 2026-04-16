@@ -1,32 +1,25 @@
 <template>
   <div class="home-page">
-    <keep-alive>
-      <CarouselPage v-once />
-    </keep-alive>
+    <CarouselPage v-once />
 
     <!-- CATEGORY QUICK -->
-    <keep-alive>
     <CategoryQuick :items="categories" />
-    </keep-alive>
 
     <!-- HERO -->
-    <keep-alive>
     <HeroBanner v-if="trending.length" :movie="trending" />
-    </keep-alive>
+
     <!-- MOVIE SECTIONS -->
-    <keep-alive>
     <SectionWrapper
       v-for="(section, index) in sections"
-      :key="section.title"
+      :key="index"
       :ref="'section' + index"
       :title="section.title"
       :type="section.type"
       :movies="section.movies"
       :link="section.link"
       :loading="!section.loaded"
-      
+      class="lazy-section"
     />
-    </keep-alive>
   </div>
 </template>
 
@@ -50,6 +43,7 @@ export default {
   data() {
     return {
       trending: [],
+      observer: null,
       cache: new Map(),
       categories: [
         {
@@ -253,10 +247,16 @@ export default {
     this.initLazyLoad();
   },
 
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
+
   methods: {
     normalizeMovies(raw) {
       return (raw || []).map((m) => ({
-        id: m._id || m.id,
+        id: m.slug || m._id || m.id,
         name: m.name,
         origin_name: m.origin_name,
         thumb_url: this.getImage(m.thumb_url),
@@ -314,7 +314,7 @@ export default {
       }
     },
     initLazyLoad() {
-      const observer = new IntersectionObserver(
+      this.observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -323,14 +323,15 @@ export default {
 
               if (!section.loaded) {
                 this.loadSection(section);
-
-                section.loaded = true;
+                
+                // Hủy theo dõi sau khi đã load để tối ưu CPU
+                this.observer.unobserve(entry.target);
               }
             }
           });
         },
         {
-          rootMargin: "80px",
+          rootMargin: "250px 0px", // Load dữ liệu trước khi scroll tới 250px để mượt hơn
         },
       );
 
@@ -343,7 +344,7 @@ export default {
           if (el) {
             el.dataset.index = index;
 
-            observer.observe(el);
+            this.observer.observe(el);
           }
         });
       });
@@ -356,5 +357,12 @@ export default {
 .home-page {
   background: #0f0f0f;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Tối ưu render các section bằng CSS hiện đại */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 450px;
 }
 </style>

@@ -62,6 +62,7 @@
                 </v-col>
                 <v-col cols="12" sm="8" md="9" class="pa-4 d-flex flex-column">
                   <h3 class="text-left text-white mb-1">{{ movie.name }}</h3>
+                  <div class="text-subtitle-2 text-grey-lighten-1 mb-2">{{ movie.origin_name }}</div>
                   <div class="genre-section mb-3">
                     <v-chip
                       v-for="(genre, index) in movie.category"
@@ -69,8 +70,7 @@
                       class="ma-1"
                       label
                       size="small"
-                      color="grey-darken-3"
-                      text-color="white"
+                      color="green"
                     >
                       {{ genre.name }}
                     </v-chip>
@@ -82,19 +82,21 @@
                     <span class="me-4">{{ movie.year }}</span>
                     <v-icon size="18" class="me-1" v-if="movie.time">mdi-clock-outline</v-icon>
                     <span class="me-4" v-if="movie.time">{{ movie.time }}</span>
+                    <v-icon size="18" class="me-1" v-if="movie.country && movie.country.length">mdi-earth</v-icon>
+                    <span class="me-4" v-if="movie.country && movie.country.length">{{ movie.country[0].name }}</span>
                   </div>
                   <p class="text-body-2 description-text text-grey-lighten-1 mb-4">
-                    {{ $t("Miêu tả") }}: <span v-html="movie.origin_name"></span>
+                    {{ $t("Miêu tả") }}: <span v-html="movie.content || movie.origin_name"></span>
                   </p>
                   
-                  <div class="mt-auto action-buttons pt-4">
-                    <v-btn variant="flat" color="red-darken-1" class="me-3 text-none" prepend-icon="mdi-play-circle">
+                  <div class="mt-auto action-buttons pt-4 d-flex flex-wrap" style="gap: 10px;">
+                    <v-btn variant="flat" color="red-darken-1" class="text-none flex-grow-1 flex-sm-grow-0" prepend-icon="mdi-play-circle">
                       {{ $t("Xem ngay") }}
                     </v-btn>
-                    <v-btn @click.prevent.stop="shareMovie(movie)" variant="outlined" color="grey-lighten-2" class="me-3 text-none" prepend-icon="mdi-share-variant">
+                    <v-btn @click.prevent.stop="shareMovie(movie)" variant="outlined" color="grey-lighten-2" class="text-none flex-grow-1 flex-sm-grow-0" prepend-icon="mdi-share-variant">
                       {{ $t("Chia sẻ") }}
                     </v-btn>
-                    <v-btn @click.prevent.stop="handleFavorite(movie)" variant="outlined" color="grey-lighten-2" class="text-none" prepend-icon="mdi-bookmark">
+                    <v-btn @click.prevent.stop="handleFavorite(movie)" variant="outlined" color="grey-lighten-2" class="text-none flex-grow-1 flex-sm-grow-0" prepend-icon="mdi-bookmark">
                       {{ $t("Xem sau") }}
                     </v-btn>
                   </div>
@@ -143,6 +145,16 @@
                   <div class="hover-overlay">
                     <v-icon size="50">mdi-play-circle</v-icon>
                   </div>
+
+                  <v-btn
+                    icon
+                    size="small"
+                    variant="flat"
+                    class="favorite-btn"
+                    @click.stop.prevent="handleFavorite(movie)"
+                  >
+                    <v-icon>mdi-heart</v-icon>
+                  </v-btn>
 
                   <div class="top-badges">
                     <span class="badge quality">{{
@@ -1199,17 +1211,6 @@ export default {
 .movie-title{
   font-size: 14px;
   
-}
-.favorite-btn {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.favorite-btn {
-  /* position: relative; */
-  z-index: 4;
 }
 @media (max-width: 600px) {
   .action-buttons {
