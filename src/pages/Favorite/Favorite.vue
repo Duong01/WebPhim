@@ -31,8 +31,6 @@
           max-width="150"
           hint="Pick your favorite states"
         />
-        
-        
       </div>
     </div>
 
@@ -70,75 +68,78 @@
 
     <v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
       <v-col
-        v-for="(movie, index) in filteredMovies"
-        :key="movie.IDMovies || movie.id"
+        v-for="movie in filteredMovies"
+        :key="movie.id"
         cols="6"
-        sm="4"
+        sm="6"
         md="3"
         lg="3"
       >
         <router-link
-          :to="{ name: 'Movies', params: { slug: movie.slug } }"
+          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
           class="movie-link"
         >
-          <v-card
-            class="movie-card"
-            :style="{ animationDelay: `${(index % 20) * 0.05}s` }"
-          >
+          <v-card class="movie-card" elevation="0">
             <div class="poster-wrapper">
               <v-img
                 :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
-                aspect-ratio="2/3"
+                class="movie-poster"
                 cover
-                class="poster-img"
-              >
-                <template #placeholder>
-                  <div
-                    class="d-flex align-center justify-center fill-height"
-                  >
-                    <v-progress-circular indeterminate color="primary" />
-                  </div>
-                </template>
-              </v-img>
-              <div class="gradient-overlay"></div>
+                height="270"
+              />
+
+              <!-- overlay -->
               <div class="hover-overlay">
-                <v-icon size="50">mdi-play-circle</v-icon>
+                <v-btn icon>
+                  <v-icon size="40">mdi-play</v-icon>
+                </v-btn>
+
+                <v-btn icon @click.stop.prevent="handleFavorite(movie)">
+                  <v-icon :color="indexClick % 1 === 0 ? 'red' : 'white'">
+                    {{
+                      indexClick % 1 === 0 ? "mdi-heart" : "mdi-heart-outline"
+                    }}
+                  </v-icon>
+                </v-btn>
               </div>
-              <v-btn
-                icon
-                size="small"
-                variant="flat"
-                class="remove-btn"
-                @click.stop.prevent="handleFavorite(movie)"
-              >
-                <v-icon>mdi-heart-off</v-icon>
-              </v-btn>
+
+              <!-- TOP BADGE -->
               <div class="top-badges">
-                <span class="badge quality">{{ movie.quality || "FHD" }}</span>
-                <span class="badge lang">{{ movie.lang }}</span>
+                <span class="badge quality">{{ movie.quality || "NA" }}</span>
+                <span class="badge lang">{{ movie.lang || "NA" }}</span>
               </div>
-              <div class="episode-badge">
-                {{ movie.currentPage || movie.episode_current }}
+
+              <!-- EPISODE -->
+              <div class="episode">
+                {{ movie.currentPage || "NA" }}
               </div>
-              <div
-                class="rating"
-                v-if="movie.vote_average && movie.vote_average !== '0'"
-              >
-                ⭐ {{ Number(movie.vote_average || 0).toFixed(1) }}
+
+              <!-- BOTTOM INFO -->
+              <div class="bottom-info">
+                ⭐
+                {{
+                  movie.vote_average && movie.vote_average !== "0"
+                    ? movie.vote_average
+                    : "NA"
+                }}
+                <span>{{ movie.year || "NA" }}</span>
               </div>
             </div>
+
+            <!-- INFO -->
             <v-card-text class="movie-info">
-              <div class="movie-title">{{ movie.name }}</div>
-              <div class="movie-sub">{{ movie.origin_name }}</div>
-              <div class="meta-row">
-                <span>{{ movie.year }}</span>
-                <span v-if="movie.time">•</span>
-                <span v-if="movie.time" class="text-truncate">{{
-                  movie.time
-                }}</span>
+              <div class="movie-title">
+                {{ movie.name || "NA" }}
               </div>
-              <div class="meta-row added-date">
-                <span>Đã thêm: {{ formatDate(movie.Daycreate) }}</span>
+
+              <div class="movie-sub">
+                <span>{{ movie.origin_name || "NA" }}</span>
+              </div>
+
+              <!-- EXTRA INFO -->
+              <div class="movie-extra">
+                <span>⏱ {{ movie.time || "NA" }}</span>
+                <span>📅 {{ formatDate(movie.Daycreate) }}</span>
               </div>
             </v-card-text>
           </v-card>
@@ -150,6 +151,14 @@
     <div ref="loadMoreTrigger" v-show="movies.length" class="load-more-trigger">
       <v-progress-circular v-if="loadingMore" indeterminate color="red" />
     </div>
+    <!-- ================= PAGINATION ================= -->
+
+    <v-pagination
+      v-if="!loading && movies.length"
+      v-model="currentPage"
+      :length="Math.ceil(totalMovies / moviesPerPage)"
+      class="mt-6 justify-center"
+    />
   </v-container>
 </template>
 
@@ -175,7 +184,7 @@ export default {
       sortItems: [
         { title: "Mới nhất", value: "new" },
         { title: "A-Z", value: "name" },
-        { title: "Năm", value: "year" }
+        { title: "Năm", value: "year" },
       ],
 
       loadingMore: false,
@@ -223,42 +232,36 @@ export default {
   },
   methods: {
     formatDate(date) {
-  if (!date) return "NA";
-  try {
-    return new Date(date).toLocaleDateString();
-  } catch {
-    return "NA";
-  }
-},
+      if (!date) return "NA";
+      try {
+        return new Date(date).toLocaleDateString();
+      } catch {
+        return "NA";
+      }
+    },
     handleFavorite(movie) {
-      const payload = {
-        IDAccount: this.idAccount,
-        IDMovies: movie.IDMovies,
-        slug: movie.slug,
-        currentPage: movie.currentPage,
-        UrlMovies: movie.UrlMovies,
-        origin_name: movie.origin_name,
-        name: movie.name,
-        year: movie.year,
-        lang: movie.lang,
-      };
-
+      this.indexClick++;
+      this.movieFavorite.IDAccount = this.idAccount;
+      this.movieFavorite.IDMovies = movie.IDMovies;
+      this.movieFavorite.slug = movie.slug;
+      this.movieFavorite.currentPage = movie.currentPage;
+      this.movieFavorite.UrlMovies = movie.UrlMovies;
+      this.movieFavorite.origin_name = movie.origin_name;
+      this.movieFavorite.name = movie.name;
+      this.movieFavorite.year = movie.year;
+      this.movieFavorite.lang = movie.lang;
       PostMoviesFavorite(
-        payload,
+        this.movieFavorite,
         (dat) => {
           if (dat.data.status == "success") {
             alert("🎬 " + dat.data.message);
-            const index = this.movies.findIndex(m => m.IDMovies === movie.IDMovies);
-            if (index > -1) {
-                this.movies.splice(index, 1);
-            }
           } else {
             alert(dat.data.message);
           }
         },
         (err) => {
           console.log(err);
-        }
+        },
       );
     },
 
@@ -330,7 +333,7 @@ export default {
         () => {
           this.loading = false;
           this.loadingMore = false;
-        }
+        },
       );
     },
     initObserver() {
@@ -346,7 +349,6 @@ export default {
         const entry = entries[0];
 
         if (entry.isIntersecting && !this.loadingMore && !this.isLastPage) {
-
           this.currentPage++;
           this.ListMovie(true);
         }
@@ -417,7 +419,7 @@ export default {
       // search
       if (this.search) {
         list = list.filter((m) =>
-          m.name.toLowerCase().includes(this.search.toLowerCase())
+          m.name.toLowerCase().includes(this.search.toLowerCase()),
         );
       }
 
@@ -439,6 +441,10 @@ export default {
         this.initObserver();
       });
     },
+    currentPage() {
+      this.loading = true;
+      this.ListMovie();
+    },
   },
 };
 </script>
@@ -449,17 +455,438 @@ export default {
   padding: 40px 10px;
 }
 
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* grid */
+
+.movie-grid {
+  row-gap: 20px;
+}
+
+/* card */
+.movie-card {
+  border-radius: 14px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.movie-poster {
+  aspect-ratio: 2/3;
+  width: 100%;
+}
+
+.movie-info {
+  padding: 10px;
+  min-height: 70px;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* gradient */
+
+.poster-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.2),
+    transparent
+  );
+  opacity: 0.8;
+}
+
+/* play */
+
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  color: white;
+  transition: 0.25s;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* favorite */
+
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+/* badges */
+
+.movie-badges {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge.quality {
+  background: #ff3d00;
+  color: white;
+}
+
+.badge.lang {
+  background: #2196f3;
+  color: white;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-sub {
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.movie-link {
+  text-decoration: none;
+}
+
+/* empty */
+
 .empty-state {
   text-align: center;
   padding: 80px 20px;
   color: #aaa;
 }
 
+/* animation */
+
+.fade-scale-enter-active {
+  transition: all 0.35s ease;
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-grid .v-col {
+  display: flex;
+}
+.fade-scale-enter-active {
+  transition: all 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+}
+
+.fade-scale-leave-active {
+  transition: all 0.25s ease;
+  position: absolute;
+}
+
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.movie-poster img {
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.08);
+}
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.poster-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95),
+    rgba(0, 0, 0, 0.4),
+    transparent
+  );
+  transition: opacity 0.35s ease;
+}
+
+.movie-card:hover .poster-gradient {
+  opacity: 0.6;
+}
+.movie-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  color: white;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.35s ease;
+}
+
+.movie-card:hover .movie-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+
+  border-radius: 50%;
+
+  transition: transform 0.25s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.15);
+}
+.badge {
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.badge.quality {
+  background: #ff3d00;
+}
+
+.badge.lang {
+  background: #2196f3;
+}
+.movie-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  transition: color 0.25s ease;
+}
+
+.movie-card:hover .movie-title {
+  color: #ff9800;
+}
 .stats-bar {
   display: flex;
   justify-content: space-between;
   color: #aaa;
   font-size: 14px;
+}
+
+/* overlay */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* card đẹp hơn */
+.movie-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111;
+  transition: 0.35s;
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* image zoom */
+.movie-poster img {
+  transition: 0.5s;
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.1);
+}
+.load-more-trigger {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.poster-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.movie-poster {
+  aspect-ratio: 2/3;
+  transition: transform 0.5s ease;
+}
+.movie-card:hover .movie-poster {
+  transform: scale(1.12);
+}
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.movie-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* mobile vẫn click được */
+@media (hover: none) {
+  .hover-overlay {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* badges */
+.top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 5px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+.quality {
+  background: #ff3d00;
+}
+
+.lang {
+  background: #2196f3;
+}
+
+/* episode */
+.episode {
+  position: absolute;
+  bottom: 35px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 3px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+/* bottom info */
+.bottom-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+/* info */
+.movie-info {
+  padding: 10px;
+}
+
+.movie-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-sub {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* extra */
+.movie-extra {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+}
+
+/* hover card */
+.movie-card {
+  border-radius: 16px;
+  background: #111;
+  transition: all 0.35s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
 }
 /* HEADER */
 .header-bar {
@@ -492,233 +919,8 @@ export default {
   align-items: center;
 }
 @media (max-width: 768px) {
-  .header-bar {
-    flex-direction: column;
-  }
-  .header-left {
-    text-align: center;
-  }
-  .header-right {
-    justify-content: center;
-  }
   .hover-overlay {
     display: none;
-  }
-  .remove-btn {
-    background-color: rgba(229, 57, 53, 0.7);
-  }
-}
-
-.movie-link {
-  text-decoration: none;
-  color: inherit;
-}
-.movie-grid {
-  row-gap: 24px;
-}
-.movie-card {
-  border-radius: 12px;
-  overflow: hidden;
-  background: #1a1c23;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.3s ease;
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  animation: fadeUp 0.6s ease-out backwards;
-}
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.movie-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  z-index: 2;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
-}
-.poster-wrapper {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 2 / 3;
-  background-color: #111;
-}
-:deep(.v-img__img) {
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.movie-card:hover :deep(.v-img__img) {
-  transform: scale(1.1);
-}
-.gradient-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(20, 21, 28, 1) 0%,
-    rgba(20, 21, 28, 0.2) 50%,
-    transparent 100%
-  );
-  pointer-events: none;
-}
-.hover-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.movie-card:hover .hover-overlay {
-  opacity: 1;
-}
-.hover-overlay .v-icon {
-  transform: scale(0.8);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  color: #fff;
-}
-.movie-card:hover .hover-overlay .v-icon {
-  transform: scale(1);
-  color: #ff9800;
-}
-.remove-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  transition: all 0.2s ease;
-}
-.remove-btn:hover {
-  background-color: #e53935;
-  transform: scale(1.1);
-}
-.top-badges {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  display: flex;
-  gap: 6px;
-  z-index: 3;
-}
-.badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-}
-.badge.quality {
-  color: #ffeb3b;
-  border: 1px solid rgba(255, 235, 59, 0.3);
-}
-.badge.lang {
-  color: #64b5f6;
-  border: 1px solid rgba(100, 181, 246, 0.3);
-}
-.episode-badge {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background: #e53935;
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  z-index: 3;
-  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.4);
-}
-.rating {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0, 0, 0, 0.75);
-  color: #ffeb3b;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
-  z-index: 3;
-  backdrop-filter: blur(4px);
-}
-.movie-info {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background: #1a1c23;
-}
-.movie-title {
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #fff;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin-bottom: 4px;
-  min-height: 42px; /* 15px * 1.4 * 2 lines */
-}
-.movie-card:hover .movie-title {
-  color: #ff9800;
-}
-.movie-sub {
-  font-size: 12px;
-  color: #aaa;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 6px;
-}
-.meta-row {
-  font-size: 12px;
-  color: #bbb;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.added-date {
-  font-size: 11px;
-  color: #888;
-  margin-top: auto;
-  padding-top: 6px;
-}
-.load-more-trigger {
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 20px;
-}
-@media (max-width: 600px) {
-  .movie-grid {
-    row-gap: 16px;
-  }
-  .movie-title {
-    font-size: 13px;
-    min-height: 36px;
-  }
-  .movie-info {
-    padding: 10px;
-  }
-  .badge,
-  .episode-badge,
-  .rating {
-    font-size: 10px;
-    padding: 2px 6px;
   }
 }
 </style>
