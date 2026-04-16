@@ -546,6 +546,7 @@ export default {
 .poster-wrapper {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 2 / 3;
   background-color: #111;
 }
 :deep(.v-img__img) {
