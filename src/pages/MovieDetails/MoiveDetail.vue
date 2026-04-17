@@ -295,18 +295,49 @@
                     <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
                     
                     <v-divider color="grey-darken-3" class="mb-4"></v-divider>
-                    <span v-if="movie.year">({{ movie.year }})</span>
-                    <div class="d-flex align-center flex-wrap gap-3 mb-4" style="gap: 12px;">
-                      <v-chip color="primary" size="small" label variant="tonal"><v-icon start size="small">mdi-tag</v-icon> {{ movie.genre.name || 'Đang cập nhật' }}</v-chip>
-                      <v-chip color="secondary" size="small" label variant="tonal"><v-icon start size="small">mdi-translate</v-icon> {{ movie.lang || 'Đang cập nhật' }}</v-chip>
-                      <div class="d-flex align-center text-warning">
-                        <v-rating readonly :length="5" :size="24" :model-value="movie.rating" active-color="warning" density="compact" />
-                      </div>
-                    </div>
-                    <div class="text-body-2 text-grey-lighten-1">
-                      <div class="mb-2"><strong class="text-white">{{ $t("Đạo diễn") }}:</strong> {{ movie.director && movie.director.length ? movie.director.join(", ") : 'Đang cập nhật' }}</div>
-                      <div><strong class="text-white">{{ $t("Diễn viên") }}:</strong> {{ movie.actors && movie.actors.length ? movie.actors.join(", ") : 'Đang cập nhật' }}</div>
-                    </div>
+                    <div class="movie-info-grid text-left">
+                          <div>
+                            <strong>{{ $t("Thể loại:") }}</strong>
+                            <div
+                              class="category-nowrap"
+                              v-for="(cate, ind) in movies.category"
+                              :key="ind"
+                            >
+                              <!-- khong xuong dong -->
+                              {{ cate.name }}
+                              <span v-if="ind < movies.category.length - 1">
+                                ,
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <strong>{{ $t("Quốc gia:") }}</strong>
+                            {{ movies.country[0].name || $t("Đang cập nhật") }}
+                          </div>
+
+                          <div>
+                            <strong>{{ $t("Số tập:") }}</strong>
+                            {{ movies.episode_total }} {{ $t("tập") }}
+                          </div>
+                          <div>
+                            <strong>{{ $t("Thời lượng:") }}</strong>
+                            {{ movies.time }}
+                          </div>
+                          <div>
+                            <strong>{{ $t("Diễn viên:") }}</strong>
+                            <div
+                              class="category-nowrap"
+                              v-for="(actor, ind) in movies.actor"
+                              :key="ind"
+                            >
+                              <!-- khong xuong dong -->
+                              {{ actor }}
+                              <span v-if="ind < movies.actor.length - 1">
+                                ,
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                   </v-col>
                 </v-row>
               </v-card>
@@ -3435,5 +3466,30 @@ a {
   justify-content: center;
   z-index: 25;
   background: rgba(0, 0, 0, 0.35);
+}
+/* Thông tin phim */
+.movie-info-grid p,
+.movie-description,
+.movie-info-grid div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: #ccc;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.movie-info-grid strong {
+  color: orange;
+}
+
+.category-nowrap {
+  white-space: nowrap;
+}
+
+.rating-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
 }
 </style>
