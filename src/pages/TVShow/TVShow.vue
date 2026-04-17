@@ -228,12 +228,13 @@
           </v-card>
         </router-link> -->
 
-        <v-pagination
-          v-model="currentPage"
-          :length="Math.ceil(totalMovies / moviesPerPage)"
-          class="my-4 justify-center"
-          color="warning"
-        />
+        <div
+          ref="loadMoreTrigger"
+          v-show="movies.length > 0 && !isLastPage"
+          class="load-more-trigger"
+        >
+          <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -255,6 +256,9 @@ export default {
       urlImage: urlImage1,
       titlePage: '',
       MessageErr: '',
+      loadingMore: false,
+      isLastPage: false,
+      observer: null,
 
       filters: {
         keyword: "",
@@ -272,13 +276,23 @@ export default {
   mounted() {
     this.ListMovie()
   },
+  beforeUnmount() {
+    if (this.observer) this.observer.disconnect();
+  },
   methods: {
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
       this.ListMovie();
     },
-    ListMovie() {
+    ListMovie(isLoadMore = false) {
+      if (isLoadMore) {
+        this.loadingMore = true;
+      } else {
+        this.loading = true;
+        this.isLastPage = false;
+      }
+
       if(this.filters.year == null || this.filters.year == undefined){
         this.filters.year = ''
       }
@@ -291,26 +305,52 @@ export default {
       if(this.filters.country == null || this.filters.country == undefined){
         this.filters.country = ''
       }
-      this.loading = true;
-      this.movies = [];
+      if (this.currentPage === 1) {
+        this.movies = [];
+      }
+
       ListMovieByCate1(`${this.path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`, (result) => {
         if (result.status === 'success' || result.status == true) {
-          this.movies = result.data.items
+          const newMovies = result.data.items || [];
+          if (isLoadMore) {
+            this.movies = [...this.movies, ...newMovies];
+          } else {
+            this.movies = newMovies;
+          }
           this.titlePage = result.data.titlePage
+          if (newMovies.length === 0) {
+            this.isLastPage = true;
+          }
           if (result.data.seoOnPage) {
             this.updateMetaTags(result.data.seoOnPage)
           }
-          this.loading = false
+          this.loading = false;
+          this.loadingMore = false;
         }
         else{
-            this.loading = false
+          this.loading = false;
+          this.loadingMore = false;
           this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
           }
       }, (err) => {
         console.log(err)
-        this.loading = false
+        this.loading = false;
+        this.loadingMore = false;
           this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
       })
+    },
+    initObserver() {
+      if (!this.$refs.loadMoreTrigger) return;
+      if (this.observer) this.observer.disconnect();
+
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !this.loadingMore && !this.isLastPage && !this.loading) {
+          this.currentPage++;
+          this.ListMovie(true);
+        }
+      }, { rootMargin: "250px 0px" });
+
+      this.observer.observe(this.$refs.loadMoreTrigger);
     },
     getOptimizedImage(imagePath) {
       return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
@@ -350,11 +390,11 @@ export default {
     }
   },
   watch: {
-    currentPage() {
-      this.loading = true
-      this.ListMovie()
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    movies() {
+      this.$nextTick(() => {
+        this.initObserver();
+      });
+    },
   }
 }
 </script>

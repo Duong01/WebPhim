@@ -2,9 +2,7 @@
   <v-container class="search-page" fluid>
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
-        <h2 class="text-center">
-          {{$t('Danh sách phim:')}} {{ titlePage }}
-        </h2>
+        <h2 class="text-center">{{ $t("Danh sách phim:") }} {{ titlePage }}</h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
@@ -26,117 +24,126 @@
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+        <v-alert
+          v-if="movies.length === 0 && MessageErr == ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{
+              $t("Về trang chủ")
+            }}</v-btn>
           </router-link>
         </v-alert>
 
-        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+        <v-alert
+          v-else-if="movies.length === 0 && MessageErr != ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             MessageErr
           }}</strong
           >".
         </v-alert>
 
         <v-row v-else class="movie-grid">
-  <v-col
-    v-for="movie in movies"
-    :key="movie.slug"
-    cols="6"
-    sm="4"
-    md="3"
-    lg="2"
-  >
-    <router-link
-      :to="{ name: 'Movies', params: { slug: movie.slug } }"
-      class="movie-link"
-    >
-      <v-card class="movie-card">
-  <div class="poster-wrapper">
-    <v-img
-      :src="getOptimizedImage(movie.poster_url)"
-      height="300"
-      cover
-    >
-    <template #placeholder>
-                    <div class="d-flex align-center justify-center fill-height">
-                      <v-progress-circular indeterminate />
-                    </div>
-                  </template>
-    </v-img>
-
-    <!-- overlay -->
-    <div class="gradient-overlay"></div>
-
-    <!-- hover play -->
-    <div class="hover-overlay">
-      <v-icon size="50">mdi-play-circle</v-icon>
-    </div>
-
-    <!-- TOP BADGE -->
-    <div class="top-badges">
-      <span class="badge quality">{{ movie.quality }}</span>
-      <span class="badge lang">{{ movie.lang }}</span>
-    </div>
-
-    <!-- EPISODE -->
-    <div class="episode-badge">
-      {{ movie.episode_current }}
-    </div>
-
-    <!-- RATING -->
-    <div class="rating">
-      ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
-    </div>
-  </div>
-
-  <v-card-text class="movie-info">
-    <!-- TITLE -->
-    <div class="movie-title">
-      {{ movie.name }}
-    </div>
-
-    <!-- SUB -->
-    <div class="movie-sub">
-      {{ movie.origin_name }}
-    </div>
-
-    <!-- META -->
-    <div class="meta-row">
-      <span>{{ movie.year }}</span>
-      <span>•</span>
-      <span>{{ movie.time }}</span>
-      
-    </div>
-
-    <!-- GENRE -->
-    <div class="genre-list">
-      <span
-        v-for="c in movie.category.slice(0,2)"
-        :key="c.id"
-        class="genre-item"
-      >
-        {{ c.name }}
-      </span>
-    </div>
-  </v-card-text>
-</v-card>
-    </router-link>
-  </v-col>
-</v-row>
-          <div
-            ref="loadMoreTrigger"
-            v-show="movies.length > 0 && !isLastPage"
-            class="load-more-trigger"
+          <v-col
+            v-for="movie in movies"
+            :key="movie.slug"
+            cols="6"
+            sm="4"
+            md="3"
+            lg="2"
           >
-            <v-progress-circular v-if="loadingMore" indeterminate color="red" />
-          </div>
+            <router-link
+              :to="{ name: 'Movies', params: { slug: movie.slug } }"
+              class="movie-link"
+            >
+              <v-card class="movie-card">
+                <div class="poster-wrapper">
+                  <v-img
+                    :src="getOptimizedImage(movie.poster_url)"
+                    height="300"
+                    cover
+                  >
+                    <template #placeholder>
+                      <div
+                        class="d-flex align-center justify-center fill-height"
+                      >
+                        <v-progress-circular indeterminate />
+                      </div>
+                    </template>
+                  </v-img>
+
+                  <!-- overlay -->
+                  <div class="gradient-overlay"></div>
+
+                  <!-- hover play -->
+                  <div class="hover-overlay">
+                    <v-icon size="50">mdi-play-circle</v-icon>
+                  </div>
+
+                  <!-- TOP BADGE -->
+                  <div class="top-badges">
+                    <span class="badge quality">{{ movie.quality }}</span>
+                    <span class="badge lang">{{ movie.lang }}</span>
+                  </div>
+
+                  <!-- EPISODE -->
+                  <div class="episode-badge">
+                    {{ movie.episode_current }}
+                  </div>
+
+                  <!-- RATING -->
+                  <div class="rating">
+                    ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
+                  </div>
+                </div>
+
+                <v-card-text class="movie-info">
+                  <!-- TITLE -->
+                  <div class="movie-title">
+                    {{ movie.name }}
+                  </div>
+
+                  <!-- SUB -->
+                  <div class="movie-sub">
+                    {{ movie.origin_name }}
+                  </div>
+
+                  <!-- META -->
+                  <div class="meta-row">
+                    <span>{{ movie.year }}</span>
+                    <span>•</span>
+                    <span>{{ movie.time }}</span>
+                  </div>
+
+                  <!-- GENRE -->
+                  <div class="genre-list">
+                    <span
+                      v-for="c in movie.category.slice(0, 2)"
+                      :key="c.id"
+                      class="genre-item"
+                    >
+                      {{ c.name }}
+                    </span>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </router-link>
+          </v-col>
+        </v-row>
+        <div
+          ref="loadMoreTrigger"
+          v-show="movies.length > 0 && !isLastPage"
+          class="load-more-trigger"
+        >
+          <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -157,12 +164,11 @@ export default {
       path: "phim-bo",
       urlImage: urlImage1,
       titlePage: "",
-      MessageErr: '',
+      MessageErr: "",
 
       loadingMore: false,
       isLastPage: false,
       observer: null,
-      observerInited: false,
 
       filters: {
         keyword: "",
@@ -170,12 +176,12 @@ export default {
         lang: "",
         category: "",
         country: "",
-        sortOption: "modified.time"
+        sortOption: "modified.time",
       },
     };
   },
-  components:{
-    FilterMovie
+  components: {
+    FilterMovie,
   },
   mounted() {
     this.ListMovie();
@@ -186,14 +192,11 @@ export default {
     }
   },
   methods: {
-
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
-      this.observerInited = false;
       this.ListMovie();
     },
-
 
     ListMovie(isLoadMore = false) {
       if (isLoadMore) {
@@ -204,19 +207,18 @@ export default {
         this.isLastPage = false;
       }
 
-      if(this.filters.year == null || this.filters.year == undefined){
-        this.filters.year = ''
+      if (this.filters.year == null || this.filters.year == undefined) {
+        this.filters.year = "";
       }
-      if(this.filters.lang == null || this.filters.lang == undefined){
-        this.filters.lang = ''
+      if (this.filters.lang == null || this.filters.lang == undefined) {
+        this.filters.lang = "";
       }
-      if(this.filters.category == null || this.filters.category == undefined){
-        this.filters.category = ''
+      if (this.filters.category == null || this.filters.category == undefined) {
+        this.filters.category = "";
       }
-      if(this.filters.country == null || this.filters.country == undefined){
-        this.filters.country = ''
+      if (this.filters.country == null || this.filters.country == undefined) {
+        this.filters.country = "";
       }
-      this.loading = true;
       // this.movies = [];
       if (this.currentPage === 1) {
         this.movies = [];
@@ -225,7 +227,7 @@ export default {
         `${this.path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=20`,
         (result) => {
           if (result.status === "success" || result.status == true) {
-            const newMovies = result.data.items;
+            const newMovies = result.data.items || [];
             if (isLoadMore) {
               this.movies = [...this.movies, ...newMovies];
             } else {
@@ -233,35 +235,40 @@ export default {
             }
 
             this.titlePage = result.data.titlePage;
-            // check hết data
-            if (newMovies.length < this.moviesPerPage) {
+            
+            // Chỉ dừng lại khi không còn phim nào trả về
+            if (newMovies.length === 0) {
               this.isLastPage = true;
             }
             if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage)
-              }
+              this.updateMetaTags(result.data.seoOnPage);
+            }
             this.loading = false;
             this.loadingMore = false;
-          }
-          else{
-            this.loading = false
+          } else {
+            this.loading = false;
             this.loadingMore = false;
-          this.MessageErr = this.$t("Không có dữ liệu được hiển thị, vui lòng tải lại trang")
+            this.MessageErr = this.$t(
+              "Không có dữ liệu được hiển thị, vui lòng tải lại trang",
+            );
           }
         },
         (err) => {
           console.log(err);
-          this.loading = false
+          this.loading = false;
           this.loadingMore = false;
-          this.MessageErr = this.$t("Hết thời gian chờ, vui lòng tải lại trang")
-        }
+          this.MessageErr = this.$t(
+            "Hết thời gian chờ, vui lòng tải lại trang",
+          );
+        },
       );
     },
     initObserver() {
-      if (this.observerInited) return;
       if (!this.$refs.loadMoreTrigger) return;
 
-      this.observerInited = true;
+      if (this.observer) {
+        this.observer.disconnect();
+      }
 
       this.observer = new IntersectionObserver((entries) => {
         const entry = entries[0];
@@ -275,58 +282,58 @@ export default {
           this.currentPage++;
           this.ListMovie(true);
         }
-      });
+      }, { rootMargin: "250px 0px" });
 
       this.observer.observe(this.$refs.loadMoreTrigger);
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + "https://phimimg.com/" +encodeURIComponent(imagePath)}`; 
+      return `${
+        this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)
+      }`;
     },
     // Chuan SEO
     updateMetaTags(seo) {
-    document.title = seo.titleHead || 'Phim hay'
+      document.title = seo.titleHead || "Phim hay";
 
-    const removeOldMeta = (key, attr = 'name') => {
-      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
-      old.forEach(tag => tag.remove())
-    }
+      const removeOldMeta = (key, attr = "name") => {
+        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
+        old.forEach((tag) => tag.remove());
+      };
 
-    const setMeta = (key, content, attr = 'name') => {
-      if (!content) return
-      const meta = document.createElement('meta')
-      meta.setAttribute(attr, key)
-      meta.setAttribute('content', content)
-      document.head.appendChild(meta)
-    }
+      const setMeta = (key, content, attr = "name") => {
+        if (!content) return;
+        const meta = document.createElement("meta");
+        meta.setAttribute(attr, key);
+        meta.setAttribute("content", content);
+        document.head.appendChild(meta);
+      };
 
-    // Xóa cũ
-    removeOldMeta('description')
-    removeOldMeta('og:title', 'property')
-    removeOldMeta('og:description', 'property')
-    removeOldMeta('og:type', 'property')
-    removeOldMeta('og:image', 'property')
+      // Xóa cũ
+      removeOldMeta("description");
+      removeOldMeta("og:title", "property");
+      removeOldMeta("og:description", "property");
+      removeOldMeta("og:type", "property");
+      removeOldMeta("og:image", "property");
 
-    // Thêm mới
-    setMeta('description', seo.descriptionHead)
-    setMeta('og:title', seo.titleHead, 'property')
-    setMeta('og:description', seo.descriptionHead, 'property')
-    setMeta('og:type', seo.og_type || 'website', 'property')
+      // Thêm mới
+      setMeta("description", seo.descriptionHead);
+      setMeta("og:title", seo.titleHead, "property");
+      setMeta("og:description", seo.descriptionHead, "property");
+      setMeta("og:type", seo.og_type || "website", "property");
 
-    if (Array.isArray(seo.og_image)) {
-      seo.og_image.forEach(img => {
-        setMeta('og:image', img, 'property')
-      })
-    }
-  }
+      if (Array.isArray(seo.og_image)) {
+        seo.og_image.forEach((img) => {
+          setMeta("og:image", img, "property");
+        });
+      }
+    },
   },
   watch: {
     movies() {
-    if (!this.observerInited) {
       this.$nextTick(() => {
         this.initObserver();
       });
-    }
-  },
+    },
   },
 };
 </script>
@@ -362,7 +369,8 @@ export default {
   border-radius: 12px;
   overflow: hidden;
   background: #1a1c23;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.3s ease;
   position: relative;
   height: 100%;
   display: flex;
@@ -371,13 +379,13 @@ export default {
 }
 
 @keyframes fadeUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -405,7 +413,12 @@ export default {
 .gradient-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(20, 21, 28, 1) 0%, rgba(20, 21, 28, 0.2) 50%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(20, 21, 28, 1) 0%,
+    rgba(20, 21, 28, 0.2) 50%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -576,10 +589,11 @@ export default {
   .movie-info {
     padding: 10px;
   }
-  .badge, .episode-badge, .rating {
+  .badge,
+  .episode-badge,
+  .rating {
     font-size: 10px;
     padding: 2px 6px;
   }
 }
 </style>
-  

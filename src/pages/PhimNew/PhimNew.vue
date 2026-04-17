@@ -234,11 +234,13 @@
           </v-card>
         </router-link> -->
 
-        <v-pagination
-          v-model="currentPage"
-          :length="Math.ceil(totalMovies / moviesPerPage)"
-          class="my-4 justify-center"
-        />
+        <div
+          ref="loadMoreTrigger"
+          v-show="movies.length > 0 && !isLastPage"
+          class="load-more-trigger"
+        >
+          <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -261,6 +263,9 @@ export default {
       titlePage: '',
       link1: '',
       MessageErr: '',
+      loadingMore: false,
+      isLastPage: false,
+      observer: null,
 
       filters: {
         keyword: "",
@@ -389,15 +394,15 @@ export default {
   }
   },
   watch: {
-    currentPage() {
-      this.loading = true
-      this.ListMovie(this.path)
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
     path(newPath) {
-      this.loading = true
+      this.currentPage = 1;
       this.ListMovie(newPath)
-    }
+    },
+    movies() {
+      this.$nextTick(() => {
+        this.initObserver();
+      });
+    },
   }
 }
 </script>

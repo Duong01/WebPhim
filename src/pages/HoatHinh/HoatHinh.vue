@@ -225,7 +225,6 @@ export default {
       ) {
         this.filters.country = "trung-quoc";
       }
-      this.loading = true;
       //  CHỈ reset khi load page 1
     if (this.currentPage === 1) {
       this.movies = [];

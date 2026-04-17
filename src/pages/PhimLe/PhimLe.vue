@@ -217,7 +217,6 @@ export default {
       if(this.filters.country == null || this.filters.country == undefined){
         this.filters.country = ''
       }
-      this.loading = true;
       // this.movies = [];
       if (this.currentPage === 1) {
         this.movies = [];
