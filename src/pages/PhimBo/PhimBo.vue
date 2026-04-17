@@ -131,19 +131,12 @@
   </v-col>
 </v-row>
           <div
-        ref="loadMoreTrigger"
-        v-show="movies.length"
-        class="load-more-trigger"
-      >
-        <v-progress-circular v-if="loadingMore" indeterminate color="red" />
-      </div>
-
-
-        <v-pagination
-          v-model="currentPage"
-          :length="Math.ceil(totalMovies / moviesPerPage)"
-          class="my-4 justify-center"
-        />
+            ref="loadMoreTrigger"
+            v-show="movies.length > 0 && !isLastPage"
+            class="load-more-trigger"
+          >
+            <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+          </div>
       </v-col>
     </v-row>
   </v-container>
@@ -187,11 +180,17 @@ export default {
   mounted() {
     this.ListMovie();
   },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
   methods: {
 
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
+      this.observerInited = false;
       this.ListMovie();
     },
 
@@ -328,11 +327,6 @@ export default {
       });
     }
   },
-    currentPage() {
-      this.loading = true;
-      this.ListMovie();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
   },
 };
 </script>

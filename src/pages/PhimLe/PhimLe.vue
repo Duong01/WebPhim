@@ -181,11 +181,17 @@ export default {
   mounted() {
     this.ListMovie();
   },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
   methods: {
 
     onFilterChanged(newFilters) {
       this.filters = { ...newFilters };
       this.currentPage = 1;
+      this.observerInited = false;
       this.ListMovie();
     },
 

@@ -31,6 +31,8 @@
           max-width="150"
           hint="Pick your favorite states"
         />
+        
+        
       </div>
     </div>
 
@@ -148,17 +150,9 @@
     </v-row>
 
     <!-- LOAD MORE TRIGGER -->
-    <div ref="loadMoreTrigger" v-show="movies.length" class="load-more-trigger">
+    <div ref="loadMoreTrigger" v-show="movies.length > 0 && !isLastPage" class="load-more-trigger">
       <v-progress-circular v-if="loadingMore" indeterminate color="red" />
     </div>
-    <!-- ================= PAGINATION ================= -->
-
-    <v-pagination
-      v-if="!loading && movies.length"
-      v-model="currentPage"
-      :length="Math.ceil(totalMovies / moviesPerPage)"
-      class="mt-6 justify-center"
-    />
   </v-container>
 </template>
 
@@ -440,10 +434,6 @@ export default {
       this.$nextTick(() => {
         this.initObserver();
       });
-    },
-    currentPage() {
-      this.loading = true;
-      this.ListMovie();
     },
   },
 };

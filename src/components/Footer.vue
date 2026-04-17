@@ -75,7 +75,7 @@
       <v-row class="align-center">
         <v-col >
           <p class="text-caption">
-            © 2025 Phim360.
+            © {{Date.now().getFullYear()}} Phim360.
           </p>
         </v-col>
         
