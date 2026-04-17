@@ -19,7 +19,7 @@
           <!-- Bố cục hai cột -->
           <v-row dense>
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
-            <v-col cols="12" md="9">
+            <v-col cols="12" lg="9" md="8">
               <!-- VIDEO -->
               <div class="video-wrapper">
                 <!-- Video chính -->
@@ -139,12 +139,11 @@
               </div>
 
               <!-- nut next tap và back tap -->
-              <div
-                class="d-flex justify-center align-center my-3"
-                style="gap: 12px"
-              >
+              <div class="d-flex justify-center align-center my-4 episode-nav-wrapper">
                 <v-btn
-                  color="grey-darken-2"
+                  variant="tonal"
+                  color="grey-lighten-1"
+                  class="nav-episode-btn"
                   @click="prevEpisode()"
                   :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
                 >
@@ -152,12 +151,14 @@
                   {{ $t("Tập trước") }}
                 </v-btn>
 
-                <v-chip color="blue-darken-2" text-color="white">
-                  {{ movie.pageMovie[currentEpisodeIndex]?.name }}
+                <v-chip color="primary" class="mx-3 px-4 font-weight-bold" size="large" variant="elevated">
+                  {{ movie.title }} - {{ movie.pageMovie[currentEpisodeIndex]?.name }}
                 </v-chip>
 
                 <v-btn
-                  color="grey-darken-2"
+                  variant="tonal"
+                  color="grey-lighten-1"
+                  class="nav-episode-btn"
                   @click="nextEpisode()"
                   :disabled="currentEpisodeIndex <= 0"
                 >
@@ -165,112 +166,67 @@
                   <v-icon end>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
-              <v-card
-                class="my-4"
-                variant="flat"
-                color="grey-darken-4"
-                theme="dark"
-              >
-                <v-card-title class="d-flex align-center custom-title">
-                  <span class="text-h6 title-text"
-                    >{{ movie.title }}
-                    <v-chip
-                      class="ml-2 chip-limit"
-                      color="red"
-                      text-color="white"
-                      >{{ movie.pageMovie[currentEpisodeIndex]?.name }}</v-chip
-                    >
-                  </span>
-                </v-card-title>
-              </v-card>
-              <!-- Nhóm nút + server -->
-              <div
-                class="d-flex align-center justify-space-between flex-wrap px-4 py-2 function-buttons-wrapper"
-                style="background-color: #1a1a1a; gap: 16px"
-              >
-                <!-- Nút chức năng -->
-                <div
-                  class="d-flex align-center flex-wrap function-buttons"
-                  style="gap: 8px; flex-wrap: wrap"
-                >
-                  <v-btn
-                    variant="text"
-                    @click="getTrailer()"
-                    class="function-btn"
-                  >
-                    <v-icon start icon="mdi-youtube" />
-                    <span class="btn-text-short">Trailer</span>
-                  </v-btn>
-                  <v-btn variant="text" @click="shareMovie" class="function-btn"
-                    ><v-icon start icon="mdi-share-variant" /><span
-                      class="btn-text-short"
-                      >{{ $t("Chia sẻ") }}</span
-                    ></v-btn
-                  >
-                  <v-btn
-                    variant="text"
-                    @click="ResponseError"
-                    class="function-btn"
-                    ><v-icon start icon="mdi-flag" /><span
-                      class="btn-text-short"
-                      >{{ $t("Báo lỗi") }}</span
-                    ></v-btn
-                  >
-                  <v-btn
-                    variant="text"
-                    @click="handleFavorite"
-                    class="function-btn"
-                    ><v-icon
-                      start
-                      :icon="liked ? 'mdi-bookmark' : 'mdi-bookmark-outline'"
-                    /><span class="btn-text-short">{{
-                      $t("Xem sau")
-                    }}</span></v-btn
-                  >
-                </div>
-
+              
+              <!-- Action Bar & Server Tabs -->
+              <div class="player-toolbar d-flex flex-column flex-md-row align-md-center justify-space-between mb-6 pa-4 rounded-lg">
                 <!-- Server -->
-
-                <div
-                  class="d-flex align-center server-tabs-wrapper"
-                  style="gap: 8px; overflow-x: auto; flex-wrap: nowrap"
-                >
-                  <router-link :to="movie.LinkDown" download target="_blank">
-                    <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
-                  </router-link>
-                  <v-tabs
-                    v-model="tabserver"
-                    class="custom-tabs flex-shrink-0"
-                    background-color="transparent"
-                  >
-                    <v-tab
+                <div class="d-flex align-center flex-wrap gap-2 mb-3 mb-md-0 server-tabs-wrapper">
+                  <div class="text-caption text-grey mr-2 d-flex align-center">
+                    <v-icon size="small" class="mr-1">mdi-server-network</v-icon> Server:
+                  </div>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <v-btn
                       v-for="(server, index) in movie.servers"
                       :key="index"
                       @click="switchServer(server)"
-                      :class="{ 'active-tab': tabserver === index }"
+                      :color="tabserver === index ? 'primary' : 'grey-darken-3'"
+                      :variant="tabserver === index ? 'flat' : 'elevated'"
                       size="small"
+                      class="text-none server-btn font-weight-medium"
+                      elevation="2"
                     >
                       {{ server.server_name || `Server ${index + 1}` }}
-                    </v-tab>
-                  </v-tabs>
+                    </v-btn>
+                  </div>
+                  <router-link :to="movie.LinkDown || ''" download target="_blank" class="ml-2">
+                    <v-btn size="small" color="success" variant="tonal" icon="mdi-cloud-download" title="Tải xuống"></v-btn>
+                  </router-link>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-flex align-center gap-2 flex-wrap action-buttons-group">
+                  <v-btn variant="tonal" color="white" size="small" @click="getTrailer()" class="action-btn">
+                    <v-icon start color="red">mdi-youtube</v-icon> Trailer
+                  </v-btn>
+                  <v-btn variant="tonal" color="white" size="small" @click="shareMovie" class="action-btn">
+                    <v-icon start color="blue">mdi-share-variant</v-icon> {{ $t("Chia sẻ") }}
+                  </v-btn>
+                  <v-btn variant="tonal" color="white" size="small" @click="ResponseError" class="action-btn">
+                    <v-icon start color="warning">mdi-flag</v-icon> {{ $t("Báo lỗi") }}
+                  </v-btn>
+                  <v-btn variant="tonal" :color="liked ? 'primary' : 'white'" size="small" @click="handleFavorite" class="action-btn">
+                    <v-icon start :color="liked ? 'white' : 'pink'">{{ liked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}</v-icon>
+                    {{ $t("Xem sau") }}
+                  </v-btn>
                 </div>
               </div>
 
-              <!-- Danh sách tập -->
+              <!-- Danh sách tập (Chỉ hiển thị mobile) -->
               <v-card
-                class="my-4"
+                class="mb-6 modern-card"
+                color="#1a1a1a"
                 variant="flat"
-                color="grey-darken-4"
-                theme="dark"
+                rounded="lg"
                 v-if="$vuetify.display.smAndDown"
               >
-                <v-card-title class="d-flex align-center custom-title">
-                  <span class="text-h6 title-text"
+                <v-card-title class="pt-4 pb-3 px-4 border-b d-flex align-center custom-title" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                  <span class="text-h6 font-weight-bold text-white title-text d-flex align-center w-100"
                     >{{ movie.title }}
                     <v-chip
                       class="ml-2 chip-limit"
-                      color="red"
-                      text-color="white"
+                      color="primary"
+                      variant="flat"
+                      size="small"
                       >{{ movie.pageMovie[currentEpisodeIndex]?.name }}</v-chip
                     >
                   </span>
@@ -290,18 +246,19 @@
                           block
                           size="small"
                           @click="playEpisode(episode)"
+                          :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
                           :color="
                             index === currentEpisodeIndex
-                              ? 'red'
-                              : 'grey-darken-2'
+                              ? 'primary'
+                              : 'grey-darken-3'
                           "
-                          class="episode-item-btn"
+                          class="episode-item-btn rounded-md font-weight-medium text-none"
                         >
                           {{
                             episode.name
-                              ? episode.name.includes("Tập")
+                              ? (episode.name.includes("Tập")
                                 ? episode.name
-                                : $t("Tập ") + episode.name
+                                : $t("Tập ") + episode.name)
                               : "Trailer"
                           }}
                         </v-btn>
@@ -311,18 +268,15 @@
 
                   <div class="text-center mt-4">
                     <v-btn
-                      color="gray"
                       variant="tonal"
+                      color="grey-lighten-1"
                       @click="toggleEpisodes"
                       class="btnnext"
+                      size="small"
                     >
                       {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
                       <v-icon size="18" class="mr-1">
-                        {{
-                          showAllEpisodes
-                            ? "mdi-chevron-up"
-                            : "mdi-chevron-down"
-                        }}
+                        {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
                       </v-icon>
                     </v-btn>
                   </div>
@@ -330,44 +284,35 @@
               </v-card>
 
               <!-- Thông tin phim -->
-              <v-card
-                class="pa-6 text-left"
-                color="grey-darken-4"
-                variant="flat"
-                rounded="lg"
-                theme="dark"
-              >
-                <v-card-title class="text-white mb-4"
-                  >{{ movie.title }} ( {{ movie.name }})</v-card-title
-                >
-                <v-card-text class="text-white">
-                  <div v-html="movie.description"></div>
-                </v-card-text>
-                <v-card-text class="text-white">
-                  <p>
-                    <strong>{{ $t("Diễn viên") }}:</strong>
-                    {{ movie.actors.join(", ") }}
-                  </p>
-                  <p>
-                    <strong>{{ $t("Đạo diễn") }}:</strong>
-                    {{ movie.director.join(", ") }}
-                  </p>
-                  <p>
-                    <strong>{{ $t("Thể loại") }}:</strong>
-                    {{ movie.genre.name }}
-                  </p>
-                  <div class="d-flex align-center">
-                    <strong class="mr-2">{{ $t("Đánh giá") }}:</strong>
-                    <v-rating
-                      readonly
-                      :length="5"
-                      :size="28"
-                      :model-value="movie.rating"
-                      active-color="yellow-darken-2"
-                    />
-                  </div>
-                </v-card-text>
+              <v-card class="movie-info-card pa-5 mb-6" color="#1a1a1a" flat rounded="lg">
+                <v-row>
+                  <v-col cols="12" sm="4" md="3" lg="3" v-if="$vuetify.display.smAndUp">
+                    <v-img :src="getOptimizedImage(movie.thumb_url)" aspect-ratio="2/3" cover class="rounded-lg elevation-4"></v-img>
+                  </v-col>
+                  <v-col cols="12" sm="8" md="9" lg="9">
+                    <h1 class="text-h4 font-weight-bold text-white mb-2">{{ movie.title }}</h1>
+                    <h2 class="text-subtitle-1 text-grey mb-4">{{ movie.name }} <span v-if="movie.year">({{ movie.year }})</span></h2>
+                    
+                    <div class="d-flex align-center flex-wrap gap-3 mb-4" style="gap: 12px;">
+                      <v-chip color="primary" size="small" label variant="tonal"><v-icon start size="small">mdi-tag</v-icon> {{ movie.genre.name || 'Đang cập nhật' }}</v-chip>
+                      <v-chip color="secondary" size="small" label variant="tonal"><v-icon start size="small">mdi-translate</v-icon> {{ movie.lang || 'Đang cập nhật' }}</v-chip>
+                      <div class="d-flex align-center text-warning">
+                        <v-rating readonly :length="5" :size="24" :model-value="movie.rating" active-color="warning" density="compact" />
+                      </div>
+                    </div>
+                    
+                    <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
+                    
+                    <v-divider color="grey-darken-3" class="mb-4"></v-divider>
+                    
+                    <div class="text-body-2 text-grey-lighten-1">
+                      <div class="mb-2"><strong class="text-white">{{ $t("Đạo diễn") }}:</strong> {{ movie.director && movie.director.length ? movie.director.join(", ") : 'Đang cập nhật' }}</div>
+                      <div><strong class="text-white">{{ $t("Diễn viên") }}:</strong> {{ movie.actors && movie.actors.length ? movie.actors.join(", ") : 'Đang cập nhật' }}</div>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-card>
+
               <!-- TRAILER -->
               <div class="mb-4">
                 <v-row>
@@ -457,7 +402,7 @@
               <!-- Bình luận -->
               <v-card
                 flat
-                color="#1e1e1e"
+                color="#1a1a1a"
                 class="pa-6 rounded-xl elevation-2 mt-6"
               >
                 <h2 class="text-white mb-6 text-h5 font-weight-bold">
@@ -540,44 +485,30 @@
                 </div>
               </v-card>
             </v-col>
+            
+            <!-- Cột bên phải: Danh sách tập (Desktop) -->
             <v-col
               cols="12"
-              md="3"
+              lg="3"
+              md="4"
               class="right-panel"
-              v-if="$vuetify.display.smAndUp"
+              v-if="$vuetify.display.mdAndUp"
             >
-              <!-- THÔNG TIN PHIM -->
-              <v-card
-                color="grey-darken-4"
-                variant="flat"
-                rounded="lg"
-                class="mb-4"
-                theme="dark"
-              >
-                <v-card-title
-                  class="text-h5"
-                  style="font-weight: bold; color: #42dfff"
-                >
-                  {{ movie.name }}
-                </v-card-title>
-                <v-tooltip activator="parent" location="top"
-                  >{{ movie.name }}
-                </v-tooltip>
-              </v-card>
-
               <!-- DANH SÁCH TẬP -->
               <v-card
-                color="grey-darken-4"
+                color="#1a1a1a"
                 variant="flat"
                 rounded="lg"
-                theme="dark"
+                class="episode-panel mb-6"
               >
-                <v-card-title
-                  :class="
-                    $vuetify.display.smAndDown ? 'text-body-2' : 'text-h6'
-                  "
-                >
-                  {{ $t("Danh sách tập") }}
+                <v-card-title class="pt-4 pb-3 px-4 border-b" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                  <div class="d-flex align-center justify-space-between w-100">
+                    <span class="text-h6 font-weight-bold text-white d-flex align-center">
+                      <v-icon start color="primary" class="mr-2">mdi-format-list-bulleted-square</v-icon>
+                      {{ $t("Danh sách tập") }}
+                    </span>
+                    <v-chip color="primary" size="small" variant="tonal">{{ movie.pageMovie.length }} Tập</v-chip>
+                  </div>
                 </v-card-title>
 
                 <v-card-text>
@@ -587,23 +518,19 @@
                         v-for="(episode, index) in visibleEpisodesRight"
                         :key="index"
                         cols="6"
+                        lg="6"
+                        md="12"
                       >
                         <v-btn
                           block
-                          :size="
-                            $vuetify.display.smAndDown ? 'small' : 'default'
-                          "
-                          :color="
-                            index === currentEpisodeIndex
-                              ? 'red'
-                              : 'grey-darken-2'
-                          "
+                          :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
+                          :color="index === currentEpisodeIndex ? 'primary' : 'grey-darken-3'"
+                          class="episode-btn rounded-md font-weight-medium text-none"
                           @click="playEpisode(episode)"
+                          height="40"
                         >
                           {{
-                            episode.name.includes("Tập")
-                              ? episode.name
-                              : "Tập " + episode.name || "Trailer"
+                            episode.name ? (episode.name.includes("Tập") ? episode.name : "Tập " + episode.name) : "Trailer"
                           }}
                         </v-btn>
                       </v-col>
@@ -618,7 +545,7 @@
             <!-- Gợi ý phim - Responsive Scroll Layout -->
             <v-col cols="12">
               <div class="suggested-movies my-8">
-                <h2 class="text-h5 mb-4">🎬 {{ $t("Phim được đề xuất") }}</h2>
+                <h2 class="text-h5 font-weight-bold text-white mb-4"><v-icon left color="primary" class="mr-2">mdi-movie-open-star</v-icon>{{ $t("Phim được đề xuất") }}</h2>
 
                 <!-- Scroll container -->
                 <div class="suggested-scroll-wrapper">
@@ -2391,32 +2318,105 @@ export default {
 </script>
 
 <style scoped>
-.movie-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px;
+.right-panel {
+  position: sticky;
+  top: 72px;
 }
 
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.gap-4 { gap: 16px; }
-
-
-
+.episode-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 .video-wrapper {
   width: 100% !important;
   aspect-ratio: 16 / 9;
   position: relative;
-  background: #000;
+  background: #0a0a0a;
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 
   /* YouTube-style shadow */
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.6);
 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Smooth focus state */
+  cursor: pointer;
 }
 
+.video-wrapper:hover,
+.video-wrapper:focus-within {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 12px 32px rgba(0, 0, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+/* YouTube-style glow border on hover */
+.video-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 0, 0.15),
+    rgba(255, 61, 0, 0.1),
+    rgba(0, 229, 255, 0.15)
+  );
+  filter: blur(8px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.video-wrapper:hover::before {
+  opacity: 0.6;
+}
+
+/* Toolbar hiện đại phía dưới video */
+.player-toolbar {
+  background-color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn {
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.server-btn {
+  letter-spacing: 0;
+  transition: all 0.2s ease;
+}
+
+/* Khung chứa các tập phim (Desktop) */
+.episode-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.episode-list-container {
+  max-height: 550px;
+  overflow-y: auto;
+}
+
+.episode-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+.episode-list-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.episode-list-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.episode-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
 
 .video-player,
 .video-iframe {
@@ -2430,6 +2430,17 @@ export default {
   background: #000;
   display: block;
 
+  /* YouTube player smooth appearance */
+  animation: playerFadeIn 0.5s ease-out;
+}
+
+@keyframes playerFadeIn {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .suggested-item {
@@ -2500,14 +2511,14 @@ export default {
 }
 
 .suggested-card-wrapper {
-  background: #1a1c23;
+  background: #2e2e2e;
   border-radius: 12px;
   overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
 }
 
 .suggested-movie-card:hover .suggested-card-wrapper {
@@ -2570,38 +2581,35 @@ export default {
 
 .suggested-title {
   font-size: clamp(12px, 3vw, 16px);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.3;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  transition: color 0.2s;
-}
-
-.suggested-movie-card:hover .suggested-title {
-  color: #f8b230;
+  word-break: break-word;
 }
 
 .suggested-meta {
   display: flex;
   gap: 8px;
   font-size: clamp(10px, 3vw, 13px);
-  color: #fff;
-  font-weight: 600;
+  color: #ffd600;
+  font-weight: 500;
   flex-wrap: wrap;
 }
 
 .suggested-episode {
-  background: #e53935;
-  padding: 2px 6px;
+  background: rgba(255, 214, 0, 0.2);
+  padding: 2px 8px;
   border-radius: 4px;
 }
 
 .suggested-lang {
-  background: rgba(255,255,255,0.1);
-  padding: 2px 6px;
+  background: rgba(100, 150, 255, 0.2);
+  padding: 2px 8px;
   border-radius: 4px;
+  color: #64b5f6;
 }
 
 .suggested-category {
@@ -2837,149 +2845,23 @@ export default {
   }
 }
 
-/* --- NEW MODERN STYLES --- */
-.modern-card {
-  background-color: #16181e !important;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
-}
-
-.border-b {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.border-l-primary {
-  border-left: 4px solid #f8b230;
-}
-
-.bg-grey-darken-4 {
-  background-color: #101115 !important;
-}
-
-.min-w-80 {
-  min-width: 80px;
-  display: inline-block;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Trailer Modern */
-.trailer-thumb-modern {
-  position: relative;
-  width: 280px;
-  aspect-ratio: 16/9;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: transform 0.3s, border-color 0.3s;
-}
-.trailer-thumb-modern:hover {
-  transform: translateY(-4px);
-  border-color: #f8b230;
-}
-.trailer-thumb-modern img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.trailer-overlay-modern {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.trailer-thumb-modern:hover .trailer-overlay-modern {
-  opacity: 1;
-}
-.trailer-title-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-.play-btn-pulse {
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(248, 178, 48, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(248, 178, 48, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(248, 178, 48, 0); }
-}
-
-/* Vertical Episode List */
-.sticky-sidebar {
-  position: sticky;
-  top: 80px;
-  max-height: calc(100vh - 100px);
-  display: flex;
-  flex-direction: column;
-}
-.episode-vertical-list {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-.bg-primary-subtle {
-  background-color: rgba(248, 178, 48, 0.1) !important;
-}
-.ep-hover:hover {
-  background-color: rgba(255,255,255,0.05);
-}
-.ep-number {
-  width: 24px;
-  text-align: right;
-}
-
-/* Scrollbars */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.1);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.4);
-}
-
-/* Animations */
-.animate-fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUpFill 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-}
-
-@keyframes fadeUpFill {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .movie-detail {
   padding: 12px 0;
 }
 a {
   color: #fff;
+}
+.custom-tabs .v-tab {
+  color: white;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.custom-tabs .v-tab.active-tab {
+  color: #000;
+  background-color: #f8b230;
+  border-radius: 10px;
+  font-weight: bold;
 }
 
 .movie-info p {
@@ -3142,10 +3024,60 @@ a {
   margin-left: 8px;
 }
 
+.trailer-thumb {
+  width: 222px;
+  height: 125px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease;
+}
+
+/* Ảnh */
+.trailer-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+/* overlay (mặc định trong suốt) */
+.trailer-overlay {
+  position: absolute;
+  inset: 0; /* top:0;right:0;bottom:0;left:0; */
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
+  pointer-events: none; /* để click qua overlay */
+}
+
+/* nút play (ẩn mặc định) */
+.trailer-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none; /* cho phép click container */
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
+}
 
 /* khi hover -> làm nổi ảnh, hiện overlay + play */
 .trailer-thumb:hover img {
   transform: scale(1.03);
+}
+
+.trailer-thumb:hover .trailer-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid yellow;
+}
+
+.trailer-thumb:hover .trailer-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .episode-col {
@@ -3172,6 +3104,9 @@ a {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+.content-desc {
+  line-height: 1.6;
+}
 .custom-title {
   display: flex;
   flex-wrap: wrap;
@@ -3195,7 +3130,22 @@ a {
   border-radius: 10px;
   color: #757575;
 }
+.watch-page {
+  margin: 0 !important;
+  animation: watchEnter 0.5s ease-out;
+  width: 100% !important;
+}
 
+@keyframes watchEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .v-btn {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -3207,9 +3157,10 @@ a {
 .v-btn:active {
   transform: scale(0.96);
 }
-.episode-grid-wrapper {
-  max-height: 280px;
+.episode-list {
+  max-height: calc(5 * 90px);
   overflow-y: auto;
+  margin: 10px;
 }
 
 .episode-row {
@@ -3300,8 +3251,7 @@ a {
 
   .function-btn {
     flex: 1;
-    min-width: 48%;
-    margin-bottom: 8px;
+    min-height: 40px !important;
     font-size: 0.85rem !important;
     padding: 8px 12px !important;
   }
@@ -3315,9 +3265,13 @@ a {
     font-size: 0.85rem;
   }
 
-  .server-group {
+  .server-tabs-wrapper {
     width: 100%;
-    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .custom-tabs {
+    width: 100%;
   }
 
   /* Episode buttons in mobile */
@@ -3355,9 +3309,13 @@ a {
     padding: 10px !important;
   }
 
-  .action-group {
+  .episode-chip-info {
     width: 100%;
-    justify-content: center;
+    text-align: center;
+  }
+
+  .function-buttons {
+    width: 100%;
   }
 
   .function-btn {
