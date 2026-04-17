@@ -152,7 +152,7 @@
                 </v-btn>
 
                 <v-chip color="primary" class="mx-3 px-4 font-weight-bold" size="large" variant="elevated">
-                  {{ movie.title }} - {{ movie.pageMovie[currentEpisodeIndex]?.name }}
+                  {{ movie.pageMovie[currentEpisodeIndex]?.name }}
                 </v-chip>
 
                 <v-btn
@@ -168,13 +168,13 @@
               </div>
               
               <!-- Action Bar & Server Tabs -->
-              <div class="player-toolbar d-flex flex-column flex-md-row align-md-center justify-space-between mb-6 pa-4 rounded-lg">
+              <div class="player-toolbar d-flex align-center justify-space-between mb-6 pa-4 rounded-lg overflow-x-auto flex-nowrap">
                 <!-- Server -->
-                <div class="d-flex align-center flex-wrap gap-2 mb-3 mb-md-0 server-tabs-wrapper">
-                  <div class="text-caption text-grey mr-2 d-flex align-center">
+                <div class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper mr-4">
+                  <div class="text-caption text-grey mr-2 d-flex align-center flex-shrink-0">
                     <v-icon size="small" class="mr-1">mdi-server-network</v-icon> Server:
                   </div>
-                  <div class="d-flex gap-2 flex-wrap">
+                  <div class="d-flex gap-2 flex-nowrap">
                     <v-btn
                       v-for="(server, index) in movie.servers"
                       :key="index"
@@ -182,29 +182,29 @@
                       :color="tabserver === index ? 'primary' : 'grey-darken-3'"
                       :variant="tabserver === index ? 'flat' : 'elevated'"
                       size="small"
-                      class="text-none server-btn font-weight-medium"
+                      class="text-none server-btn font-weight-medium flex-shrink-0"
                       elevation="2"
                     >
                       {{ server.server_name || `Server ${index + 1}` }}
                     </v-btn>
                   </div>
-                  <router-link :to="movie.LinkDown || ''" download target="_blank" class="ml-2">
+                  <router-link :to="movie.LinkDown || ''" download target="_blank" class="ml-2 flex-shrink-0">
                     <v-btn size="small" color="success" variant="tonal" icon="mdi-cloud-download" title="Tải xuống"></v-btn>
                   </router-link>
                 </div>
 
                 <!-- Action buttons -->
-                <div class="d-flex align-center gap-2 flex-wrap action-buttons-group">
-                  <v-btn variant="tonal" color="white" size="small" @click="getTrailer()" class="action-btn">
+                <div class="d-flex align-center gap-2 flex-nowrap action-buttons-group">
+                  <v-btn variant="tonal" color="white" size="small" @click="getTrailer()" class="action-btn flex-shrink-0 text-no-wrap">
                     <v-icon start color="red">mdi-youtube</v-icon> Trailer
                   </v-btn>
-                  <v-btn variant="tonal" color="white" size="small" @click="shareMovie" class="action-btn">
+                  <v-btn variant="tonal" color="white" size="small" @click="shareMovie" class="action-btn flex-shrink-0 text-no-wrap">
                     <v-icon start color="blue">mdi-share-variant</v-icon> {{ $t("Chia sẻ") }}
                   </v-btn>
-                  <v-btn variant="tonal" color="white" size="small" @click="ResponseError" class="action-btn">
+                  <v-btn variant="tonal" color="white" size="small" @click="ResponseError" class="action-btn flex-shrink-0 text-no-wrap">
                     <v-icon start color="warning">mdi-flag</v-icon> {{ $t("Báo lỗi") }}
                   </v-btn>
-                  <v-btn variant="tonal" :color="liked ? 'primary' : 'white'" size="small" @click="handleFavorite" class="action-btn">
+                  <v-btn variant="tonal" :color="liked ? 'primary' : 'white'" size="small" @click="handleFavorite" class="action-btn flex-shrink-0 text-no-wrap">
                     <v-icon start :color="liked ? 'white' : 'pink'">{{ liked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}</v-icon>
                     {{ $t("Xem sau") }}
                   </v-btn>
@@ -223,7 +223,7 @@
                   <span class="text-h6 font-weight-bold text-white title-text d-flex align-center w-100"
                     >{{ movie.title }}
                     <v-chip
-                      class="ml-2 chip-limit"
+                      class="ml-3 chip-limit"
                       color="primary"
                       variant="flat"
                       size="small"
@@ -250,7 +250,7 @@
                           :color="
                             index === currentEpisodeIndex
                               ? 'primary'
-                              : 'grey-darken-3'
+                              : 'grey-darken-5'
                           "
                           class="episode-item-btn rounded-md font-weight-medium text-none"
                         >
@@ -291,8 +291,11 @@
                   </v-col>
                   <v-col cols="12" sm="8" md="9" lg="9">
                     <h1 class="text-h4 font-weight-bold text-white mb-2">{{ movie.title }}</h1>
-                    <h2 class="text-subtitle-1 text-grey mb-4">{{ movie.name }} <span v-if="movie.year">({{ movie.year }})</span></h2>
+                    <h2 class="text-subtitle-1 text-grey mb-4">{{ movie.name }} </h2>
+                    <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
                     
+                    <v-divider color="grey-darken-3" class="mb-4"></v-divider>
+                    <span v-if="movie.year">({{ movie.year }})</span>
                     <div class="d-flex align-center flex-wrap gap-3 mb-4" style="gap: 12px;">
                       <v-chip color="primary" size="small" label variant="tonal"><v-icon start size="small">mdi-tag</v-icon> {{ movie.genre.name || 'Đang cập nhật' }}</v-chip>
                       <v-chip color="secondary" size="small" label variant="tonal"><v-icon start size="small">mdi-translate</v-icon> {{ movie.lang || 'Đang cập nhật' }}</v-chip>
@@ -300,11 +303,6 @@
                         <v-rating readonly :length="5" :size="24" :model-value="movie.rating" active-color="warning" density="compact" />
                       </div>
                     </div>
-                    
-                    <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
-                    
-                    <v-divider color="grey-darken-3" class="mb-4"></v-divider>
-                    
                     <div class="text-body-2 text-grey-lighten-1">
                       <div class="mb-2"><strong class="text-white">{{ $t("Đạo diễn") }}:</strong> {{ movie.director && movie.director.length ? movie.director.join(", ") : 'Đang cập nhật' }}</div>
                       <div><strong class="text-white">{{ $t("Diễn viên") }}:</strong> {{ movie.actors && movie.actors.length ? movie.actors.join(", ") : 'Đang cập nhật' }}</div>
@@ -1343,6 +1341,7 @@ export default {
           (result) => {
             if (result.status == true || result.status == "success") {
               this.link = "link";
+              this.movies = result.movie;
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
@@ -1846,7 +1845,10 @@ export default {
       //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       // } else {
       return `${
-        this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
+        imagePath.includes("https://phimimg.com/upload")
+            ? this.urlImage1 + imagePath
+            : this.urlImage1 + "https://phimimg.com/" + imagePath
+        //this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;
       // }
     },
@@ -2385,6 +2387,7 @@ export default {
   text-transform: none;
   font-weight: 500;
   letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .server-btn {
