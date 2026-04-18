@@ -9,6 +9,7 @@
       color="blue-darken-3"
       indeterminate
       height="3"
+      class="global-progress"
     />
 
     <div class="main">
@@ -16,19 +17,9 @@
         
         <router-view v-slot="{ Component, route }">
           <transition name="fade-slide" mode="out-in">
-          <keep-alive v-if="route.meta.keepAlive">
-            <component
-              :is="Component"
-              :key="route.name"
-            />
-          </keep-alive>
-
-          <component
-            v-else
-            :is="Component"
-            :key="route.fullPath"
-          />
-
+            <keep-alive :max="15" exclude="MoviesPage,MovieDetail">
+              <component :is="Component" :key="route.fullPath" />
+            </keep-alive>
           </transition>
         </router-view>
       </div>
@@ -75,6 +66,7 @@ export default {
 .main {
   display: flex;
   justify-content: center;
+  padding-top: 64px; /* Đẩy nội dung xuống một khoảng bằng đúng chiều cao của Header */
 }
 
 .content {
@@ -87,18 +79,29 @@ export default {
     width: 100%;
   }
 }
+
+/* Ghim thanh loading ngay dưới Header */
+.global-progress {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  z-index: 1001;
+  width: 100%;
+}
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.35s ease;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
 }
 
 .fade-slide-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(15px) scale(0.98);
 }
 
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-15px) scale(0.98);
 }
 </style>

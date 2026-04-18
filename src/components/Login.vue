@@ -241,7 +241,6 @@ export default {
             localStorage.setItem("name", user.ID);
             localStorage.setItem("nameShow", user.EmpName);
             //localStorage.setItem("user", JSON.stringify(user));
-
             this.$store.commit("setEmpInfor", user);
 
             const redirect = this.$route.query.redirect || "/home";

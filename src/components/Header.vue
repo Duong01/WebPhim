@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar class="main-navbar">
+    <v-toolbar class="main-navbar" height="64" color="transparent" flat>
       <!-- Logo -->
       <v-app-bar-nav-icon
         v-show="$vuetify.display.smAndDown"
@@ -308,67 +308,84 @@
         </v-list>
       </v-menu>
       </template>
-    </v-app-bar>
+    </v-toolbar>
 
     <!--  header ben duoi an/hien khi scroll -->
     
-      <v-bottom-navigation
-      class="bottom-navbar"
+      <div
+      class="bottom-navbar d-flex justify-space-around align-center px-1"
       :class="{ 'bottom-navbar--hidden': !showBottomBar }"
-      grow
     >
     
       <v-btn 
         :to="{ path: '/home' }"
         :class="{ 'text-green': $route.path === '/home' }"
+        variant="text"
+        stacked
+        class="bottom-btn"
       >
-        <v-icon size="22">mdi-fire</v-icon>
+        <v-icon size="24" class="mb-1">mdi-home-variant-outline</v-icon>
         <span>{{ $t("Trang chủ") }}</span>
       </v-btn>
       <v-btn 
         :to="{ path: '/phim-bo' }"
-        :class="{ 'text-green': $route.path === '/phim-bo' }">
-        <v-icon size="22">mdi-movie</v-icon>
+        :class="{ 'text-green': $route.path === '/phim-bo' }"
+        variant="text"
+        stacked
+        class="bottom-btn"
+      >
+        <v-icon size="24" class="mb-1">mdi-television-play</v-icon>
         <span>{{ $t("Phim Bộ") }}</span>
       </v-btn>
       <v-btn
-          
           :to="{ path: '/phim-le' }"
           :class="{ 'text-green': $route.path === '/phim-le' }"
+          variant="text"
+          stacked
+          class="bottom-btn"
         >
-        <v-icon size="22">mdi-movie</v-icon>
+        <v-icon size="24" class="mb-1">mdi-movie-open-outline</v-icon>
           <span>{{ $t("Phim Lẻ") }}</span>
       </v-btn>
       <v-btn
       :to="{ path: '/hoat-hinh' }"
       :class="{ 'text-green': $route.path === '/hoat-hinh' }"
       v-show="$vuetify.display.mdAndUp"
+      variant="text"
+      stacked
+      class="bottom-btn"
       >
-        <v-icon size="22">mdi-movie</v-icon>
+        <v-icon size="24" class="mb-1">mdi-animation-play-outline</v-icon>
         <span>{{ $t("Hoạt hình") }}</span>
       </v-btn>
 
       <v-btn 
         :to="{ path: '/favorite' }"
           :class="{ 'text-green': $route.path === '/favorite' }"
+          variant="text"
+          stacked
+          class="bottom-btn"
       >
-        <v-icon size="22">mdi-heart</v-icon>
+        <v-icon size="24" class="mb-1">mdi-bookmark-multiple-outline</v-icon>
         <span>{{ $t("Đã lưu") }}</span>
       </v-btn>
       <v-btn
           :to="{ path: '/movie-schedule' }"
           :class="{ 'text-green': $route.path === '/movie-schedule' }"
           v-show="$vuetify.display.mdAndDown"
+          variant="text"
+          stacked
+          class="bottom-btn"
         >
-        <v-icon start size="22">mdi-calendar</v-icon>
+        <v-icon size="24" class="mb-1">mdi-calendar-clock-outline</v-icon>
           <span>{{ $t("Lịch chiếu") }}</span>
         </v-btn>
       
-    </v-bottom-navigation>
+    </div>
 
 
     <!-- DRAWER CHO MOBILE -->
-    <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
+    <v-navigation-drawer v-model="drawer" temporary class="d-md-none">
       <v-list nav dense>
         <!-- Mục chính -->
         <v-list-item
@@ -491,20 +508,17 @@
           
         <!-- Theme (chuyển theme) -->
         <v-list-item @click="changeTheme">
-          <v-list-item-icon>
-            <v-icon>mdi-white-balance-sunny</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t("Đổi giao diện") }}</v-list-item-title>
+          <v-list-item-title><v-icon start size="18">mdi-white-balance-sunny</v-icon> {{ $t("Đổi giao diện") }}</v-list-item-title>
         </v-list-item>
 
         <!-- Ngôn ngữ -->
         <v-expansion-panels multiple>
           <v-expansion-panel>
             <v-expansion-panel-title>
-              <v-list-item-icon
-                ><v-icon>mdi-translate</v-icon>
-                {{ $t("Ngôn ngữ") }}</v-list-item-icon
-              >
+              <div class="d-flex align-center">
+                <v-icon start class="mr-2">mdi-translate</v-icon>
+                {{ $t("Ngôn ngữ") }}
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list dense>
@@ -523,9 +537,10 @@
         <!-- <v-expansion-panels multiple v-if="!account">
           <v-expansion-panel>
             <v-expansion-panel-title>
-              <v-list-item-icon
-                ><v-icon>mdi-account-circle</v-icon> Tài khoản</v-list-item-icon
-              >
+              <div class="d-flex align-center">
+                <v-icon start class="mr-2">mdi-account-circle</v-icon>
+                Tài khoản
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list>
@@ -543,12 +558,10 @@
         <v-expansion-panels multiple v-else>
           <v-expansion-panel>
             <v-expansion-panel-title>
-              <v-list-item-icon
-                ><v-icon>mdi-account-circle</v-icon>
-                <span>
-                  {{ account }}
-                </span>
-              </v-list-item-icon>
+              <div class="d-flex align-center">
+                <v-icon start class="mr-2">mdi-account-circle</v-icon>
+                <span>{{ account }}</span>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list>
@@ -610,8 +623,6 @@ export default {
   inject: ["currentTheme", "setTheme"],
   mounted() {
     window.addEventListener("scroll", this.handleScroll, { passive: true });
-    this.account =
-      this.$store.state.EmpName || localStorage.getItem("nameShow");
     const history = JSON.parse(localStorage.getItem("HisSearch"));
     this.movieSuggestions = history ? history : [];
   },
@@ -620,13 +631,13 @@ export default {
   },
   computed: {
     account() {
-      return this.$store.state.empInfor?.EmpName || "";
+      return this.$store.state.empInfor?.EmpName || localStorage.getItem("nameShow") || "";
     },
     avatar(){
-      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || "";
+      return this.$store.state.empInfor?.Avatar || this.$store.state.empInfor?.Avartar || this.$store.state.Avatar || "";
     },
     isLogin() {
-      return !!this.$store.state.empInfor?.ID;
+      return !!(this.$store.state.empInfor?.ID || localStorage.getItem("token"));
     },
   },
   methods: {
@@ -895,12 +906,36 @@ a:hover {
   right: 0;
   z-index: 1005;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  background: rgba(18, 18, 18, 0.95);
+  backdrop-filter: blur(10px);
+  height: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .bottom-navbar--hidden {
   transform: translateY(100%);
   opacity: 0;
   pointer-events: none;
+}
+
+.bottom-btn {
+  flex: 1;
+  max-width: 76px;
+  height: 100% !important;
+  border-radius: 8px !important;
+  min-width: 50px !important;
+  padding: 4px 2px !important;
+  margin: 0;
+}
+.bottom-btn span {
+  font-size: 0.65rem;
+  margin-top: 2px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .main-navbar {
   backdrop-filter: blur(10px);

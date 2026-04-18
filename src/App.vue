@@ -3,19 +3,10 @@
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
         <!-- Sử dụng KeepAlive với max="15" để cache danh sách, load mượt không giật lag -->
-        <router-view v-slot="{ Component, route }">
-          <keep-alive :max="15">
-            <component
-              v-if="route.meta.keepAlive"
-              :is="Component"
-              :key="route.fullPath"
-            />
-          </keep-alive>
-          <component
-            v-if="!route.meta.keepAlive"
-            :is="Component"
-            :key="route.fullPath"
-          />
+        <router-view v-slot="{ Component }">
+          <transition name="page-fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
         </router-view>
 
         <v-snackbar v-model="showError" color="red" timeout="3000">

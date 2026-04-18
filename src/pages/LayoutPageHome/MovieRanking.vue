@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  props: ["movies"],
+  props: ["movies", "loading"],
 
   methods: {
     getImage(movie) {

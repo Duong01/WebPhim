@@ -187,4 +187,14 @@ export default
   "Tập tiếp": "Next episode",
   "Xem trailer chính thức": "Watch official trailer",
   "Chiếu rạp": "Cinema release",
+
+  "PHIM HOẠT HÌNH": "ANIMATION MOVIES",
+  "Khám phá ngay": "Explore now",
+  "Từ khóa nổi bật:": "Popular keywords:",
+  "Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7.": "Movies are automatically aggregated from major websites with diverse genres and countries, updated 24/7.",
+  "Kết nối với chúng tôi": "Connect with us",
+  "Hỗ trợ":"Support",
+  "Chính sách riêng tư":"Privacy Policy",
+  "FAQ":"FAQ",
+  "Tải ứng dụng":"Download App",
 }

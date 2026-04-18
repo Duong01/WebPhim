@@ -158,7 +158,7 @@
 import { urlImage1, CheckSession, PostMoviesFavorite } from "@/model/api";
 
 export default {
-  props: ["movies"],
+  props: ["movies", "loading"],
 
   data() {
     return {

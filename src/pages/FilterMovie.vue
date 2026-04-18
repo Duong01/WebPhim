@@ -142,6 +142,7 @@ export default {
       ],
       Categories: [
         { title: this.$t("Hành động"), value: "hanh-dong" },
+        { title: this.$t("Cổ trang"), value: "co-trang" },
         { title: this.$t("Tình cảm"), value: "tinh-cam" },
         { title: this.$t("Chiến tranh"), value: "chien-tranh" },
         { title: this.$t("Viễn tưởng"), value: "vien-tuong" },

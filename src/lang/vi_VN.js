@@ -187,5 +187,16 @@ export default
   "Tập trước": "Tập trước",
   "Tập tiếp": "Tập tiếp",
   "Xem trailer chính thức": "Xem trailer chính thức",
-  "Chiếu rạp": "Chiếu rạp"
+  "Chiếu rạp": "Chiếu rạp",
+
+  "PHIM HOẠT HÌNH": "PHIM HOẠT HÌNH",
+  "Khám phá ngay": "Khám phá ngay",
+  "Từ khóa nổi bật:": "Từ khóa nổi bật:",
+  "Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7.": "Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7.",
+  "Kết nối với chúng tôi": "Kết nối với chúng tôi",
+  "Hỗ trợ":"Hỗ trợ",
+  "Chính sách riêng tư":"Chính sách riêng tư",
+  "FAQ":"FAQ",
+  "Tải ứng dụng":"Tải ứng dụng",
+  
 }

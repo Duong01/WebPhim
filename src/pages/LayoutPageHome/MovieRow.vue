@@ -129,7 +129,7 @@
 import { urlImage1, CheckSession, PostMoviesFavorite } from "@/model/api";
 import imageError from "@/assets/imgLoading.gif";
 export default {
-  props: ["movies"],
+  props: ["movies", "loading"],
 
   data() {
     return {

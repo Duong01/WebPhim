@@ -186,6 +186,15 @@ export default
   "Tập trước": "上一集",
   "Tập tiếp": "下一集",
   "Xem trailer chính thức": "观看官方预告片",
-  "Chiếu rạp": "电影院上映"
+  "Chiếu rạp": "电影院上映",
 
+  "PHIM HOẠT HÌNH": "动画片",
+  "Khám phá ngay": "立即探索",
+  "Từ khóa nổi bật:": "热门关键字：",
+  "Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7.": "影片由各大网站自动聚合，涵盖多种类型和国家，24/7 持续更新。",
+  "Kết nối với chúng tôi": "联系我们",
+  "Hỗ trợ":"支持",
+  "Chính sách riêng tư":"隐私政策",
+  "FAQ":"常见问题",
+  "Tải ứng dụng":"下载应用",
 }

@@ -69,7 +69,7 @@
                       class="ma-1"
                       label
                       size="small"
-                      color="grey-darken-3"
+                      color="grey-darken-5"
                       text-color="white"
                     >
                       {{ genre.name }}

@@ -178,7 +178,7 @@ export default {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #00c6ff, #0072ff, #ff007f, #ff8c00, #ffb200);
+  background: linear-gradient(90deg, #3d4d52, #93abc7, #312f30, #ceb392, #6b6659);
   z-index: 10;
 }
 
