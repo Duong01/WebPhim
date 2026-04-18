@@ -354,6 +354,9 @@ export default {
       if (imagePath.includes("img.ophim.live")) {
         return imagePath;
       }
+      else if(imagePath.includes("https://phimapi.com/image.php?")){
+        return imagePath;
+      }
       return `${
         imagePath.includes("https://phimimg.com/upload")
           ? this.urlImage + imagePath

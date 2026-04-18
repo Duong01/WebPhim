@@ -2,13 +2,21 @@
   <v-container class="search-page" fluid>
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
-        <h2 class="text-center">
-          {{$t('Danh sách phim:')}} {{ titlePage }}
-        </h2>
+        <h2 class="text-center">{{ $t("Danh sách phim:") }} {{ titlePage }}</h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
+
     <FilterMovie @filter-changed="onFilterChanged" />
+    <v-row class="mb-6" align="center">
+      <v-col cols="12" md="6" class="text-md-left">
+        <h2 class="page-title">🎬 {{ titlePage }}</h2>
+      </v-col>
+
+      <v-col cols="12" md="6" class="text-md-right">
+        <span class="stats-bar"> {{ movies.length }} phim </span>
+      </v-col>
+    </v-row>
 
     <v-row justify="center">
       <v-col cols="12" class="text-center" v-if="loading">
@@ -16,227 +24,119 @@
       </v-col>
 
       <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+        <v-alert
+          v-if="movies.length === 0 && MessageErr == ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{
+              $t("Về trang chủ")
+            }}</v-btn>
           </router-link>
         </v-alert>
 
-        <v-alert v-else-if="movies.length === 0 && MessageErr != ''" class="text-center">
-          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
+        <v-alert
+          v-else-if="movies.length === 0 && MessageErr != ''"
+          class="text-center"
+        >
+          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
             MessageErr
           }}</strong
           >".
         </v-alert>
 
-        <v-row
-                no-gutters
-                tag="transition-group"
-                name="fade-scale"
-                class="movie-list"
-              >
-                <v-col
-                  v-for="movie in movies"
-                  :key="movie.id"
-                  cols="6"
-                  sm="6"
-                  md="3"
-                  style="padding: 10px"
-                >
-                  
-                  <router-link
-                    :to="{ name: 'Movies', params: { slug: movie.slug } }"
-                    class="text-decoration-none"
+        <v-row v-else class="movie-grid">
+          <v-col
+            v-for="movie in movies"
+            :key="movie.slug"
+            cols="6"
+            sm="4"
+            md="3"
+            lg="2"
+          >
+            <router-link
+              :to="{ name: 'Movies', params: { slug: movie.slug } }"
+              class="movie-link"
+            >
+              <v-card class="movie-card">
+                <div class="poster-wrapper">
+                  <v-img
+                    :src="getOptimizedImage(movie.poster_url)"
+                    height="300"
+                    cover
                   >
-                    <v-card
-                      class="mx-auto bg-dark movie-card"
-                      width="auto"
+                    <template #placeholder>
+                      <div
+                        class="d-flex align-center justify-center fill-height"
+                      >
+                        <v-progress-circular indeterminate />
+                      </div>
+                    </template>
+                  </v-img>
+
+                  <!-- overlay -->
+                  <div class="gradient-overlay"></div>
+
+                  <!-- hover play -->
+                  <div class="hover-overlay">
+                    <v-icon size="50">mdi-play-circle</v-icon>
+                  </div>
+
+                  <!-- TOP BADGE -->
+                  <div class="top-badges">
+                    <span class="badge quality">{{ movie.quality }}</span>
+                    <span class="badge lang">{{ movie.lang }}</span>
+                  </div>
+
+                  <!-- EPISODE -->
+                  <div class="episode-badge">
+                    {{ movie.episode_current }}
+                  </div>
+
+                  <!-- RATING -->
+                  <div class="rating">
+                    ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
+                  </div>
+                </div>
+
+                <v-card-text class="movie-info">
+                  <!-- TITLE -->
+                  <div class="movie-title">
+                    {{ movie.name }}
+                  </div>
+
+                  <!-- SUB -->
+                  <div class="movie-sub">
+                    {{ movie.origin_name }}
+                  </div>
+
+                  <!-- META -->
+                  <div class="meta-row">
+                    <span>{{ movie.year }}</span>
+                    <span>•</span>
+                    <span>{{ movie.time }}</span>
+                  </div>
+
+                  <!-- GENRE -->
+                  <div class="genre-list">
+                    <span
+                      v-for="c in movie.category.slice(0, 2)"
+                      :key="c.id"
+                      class="genre-item"
                     >
-                      <v-img
-                        :src="getOptimizedImage(movie.poster_url)"
-                        :lazy-src="getOptimizedImage(movie.poster_url)"
-                        :alt="movie.name"
-                        spect-ratio="16/9"
-                        class="movie-image"
-                        transition="fade-transition"
-                        height="250"
-                        width="100%"
-                        cover
-                        loading="lazy"
-                      >
-                        <template #default>
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
-                          >
-                            <v-icon>
-                              {{
-                                isFavorite(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn> -->
-                            <div class="badge-container">
-                          <!-- hiển thị bên trái -->
-                          <v-btn
-                            size="small"
-                            variant="flat"
-                            class="badge-top-left"
-                          >
-                            {{Number(movie.tmdb.vote_average).toFixed(1)}}
-                            <v-icon
-                            icon="mdi-star"
-                            end
-                            ></v-icon>
-                          </v-btn>
-
-                          <!-- hiển thị bên phải -->
-                          <v-btn
-                            icon
-                            size="small"
-                            variant="flat"
-                            class="badge-top-right"
-                          >
-                            {{movie.quality}}
-                          </v-btn>
-                           </div>
-                          <div class="movie-overlay" aria-hidden="true"></div>
-
-                          <div class="movie-play" aria-hidden="true">
-                            <svg
-                              width="64"
-                              height="64"
-                              viewBox="0 0 64 64"
-                              xmlns="http://www.w3.org/2000/svg"
-                              aria-hidden="true"
-                            >
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="30"
-                                fill="rgba(0,0,0,0.55)"
-                              />
-                              <path d="M26 20 L46 32 L26 44 Z" fill="#fff" />
-                            </svg>
-                          </div>
-                        </template>
-                        <template #placeholder>
-                          <div class="d-flex align-center justify-center fill-height">
-                            <v-progress-circular
-                              color="blue-lighten-3"
-                :width="5"
-                              indeterminate
-                            ></v-progress-circular>
-                          </div>
-                        </template>
-                      </v-img>
-
-                      <v-card-subtitle class="episode-lang" style="margin-top: 5px;">
-                        {{
-                          movie.episode_current === "Tập 0"
-                            ? `Full - ${movie.lang}`
-                            : `${movie.episode_current} - ${movie.lang}`
-                        }}
-                      </v-card-subtitle>
-
-                      <v-card-title class="movie-title">{{
-                        movie.name
-                      }}</v-card-title>
-
-                      <v-card-text class="movie-info">
-                        <div class="text-grey text-truncate">
-                          <v-icon size="14" class="mr-1"
-                            >mdi-tag</v-icon
-                          >
-                          {{ movie.origin_name }} ({{ movie.year }})
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </router-link>
-                </v-col>
-              </v-row>
-
-<!-- 
-        <router-link
-          v-for="movie in movies"
-          :key="movie.id"
-          :to="{ name: 'Movies', params: { slug: movie.slug } }"
-          class="text-decoration-none"
-        >
-          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
-            <v-row>
-              <v-col cols="12" md="4">
-                <v-img
-                  :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
-                  :alt="movie.name"
-                  spect-ratio="16/9"
-                  class="movie-image"
-                  transition="fade-transition"
-                  cover
-                />
-              </v-col>
-              <v-col cols="12" md="8" class="pa-6">
-                <h3 class="text-left title">{{ movie.name }}</h3>
-                <div class="genre-section mb-3">
-                  <v-chip
-                    v-for="(genre, index) in movie.category"
-                    :key="index"
-                    class="ma-1"
-                    label
-                  >
-                    {{ genre.name }}
-                  </v-chip>
-                </div>
-
-                <div class="meta-info mb-2 d-flex align-center flex-wrap">
-                  <v-rating
-                    v-model="valueRate"
-                    active-color="orange"
-                    color="orange-lighten-1"
-                  ></v-rating>
-                  <v-icon size="18" class="me-1 text-grey">mdi-calendar</v-icon>
-                  <span class="me-4">{{ movie.year }}</span>
-                </div>
-
-                <p class="text-body-2 description-text">
-                  Miêu tả: {{ movie.origin_name }}
-                </p>
-
-                <div class="action-buttons mt-4">
-                  <v-btn
-                    variant="flat"
-                    color="primary"
-                    class="me-2"
-                    prepend-icon="mdi-play-circle"
-                  >
-                    {{ $t("Xem ngay") }}
-                  </v-btn>
-                  <v-btn
-                        v-bind="props"
-                        color="secondary"
-                        variant="outlined"
-                        prepend-icon="mdi-share-variant"
-                      >
-                        {{ $t("Chia sẻ") }}
-                      </v-btn>
-                  
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </router-link> -->
-
+                      {{ c.name }}
+                    </span>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </router-link>
+          </v-col>
+        </v-row>
         <div
           ref="loadMoreTrigger"
           v-show="movies.length > 0 && !isLastPage"
@@ -445,7 +345,8 @@ export default {
   border-radius: 12px;
   overflow: hidden;
   background: #1a1c23;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.3s ease;
   position: relative;
   height: 100%;
   display: flex;
@@ -454,13 +355,13 @@ export default {
 }
 
 @keyframes fadeUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -488,7 +389,12 @@ export default {
 .gradient-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(20, 21, 28, 1) 0%, rgba(20, 21, 28, 0.2) 50%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(20, 21, 28, 1) 0%,
+    rgba(20, 21, 28, 0.2) 50%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -659,7 +565,9 @@ export default {
   .movie-info {
     padding: 10px;
   }
-  .badge, .episode-badge, .rating {
+  .badge,
+  .episode-badge,
+  .rating {
     font-size: 10px;
     padding: 2px 6px;
   }

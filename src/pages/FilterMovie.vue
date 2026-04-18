@@ -154,6 +154,20 @@ export default {
         { title: this.$t("Học đường"), value: "hoc-duong" },
         { title: this.$t("Hài hước"), value: "hai-huoc" },
         { title: this.$t("Chính kịch"), value: "chinh-kich" },
+        { title: this.$t("Miền Tây"), value: "mien-tay" },
+        { title: this.$t("Trẻ Em"), value: "tre-em" },
+        { title: this.$t("Lịch Sử"), value: "lich-su" },
+        { title: this.$t("Tài Liệu"), value: "tai-lieu" },
+        { title: this.$t("Thể Thao"), value: "the-thao" },
+        { title: this.$t("Phiêu Lưu"), value: "phieu-luu" },
+        { title: this.$t("Âm Nhạc"), value: "am-nhac" },
+        { title: this.$t("Hình Sự"), value: "hinh-su" },
+        { title: this.$t("Võ Thuật"), value: "vo-thuat" },
+        { title: this.$t("Khoa Học"), value: "khoa-hoc" },
+        { title: this.$t("Thần Thoại"), value: "than-thoai" },
+        { title: this.$t("Kinh Điển"), value: "kinh-dien" },
+        { title: this.$t("Phim Ngắn"), value: "phim-ngan" }
+        
       ],
       Countries: [
         { title: this.$t("Việt Nam"), value: "viet-nam" },
