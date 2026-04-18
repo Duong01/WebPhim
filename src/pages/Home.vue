@@ -245,18 +245,6 @@ export default {
     });
 
     this.initLazyLoad();
-
-    this.restoreScrollPosition();
-  },
-
-  activated() {
-    this.restoreScrollPosition();
-  },
-
-  beforeRouteLeave(to, from, next) {
-    // Lưu lại vị trí scroll trước khi rời khỏi trang Home
-    sessionStorage.setItem("homeScrollPos", window.scrollY);
-    next();
   },
 
   beforeUnmount() {
@@ -266,16 +254,6 @@ export default {
   },
 
   methods: {
-    restoreScrollPosition() {
-      const savedPos = sessionStorage.getItem("homeScrollPos");
-      if (savedPos) {
-        setTimeout(() => {
-          window.scrollTo(0, parseInt(savedPos, 10));
-          sessionStorage.removeItem("homeScrollPos"); // Xóa sau khi đã phục hồi để tránh lỗi khi vào lại từ menu
-        }, 100); // Đợi 100ms để DOM và các lazy section kịp render block cơ bản
-      }
-    },
-
     normalizeMovies(raw) {
       return (raw || []).map((m) => ({
         id: m.slug || m._id || m.id,
@@ -289,7 +267,6 @@ export default {
         lang: m.lang || "Vietsub",
         episode_current: m.episode_current || "Full",
         slug: m.slug,
-        time: m.time || m.episode || "0 phút",
       }));
     },
 
