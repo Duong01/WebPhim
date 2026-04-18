@@ -1,6 +1,6 @@
 <template>
 
-<div style="overflow-x: auto; white-space: nowrap; margin-top: 10px;">
+<div style="margin-top: 10px;">
       <v-row no-gutters class="align-center mb-2">
         <v-col cols="12">
           <h1 class="category-title d-flex align-center">
@@ -21,12 +21,12 @@
           :class="`ad-banner-${index}`"
         >
           <div class="ad-banner-content">
-            <v-icon size="40" class="ad-banner-icon">{{ getIconForCategory(item.title) }}</v-icon>
+            <v-icon class="ad-banner-icon">{{ getIconForCategory(item.title) }}</v-icon>
             <div class="ad-banner-text">
               <h3 class="ad-banner-title">{{ item.title }}</h3>
               <p class="ad-banner-subtitle">{{$t('Khám phá ngay')}}</p>
             </div>
-            <v-icon size="28" class="ad-banner-arrow">mdi-arrow-right</v-icon>
+            <v-icon class="ad-banner-arrow">mdi-arrow-right</v-icon>
           </div>
           <div class="ad-banner-bg"></div>
         </router-link>
@@ -57,11 +57,26 @@ methods:{
 
 /* AD BANNER STYLES */
 .ad-banner-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  padding: 12px 0;
-  margin: 20px 0;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: clamp(10px, 1.5vw, 16px);
+  padding: 12px 4px;
+  margin: 10px 0 20px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ad-banner-container::-webkit-scrollbar {
+  height: 4px;
+}
+.ad-banner-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ad-banner-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 .ad-banner-card {
@@ -69,13 +84,15 @@ methods:{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: clamp(12px, 2vw, 20px) clamp(14px, 2.5vw, 24px);
   border-radius: 16px;
   overflow: hidden;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  min-height: 110px;
+  min-height: clamp(80px, 10vw, 110px);
+  min-width: clamp(150px, 22vw, 240px); /* Tự động nhỏ lại trên mobile */
+  flex: 1 0 auto; /* Không cho rớt dòng */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   background: rgba(255,255,255,.04);
@@ -134,14 +151,16 @@ methods:{
   color: #fff;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: clamp(10px, 1.5vw, 16px);
   position: relative;
   z-index: 1;
   width: 100%;
+  white-space: normal;
 }
 
 .ad-banner-icon {
   flex-shrink: 0;
+  font-size: clamp(28px, 4vw, 40px) !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   animation: float 3s ease-in-out infinite;
 }
@@ -158,15 +177,16 @@ methods:{
 }
 
 .ad-banner-title {
-  font-size: 18px;
+  font-size: clamp(13px, 2vw, 18px);
   font-weight: 800;
   margin: 0 0 4px 0;
   text-transform: uppercase;
   letter-spacing: 0.8px;
+  line-height: 1.2;
 }
 
 .ad-banner-subtitle {
-  font-size: 12px;
+  font-size: clamp(11px, 1.5vw, 12px);
   margin: 0;
   opacity: 0.95;
   font-weight: 500;
@@ -174,6 +194,7 @@ methods:{
 
 .ad-banner-arrow {
   flex-shrink: 0;
+  font-size: clamp(20px, 3vw, 28px) !important;
   opacity: 0.8;
   transition: transform 0.3s ease;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -184,111 +205,10 @@ methods:{
   opacity: 1;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .ad-banner-container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-  }
-  
-  .ad-banner-card {
-    min-height: 100px;
-    padding: 16px 20px;
-  }
-  
-  .ad-banner-icon {
-    font-size: 32px;
-  }
-  
-  .ad-banner-title {
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 768px) {
-  .trending-card{
-    width: 180px;
-  }
-  .ad-banner-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 12px 0;
-    margin: 20px 0;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-  }
-  
-  .ad-banner-container::-webkit-scrollbar {
-    height: 4px;
-  }
-  
-  .ad-banner-container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .ad-banner-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-  }
-  
-  .ad-banner-card {
-    min-height: 90px;
-    padding: 14px 16px;
-    min-width: 160px;
-    flex-shrink: 0;
-    flex-direction: row;
-    text-align: left;
-  }
-  
-  .ad-banner-content {
-    flex-direction: row;
-    gap: 12px;
-  }
-  
-  .ad-banner-icon {
-    font-size: 28px;
-  }
-  
-  .ad-banner-title {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
-  
-  .ad-banner-subtitle {
-    font-size: 11px;
-  }
-  
+/* Ẩn mũi tên trên mobile nếu không đủ chỗ */
+@media (max-width: 600px) {
   .ad-banner-arrow {
     display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .ad-banner-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 8px;
-    padding: 10px 0;
-    margin: 20px 0;
-  }
-  
-  .ad-banner-card {
-    min-height: 80px;
-    padding: 12px 14px;
-    min-width: 140px;
-    flex-shrink: 0;
-    flex-direction: row;
-  }
-  
-  .ad-banner-icon {
-    font-size: 24px;
-  }
-  
-  .ad-banner-title {
-    font-size: 12px;
   }
 }
 .trending-track,

@@ -2,22 +2,21 @@
   <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
-        <router-view />
-          <!-- Component cần cache -->
-        <!-- <router-view v-slot="{ Component, route }">
-          <keep-alive>
+        <!-- Sử dụng KeepAlive với max="15" để cache danh sách, load mượt không giật lag -->
+        <router-view v-slot="{ Component, route }">
+          <keep-alive :max="15">
             <component
               v-if="route.meta.keepAlive"
               :is="Component"
+              :key="route.fullPath"
             />
           </keep-alive>
-
           <component
             v-if="!route.meta.keepAlive"
             :is="Component"
+            :key="route.fullPath"
           />
-        </router-view> -->
-          <!-- Component không cache -->
+        </router-view>
 
         <v-snackbar v-model="showError" color="red" timeout="3000">
         {{ errorMessage }}

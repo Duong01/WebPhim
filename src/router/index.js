@@ -12,6 +12,7 @@ const routes = [
     meta: {
       title: "Đăng nhập - Web Phim Online",
       description: "Đăng nhập để trải nghiệm xem phim miễn phí chất lượng cao.",
+      robots: "noindex, nofollow",
     },
   },
   {
@@ -21,6 +22,7 @@ const routes = [
     meta: {
       title: "Trang chủ - Web Phim Online",
       description: "Xem phim online miễn phí chất lượng cao.",
+      keepAlive: true,
     },
   },
   {
@@ -31,6 +33,7 @@ const routes = [
       title: "Đăng ký tài khoản - Web Phim Online",
       description:
         "Tạo tài khoản miễn phí để lưu phim yêu thích và lịch sử xem.",
+      robots: "noindex, nofollow",
     },
   },
   {
@@ -40,6 +43,7 @@ const routes = [
     meta: {
       title: "Lỗi - Không tìm thấy trang",
       description: "Trang bạn tìm không tồn tại, vui lòng quay lại trang chủ.",
+      robots: "noindex, nofollow",
     },
   },
   {
@@ -76,7 +80,7 @@ const routes = [
           title: "Chi tiết phim - Web Phim Online",
           description:
             "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
-          keepAlive: true,
+          keepAlive: false,
         },
       },
       {
@@ -88,7 +92,7 @@ const routes = [
           title: "Chi tiết phim - Web Phim Online",
           description:
             "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
-          keepAlive: true,
+          keepAlive: false,
         },
       },
       {
@@ -99,7 +103,9 @@ const routes = [
             title: "Phim bộ hay nhất - Web Phim Online",
             description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
             auth: true,
-            requiresAuth: true
+            requiresAuth: true,
+            robots: "noindex, nofollow",
+            keepAlive: true,
         },
       },
       {
@@ -165,6 +171,16 @@ const routes = [
         meta: {
           title: "Phim sắp chiếu - Web Phim Online",
           description: "Khám phá những bộ phim bom tấn sắp ra mắt.",
+          keepAlive: true,
+        },
+      },
+      {
+        path: "/gioi-thieu",
+        name: "AboutPage",
+        component: () => import("@/pages/About.vue"),
+        meta: {
+          title: "Giới thiệu về chúng tôi - Web Phim Online",
+          description: "Tìm hiểu thêm về nền tảng xem phim trực tuyến chất lượng cao của chúng tôi.",
           keepAlive: true,
         },
       },
@@ -367,14 +383,22 @@ router.beforeEach((to, from, next) => {
     document.head.appendChild(l);
     return l;
   })();
-  canonical.setAttribute('href', window.location.origin + to.fullPath);
+  
+  // Xây dựng Canonical URL sạch (loại bỏ các tham số tracking như ?fbclid=, ?utm_source= để tránh trùng lặp nội dung trên Google)
+  let canonicalUrl = window.location.origin + to.path;
+  if (to.query.page) {
+    canonicalUrl += `?page=${to.query.page}`;
+  }
+  canonical.setAttribute('href', canonicalUrl);
 
   upsertMeta('property', 'og:title', to.meta.title || defaultTitle);
   upsertMeta('property', 'og:description', to.meta.description || defaultDesc);
-  upsertMeta('property', 'og:url', window.location.origin + to.fullPath);
+  upsertMeta('property', 'og:url', canonicalUrl);
+  upsertMeta('property', 'og:type', 'website');
   upsertMeta('name', 'twitter:title', to.meta.title || defaultTitle);
   upsertMeta('name', 'twitter:description', to.meta.description || defaultDesc);
   upsertMeta('name', 'twitter:card', 'summary_large_image');
+  upsertMeta('name', 'robots', to.meta.robots || 'index, follow');
 
 })
 // router.afterEach(() => {

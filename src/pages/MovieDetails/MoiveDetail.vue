@@ -168,9 +168,9 @@
               </div>
               
               <!-- Action Bar & Server Tabs -->
-              <div class="player-toolbar d-flex align-center justify-space-between mb-6 pa-4 rounded-lg overflow-x-auto flex-nowrap">
+              <div class="player-toolbar d-flex flex-column flex-md-row align-stretch align-md-center justify-space-between mb-6 pa-4 rounded-lg" style="gap: 16px;">
                 <!-- Server -->
-                <div class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper mr-4">
+                <div class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper overflow-x-auto pb-2 pb-md-0">
                   <div class="text-caption text-grey mr-2 d-flex align-center flex-shrink-0">
                     <v-icon size="small" class="mr-1">mdi-server-network</v-icon> Server:
                   </div>
@@ -194,8 +194,8 @@
                 </div>
 
                 <!-- Action buttons -->
-                <div class="d-flex align-center gap-2 flex-nowrap action-buttons-group">
-                  <v-btn variant="tonal" color="white" size="small" @click="getTrailer()" class="action-btn flex-shrink-0 text-no-wrap">
+                <div class="d-flex align-center gap-2 flex-nowrap action-buttons-group overflow-x-auto pb-2 pb-md-0">
+                  <v-btn variant="tonal" color="white" size="small" @click="dialogTrailer = true" class="action-btn flex-shrink-0 text-no-wrap">
                     <v-icon start color="red">mdi-youtube</v-icon> Trailer
                   </v-btn>
                   <v-btn variant="tonal" color="white" size="small" @click="shareMovie" class="action-btn flex-shrink-0 text-no-wrap">
@@ -1952,6 +1952,11 @@ export default {
       window.open(shareLink, "_blank");
     },
     ResponseError() {
+      Tracking(
+        { page: "Có xảy ra lỗi: "+ window.location.href },
+        () => {},
+        (err) => console.log(err)
+      );
       this.Message = this.$t("Dữ liệu đã được gửi tới Admin để xử lý");
       this.color = "error";
       this.mess = true;
@@ -2356,6 +2361,21 @@ export default {
   background-color: #1a1a1a;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.server-tabs-wrapper::-webkit-scrollbar,
+.action-buttons-group::-webkit-scrollbar {
+  height: 4px;
+}
+.server-tabs-wrapper::-webkit-scrollbar-track,
+.action-buttons-group::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.server-tabs-wrapper::-webkit-scrollbar-thumb,
+.action-buttons-group::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .action-btn {
@@ -3443,8 +3463,8 @@ a {
 }
 .info-label {
   min-width: 90px;
-  color: #9e9e9e;
-  font-weight: 500;
+  color: orange;
+  font-weight: 600;
 }
 .info-value {
   flex: 1;

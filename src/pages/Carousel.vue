@@ -38,6 +38,10 @@
           <!-- Content Info -->
           <div class="carousel-content">
             <div class="carousel-text-wrapper">
+              <div class="top-badges mb-2" v-if="item.quality || item.lang">
+                <v-chip size="small" color="error" variant="flat" class="font-weight-bold mr-2 rounded-sm" v-if="item.quality">FHD</v-chip>
+                <v-chip size="small" color="white" variant="outlined" class="font-weight-bold rounded-sm" v-if="item.lang">{{ item.lang || 'Vietsub' }}</v-chip>
+              </div>
               <h2 class="carousel-title">{{ item.name }}</h2>
               <p class="carousel-origin">{{ item.origin_name || $t('Không có mô tả.') }}</p>
               
@@ -48,7 +52,7 @@
                 </span>
                 <span class="meta-separator">•</span>
                 <span class="meta-item">
-                  <v-icon size="16">mdi-star</v-icon>
+                  <v-icon size="16" color="warning">mdi-star</v-icon>
                   {{ item.rating || 'N/A' }}
                 </span>
                 <span class="meta-separator">•</span>
@@ -65,16 +69,27 @@
               </div>
             </div>
             
-            <v-btn
-              color="#ffc107"
-              variant="flat"
-              size="large"
-              class="carousel-btn"
-              @click="goToDetail(item.slug)"
-            >
-              <v-icon left>mdi-play</v-icon>
-              {{$t('Xem ngay')}}
-            </v-btn>
+            <div class="carousel-actions">
+              <v-btn
+                variant="flat"
+                size="large"
+                class="carousel-btn primary-btn"
+                @click="goToDetail(item.slug)"
+              >
+                <v-icon left size="24" class="mr-2">mdi-play-circle</v-icon>
+                {{$t('Xem ngay')}}
+              </v-btn>
+
+              <v-btn
+                variant="outlined"
+                size="large"
+                class="carousel-btn secondary-btn"
+                @click="goToDetail(item.slug)"
+              >
+                <v-icon left size="24" class="mr-2">mdi-information-outline</v-icon>
+                {{$t('Chi tiết')}}
+              </v-btn>
+            </div>
           </div>
         </div>
       </v-carousel-item>
@@ -99,7 +114,7 @@ export default {
   },
   methods: {
     ListMovie() {
-      ListMovieByCate(`${this.path}?page=1&sort_field=modified.time&sort_type=desc&country=trung-quoc&limit=6`, (result) => {
+      ListMovieByCate(`${this.path}?page=1&sort_field=modified.time&sort_type=desc&limit=6`, (result) => {
         if (result.status === "success" || result.status == true) {
           // Giả sử dữ liệu có rating, duration, short_description
           this.videoList = result.data.items.slice(0, 5).map(item => ({
@@ -123,10 +138,8 @@ export default {
 <style scoped>
 .custom-carousel {
   position: relative;
-  background-color: #111;
-  border-radius: 12px;
+  background-color: #0f0f0f;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .carousel-wrapper {
@@ -136,14 +149,24 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  overflow: hidden;
 }
 
 .carousel-image {
   position: absolute;
   inset: 0;
   filter: brightness(0.75);
-  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
+  animation: kenBurns 12s ease-out forwards;
+}
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.12);
+  }
 }
 
 .carousel-wrapper:hover .carousel-image {
@@ -153,32 +176,24 @@ export default {
 .carousel-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.4) 50%,
-    transparent 100%
-  );
+  background: 
+    linear-gradient(to right, rgba(15, 15, 15, 1) 0%, rgba(15, 15, 15, 0.7) 40%, transparent 100%),
+    linear-gradient(to top, rgba(15, 15, 15, 1) 0%, transparent 40%);
   z-index: 2;
 }
 
 .carousel-content {
   position: relative;
   z-index: 3;
-  padding: 32px;
+  padding: 40px 60px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
   gap: 20px;
   min-height: 220px;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.7) 40%,
-    transparent 100%
-  );
   animation: slideUpContent 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 800px;
 }
 
 @keyframes slideUpContent {
@@ -195,10 +210,9 @@ export default {
 .carousel-text-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   animation: fadeInUp 0.6s ease-out 0.1s backwards;
   width: 100%;
-  max-width: 600px;
 }
 
 @keyframes fadeInUp {
@@ -213,20 +227,21 @@ export default {
 }
 
 .carousel-title {
-  font-size: clamp(20px, 5vw, 48px);
-  font-weight: 800;
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 900;
   color: white;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: left;
   word-break: break-word;
+  font-family: "Montserrat", sans-serif;
 }
 
 .carousel-origin {
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: clamp(14px, 2vw, 18px);
   color: #e0e0e0;
   margin: 0;
   opacity: 0.9;
@@ -250,19 +265,11 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.meta-item:hover {
-  background: rgba(255, 23, 68, 0.2);
-  color: #ffb3ba;
 }
 
 .meta-separator {
   opacity: 0.3;
+  margin: 0 4px;
 }
 
 .carousel-genres {
@@ -270,44 +277,72 @@ export default {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-start;
-  width: 100%;
+  margin-top: 8px;
 }
 
 .genre-tag {
   display: inline-block;
-  padding: 6px 12px;
-  background: rgba(255, 23, 68, 0.15);
-  border: 1px solid rgba(255, 23, 68, 0.3);
-  color: #ffb3ba;
-  border-radius: 20px;
+  padding: 4px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 4px;
   font-size: clamp(10px, 1.2vw, 12px);
-  font-weight: 600;
+  font-weight: 500;
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
 }
 
 .genre-tag:hover {
-  background: rgba(255, 23, 68, 0.3);
-  border-color: rgba(255, 23, 68, 0.6);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
-.carousel-btn {
-  align-self: flex-start;
-  padding: 12px 32px !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-  border-radius: 30px !important;
-  box-shadow: 0 6px 20px rgba(255, 23, 68, 0.4) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+.carousel-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
-.carousel-btn:hover {
-  background-color: #ff5252 !important;
+.carousel-btn {
+  padding: 12px 32px !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, #ffb700, #ff8c00) !important;
+  color: #000 !important;
+  box-shadow: 0 6px 20px rgba(255, 136, 0, 0.3) !important;
+  border: none !important;
+}
+
+.primary-btn:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(255, 23, 68, 0.6) !important;
+  box-shadow: 0 10px 30px rgba(255, 136, 0, 0.5) !important;
+  background: linear-gradient(45deg, #ffc833, #ffa022) !important;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+  color: white !important;
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-4px);
+  border-color: #fff !important;
 }
 
 .carousel-btn:active {
@@ -321,8 +356,8 @@ export default {
 }
 
 .v-carousel__controls__item.v-carousel__controls__item--active {
-  background-color: #ff1744 !important;
-  box-shadow: 0 0 12px rgba(255, 23, 68, 0.6);
+  background-color: #ffb700 !important;
+  box-shadow: 0 0 12px rgba(255, 183, 0, 0.6);
 }
 
 .custom-carousel .v-carousel__controls__prev,
@@ -339,7 +374,7 @@ export default {
 /* RESPONSIVE DESIGN */
 @media (max-width: 1200px) {
   .carousel-content {
-    padding: 24px;
+    padding: 30px 40px;
     min-height: 180px;
   }
   
@@ -353,9 +388,6 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .custom-carousel {
-    border-radius: 8px;
-  }
   
   .responsive-carousel {
     height: 400px !important;
@@ -448,8 +480,13 @@ export default {
   }
   
   .carousel-btn {
-    padding: 8px 20px !important;
-    font-size: 11px !important;
+    flex: 1;
+    padding: 10px !important;
+    font-size: 12px !important;
+  }
+  .carousel-actions {
+    width: 100%;
+    display: flex;
   }
   
   .v-carousel__controls {

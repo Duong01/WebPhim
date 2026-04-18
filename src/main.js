@@ -92,23 +92,21 @@ window.addEventListener("error", (e) => {
 })
 
 /* =========================
-   User info for chatbot
+   Track user activity (Throttled)
 ========================= */
-window.difyUser = {
-  avatar_url: store.state.empInfor?.Avatar || '',
-  name: store.state.empInfor?.EmpName || '',
-}
-
-/* =========================
-   Track user activity
-========================= */
+let activityTimer = null
 const updateActivity = () => {
-  store.commit("UPDATE_ACTIVE_TIME")
+  if (!activityTimer) {
+    store.commit("UPDATE_ACTIVE_TIME")
+    activityTimer = setTimeout(() => {
+      activityTimer = null
+    }, 10000) // Giới hạn cập nhật 10 giây 1 lần để tối ưu CPU
+  }
 }
 
 document.addEventListener("click", updateActivity)
 document.addEventListener("keydown", updateActivity)
-window.addEventListener("scroll", updateActivity)
+window.addEventListener("scroll", updateActivity, { passive: true })
 
 /* =========================
    Bootstrap App
@@ -118,16 +116,29 @@ async function bootstrap() {
   const token = localStorage.getItem("token")
 
   if (token) {
-    try {
-      await CheckSession((res) => {
-        if (res.data.status === "success") {
-          store.commit("setEmpInfor", res.data.data)
-          store.commit("setAvatar", res.data.data.Avatar)
+    await new Promise((resolve) => {
+      CheckSession(
+        (res) => {
+          if (res?.data?.status === "success") {
+            store.commit("setEmpInfor", res.data.data)
+            store.commit("setAvatar", res.data.data.Avatar)
+          }
+          resolve()
+        },
+        (err) => {
+          console.error("CheckSession error:", err)
+          resolve()
         }
-      })
-    } catch (err) {
-      console.error("CheckSession error:", err)
-    }
+      )
+    })
+  }
+
+  /* =========================
+     User info for chatbot
+  ========================= */
+  window.difyUser = {
+    avatar_url: store.state.empInfor?.Avatar || '',
+    name: store.state.empInfor?.EmpName || '',
   }
 
   const app = createApp(App)
