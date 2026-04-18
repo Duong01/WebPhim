@@ -38,10 +38,10 @@
           <!-- Content Info -->
           <div class="carousel-content">
             <div class="carousel-text-wrapper">
-              <div class="top-badges mb-2" v-if="item.quality || item.lang">
+              <!-- <div class="top-badges mb-2" v-if="item.quality || item.lang">
                 <v-chip size="small" color="error" variant="flat" class="font-weight-bold mr-2 rounded-sm" v-if="item.quality">FHD</v-chip>
                 <v-chip size="small" color="white" variant="outlined" class="font-weight-bold rounded-sm" v-if="item.lang">{{ item.lang || 'Vietsub' }}</v-chip>
-              </div>
+              </div> -->
               <h2 class="carousel-title">{{ item.name }}</h2>
               <p class="carousel-origin">{{ item.origin_name || $t('Không có mô tả.') }}</p>
               

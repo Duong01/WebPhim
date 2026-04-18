@@ -248,12 +248,12 @@ if (!sessionStorage.getItem("sessionStart")) {
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
-    return { top: 0 }
-  }
+  // scrollBehavior(to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition
+  //   }
+  //   return { top: 0 }
+  // }
 });
 router.onError((error) => {
   const chunkFailed = /Loading chunk [\d]+ failed/;

@@ -18,7 +18,7 @@
         <router-view v-slot="{ Component, route }">
           <transition name="fade-slide" mode="out-in">
             <keep-alive :max="15" exclude="MoviesPage,MovieDetail">
-              <component :is="Component" :key="route.fullPath" />
+              <component :is="Component" :key="route.name === 'MovieDetail' ? route.path : route.fullPath" />
             </keep-alive>
           </transition>
         </router-view>
@@ -66,7 +66,6 @@ export default {
 .main {
   display: flex;
   justify-content: center;
-  padding-top: 64px; /* Đẩy nội dung xuống một khoảng bằng đúng chiều cao của Header */
 }
 
 .content {
