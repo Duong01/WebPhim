@@ -295,49 +295,52 @@
                     <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
                     
                     <v-divider color="grey-darken-3" class="mb-4"></v-divider>
-                    <div class="movie-info-grid text-left">
-                          <div>
-                            <strong>{{ $t("Thể loại:") }}</strong>
-                            <div
-                              class="category-nowrap"
-                              v-for="(cate, ind) in movies.category"
-                              :key="ind"
-                            >
-                              <!-- khong xuong dong -->
-                              {{ cate.name }}
-                              <span v-if="ind < movies.category.length - 1">
-                                ,
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <strong>{{ $t("Quốc gia:") }}</strong>
-                            {{ movies.country[0].name || $t("Đang cập nhật") }}
-                          </div>
+                    <v-row dense class="text-body-2 text-grey-lighten-1 info-grid-modern">
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Thể loại:") }}</span>
+                        <span class="info-value text-white">
+                          <template v-if="movies?.category?.length">
+                            <span v-for="(cate, ind) in movies.category" :key="ind" class="hover-text">
+                              {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
+                            </span>
+                          </template>
+                          <span v-else>{{ $t("Đang cập nhật") }}</span>
+                        </span>
+                      </v-col>
 
-                          <div>
-                            <strong>{{ $t("Số tập:") }}</strong>
-                            {{ movies.episode_total }} {{ $t("tập") }}
-                          </div>
-                          <div>
-                            <strong>{{ $t("Thời lượng:") }}</strong>
-                            {{ movies.time }}
-                          </div>
-                          <div>
-                            <strong>{{ $t("Diễn viên:") }}</strong>
-                            <div
-                              class="category-nowrap"
-                              v-for="(actor, ind) in movies.actor"
-                              :key="ind"
-                            >
-                              <!-- khong xuong dong -->
-                              {{ actor }}
-                              <span v-if="ind < movies.actor.length - 1">
-                                ,
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Quốc gia:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.country?.[0]?.name || $t("Đang cập nhật") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Số tập:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.episode_total || '?' }} {{ $t("tập") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Thời lượng:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.time || $t("Đang cập nhật") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Diễn viên:") }}</span>
+                        <span class="info-value text-white">
+                          <template v-if="movies?.actor?.length">
+                            <span v-for="(actor, ind) in movies.actor" :key="ind" class="hover-text">
+                              {{ actor }}<span v-if="ind < movies.actor.length - 1">, </span>
+                            </span>
+                          </template>
+                          <span v-else>{{ $t("Đang cập nhật") }}</span>
+                        </span>
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
               </v-card>
@@ -553,7 +556,7 @@
                         <v-btn
                           block
                           :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
-                          :color="index === currentEpisodeIndex ? 'primary' : 'grey-darken-3'"
+                          :color="index === currentEpisodeIndex ? 'primary' : 'grey-darken-5'"
                           class="episode-btn rounded-md font-weight-medium text-none"
                           @click="playEpisode(episode)"
                           height="40"
@@ -1112,21 +1115,32 @@ export default {
 
     updateMeta() {
       useHead({
-        title: this.movie.title + " Tập " + this.movie.page + "Vietsub HD",
+        title: `${this.movie.title || this.movie.name} Tập ${this.movie.page} Vietsub HD`,
         meta: [
           {
             name: "description",
-            content:
-              "Xem" +
-              this.movie.title +
-              " tập " +
-              this.movie.page +
-              " viétub, chất lượng cao",
+            content: `Xem ${this.movie.title} tập ${this.movie.page} vietsub, chất lượng cao cực mượt. ${this.movie.description ? this.movie.description.substring(0, 100) + '...' : ''}`,
           },
           { property: "og:title", content: this.movie.title },
           { property: "og:description", content: this.movie.description },
           { property: "og:image", content: this.movie.thumb_url },
           { property: "og:url", content: window.location.href },
+          { property: "og:type", content: "video.episode" },
+        ],
+        link: [{ rel: "canonical", href: window.location.href }],
+        script: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "VideoObject",
+              "name": `${this.movie.title} Tập ${this.movie.page}`,
+              "description": this.movie.description,
+              "thumbnailUrl": this.movie.thumb_url,
+              "uploadDate": new Date().toISOString(),
+              "embedUrl": window.location.href
+            }),
+          }
         ],
       });
     },
@@ -1269,25 +1283,6 @@ export default {
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
 
-              // SEO TITLE
-              const removeOldMeta = (key, attr = "name") => {
-                const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-                old.forEach((tag) => tag.remove());
-              };
-
-              const setMeta = (key, content, attr = "name") => {
-                if (!content) return;
-                const meta = document.createElement("meta");
-                meta.setAttribute(attr, key);
-                meta.setAttribute("content", content);
-                document.head.appendChild(meta);
-              };
-
-              document.title = result.movie.name || "Phim hay";
-              removeOldMeta("og:title", "property");
-              setMeta("og:title", result.movie.name, "property");
-
-              // END SEO
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
@@ -1350,6 +1345,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
+              this.updateMeta();
 
               resolve(true);
             } else {
@@ -1392,23 +1388,6 @@ export default {
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
 
-              // SEO TITLE
-              const removeOldMeta = (key, attr = "name") => {
-                const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-                old.forEach((tag) => tag.remove());
-              };
-
-              const setMeta = (key, content, attr = "name") => {
-                if (!content) return;
-                const meta = document.createElement("meta");
-                meta.setAttribute(attr, key);
-                meta.setAttribute("content", content);
-                document.head.appendChild(meta);
-              };
-              document.title = result.movie.name || "Phim hay";
-              removeOldMeta("og:title", "property");
-              setMeta("og:title", result.movie.name, "property");
-              // end SEO
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
@@ -1470,6 +1449,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
+              this.updateMeta();
 
               resolve(true);
             } else {
@@ -1882,42 +1862,6 @@ export default {
         //this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;
       // }
-    },
-    // Chuản SEO
-    updateMetaTags(seo) {
-      document.title = seo.titleHead || "Phim hay";
-
-      const removeOldMeta = (key, attr = "name") => {
-        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-        old.forEach((tag) => tag.remove());
-      };
-
-      const setMeta = (key, content, attr = "name") => {
-        if (!content) return;
-        const meta = document.createElement("meta");
-        meta.setAttribute(attr, key);
-        meta.setAttribute("content", content);
-        document.head.appendChild(meta);
-      };
-
-      // Xóa cũ
-      removeOldMeta("description");
-      removeOldMeta("og:title", "property");
-      removeOldMeta("og:description", "property");
-      removeOldMeta("og:type", "property");
-      removeOldMeta("og:image", "property");
-
-      // Thêm mới
-      setMeta("description", seo.descriptionHead);
-      setMeta("og:title", seo.titleHead, "property");
-      setMeta("og:description", seo.descriptionHead, "property");
-      setMeta("og:type", seo.og_type || "website", "property");
-
-      if (Array.isArray(seo.og_image)) {
-        seo.og_image.forEach((img) => {
-          setMeta("og:image", img, "property");
-        });
-      }
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
@@ -3491,5 +3435,26 @@ a {
   margin-top: 10px;
   display: flex;
   align-items: center;
+}
+
+/* Info Grid Modern */
+.info-grid-modern {
+  line-height: 1.6;
+}
+.info-label {
+  min-width: 90px;
+  color: #9e9e9e;
+  font-weight: 500;
+}
+.info-value {
+  flex: 1;
+  word-break: break-word;
+}
+.hover-text {
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+.hover-text:hover {
+  color: #f8b230;
 }
 </style>

@@ -650,6 +650,7 @@ import {
   PostMoviesFavorite,
   UpdateMoviesFavorite
 } from "@/model/api";
+import { useHead } from "@vueuse/head";
 //import { toggleFavorite, isFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
 export default {
@@ -761,7 +762,7 @@ export default {
       if (this.movie?.servers?.length) {
         this.currentServer = this.movie.servers[0].server_name;
       }
-      this.addSchema();
+      this.updateSEO();
       //this.playVideo(this.movie.videoUrl);
       this.UpdateMoviesFavorite();
       this.ListMovieByCate();
@@ -774,18 +775,32 @@ export default {
   },
   methods: {
 
-    addSchema(){
-      const script = document.createElement("script");
-      script.type = "application/ld+json";
-      script.text = JSON.stringify({
-        "@content": "https://schema.org",
-        "@type": "Movies",
-        name: this.movie.title + " Tập"+ this.movie.page,
-        image: this.movie.thumb_url,
-        description: this.movie.description,
-        embedUrl: window.location.href
+    updateSEO() {
+      useHead({
+        title: `${this.movie.title} - Xem phim HD Vietsub | Phim360`,
+        meta: [
+          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} bản đẹp, HD Vietsub. Cập nhật các tập mới nhất tại Phim360.` },
+          { property: "og:title", content: this.movie.title },
+          { property: "og:description", content: this.movie.description },
+          { property: "og:image", content: this.movie.thumb_url || this.movie.poster_url },
+          { property: "og:url", content: window.location.href },
+          { property: "og:type", content: "video.movie" },
+        ],
+        link: [{ rel: "canonical", href: window.location.href }],
+        script: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Movie",
+              "name": this.movie.title,
+              "image": this.movie.thumb_url || this.movie.poster_url,
+              "description": this.movie.description,
+              "dateCreated": this.movie.year || new Date().getFullYear().toString()
+            }),
+          },
+        ],
       });
-      document.head.appendChild(script);
     },
 
     timeAgo(timestamp) {
@@ -846,9 +861,6 @@ export default {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
-              // if (result.data.seoOnPage) {
-              //   this.updateMetaTags(result.data.seoOnPage)
-              // }
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
@@ -911,6 +923,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
+              this.updateSEO();
               //this.GetComment();
               //this.liked = isFavorite(this.movie.idMovie);
               resolve(true);
@@ -959,10 +972,6 @@ export default {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
-
-              // if (result.data.seoOnPage) {
-              //   this.updateMetaTags(result.data.seoOnPage)
-              // }
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1025,6 +1034,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
+              this.updateSEO();
               //this.GetComment();
               //this.liked = isFavorite(this.movie._id);
               resolve(true);
@@ -1247,42 +1257,6 @@ export default {
           : this.urlImage1 + "https://phimimg.com/" + imagePath
       }`;
       // }
-    },
-    // Chuản SEO
-    updateMetaTags(seo) {
-      document.title = seo.titleHead || "Phim hay";
-
-      const removeOldMeta = (key, attr = "name") => {
-        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-        old.forEach((tag) => tag.remove());
-      };
-
-      const setMeta = (key, content, attr = "name") => {
-        if (!content) return;
-        const meta = document.createElement("meta");
-        meta.setAttribute(attr, key);
-        meta.setAttribute("content", content);
-        document.head.appendChild(meta);
-      };
-
-      // Xóa cũ
-      removeOldMeta("description");
-      removeOldMeta("og:title", "property");
-      removeOldMeta("og:description", "property");
-      removeOldMeta("og:type", "property");
-      removeOldMeta("og:image", "property");
-
-      // Thêm mới
-      setMeta("description", seo.descriptionHead);
-      setMeta("og:title", seo.titleHead, "property");
-      setMeta("og:description", seo.descriptionHead, "property");
-      setMeta("og:type", seo.og_type || "website", "property");
-
-      if (Array.isArray(seo.og_image)) {
-        seo.og_image.forEach((img) => {
-          setMeta("og:image", img, "property");
-        });
-      }
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
