@@ -145,7 +145,7 @@
                   color="grey-lighten-1"
                   class="nav-episode-btn"
                   @click="prevEpisode()"
-                  :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
+                  :disabled="currentEpisodeIndex <= 0"
                 >
                   <v-icon start>mdi-chevron-left</v-icon>
                   {{ $t("Tập trước") }}
@@ -160,7 +160,7 @@
                   color="grey-lighten-1"
                   class="nav-episode-btn"
                   @click="nextEpisode()"
-                  :disabled="currentEpisodeIndex <= 0"
+                  :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
                 >
                   {{ $t("Tập tiếp") }}
                   <v-icon end>mdi-chevron-right</v-icon>
@@ -252,7 +252,7 @@
                               ? 'primary'
                               : 'grey-darken-5'
                           "
-                          class="episode-item-btn rounded-md font-weight-medium text-none"
+                          :class="['episode-item-btn', 'rounded-md', 'font-weight-medium', 'text-none', { 'episode-item-active': index === currentEpisodeIndex }]"
                         >
                           {{
                             episode.name
@@ -555,9 +555,9 @@
                       >
                         <v-btn
                           block
-                          :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
+                        :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
                           :color="index === currentEpisodeIndex ? 'primary' : 'grey-darken-5'"
-                          class="episode-btn rounded-md font-weight-medium text-none"
+                        :class="['episode-btn', 'rounded-md', 'font-weight-medium', 'text-none', { 'episode-item-active': index === currentEpisodeIndex }]"
                           @click="playEpisode(episode)"
                           height="40"
                         >
@@ -879,6 +879,8 @@ export default {
       liked: false,
       videoKey: "",
       saveTimeInterval: null,
+      favoriteUpdateCounter: 0,
+      hasAutoUpdatedFavorite: false,
     };
   },
   props: ["slug", "page"],
@@ -934,7 +936,7 @@ export default {
       await this.MoveInfor1(newSlug);
       if (this.page) {
         if (this.page == "01") {
-          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+          this.currentEpisodeIndex = 0;
         } else {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === this.page
@@ -944,7 +946,7 @@ export default {
       if (this.currentEpisodeIndex == -1) {
         var page = this.page.replace("tap", "");
         if (this.page == "01") {
-          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+          this.currentEpisodeIndex = 0;
         } else {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === page
@@ -976,11 +978,18 @@ export default {
           query: { page: normalized },
         });
       }
-      this.Tracking();
+      this.favoriteUpdateCounter = 0;
+      this.hasAutoUpdatedFavorite = false;
+
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
         this.loadWatchTime();
+        // Trì hoãn tracking để ưu tiên render và load các dữ liệu quan trọng
+        setTimeout(() => {
+          this.Tracking();
+        }, 1500);
       });
+      this.scrollToActiveEpisode();
       // await this.ListMovieByCate();
       // await this.GetComment();
     },
@@ -993,7 +1002,7 @@ export default {
       // this.$store.dispatch('loading/stopLoading')
       if (this.page) {
         if (this.page == "01") {
-          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+          this.currentEpisodeIndex = 0;
         } else {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === this.page
@@ -1003,7 +1012,7 @@ export default {
       if (this.currentEpisodeIndex == -1) {
         var page = this.page.replace("tap", "");
         if (this.page == "01") {
-          this.currentEpisodeIndex = this.movie.pageMovie.length - 1;
+          this.currentEpisodeIndex = 0;
         } else {
           this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
             (ep) => ep.name.replace("Tập ", "tap") === page
@@ -1048,13 +1057,17 @@ export default {
           query: { page: normalized },
         });
       }
-      this.Tracking();
+
       this.initLazyLoad();
 
       // Load thời gian xem từ localStorage
       this.$nextTick(() => {
         this.loadWatchTime();
+        setTimeout(() => {
+          this.Tracking();
+        }, 1500);
       });
+      this.scrollToActiveEpisode();
 
       // Bắt đầu save thời gian xem mỗi 5 giây
       if (this.saveTimeInterval) {
@@ -1062,6 +1075,14 @@ export default {
       }
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
+        // Chỉ tự động cập nhật 1 lần khi đang xem video (sau 30 giây xem liên tục)
+        if (this.idAccount && this.isPlaying && !this.hasAutoUpdatedFavorite) {
+          this.favoriteUpdateCounter++;
+          if (this.favoriteUpdateCounter >= 6) {
+            //this.autoUpdateFavorite();
+            this.hasAutoUpdatedFavorite = true;
+          }
+        }
       }, 5000);
       this.updateMeta();
       // Keyboard shortcuts
@@ -1269,7 +1290,7 @@ export default {
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data.sort(
                 (a, b) =>
-                  parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
               );
               // this.movie.pageMovie = serverData;
               // this.movie.pageMovie = result.episodes[0].server_data;
@@ -1375,7 +1396,7 @@ export default {
               this.movie.description = result.movie.content;
               this.movie.pageMovie = result.episodes[0].server_data.sort(
                 (a, b) =>
-                  parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
               );
               // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
@@ -1766,6 +1787,40 @@ export default {
       // show controls when user uses keys
       this.showControlsTemporarily();
     },
+    autoUpdateFavorite() {
+      if (!this.idAccount || !this.movie.idMovie) return;
+
+      const currentEp = this.movie.pageMovie[this.currentEpisodeIndex]?.name || this.movie.page;
+      
+      const data = {
+        IDAccount: this.idAccount,
+        IDMovies: this.movie.idMovie,
+        slug: this.movie.slug,
+        currentPage: currentEp,
+        UrlMovies: this.movie.thumb_url,
+        origin_name: this.movie.origin_name,
+        name: this.movie.name,
+        year: this.movie.year,
+        lang: this.movie.lang,
+      };
+
+      // Cập nhật âm thầm không cần alert
+      PostMoviesFavorite(data, (res) => {
+        if (res.data.status === "success") {
+          this.liked = true;
+        }
+      }, (err) => {
+        console.error("Auto update favorite failed:", err);
+      });
+    },
+    scrollToActiveEpisode() {
+      this.$nextTick(() => {
+        const activeBtn = this.$el.querySelector(".episode-item-active");
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+    },
     showControlsTemporarily() {
       this.showControls = true;
       this.clearHideControlsTimer();
@@ -2097,6 +2152,8 @@ export default {
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
           (e) => e.name === episode.name
         );
+        this.favoriteUpdateCounter = 0; // Reset bộ đếm khi đổi tập
+        this.hasAutoUpdatedFavorite = false;
 
         // tạo key mới cho tập mới
         this.videoKey = `movie_${this.slug}_${this.page}`;
@@ -2117,6 +2174,7 @@ export default {
 
         this.GetComment();
         this.isLoading = false;
+        this.scrollToActiveEpisode();
       } catch {
         this.isLoading = false;
       }
@@ -2126,7 +2184,7 @@ export default {
 
       // this.movie.pageMovie = server.server_data;
       this.movie.pageMovie = server.server_data.sort(
-        (a, b) => parseInt(b.name.match(/\d+/)) - parseInt(a.name.match(/\d+/))
+        (a, b) => parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
       );
       if (
         this.movie.page == "Full" ||
@@ -2152,18 +2210,18 @@ export default {
       setTimeout(() => {
         this.isLoading = false;
       }, 1000);
+      this.scrollToActiveEpisode();
     },
     nextEpisode() {
-      if (this.currentEpisodeIndex > 0) {
-        this.currentEpisodeIndex--;
-
+      if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
+        this.currentEpisodeIndex++;
         const nextEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(nextEp);
       }
     },
     prevEpisode() {
-      if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
-        this.currentEpisodeIndex++;
+      if (this.currentEpisodeIndex > 0) {
+        this.currentEpisodeIndex--;
         const prevEp = this.movie.pageMovie[this.currentEpisodeIndex];
         this.playEpisode(prevEp);
       }

@@ -265,11 +265,14 @@ router.onError((error) => {
 });
 
 router.afterEach((to) => {
-  Tracking(
-    { page: to.fullPath }, 
-    () => {},
-    (err) => console.log(err)
-  )
+  // Trì hoãn tracking toàn cục để tránh gây lag khi bắt đầu chuyển trang
+  setTimeout(() => {
+    Tracking(
+      { page: to.fullPath }, 
+      () => {},
+      (err) => console.log(err)
+    )
+  }, 2000);
 })
 
 router.beforeEach((to, from, next) => {

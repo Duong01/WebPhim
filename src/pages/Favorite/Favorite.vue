@@ -78,7 +78,7 @@
         lg="3"
       >
         <router-link
-          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+          :to="{ name: 'MovieDetail', params: { slug: movie.slug }, query: { page: movie.currentPage } }"
           class="movie-link"
         >
           <v-card class="movie-card" elevation="0">
