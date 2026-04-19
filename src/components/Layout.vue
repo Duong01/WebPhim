@@ -16,8 +16,8 @@
       <div class="content">
         
         <router-view v-slot="{ Component, route }">
-          <transition name="fade-slide" mode="out-in">
-            <keep-alive :max="15" exclude="MoviesPage,MovieDetail">
+          <transition name="page-fade" mode="out-in">
+            <keep-alive :max="10" exclude="MoviesPage,MovieDetail">
               <component :is="Component" :key="route.name === 'MovieDetail' ? route.path : route.fullPath" />
             </keep-alive>
           </transition>
@@ -88,19 +88,14 @@ export default {
   width: 100%;
 }
 
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity, transform;
+/* Hiệu ứng chuyển trang tối ưu: chỉ dùng Opacity để nhẹ cho thiết bị yếu */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-.fade-slide-enter-from {
+.page-fade-enter-from,
+.page-fade-leave-to {
   opacity: 0;
-  transform: translateY(15px) scale(0.98);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-15px) scale(0.98);
 }
 </style>

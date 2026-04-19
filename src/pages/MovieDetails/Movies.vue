@@ -764,7 +764,7 @@ export default {
       }
       this.updateSEO();
       //this.playVideo(this.movie.videoUrl);
-      this.UpdateMoviesFavorite();
+      //this.UpdateMoviesFavorite();
       this.ListMovieByCate();
       this.GetComment();
     } catch (err) {

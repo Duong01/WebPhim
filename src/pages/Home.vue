@@ -11,7 +11,7 @@
     <!-- MOVIE SECTIONS -->
     <SectionWrapper
       v-for="(section, index) in sections"
-      :key="index"
+      :key="section.title"
       :ref="'section' + index"
       :title="section.title"
       :type="section.type"
@@ -43,7 +43,6 @@ export default {
   data() {
     return {
       trending: [],
-      observer: null,
       cache: new Map(),
       categories: [
         {
@@ -247,16 +246,10 @@ export default {
     this.initLazyLoad();
   },
 
-  beforeUnmount() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  },
-
   methods: {
     normalizeMovies(raw) {
       return (raw || []).map((m) => ({
-        id: m.slug || m._id || m.id,
+        id: m._id || m.id,
         name: m.name,
         origin_name: m.origin_name,
         thumb_url: this.getImage(m.thumb_url),
@@ -267,6 +260,7 @@ export default {
         lang: m.lang || "Vietsub",
         episode_current: m.episode_current || "Full",
         slug: m.slug,
+        time: m.time,
       }));
     },
 
@@ -314,7 +308,7 @@ export default {
       }
     },
     initLazyLoad() {
-      this.observer = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -323,15 +317,14 @@ export default {
 
               if (!section.loaded) {
                 this.loadSection(section);
-                
-                // Hủy theo dõi sau khi đã load để tối ưu CPU
-                this.observer.unobserve(entry.target);
+
+                section.loaded = true;
               }
             }
           });
         },
         {
-          rootMargin: "250px 0px", // Load dữ liệu trước khi scroll tới 250px để mượt hơn
+          rootMargin: "80px",
         },
       );
 
@@ -344,7 +337,7 @@ export default {
           if (el) {
             el.dataset.index = index;
 
-            this.observer.observe(el);
+            observer.observe(el);
           }
         });
       });
@@ -357,12 +350,5 @@ export default {
 .home-page {
   background: #0f0f0f;
   min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Tối ưu render các section bằng CSS hiện đại */
-.lazy-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 450px;
 }
 </style>

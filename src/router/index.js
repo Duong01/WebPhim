@@ -1,6 +1,6 @@
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
-import { Tracking } from "@/model/api";
+//import { Tracking } from "@/model/api";
 // import { CheckSession } from "@/model/api";
 // import store from "@/store";
 
@@ -104,8 +104,7 @@ const routes = [
             description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
             auth: true,
             requiresAuth: true,
-            robots: "noindex, nofollow",
-            keepAlive: true,
+            robots: "noindex, nofollow"
         },
       },
       {
@@ -247,14 +246,9 @@ if (!sessionStorage.getItem("sessionStart")) {
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes,
-  // scrollBehavior(to, from, savedPosition) {
-  //   if (savedPosition) {
-  //     return savedPosition
-  //   }
-  //   return { top: 0 }
-  // }
+  routes
 });
+
 router.onError((error) => {
   const chunkFailed = /Loading chunk [\d]+ failed/;
 
@@ -264,27 +258,27 @@ router.onError((error) => {
   }
 });
 
-router.afterEach((to) => {
-  // Trì hoãn tracking toàn cục để tránh gây lag khi bắt đầu chuyển trang
-  setTimeout(() => {
-    Tracking(
-      { page: to.fullPath }, 
-      () => {},
-      (err) => console.log(err)
-    )
-  }, 2000);
-})
+// router.afterEach((to) => {
+//   // Trì hoãn tracking toàn cục để tránh gây lag khi bắt đầu chuyển trang
+//   setTimeout(() => {
+//     Tracking(
+//       { page: to.fullPath }, 
+//       () => {},
+//       (err) => console.log(err)
+//     )
+//   }, 5000);
+// })
 
 router.beforeEach((to, from, next) => {
-
   // Normalize `page` query for MovieDetail: convert numeric `page=125` -> `page=tap125`
-  if (to.name === 'MovieDetail' && to.query && to.query.page) {
+  if (to.name === 'MovieDetail' && to.query?.page) {
     const p = String(to.query.page);
     if (!p.startsWith('tap')) {
       const digits = p.match(/\d+/);
       if (digits) {
         const newQuery = { ...to.query, page: 'tap' + digits[0] };
-        return next({ name: to.name, params: to.params, query: newQuery, replace: true });
+        next({ name: to.name, params: to.params, query: newQuery, replace: true });
+        return;
       }
     }
   }
@@ -300,85 +294,30 @@ router.beforeEach((to, from, next) => {
       query: { redirect: to.fullPath }
     });
     }
-    
   }
-  //store.dispatch('loading/startLoading')
-  
   next();
+});
 
-  // if(to.meta.requiresAuth){
-  //   const token = localStorage.getItem("token");
-  // if (token) {
-  //   CheckSession((dat)=>{
-  //     console.log(dat)
-  //     if(dat.status == "success"){
-  //       store.commit("setEmpInfor", dat.data);
-  //       return next()
-  //     }
-  //     if(dat.status == "error")
-  //     {
-  //       localStorage.removeItem("token");
+router.afterEach((to) => {
+  // Chuyển logic SEO sang afterEach để không làm chậm quá trình render component
+  const defaultTitle = "Web Phim Online - Xem phim miễn phí";
+  const defaultDesc = "Xem phim mới nhất, miễn phí, chất lượng cao";
 
-  //       alert(dat.message)
-  //       next({
-  //         path: '/login',
-  //         query: { redirect: to.fullPath }
-  //       })
-  //     }
-  //     return next()
-  //   },(er)=>{
-  //     // session timeout or not login
-  //     localStorage.removeItem("token");
+  document.title = to.meta.title || defaultTitle;
 
-  //     if(er?.response?.status == 401)
-  //     {
-  //       console.error(er.response.data);
-  //         next({
-  //           path: '/login',
-  //           query: { redirect: to.fullPath }
-  //         })
-  //       }
-  //       return next()
-  //   })
-  // }
-  // else{
-  //   next({
-  //     path: '/login',
-  //     query: { redirect: to.fullPath }
-  //   })
-  // }
-    
-  // }
-  // else{
-  //   next()
-  // }
-  
-
-  // ===== 3. Set meta SEO =====
-  const defaultTitle = "Web Phim Online - Xem phim miễn phí"
-  const defaultDesc = "Xem phim mới nhất, miễn phí, chất lượng cao"
-
-  document.title = to.meta.title || defaultTitle
-  let desc = document.querySelector('meta[name="description"]')
-  if (!desc) {
-    desc = document.createElement("meta")
-    desc.setAttribute("name", "description")
-    document.head.appendChild(desc)
-  }
-  desc.setAttribute("content", to.meta.description || defaultDesc)
-
-  // Upsert Open Graph and Twitter meta and canonical link for SPA routes
   const upsertMeta = (attr, key, content) => {
     if (!content) return;
-    let selector = attr === 'property' ? `meta[property="${key}"]` : `meta[name="${key}"]`;
-    let el = document.querySelector(selector);
+    let el = document.querySelector(attr === 'property' ? `meta[property="${key}"]` : `meta[name="${key}"]`);
     if (!el) {
       el = document.createElement('meta');
       el.setAttribute(attr, key);
       document.head.appendChild(el);
     }
     el.setAttribute('content', content);
-  }
+  };
+
+  let canonicalUrl = window.location.origin + to.path;
+  if (to.query.page) canonicalUrl += `?page=${to.query.page}`;
 
   const canonical = document.querySelector('link[rel="canonical"]') || (() => {
     const l = document.createElement('link');
@@ -386,14 +325,9 @@ router.beforeEach((to, from, next) => {
     document.head.appendChild(l);
     return l;
   })();
-  
-  // Xây dựng Canonical URL sạch (loại bỏ các tham số tracking như ?fbclid=, ?utm_source= để tránh trùng lặp nội dung trên Google)
-  let canonicalUrl = window.location.origin + to.path;
-  if (to.query.page) {
-    canonicalUrl += `?page=${to.query.page}`;
-  }
   canonical.setAttribute('href', canonicalUrl);
 
+  upsertMeta('name', 'description', to.meta.description || defaultDesc);
   upsertMeta('property', 'og:title', to.meta.title || defaultTitle);
   upsertMeta('property', 'og:description', to.meta.description || defaultDesc);
   upsertMeta('property', 'og:url', canonicalUrl);
@@ -402,8 +336,8 @@ router.beforeEach((to, from, next) => {
   upsertMeta('name', 'twitter:description', to.meta.description || defaultDesc);
   upsertMeta('name', 'twitter:card', 'summary_large_image');
   upsertMeta('name', 'robots', to.meta.robots || 'index, follow');
+});
 
-})
 // router.afterEach(() => {
 //   // delay nhẹ cho UX mượt
 //   setTimeout(() => {

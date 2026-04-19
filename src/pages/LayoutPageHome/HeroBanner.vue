@@ -34,7 +34,7 @@
       <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="'https://hoathinh3d.vn'+item.thumbnail"
+          :src="item.thumbnail.includes('https') ? item.thumbnail : 'https://hoathinh3d.vn' +item.thumbnail"
           aspect-ratio="9/16"
           cover
           loading="lazy"
@@ -69,7 +69,9 @@
           <div class="trending-details">
             <div class="trending-title">
               {{ item.title }}
-              
+            </div>
+            <div class="trending-original">
+              {{item.title_en}}
             </div>
             <div class="trending-original">
               📺 Tập {{ item.current_episode }}
@@ -93,7 +95,9 @@ export default {
   methods: {
     goMovies(url) {
       var slug = url.slug
-      this.$store.commit("imageThumbnail","https://hoathinh3d.vn/"+url.thumbnail)
+      
+      var urlImage = url.thumbnail.includes('https') ? url.thumbnail : 'https://hoathinh3d.vn' +url.thumbnail
+      this.$store.commit("imageThumbnail",urlImage)
       this.$router.push({
         name : 'Movies',
         params: {slug}
