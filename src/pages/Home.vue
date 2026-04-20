@@ -44,6 +44,7 @@ export default {
     return {
       trending: [],
       cache: new Map(),
+      
       categories: [
         {
           title: this.$t("PHIM MỚI"),
@@ -118,6 +119,7 @@ export default {
             params: { path: "hoat-hinh" },
           },
           loaded: false,
+          loading: false
         },
 
         {
@@ -130,6 +132,7 @@ export default {
             params: { path: "phim-moi-cap-nhat-v3" },
           },
           loaded: false,
+          loading: false
         },
 
         {
@@ -142,6 +145,7 @@ export default {
             params: { path: "viet-nam" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Phim lẻ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
@@ -153,6 +157,7 @@ export default {
             params: { path: "phim-le" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Mãn Nhãn với Phim Chiếu Rạp",
@@ -164,6 +169,7 @@ export default {
             params: { path: "phim-chieu-rap" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
@@ -175,6 +181,7 @@ export default {
             params: { path: "" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Phim bộ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
@@ -186,6 +193,7 @@ export default {
             params: { path: "phim-bo" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Phim Trung Quốc – Những Siêu Phẩm Hoa Ngữ Đáng Xem",
@@ -197,6 +205,7 @@ export default {
             params: { path: "trung-quoc" },
           },
           loaded: false,
+          loading: false
         },
 
         {
@@ -209,6 +218,7 @@ export default {
             params: { path: "trung-quoc" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Phim bom tấn – Những Tác Phẩm Không Thể Bỏ Lỡ",
@@ -220,6 +230,7 @@ export default {
             params: { path: "hoat-hinh" },
           },
           loaded: false,
+          loading: false
         },
         {
           title: "Phim Hàn Quốc – Những Câu Chuyện Lay Động Trái Tim",
@@ -231,17 +242,18 @@ export default {
             params: { path: "han-quoc" },
           },
           loaded: false,
+          loading: false
         },
       ],
     };
   },
 
-  mounted() {
+  async mounted() {
     this.ListNewUpdate();
 
-    this.sections.slice(0, 3).forEach((s) => {
-      this.loadSection(s);
-    });
+    for (let i = 0; i < 2; i++) {
+      await this.loadSection(this.sections[i]);
+    }
 
     this.initLazyLoad();
   },
@@ -286,6 +298,7 @@ export default {
 
     async loadSection(section) {
       try {
+        await new Promise(r => requestAnimationFrame(r));
         if (this.cache.has(section.url)) {
           section.movies = this.cache.get(section.url);
           section.loaded = true;
@@ -315,16 +328,20 @@ export default {
               const index = entry.target.dataset.index;
               const section = this.sections[index];
 
-              if (!section.loaded) {
-                this.loadSection(section);
+              if (!section.loading && !section.loaded) {
+                section.loading = true;
 
-                section.loaded = true;
+                this.loadSection(section).finally(() => {
+                  section.loaded = true;
+                  section.loading = false;
+                });
               }
             }
           });
         },
         {
-          rootMargin: "80px",
+          rootMargin: "300px",
+          threshold: 0.1
         },
       );
 

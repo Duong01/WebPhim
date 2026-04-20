@@ -246,7 +246,15 @@ if (!sessionStorage.getItem("sessionStart")) {
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    // Nếu có vị trí cũ (back/forward) thì giữ nguyên
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Không scroll gì cả → chuyển trang ngay lập tức
+    return false;
+  }
 });
 
 router.onError((error) => {

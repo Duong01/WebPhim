@@ -4,13 +4,15 @@
     <header class="fixed-header">
       <header-component />
     </header>
-    <v-progress-linear
-      v-if="$store.getters['loading/isLoading']"
-      color="blue-darken-3"
-      indeterminate
-      height="3"
-      class="global-progress"
-    />
+    <transition name="progress-fade">
+      <v-progress-linear
+        v-if="$store.getters['loading/isLoading']"
+        color="blue-darken-3"
+        indeterminate
+        height="3"
+        class="global-progress"
+      />
+    </transition>
 
     <div class="main">
       <div class="content">
@@ -18,7 +20,7 @@
         <router-view v-slot="{ Component, route }">
           <transition name="page-fade" mode="out-in">
             <keep-alive :max="10" exclude="MoviesPage,MovieDetail">
-              <component :is="Component" :key="route.name === 'MovieDetail' ? route.path : route.fullPath" />
+              <component :is="Component" :key="route.fullPath" />
             </keep-alive>
           </transition>
         </router-view>
@@ -91,11 +93,33 @@ export default {
 /* Hiệu ứng chuyển trang tối ưu: chỉ dùng Opacity để nhẹ cho thiết bị yếu */
 .page-fade-enter-active,
 .page-fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: 
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    filter 0.25s ease;
+  will-change: opacity, transform;
 }
 
-.page-fade-enter-from,
+/* Trang mới xuất hiện */
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px) scale(0.995);
+  filter: blur(2px);
+}
+
+/* Trang cũ biến mất */
 .page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.995);
+  filter: blur(2px);
+}
+
+.progress-fade-enter-active,
+.progress-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.progress-fade-enter-from,
+.progress-fade-leave-to {
   opacity: 0;
 }
 </style>

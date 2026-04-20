@@ -15,7 +15,16 @@
       </router-link>
     </div>
 
-    <component :is="componentType" :movies="movies" :loading="loading" />
+    <component
+  :is="componentType"
+  :movies="movies"
+  :loading="loading"
+  v-memo="[movies]"
+  />
+
+  <div v-if="loading" class="skeleton-row">
+    <div v-for="i in 6" :key="i" class="skeleton-card"></div>
+  </div>
       <v-divider
     :thickness="2"
     class="border-opacity-25"
@@ -88,6 +97,7 @@ export default {
 <style>
 .section-wrapper {
   margin-bottom: 28px;
+  min-height: 260px;
 }
 
 /* HEADER */
@@ -202,5 +212,29 @@ export default {
   ); */
 
   margin-top: 6px;
+}
+.skeleton-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.skeleton-card {
+  width: 160px;
+  height: 220px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #1a1a1a 25%,
+    #2a2a2a 37%,
+    #1a1a1a 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
 }
 </style>
