@@ -40,7 +40,6 @@
           loading="lazy"
           class="trending-poster"
           transition="fade-transition"
-          referrerpolicy="no-referrer"
         >
           <!-- BADGE -->
           <div class="trending-rank" :class="'rank-' + (index + 1)">
