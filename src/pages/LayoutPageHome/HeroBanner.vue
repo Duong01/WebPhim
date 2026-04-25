@@ -34,7 +34,7 @@
       <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="item.thumbnail.includes('https') ? item.thumbnail : 'https://hoathinh3d.vn' +item.thumbnail"
+          :src="getImage(item.thumbnail)"
           aspect-ratio="9/16"
           cover
           loading="lazy"
@@ -92,10 +92,15 @@
 export default {
   props: ["movie"],
   methods: {
+    getImage(path) {
+    if (path.startsWith("http")) return path;
+
+    return "https://hoathinh3d.vn" + path;
+  },
     goMovies(url) {
       var slug = url.slug
       
-      var urlImage = url.thumbnail.includes('https') ? url.thumbnail : 'https://hoathinh3d.vn' +url.thumbnail
+      var urlImage = this.getImage(url.thumbnail);
       this.$store.commit("imageThumbnail",urlImage)
       this.$router.push({
         name : 'Movies',
@@ -352,11 +357,14 @@ transition:transform .3s ease;
 .trending-card{
 width:180px;
 }
+.trending-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 
 .trending-rank{
 font-size:32px;
 }
 
 }
-
 </style>
