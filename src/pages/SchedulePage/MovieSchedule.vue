@@ -43,7 +43,6 @@
                 :src="movie.thumbnail.includes('https') ? movie.thumbnail : 'https://hoathinh3d.vn' +movie.thumbnail"
                 aspect-ratio="2/3"
                 cover
-                referrerpolicy="no-referrer"
                 loading="lazy"
                 class="movie-thumb"
               >

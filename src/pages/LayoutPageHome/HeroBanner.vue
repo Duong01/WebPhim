@@ -34,7 +34,7 @@
       <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="getImage(item.thumbnail)"
+          :src="movie.thumbnail.includes('https') ? movie.thumbnail : 'https://hoathinh3d.vn' +movie.thumbnail"
           aspect-ratio="9/16"
           cover
           loading="lazy"
@@ -93,11 +93,9 @@ export default {
   props: ["movie"],
   methods: {
     getImage(path) {
-    const url = path.startsWith("http")
-    ? path
-    : "https://hoathinh3d.vn" + path;
+    if (path.startsWith("http")) return path;
 
-  return `/img?url=${encodeURIComponent(url)}`;
+    return "https://hoathinh3d.vn" + path;
   },
     goMovies(url) {
       var slug = url.slug
