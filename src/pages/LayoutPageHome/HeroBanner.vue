@@ -93,9 +93,11 @@ export default {
   props: ["movie"],
   methods: {
     getImage(path) {
-    if (path.startsWith("http")) return path;
+    const url = path.startsWith("http")
+    ? path
+    : "https://hoathinh3d.vn" + path;
 
-    return "https://hoathinh3d.vn" + path;
+  return `/img?url=${encodeURIComponent(url)}`;
   },
     goMovies(url) {
       var slug = url.slug
