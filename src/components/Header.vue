@@ -135,14 +135,7 @@
           </v-list>
         </v-menu>
 
-         <v-btn
-          text
-          :to="{ path: '/movie-schedule' }"
-          :class="{ 'text-green': $route.path === '/movie-schedule' }"
-        >
-        <v-icon start size="18">mdi-calendar</v-icon>
-          {{ $t("Lịch chiếu") }}
-        </v-btn>
+         
         <v-btn
           text
           :to="{ path: '/phim-chieu-rap' }"
@@ -151,6 +144,14 @@
         <v-icon start size="18">mdi-calendar</v-icon>
           {{ $t("Chiếu rạp") }}
         
+        </v-btn>
+        <v-btn
+          text
+          :to="{ path: '/movie-schedule' }"
+          :class="{ 'text-green': $route.path === '/movie-schedule' }"
+        >
+        <v-icon start size="18">mdi-calendar</v-icon>
+          {{ $t("Lịch chiếu") }}
         </v-btn>
       </v-toolbar-items>
 

@@ -45,6 +45,8 @@
                 cover
                 loading="lazy"
                 class="movie-thumb"
+                referrerpolicy="no-referrer"
+                :alt="movie.title"
               >
                 <template #placeholder>
                   <div class="d-flex align-center justify-center fill-height">

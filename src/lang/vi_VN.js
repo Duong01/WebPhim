@@ -198,5 +198,6 @@ export default
   "Chính sách riêng tư":"Chính sách riêng tư",
   "FAQ":"FAQ",
   "Tải ứng dụng":"Tải ứng dụng",
+  'Chi tiết': 'Chi tiết',
   
 }
