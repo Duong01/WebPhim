@@ -1079,7 +1079,7 @@ export default {
         if (this.idAccount && this.isPlaying && !this.hasAutoUpdatedFavorite) {
           this.favoriteUpdateCounter++;
           if (this.favoriteUpdateCounter >= 6) {
-            this.autoUpdateFavorite();
+            //this.autoUpdateFavorite();
             this.hasAutoUpdatedFavorite = true;
           }
         }
