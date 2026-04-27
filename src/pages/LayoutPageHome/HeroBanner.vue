@@ -34,7 +34,7 @@
       <v-card role="button" class="trending-card" elevation="0" @click="goMovies(item)">
         <!-- POSTER -->
         <v-img
-          :src="item.thumbnail.includes('https') ? item.thumbnail : 'https://hoathinh3d.vn' +item.thumbnail"
+          :src="item.thumbnail.includes('https') ? item.thumbnail : `https://hoathinh3d.vn/${encodeURIComponent(item.thumbnail)}`"
           aspect-ratio="9/16"
           cover
           loading="lazy"

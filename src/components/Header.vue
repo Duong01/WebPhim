@@ -349,13 +349,7 @@
         <span>{{ $t("Hoạt hình") }}</span>
       </v-btn>
 
-      <v-btn 
-        :to="{ path: '/favorite' }"
-          :class="{ 'text-green': $route.path === '/favorite' }"
-      >
-        <v-icon size="22">mdi-heart</v-icon>
-        <span>{{ $t("Đã lưu") }}</span>
-      </v-btn>
+      
       <v-btn
           :to="{ path: '/movie-schedule' }"
           :class="{ 'text-green': $route.path === '/movie-schedule' }"
@@ -364,6 +358,13 @@
         <v-icon start size="22">mdi-calendar</v-icon>
           <span>{{ $t("Lịch chiếu") }}</span>
         </v-btn>
+        <v-btn 
+        :to="{ path: '/favorite' }"
+          :class="{ 'text-green': $route.path === '/favorite' }"
+      >
+        <v-icon size="22">mdi-heart</v-icon>
+        <span>{{ $t("Đã lưu") }}</span>
+      </v-btn>
       
     </v-bottom-navigation>
 
@@ -624,7 +625,8 @@ export default {
       return this.$store.state.empInfor?.EmpName || "";
     },
     avatar(){
-      return this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || "";
+      const user = this.$store.state.empInfor;
+      return user?.Avatar || user?.Avartar || this.$store.state.Avatar || "";
     },
     isLogin() {
       return !!this.$store.state.empInfor?.ID;

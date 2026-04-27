@@ -200,7 +200,7 @@ export default {
             localStorage.setItem("nameShow", dat.data.data.user.EmpName);
 
             this.$store.commit("setEmpInfor", dat.data.data.user);
-            this.$store.commit("setAvatar", dat.data.data.user.Avartar);
+            this.$store.commit("setAvatar", dat.data.data.user.Avatar || dat.data.data.user.Avartar);
 
             const redirect = this.$route.query.redirect || "/home";
             this.$router.replace(redirect);
@@ -242,6 +242,7 @@ export default {
             localStorage.setItem("nameShow", user.EmpName);
             //localStorage.setItem("user", JSON.stringify(user));
             this.$store.commit("setEmpInfor", user);
+            this.$store.commit("setAvatar", user.Avatar || user.Avartar);
 
             const redirect = this.$route.query.redirect || "/home";
             this.$router.replace(redirect);
@@ -344,4 +345,3 @@ export default {
 }
 
 </style>
-
