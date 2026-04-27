@@ -32,6 +32,7 @@
                   :muted="muted"
                   :poster="movie.thumb_url || ''"
                   @click="togglePlay"
+                  @dblclick="toggleFullScreen"
                   @timeupdate="onTimeUpdate"
                   @loadedmetadata="onLoadedMetadata"
                   @waiting="onWaiting"
@@ -45,6 +46,7 @@
                   v-if="!videoStarted && $vuetify.display.mdAndUp"
                   class="video-play-overlay"
                   @click="playVideoOnClick"
+                  @dblclick="toggleFullScreen"
                 >
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
@@ -2118,7 +2120,6 @@ export default {
         console.log(episode);
         this.currentEpisode = episode;
         this.isLoading = true;
-        window.scrollTo({ top: 0, behavior: "smooth" });
         if (
           episode.filename != undefined ||
           episode.filename != null ||
@@ -2128,6 +2129,8 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         const idx = this.movie.pageMovie.findIndex(
           (ep) => ep.name === episode.name
         );
