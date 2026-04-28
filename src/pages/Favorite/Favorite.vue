@@ -8,7 +8,7 @@
         <span class="sub">{{ filteredMovies.length }} phim</span>
       </div>
 
-      <div class="header-right">
+      <div class="header-right" :class="{ 'w-100': $vuetify.display.xs }">
         <v-text-field
           v-model="search"
           placeholder="Tìm phim..."
@@ -16,7 +16,8 @@
           variant="solo-filled"
           density="compact"
           hide-details
-          width="200"
+          class="flex-grow-1"
+          :style="$vuetify.display.smAndUp ? 'max-width: 250px' : ''"
         />
         <v-select
           v-model="filters.sortOption"
@@ -28,11 +29,9 @@
           density="compact"
           hide-details
           clearable
-          max-width="150"
-          hint="Pick your favorite states"
+          class="flex-shrink-0"
+          :style="$vuetify.display.smAndUp ? 'width: 150px' : 'width: 120px'"
         />
-        
-        
       </div>
     </div>
 

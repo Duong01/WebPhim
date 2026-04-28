@@ -859,6 +859,10 @@ export default {
         origin_name: "",
         year: "",
         slug: "",
+        vote_average:"",
+        poster_url: "",
+        quality: "",
+        time:"",
       },
       movieFavorite: {
         IDAccount: "",
@@ -1310,6 +1314,11 @@ export default {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
+              this.movie.vote_average= result.movie.tmdb?.vote_average;
+              this.movie.poster_url= result.movie.poster_url;
+              this.movie.quality= result.movie.quality;
+              this.movie.time= result.movie.time
+
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1415,6 +1424,10 @@ export default {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
+              this.movie.vote_average= result.movie.tmdb?.vote_average;
+              this.movie.poster_url= result.movie.poster_url;
+              this.movie.quality= result.movie.quality;
+              this.movie.time= result.movie.time
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1810,7 +1823,7 @@ export default {
         this.movieFavorite.lang= this.movie.lang,
         this.movieFavorite.time= this.movie.time,
         this.movieFavorite.quality= this.movie.quality,
-        this.movieFavorite.vote_average= this.movie.tmdb.vote_average,
+        this.movieFavorite.vote_average= this.movie.vote_average,
         this.movieFavorite.poster_url= this.movie.poster_url
 
 
@@ -1867,7 +1880,7 @@ export default {
       this.movieFavorite.lang = this.movie.lang;
       this.movieFavorite.time = this.movie.time;
       this.movieFavorite.quality = this.movie.quality;
-      this.movieFavorite.vote_average = this.movie.tmdb.vote_average;
+      this.movieFavorite.vote_average = this.movie.tmdb?.vote_average;
       this.movieFavorite.poster_url = this.movie.poster_url;
       if (
         this.idAccount == "" ||
