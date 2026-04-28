@@ -866,10 +866,14 @@ export default {
         slug: "",
         currentPage: "",
         UrlMovies: "",
+        poster_url: "",
         origin_name: "",
         name: "",
         year: "",
         lang: "",
+        time: "",
+        quality: "",
+        vote_average: ""
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -1794,21 +1798,24 @@ export default {
       if (!this.idAccount || !this.movie.idMovie) return;
 
       const currentEp = this.movie.pageMovie[this.currentEpisodeIndex]?.name || this.movie.page;
-      
-      const data = {
-        IDAccount: this.idAccount,
-        IDMovies: this.movie.idMovie,
-        slug: this.movie.slug,
-        currentPage: currentEp,
-        UrlMovies: this.movie.thumb_url,
-        origin_name: this.movie.origin_name,
-        name: this.movie.name,
-        year: this.movie.year,
-        lang: this.movie.lang,
-      };
+
+        this.movieFavorite.IDAccount= this.idAccount,
+        this.movieFavorite.IDMovies= this.movie.idMovie,
+        this.movieFavorite.slug= this.movie.slug,
+        this.movieFavorite.currentPage= currentEp,
+        this.movieFavorite.UrlMovies= this.movie.thumb_url,
+        this.movieFavorite.origin_name= this.movie.origin_name,
+        this.movieFavorite.name= this.movie.name,
+        this.movieFavorite.year= this.movie.year,
+        this.movieFavorite.lang= this.movie.lang,
+        this.movieFavorite.time= this.movie.time,
+        this.movieFavorite.quality= this.movie.quality,
+        this.movieFavorite.vote_average= this.movie.tmdb.vote_average,
+        this.movieFavorite.poster_url= this.movie.poster_url
+
 
       // Cập nhật âm thầm không cần alert
-      UpdateMoviesFavorite(data, (res) => {
+      UpdateMoviesFavorite(this.movieFavorite, (res) => {
         if (res.data.status === "success") {
           this.liked = true;
         }
@@ -1858,7 +1865,10 @@ export default {
       this.movieFavorite.name = this.movie.name;
       this.movieFavorite.year = this.movie.year;
       this.movieFavorite.lang = this.movie.lang;
-
+      this.movieFavorite.time = this.movie.time;
+      this.movieFavorite.quality = this.movie.quality;
+      this.movieFavorite.vote_average = this.movie.tmdb.vote_average;
+      this.movieFavorite.poster_url = this.movie.poster_url;
       if (
         this.idAccount == "" ||
         this.idAccount == null ||
