@@ -252,8 +252,8 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition;
     }
-    // Không scroll gì cả → chuyển trang ngay lập tức
-    return false;
+    // Lần đầu chuyển trang thì mặc định cuộn lên đầu trang
+    return { top: 0, behavior: 'smooth' };
   }
 });
 

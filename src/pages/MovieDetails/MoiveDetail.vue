@@ -935,7 +935,6 @@ export default {
   },
   watch: {
     async slug(newSlug) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
       await this.MoveInfor1(newSlug);
       if (this.page) {
         if (this.page == "01") {
@@ -986,20 +985,20 @@ export default {
 
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
         this.loadWatchTime();
         // Trì hoãn tracking để ưu tiên render và load các dữ liệu quan trọng
         setTimeout(() => {
           this.Tracking();
         }, 1500);
+        this.scrollToActiveEpisode();
       });
-      this.scrollToActiveEpisode();
       // await this.ListMovieByCate();
       // await this.GetComment();
     },
   },
   async mounted() {
     try {
-      window.scrollTo({ top: 0, behavior: "smooth" });
       // this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
       // this.$store.dispatch('loading/stopLoading')
@@ -1065,12 +1064,13 @@ export default {
 
       // Load thời gian xem từ localStorage
       this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
         this.loadWatchTime();
         setTimeout(() => {
           this.Tracking();
         }, 1500);
+        this.scrollToActiveEpisode();
       });
-      this.scrollToActiveEpisode();
 
       // Bắt đầu save thời gian xem mỗi 5 giây
       if (this.saveTimeInterval) {
@@ -1082,7 +1082,7 @@ export default {
         if (this.idAccount && this.isPlaying && !this.hasAutoUpdatedFavorite) {
           this.favoriteUpdateCounter++;
           if (this.favoriteUpdateCounter >= 6) {
-            //this.autoUpdateFavorite();
+            this.autoUpdateFavorite();
             this.hasAutoUpdatedFavorite = true;
           }
         }
@@ -2130,7 +2130,6 @@ export default {
         }
         this.movie.videoUrl = episode.link_embed;
         this.movie.LinkDown = episode.link_m3u8;
-        window.scrollTo({ top: 0, behavior: "smooth" });
 
         const idx = this.movie.pageMovie.findIndex(
           (ep) => ep.name === episode.name
@@ -2178,7 +2177,10 @@ export default {
 
         this.GetComment();
         this.isLoading = false;
-        this.scrollToActiveEpisode();
+        this.$nextTick(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          this.scrollToActiveEpisode();
+        });
       } catch {
         this.isLoading = false;
       }
