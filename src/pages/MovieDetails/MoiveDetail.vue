@@ -782,6 +782,7 @@ import {
   GetComments,
   AddComment,
   PostMoviesFavorite,
+  UpdateMoviesFavorite,
   CheckSession,
   Tracking,
 } from "@/model/api";
@@ -1807,7 +1808,7 @@ export default {
       };
 
       // Cập nhật âm thầm không cần alert
-      PostMoviesFavorite(data, (res) => {
+      UpdateMoviesFavorite(data, (res) => {
         if (res.data.status === "success") {
           this.liked = true;
         }
