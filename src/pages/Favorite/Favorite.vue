@@ -4,34 +4,35 @@
     <!-- HEADER -->
     <div class="header-bar">
       <div class="header-left" v-show="$vuetify.display.smAndUp">
-        <h2>🎬 Danh sách yêu thích</h2>
+        <h2>🎬 {{$t('Danh sách yêu thích')}}</h2>
         <span class="sub">{{ filteredMovies.length }} phim</span>
       </div>
 
-      <div class="header-right" :class="{ 'w-100': $vuetify.display.xs }">
+      <div class="header-right">
         <v-text-field
           v-model="search"
-          placeholder="Tìm phim..."
+          :placeholder="$t('Tìm phim...')"
           prepend-inner-icon="mdi-magnify"
           variant="solo-filled"
           density="compact"
           hide-details
-          class="flex-grow-1"
-          :style="$vuetify.display.smAndUp ? 'max-width: 250px' : ''"
+          width="200"
         />
         <v-select
           v-model="filters.sortOption"
           :items="sortItems"
           item-title="title"
           item-value="value"
-          label="Sắp xếp"
+          :label="$t('Sắp xếp')"
           variant="solo-filled"
           density="compact"
           hide-details
           clearable
-          class="flex-shrink-0"
-          :style="$vuetify.display.smAndUp ? 'width: 150px' : 'width: 120px'"
+          max-width="200"
+          hint="Pick your favorite states"
         />
+        
+        
       </div>
     </div>
 
@@ -58,11 +59,11 @@
     <div v-else-if="movies.length === 0" class="empty-state">
       <v-icon size="80"> mdi-movie-off </v-icon>
 
-      <h3 class="mt-4">Bạn chưa lưu phim nào</h3>
+      <h3 class="mt-4">{{$t('Bạn chưa lưu phim nào')}}</h3>
 
-      <p>Hãy khám phá và thêm phim vào danh sách yêu thích</p>
+      <p>{{$t('Hãy khám phá và thêm phim vào danh sách yêu thích')}}</p>
 
-      <v-btn color="red" class="mt-4" to="/home"> Khám phá phim </v-btn>
+      <v-btn color="red" class="mt-4" to="/home"> {{$t('Khám phá phim')}} </v-btn>
     </div>
 
     <!-- ================= MOVIE GRID ================= -->
@@ -444,7 +445,6 @@ export default {
 <style scoped>
 .favorite-page {
   min-height: 100vh;
-  padding: 40px 10px;
 }
 
 .page-title {

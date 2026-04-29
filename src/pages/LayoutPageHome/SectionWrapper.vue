@@ -9,7 +9,7 @@
       </div>
 
       <router-link v-if="link" :to="link" class="view-all">
-        <span>Xem tất cả</span>
+        <span>{{$t('Xem tất cả')}}</span>
 
         <v-icon size="18"> mdi-chevron-right </v-icon>
       </router-link>

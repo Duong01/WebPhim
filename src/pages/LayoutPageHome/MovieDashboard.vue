@@ -3,7 +3,7 @@
 
     <!-- HOT MOVIES -->
     <div class="panel">
-      <h3 class="panel-title">🔥 SÔI NỔI NHẤT</h3>
+      <h3 class="panel-title">🔥 {{$t('SÔI NỔI NHẤT')}}</h3>
 
       <div
         v-for="(movie,i) in movies.slice(0,4)"
@@ -21,7 +21,7 @@
 
     <!-- FAVORITE -->
     <div class="panel">
-      <h3 class="panel-title">❤️ YÊU THÍCH NHẤT</h3>
+      <h3 class="panel-title">❤️ {{$t('YÊU THÍCH NHẤT')}}</h3>
 
       <div
         v-for="(movie,i) in favoriteMovies"
@@ -38,7 +38,7 @@
 
     <!-- HOT CATEGORY -->
     <div class="panel" v-show="$vuetify.display.smAndUp">
-      <h3 class="panel-title">📂 THỂ LOẠI HOT</h3>
+      <h3 class="panel-title">📂 {{$t('THỂ LOẠI HOT')}}</h3>
 
       <div
         v-for="(c,i) in categories"
@@ -59,7 +59,7 @@
 
     <!-- COMMENTS -->
     <div class="panel" v-show="$vuetify.display.smAndUp">
-      <h3 class="panel-title">⚡ BÌNH LUẬN MỚI</h3>
+      <h3 class="panel-title">⚡ {{$t('BÌNH LUẬN MỚI')}}</h3>
 
       <div
         v-for="(c,i) in comments"

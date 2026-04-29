@@ -7,7 +7,7 @@
     <!-- HEADER -->
     <div class="schedule-header">
       <v-icon color="cyan">mdi-filmstrip</v-icon>
-      <span>LỊCH CHIẾU PHIM</span>
+      <span>{{$t('LỊCH CHIẾU PHIM')}}</span>
     </div>
 
     <!-- TAB NGÀY -->
@@ -26,7 +26,7 @@
     <!-- PHIM CHIẾU SỚM -->
     <v-card class="schedule-box">
       <div class="section-title">
-        ⭐ PHIM CHIẾU SỚM
+        ⭐ {{$t('PHIM CHIẾU SỚM')}}
       </div>
 
       <v-row v-if="earlyMovies.length" dense>
@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
 
-      <div v-else class="empty-text">Không có phim chiếu sớm</div>
+      <div v-else class="empty-text">{{$t('Không có phim chiếu sớm')}}</div>
     </v-card>
 
     <!-- PHIM THƯỜNG -->
@@ -139,13 +139,13 @@ export default {
       earlyMovies: [],
       regularMovies: [],
       days: [
-        { label: "Chủ Nhật", value: "0" },
-        { label: "Thứ Hai", value: "1" },
-        { label: "Thứ Ba", value: "2" },
-        { label: "Thứ Tư", value: "3" },
-        { label: "Thứ Năm", value: "4" },
-        { label: "Thứ Sáu", value: "5" },
-        { label: "Thứ Bảy", value: "6" },
+        { label: this.$t("Chủ Nhật"), value: "0" },
+        { label: this.$t("Thứ Hai"), value: "1" },
+        { label: this.$t("Thứ Ba"), value: "2" },
+        { label: this.$t("Thứ Tư"), value: "3" },
+        { label: this.$t("Thứ Năm"), value: "4" },
+        { label: this.$t("Thứ Sáu"), value: "5" },
+        { label: this.$t("Thứ Bảy"), value: "6" },
       ],
     };
   },

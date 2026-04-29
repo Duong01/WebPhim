@@ -2198,7 +2198,7 @@ export default {
           }
         });
 
-        this.GetComment();
+        //this.GetComment();
         this.isLoading = false;
         this.$nextTick(() => {
           window.scrollTo({ top: 0, behavior: "smooth" });

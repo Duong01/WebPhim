@@ -14,7 +14,7 @@
       </v-col>
 
       <v-col cols="12" md="6" class="text-md-right">
-        <span class="stats-bar"> {{ movies.length }} phim </span>
+        <span class="stats-bar"> {{ movies.length }} {{$t('phim')}} </span>
       </v-col>
     </v-row>
 

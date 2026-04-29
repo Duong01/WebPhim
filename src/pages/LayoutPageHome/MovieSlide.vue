@@ -25,7 +25,7 @@
 
         <div class="actions" v-if="currentMovie">
           <v-btn class="btn-play" @click="goDetail(currentMovie)">
-            ▶ Xem Ngay
+            ▶ {{$t('Xem Ngay')}}
           </v-btn>
 
           <div class="icon-group">
