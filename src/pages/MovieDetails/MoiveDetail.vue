@@ -1841,18 +1841,37 @@ export default {
     },
     scrollToActiveEpisode() {
       this.$nextTick(() => {
-        const container = this.$refs.episodeContainer;
-        const activeBtn = this.$el.querySelector(".episode-item-active");
-
-        if (container && activeBtn) {
-          const containerRect = container.getBoundingClientRect();
-          const activeRect = activeBtn.getBoundingClientRect();
-
-          const offset =
-            activeRect.top - containerRect.top - container.clientHeight / 2;
-
-          container.scrollTop += offset;
-        }
+        // Tìm tất cả elements có class episode-item-active
+        const activeElements = this.$el.querySelectorAll('.episode-item-active');
+        
+        activeElements.forEach(activeBtn => {
+          if (activeBtn) {
+            // Tìm container episode-list gần nhất
+            const episodeList = activeBtn.closest('.episode-list');
+            if (episodeList) {
+              // Tính vị trí của activeBtn trong container
+              const containerRect = episodeList.getBoundingClientRect();
+              const activeRect = activeBtn.getBoundingClientRect();
+              const relativeTop = activeRect.top - containerRect.top;
+              const containerHeight = episodeList.clientHeight;
+              
+              // Cuộn để đưa activeBtn vào giữa container
+              const scrollTop = episodeList.scrollTop + relativeTop - containerHeight / 2 + activeRect.height / 2;
+              
+              episodeList.scrollTo({
+                top: scrollTop,
+                behavior: 'smooth'
+              });
+            } else {
+              // Fallback: cuộn toàn trang nếu không tìm thấy container
+              activeBtn.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+              });
+            }
+          }
+        });
       });
     },
     showControlsTemporarily() {
@@ -2494,23 +2513,23 @@ export default {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
-.episode-list-container {
+.episode-list {
   max-height: 550px;
   overflow-y: auto;
 }
 
-.episode-list-container::-webkit-scrollbar {
+.episode-list::-webkit-scrollbar {
   width: 6px;
 }
-.episode-list-container::-webkit-scrollbar-track {
+.episode-list::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
-.episode-list-container::-webkit-scrollbar-thumb {
+.episode-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
-.episode-list-container::-webkit-scrollbar-thumb:hover {
+.episode-list::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
 
