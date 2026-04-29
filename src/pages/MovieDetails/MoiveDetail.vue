@@ -999,7 +999,7 @@ export default {
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        this.scrollToActiveEpisode();
+        //this.scrollToActiveEpisode();
       });
       // await this.ListMovieByCate();
       // await this.GetComment();
@@ -1077,7 +1077,7 @@ export default {
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        this.scrollToActiveEpisode();
+        //this.scrollToActiveEpisode();
       });
 
       // Bắt đầu save thời gian xem mỗi 5 giây
@@ -1836,14 +1836,14 @@ export default {
         console.error("Auto update favorite failed:", err);
       });
     },
-    scrollToActiveEpisode() {
-      this.$nextTick(() => {
-        const activeBtn = this.$el.querySelector(".episode-item-active");
-        if (activeBtn) {
-          activeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      });
-    },
+    // scrollToActiveEpisode() {
+    //   this.$nextTick(() => {
+    //     const activeBtn = this.$el.querySelector(".episode-item-active");
+    //     if (activeBtn) {
+    //       activeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+    //     }
+    //   });
+    // },
     showControlsTemporarily() {
       this.showControls = true;
       this.clearHideControlsTimer();
@@ -2202,7 +2202,7 @@ export default {
         this.isLoading = false;
         this.$nextTick(() => {
           window.scrollTo({ top: 0, behavior: "smooth" });
-          this.scrollToActiveEpisode();
+          //this.scrollToActiveEpisode();
         });
       } catch {
         this.isLoading = false;
@@ -2239,7 +2239,7 @@ export default {
       setTimeout(() => {
         this.isLoading = false;
       }, 1000);
-      this.scrollToActiveEpisode();
+      //this.scrollToActiveEpisode();
     },
     nextEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
