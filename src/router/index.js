@@ -243,6 +243,7 @@ const routes = [
 if (!sessionStorage.getItem("sessionStart")) {
   sessionStorage.setItem("sessionStart", Date.now());
 }
+const scrollPositions = {};
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -252,6 +253,11 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition;
     }
+    if (scrollPositions[to.fullPath]) {
+      return scrollPositions[to.fullPath];
+    }
+
+    return { top: 0 };
     // Lần đầu chuyển trang thì mặc định cuộn lên đầu trang
     //return { top: 0, behavior: 'smooth' };
   }

@@ -19,9 +19,25 @@
         
         <router-view v-slot="{ Component, route }">
           <transition name="page-fade" mode="out-in">
-            <keep-alive :max="10" exclude="MoviesPage,MovieDetail">
-              <component :is="Component" :key="route.fullPath" />
-            </keep-alive>
+            
+            <div :key="route.fullPath">
+
+              <keep-alive :include="cachedViews" :max="10">
+                <component
+                  v-if="route.meta.keepAlive"
+                  :is="Component"
+                  :key="route.name"
+                />
+              </keep-alive>
+
+              <component
+                v-if="!route.meta.keepAlive"
+                :is="Component"
+                :key="route.fullPath"
+              />
+
+            </div>
+
           </transition>
         </router-view>
       </div>
@@ -47,10 +63,40 @@ export default {
       isLoading1: true,
     };
   },
+  mounted() {
+  window.addEventListener('scroll', this.saveScroll);
+},
+beforeUnmount() {
+  window.removeEventListener('scroll', this.saveScroll);
+},
+methods: {
+  saveScroll() {
+    this.$router.options.scrollPositions = this.$router.options.scrollPositions || {};
+    this.$router.options.scrollPositions[this.$route.fullPath] = {
+      left: window.scrollX,
+      top: window.scrollY
+    };
+  }
+},
   components:{
     HeaderComponent,
     FooterComponent
+  },
+  computed: {
+  cachedViews() {
+    return [
+      'HomePage',
+      'SearchMovie',
+      'PhimBo',
+      'PhimLe',
+      'TVShow',
+      'HoatHinh',
+      'TheLoai',
+      'PhimNew',
+      'QuocGia'
+    ];
   }
+}
 };
 </script>
 
@@ -76,8 +122,12 @@ export default {
 
 /* mobile */
 @media (max-width: 768px) {
+  .main {
+    margin-top: 56px;
+  }
   .content {
     width: 100%;
+    padding: 0 10px;
   }
 }
 

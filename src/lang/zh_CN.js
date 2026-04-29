@@ -225,5 +225,18 @@ export default
   'Danh sách yêu thích':'收藏列表',
   'Phim360 luôn luôn lắng nghe mọi ý kiến để cải thiện và mang lại trải nghiệm tuyệt vời nhất cho bạn.':'Phim360 始终倾听您的每一个意见，不断改进，为您带来最棒的体验。',
   'Khám phá phim ngay':'立即探索电影',
+  'Miền Tây':'西部',
+  'Trẻ Em':'儿童',
+  'Lịch Sử': '历史',
+  'Tài Liệu': '纪录片',
+  'Thể Thao': '体育',
+  'Phiêu Lưu': '冒险',
+  'Âm Nhạc': '音乐',
+  'Hình Sự': '犯罪',
+  'Võ Thuật': '武术',
+  'Khoa Học': '科学',
+  'Thần Thoại': '神话',
+  'Kinh Điển':'经典',
+  'Phim Ngắn': '短片',
 
 }

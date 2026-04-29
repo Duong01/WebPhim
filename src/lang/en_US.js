@@ -225,5 +225,18 @@ export default
   'Danh sách yêu thích':'Favorites List',
   'Phim360 luôn luôn lắng nghe mọi ý kiến để cải thiện và mang lại trải nghiệm tuyệt vời nhất cho bạn.':'Phim360 always listens to all feedback to improve and bring the best experience to you.',
   'Khám phá phim ngay':'Explore movies now',
+  'Miền Tây':'Western',
+  'Trẻ Em':'Kids',
+  'Lịch Sử': 'History',
+  'Tài Liệu': 'Documentary',
+  'Thể Thao': 'Sports',
+  'Phiêu Lưu': 'Adventure',
+  'Âm Nhạc': 'Music',
+  'Hình Sự': 'Crime',
+  'Võ Thuật': 'Martial Arts',
+  'Khoa Học': 'Science',
+  'Thần Thoại': 'Mythology',
+  'Kinh Điển':'Classic',
+  'Phim Ngắn': 'Short Film',
 
 }

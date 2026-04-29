@@ -225,7 +225,19 @@ export default
   'Danh sách yêu thích':'Danh sách yêu thích',
   'Phim360 luôn luôn lắng nghe mọi ý kiến để cải thiện và mang lại trải nghiệm tuyệt vời nhất cho bạn.':'Phim360 luôn luôn lắng nghe mọi ý kiến để cải thiện và mang lại trải nghiệm tuyệt vời nhất cho bạn.',
   'Khám phá phim ngay':'Khám phá phim ngay',
-
+  'Miền Tây':'Miền Tây',
+  'Trẻ Em':'Trẻ Em',
+  'Lịch Sử': 'Lịch Sử',
+  'Tài Liệu': 'Tài Liệu',
+  'Thể Thao': 'Thể Thao',
+  'Phiêu Lưu': 'Phiêu Lưu',
+  'Âm Nhạc': 'Âm Nhạc',
+  'Hình Sự': 'Hình Sự',
+  'Võ Thuật': 'Võ Thuật',
+  'Khoa Học': 'Khoa Học',
+  'Thần Thoại': 'Thần Thoại',
+  'Kinh Điển':'Kinh Điển',
+  'Phim Ngắn': 'Phim Ngắn',
 
 
   
