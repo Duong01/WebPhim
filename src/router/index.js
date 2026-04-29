@@ -253,7 +253,7 @@ const router = createRouter({
       return savedPosition;
     }
     // Lần đầu chuyển trang thì mặc định cuộn lên đầu trang
-    return { top: 0, behavior: 'smooth' };
+    //return { top: 0, behavior: 'smooth' };
   }
 });
 

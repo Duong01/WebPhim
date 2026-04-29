@@ -243,6 +243,7 @@
                         sm="6"
                         md="4"
                         class="episode-col-responsive"
+                        ref="episodeContainer"
                       >
                         <v-btn
                           block
@@ -292,7 +293,7 @@
                     <v-img :src="getOptimizedImage(movie.thumb_url)" aspect-ratio="2/3" cover class="rounded-lg elevation-4"></v-img>
                   </v-col>
                   <v-col cols="12" sm="8" md="9" lg="9">
-                    <h1 class="text-h4 font-weight-bold text-white mb-2">{{ movie.title }}</h1>
+                    <h1 class="text-h5 font-weight-bold text-sm-h4 text-white mb-2">{{ movie.title }}</h1>
                     <h2 class="text-subtitle-1 text-grey mb-4">{{ movie.name }} </h2>
                     <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
                     
@@ -554,6 +555,7 @@
                         cols="6"
                         lg="6"
                         md="12"
+                        ref="episodeContainer"
                       >
                         <v-btn
                           block
@@ -771,6 +773,7 @@
     </div>
   </v-fade-transition>
 </template>
+
 <script>
 import {
   MoveInfor,
@@ -999,7 +1002,7 @@ export default {
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        //this.scrollToActiveEpisode();
+        this.scrollToActiveEpisode();
       });
       // await this.ListMovieByCate();
       // await this.GetComment();
@@ -1077,7 +1080,7 @@ export default {
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        //this.scrollToActiveEpisode();
+        this.scrollToActiveEpisode();
       });
 
       // Bắt đầu save thời gian xem mỗi 5 giây
@@ -1836,14 +1839,22 @@ export default {
         console.error("Auto update favorite failed:", err);
       });
     },
-    // scrollToActiveEpisode() {
-    //   this.$nextTick(() => {
-    //     const activeBtn = this.$el.querySelector(".episode-item-active");
-    //     if (activeBtn) {
-    //       activeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
-    //     }
-    //   });
-    // },
+    scrollToActiveEpisode() {
+      this.$nextTick(() => {
+        const container = this.$refs.episodeContainer;
+        const activeBtn = this.$el.querySelector(".episode-item-active");
+
+        if (container && activeBtn) {
+          const containerRect = container.getBoundingClientRect();
+          const activeRect = activeBtn.getBoundingClientRect();
+
+          const offset =
+            activeRect.top - containerRect.top - container.clientHeight / 2;
+
+          container.scrollTop += offset;
+        }
+      });
+    },
     showControlsTemporarily() {
       this.showControls = true;
       this.clearHideControlsTimer();
@@ -2202,7 +2213,7 @@ export default {
         this.isLoading = false;
         this.$nextTick(() => {
           window.scrollTo({ top: 0, behavior: "smooth" });
-          //this.scrollToActiveEpisode();
+          this.scrollToActiveEpisode();
         });
       } catch {
         this.isLoading = false;
@@ -2239,7 +2250,7 @@ export default {
       setTimeout(() => {
         this.isLoading = false;
       }, 1000);
-      //this.scrollToActiveEpisode();
+      this.scrollToActiveEpisode();
     },
     nextEpisode() {
       if (this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
@@ -3190,6 +3201,7 @@ a {
   padding-right: 0 !important;
 }
 .content-desc {
+  font-size: 14px;
   line-height: 1.6;
 }
 .custom-title {
@@ -3262,6 +3274,14 @@ a {
   padding: 6px 4px !important;
   white-space: normal;
   word-break: break-word;
+  height: 44px !important;
+  letter-spacing: 0.3px;
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+}
+.episode-item-active {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
+  transform: scale(1.02);
 }
 .controls {
   position: absolute;
