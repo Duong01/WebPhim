@@ -55,7 +55,7 @@ function detectDevice() {
   const isIOS = /iPad|iPhone|iPod/.test(userAgent);
   const isAndroid = /Android/.test(userAgent);
   const isMobile = isIOS || isAndroid;
-  
+  console.log('Device detection:', { isIOS, isAndroid, isMobile });
   if (isIOS) {
     store.commit('setIOS', true);
     store.commit('setCanInstall', true);

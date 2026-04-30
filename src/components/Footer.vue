@@ -98,7 +98,7 @@
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
           <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
-            <v-btn v-if="canShowInstallButton || isMobile" @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn  @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-download</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
                 <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Install</span>
