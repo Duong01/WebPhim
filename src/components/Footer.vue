@@ -98,7 +98,7 @@
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
           <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
-            <v-btn v-if="canShowInstallButton" @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn v-if="canShowInstallButton || isMobile" @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-download</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
                 <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Install</span>
@@ -160,6 +160,7 @@ export default {
   data() {
     return {
       showIOSDialog: false,
+      isMobile: false,
       tags: [
         { label: this.$t('Phim mới'), link: '/phim-moi' },
         { label: this.$t('Phim hay'), link: '/phim-hay' },
@@ -188,6 +189,19 @@ export default {
       ]
     };
   },
+  mounted() {
+    // Detect mobile device
+    const userAgent = navigator.userAgent;
+    this.isMobile = /iPad|iPhone|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(userAgent);
+    
+    console.log('Footer mounted - Mobile detected:', this.isMobile);
+    console.log('Store state:', {
+      isIOS: this.isIOS,
+      isAndroid: this.isAndroid,
+      installPrompt: this.installPrompt,
+      canShowButton: this.canShowInstallButton
+    });
+  },
   computed: {
     installPrompt() {
       return this.$store.state.installPrompt;
@@ -202,7 +216,8 @@ export default {
       return this.$store.state.canInstall;
     },
     canShowInstallButton() {
-      return this.installPrompt !== null || this.isIOS || this.isAndroid;
+      // Show button on mobile devices (iOS, Android) or when beforeinstallprompt is available
+      return this.isIOS || this.isAndroid || this.installPrompt !== null;
     }
   },
   methods: {

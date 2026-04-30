@@ -49,31 +49,38 @@ const vuetify = createVuetify({
    PWA Install Prompt
 ========================= */
 let deferredPrompt;
-const userAgent = navigator.userAgent;
-//const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-const isAndroid = /Android/.test(userAgent);
-//const isMobile = isIOS || isAndroid;
 
-// Detect if app is already installed
-//const isAppInstalled = window.navigator.standalone === true;
+function detectDevice() {
+  const userAgent = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+  const isAndroid = /Android/.test(userAgent);
+  const isMobile = isIOS || isAndroid;
+  
+  if (isIOS) {
+    store.commit('setIOS', true);
+    store.commit('setCanInstall', true);
+  }
+  if (isAndroid) {
+    store.commit('setAndroid', true);
+    store.commit('setCanInstall', true);
+  }
+  
+  return { isIOS, isAndroid, isMobile };
+}
+
+// Detect on page load
+window.addEventListener('load', () => {
+  detectDevice();
+});
+
+// Also detect immediately for faster detection
+detectDevice();
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   store.commit('setInstallPrompt', deferredPrompt);
-});
-
-// For iOS - detect if already installed
-window.addEventListener('load', () => {
-  const isStandalone = window.navigator.standalone === true;
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  
-  if (isIOS && !isStandalone) {
-    store.commit('setIOS', true);
-    store.commit('setCanInstall', true);
-  } else if (isAndroid) {
-    store.commit('setAndroid', true);
-  }
+  console.log('Install prompt available');
 });
 
 /* =========================
