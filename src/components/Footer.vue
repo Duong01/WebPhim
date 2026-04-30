@@ -123,18 +123,59 @@
             </v-btn>
           </div>
           
-          <!-- iOS Install Dialog -->
-          <v-dialog v-model="showIOSDialog" max-width="400">
+          <!-- Install Instructions Dialog -->
+          <v-dialog v-model="showIOSDialog" max-width="500">
             <v-card>
               <v-card-title class="text-center">
-                <v-icon start color="primary" size="large">mdi-iphone</v-icon>
-                Cài đặt Ứng Dụng trên iPhone
+                <v-icon start color="primary" size="large">mdi-download-circle</v-icon>
+                Cài Đặt Ứng Dụng Phim 360
               </v-card-title>
               <v-card-text class="text-body-2">
-                <p class="mb-3"><strong>Bước 1:</strong> Tap nút <v-icon size="small">mdi-share</v-icon> ở thanh dưới</p>
-                <p class="mb-3"><strong>Bước 2:</strong> Cuộn xuống và chọn "Add to Home Screen"</p>
-                <p class="mb-3"><strong>Bước 3:</strong> Nhập tên app và chọn "Add"</p>
-                <p class="text-caption text-grey">Ứng dụng sẽ được cài đặt như một app thực trên thiết bị của bạn!</p>
+                <v-tabs>
+                  <v-tab value="ios">
+                    <v-icon start>mdi-apple</v-icon>
+                    iPhone
+                  </v-tab>
+                  <v-tab value="android">
+                    <v-icon start>mdi-android</v-icon>
+                    Android
+                  </v-tab>
+                  <v-tab value="desktop">
+                    <v-icon start>mdi-desktop-mac</v-icon>
+                    Desktop
+                  </v-tab>
+                </v-tabs>
+                
+                <v-window v-model="installTab">
+                  <v-window-item value="ios">
+                    <div class="py-4">
+                      <p class="mb-3"><strong>Bước 1:</strong> Tap nút <v-icon size="small">mdi-share</v-icon> ở thanh dưới</p>
+                      <p class="mb-3"><strong>Bước 2:</strong> Cuộn xuống và chọn "Add to Home Screen"</p>
+                      <p class="mb-3"><strong>Bước 3:</strong> Nhập tên app và chọn "Add"</p>
+                      <p class="text-caption text-grey">Ứng dụng sẽ được cài đặt trên màn hình chính!</p>
+                    </div>
+                  </v-window-item>
+                  
+                  <v-window-item value="android">
+                    <div class="py-4">
+                      <p class="mb-3"><strong>Cách 1 - Từ Chrome:</strong></p>
+                      <p class="mb-2">Tap <v-icon size="small">mdi-dots-vertical</v-icon> → "Install app" hoặc "Add to Home Screen"</p>
+                      <p class="mb-3"><strong>Cách 2 - Từ nút bên dưới:</strong></p>
+                      <p class="mb-2">Tap nút "Install Our App" ở trên và làm theo hướng dẫn</p>
+                      <p class="text-caption text-grey">App sẽ xuất hiện trong danh sách ứng dụng của bạn!</p>
+                    </div>
+                  </v-window-item>
+                  
+                  <v-window-item value="desktop">
+                    <div class="py-4">
+                      <p class="mb-3"><strong>Chrome / Edge:</strong></p>
+                      <p class="mb-3">Click vào biểu tượng <v-icon size="small">mdi-plus-circle</v-icon> ở thanh địa chỉ hoặc vào <v-icon size="small">mdi-dots-vertical</v-icon> → "Install Phim 360"</p>
+                      <p class="mb-3"><strong>Safari:</strong></p>
+                      <p class="mb-2">Click nút Chia sẻ → "Add to Dock" hoặc "Save to Home Screen"</p>
+                      <p class="text-caption text-grey">Ứng dụng sẽ hoạt động giống như một app thực!</p>
+                    </div>
+                  </v-window-item>
+                </v-window>
               </v-card-text>
               <v-card-actions class="justify-center">
                 <v-btn variant="outlined" @click="showIOSDialog = false">Đóng</v-btn>
@@ -160,7 +201,7 @@ export default {
   data() {
     return {
       showIOSDialog: false,
-      isMobile: false,
+      installTab: 'android',
       tags: [
         { label: this.$t('Phim mới'), link: '/phim-moi' },
         { label: this.$t('Phim hay'), link: '/phim-hay' },
@@ -190,34 +231,14 @@ export default {
     };
   },
   mounted() {
-    // Detect mobile device
-    const userAgent = navigator.userAgent;
-    this.isMobile = /iPad|iPhone|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(userAgent);
-    
-    console.log('Footer mounted - Mobile detected:', this.isMobile);
-    console.log('Store state:', {
-      isIOS: this.isIOS,
-      isAndroid: this.isAndroid,
-      installPrompt: this.installPrompt,
-      canShowButton: this.canShowInstallButton
-    });
+    console.log('Footer mounted - Install prompt available:', !!this.installPrompt);
   },
   computed: {
     installPrompt() {
       return this.$store.state.installPrompt;
     },
-    isIOS() {
-      return this.$store.state.isIOS;
-    },
-    isAndroid() {
-      return this.$store.state.isAndroid;
-    },
-    canInstall() {
-      return this.$store.state.canInstall;
-    },
     canShowInstallButton() {
-      // Show button on mobile devices (iOS, Android) or when beforeinstallprompt is available
-      return this.isIOS || this.isAndroid || this.installPrompt !== null;
+      return true; // Always show install button on all devices
     }
   },
   methods: {
@@ -226,10 +247,12 @@ export default {
         .trim().replace(/\s+/g, '-');
     },
     handleInstall() {
-      if (this.isIOS) {
-        this.showIOSDialog = true;
-      } else if (this.installPrompt) {
+      // Try to install the PWA app
+      if (this.installPrompt) {
         this.installApp();
+      } else {
+        // If no install prompt, show universal install instructions
+        this.showIOSDialog = true;
       }
     },
     installApp() {
