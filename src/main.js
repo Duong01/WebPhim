@@ -49,11 +49,31 @@ const vuetify = createVuetify({
    PWA Install Prompt
 ========================= */
 let deferredPrompt;
+const userAgent = navigator.userAgent;
+//const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+const isAndroid = /Android/.test(userAgent);
+//const isMobile = isIOS || isAndroid;
+
+// Detect if app is already installed
+//const isAppInstalled = window.navigator.standalone === true;
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  // Store in store or emit
   store.commit('setInstallPrompt', deferredPrompt);
+});
+
+// For iOS - detect if already installed
+window.addEventListener('load', () => {
+  const isStandalone = window.navigator.standalone === true;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  
+  if (isIOS && !isStandalone) {
+    store.commit('setIOS', true);
+    store.commit('setCanInstall', true);
+  } else if (isAndroid) {
+    store.commit('setAndroid', true);
+  }
 });
 
 /* =========================
@@ -174,6 +194,19 @@ async function bootstrap() {
   app.use(vue3GoogleLogin, {
     clientId: "637267486434-t4hh87i10u44oo2m7mo0p3aelebqivo6.apps.googleusercontent.com"
   })
+
+  /* Register Service Worker */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+    });
+  }
 
   app.mount('#app')
 }

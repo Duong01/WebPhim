@@ -98,11 +98,11 @@
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
           <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
-            <v-btn v-if="installPrompt" @click="installApp" variant="outlined" color="primary" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn v-if="canShowInstallButton" @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-download</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
                 <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Install</span>
-                <span class="font-weight-bold text-body-2">PWA App</span>
+                <span class="font-weight-bold text-body-2">Our App</span>
               </div>
             </v-btn>
             
@@ -122,6 +122,25 @@
               </div>
             </v-btn>
           </div>
+          
+          <!-- iOS Install Dialog -->
+          <v-dialog v-model="showIOSDialog" max-width="400">
+            <v-card>
+              <v-card-title class="text-center">
+                <v-icon start color="primary" size="large">mdi-iphone</v-icon>
+                Cài đặt Ứng Dụng trên iPhone
+              </v-card-title>
+              <v-card-text class="text-body-2">
+                <p class="mb-3"><strong>Bước 1:</strong> Tap nút <v-icon size="small">mdi-share</v-icon> ở thanh dưới</p>
+                <p class="mb-3"><strong>Bước 2:</strong> Cuộn xuống và chọn "Add to Home Screen"</p>
+                <p class="mb-3"><strong>Bước 3:</strong> Nhập tên app và chọn "Add"</p>
+                <p class="text-caption text-grey">Ứng dụng sẽ được cài đặt như một app thực trên thiết bị của bạn!</p>
+              </v-card-text>
+              <v-card-actions class="justify-center">
+                <v-btn variant="outlined" @click="showIOSDialog = false">Đóng</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </v-container>
@@ -140,6 +159,7 @@ export default {
   name: 'FooterPage',
   data() {
     return {
+      showIOSDialog: false,
       tags: [
         { label: this.$t('Phim mới'), link: '/phim-moi' },
         { label: this.$t('Phim hay'), link: '/phim-hay' },
@@ -171,12 +191,31 @@ export default {
   computed: {
     installPrompt() {
       return this.$store.state.installPrompt;
+    },
+    isIOS() {
+      return this.$store.state.isIOS;
+    },
+    isAndroid() {
+      return this.$store.state.isAndroid;
+    },
+    canInstall() {
+      return this.$store.state.canInstall;
+    },
+    canShowInstallButton() {
+      return this.installPrompt !== null || this.isIOS || this.isAndroid;
     }
   },
   methods: {
     slugify(str) {
       return str.toLowerCase()
         .trim().replace(/\s+/g, '-');
+    },
+    handleInstall() {
+      if (this.isIOS) {
+        this.showIOSDialog = true;
+      } else if (this.installPrompt) {
+        this.installApp();
+      }
     },
     installApp() {
       if (this.installPrompt) {

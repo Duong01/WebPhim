@@ -23,6 +23,15 @@ const mutations =
       },
     setInstallPrompt(state, prompt) {
         state.installPrompt = prompt
+    },
+    setIOS(state, value) {
+        state.isIOS = value
+    },
+    setAndroid(state, value) {
+        state.isAndroid = value
+    },
+    setCanInstall(state, value) {
+        state.canInstall = value
     }
    
 }

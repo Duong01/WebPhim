@@ -19,6 +19,9 @@ export default function state() {
       },
       isLoading: false,  // show loading icon full screen when call api
       installPrompt: null,  // PWA install prompt
+      isIOS: false,  // iOS device
+      isAndroid: false,  // Android device
+      canInstall: false,  // Can install app
       curri18n: null,//  current $t for i18n
       image: "",
       Avatar: "",
