@@ -3,10 +3,19 @@
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
         <!-- Sử dụng KeepAlive với max="15" để cache danh sách, load mượt không giật lag -->
-        <router-view v-slot="{ Component }">
-          <transition name="page-fade" mode="out-in">
+        <router-view v-slot="{ Component  }">
+          <Suspense>
+            <keep-alive include="HomePage,PhimBo,PhimLe,TVShow">
+              <transition name="fade" mode="out-in">
             <component :is="Component" />
-          </transition>
+            </transition>
+            </keep-alive>
+            <template #fallback>
+              <div class="page-loading">
+                Loading...
+              </div>
+            </template>
+          </Suspense>
         </router-view>
 
         <v-snackbar v-model="showError" color="red" timeout="3000">
@@ -117,5 +126,13 @@ html {
   scroll-behavior: smooth;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

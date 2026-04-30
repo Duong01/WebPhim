@@ -46,6 +46,17 @@ const vuetify = createVuetify({
 })
 
 /* =========================
+   PWA Install Prompt
+========================= */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Store in store or emit
+  store.commit('setInstallPrompt', deferredPrompt);
+});
+
+/* =========================
    Polyfills
 ========================= */
 import "intersection-observer"

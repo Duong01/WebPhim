@@ -98,6 +98,14 @@
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
           <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
+            <v-btn v-if="installPrompt" @click="installApp" variant="outlined" color="primary" height="48" class="app-btn flex-grow-1 justify-start px-3">
+              <v-icon start size="x-large">mdi-download</v-icon>
+              <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
+                <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Install</span>
+                <span class="font-weight-bold text-body-2">PWA App</span>
+              </div>
+            </v-btn>
+            
             <v-btn href="https://www.apple.com/app-store/" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-apple</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
@@ -160,10 +168,28 @@ export default {
       ]
     };
   },
+  computed: {
+    installPrompt() {
+      return this.$store.state.installPrompt;
+    }
+  },
   methods: {
     slugify(str) {
       return str.toLowerCase()
         .trim().replace(/\s+/g, '-');
+    },
+    installApp() {
+      if (this.installPrompt) {
+        this.installPrompt.prompt();
+        this.installPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          this.$store.commit('setInstallPrompt', null);
+        });
+      }
     }
   }
 };

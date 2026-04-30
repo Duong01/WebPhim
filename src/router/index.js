@@ -252,8 +252,9 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition;
     }
+    return { top: 0 };
     // Chuyển trang thường xuyên: giữ nguyên vị trí và không cuộn lên đầu
-    return false;
+    //return false;
   }
 });
 
@@ -290,7 +291,11 @@ router.beforeEach((to, from, next) => {
       }
     }
   }
+  const matched = router.getRoutes().find(r => r.name === to.name);
 
+  if (matched && typeof matched.components?.default === "function") {
+    matched.components.default(); // preload component
+  }
 
   //const isLoggedIn = !!store.state.empInfor;
 

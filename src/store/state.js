@@ -18,6 +18,7 @@ export default function state() {
         curLang: "", //current lang i18n for system
       },
       isLoading: false,  // show loading icon full screen when call api
+      installPrompt: null,  // PWA install prompt
       curri18n: null,//  current $t for i18n
       image: "",
       Avatar: "",

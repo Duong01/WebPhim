@@ -1,0 +1,21 @@
+{
+  "name": "Phim 360 - Kho Phim Quốc Dân",
+  "short_name": "Phim 360",
+  "description": "Trang xem phim online miễn phí tốc độ cao, chất lượng HD & 4K cực nét.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "./Logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./Logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -20,7 +20,10 @@ const mutations =
     },
     UPDATE_ACTIVE_TIME(state) {
         state.lastActive = Date.now()
-      }
+      },
+    setInstallPrompt(state, prompt) {
+        state.installPrompt = prompt
+    }
    
 }
 export default mutations
