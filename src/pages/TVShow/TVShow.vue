@@ -2,7 +2,7 @@
   <v-container class="search-page" fluid>
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
-        <h2 class="text-center">{{ $t("Danh sách phim:") }} {{ titlePage }}</h2>
+        <h2 class="text-center">{{ $t("Danh sách phim:") }} TV Shows Hấp Dẫn - Xem Ngay Bộ Phim Hay Nhất</h2>
         <v-divider class="my-4" />
       </v-col>
     </v-row>
@@ -10,7 +10,7 @@
     <FilterMovie @filter-changed="onFilterChanged" />
     <v-row class="mb-6" align="center">
       <v-col cols="12" md="6" class="text-md-left">
-        <h2 class="page-title">🎬 {{ titlePage }}</h2>
+        <h2 class="page-title">🎬 TV Shows Hấp Dẫn - Xem Ngay Bộ Phim Hay Nhất</h2>
       </v-col>
 
       <v-col cols="12" md="6" class="text-md-right">

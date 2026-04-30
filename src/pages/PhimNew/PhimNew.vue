@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-         {{$t('Danh sách phim:')}}  {{ titlePage }}
+         {{$t('Danh sách phim:')}} Phim Mới Nhất - Cập Nhật Liên Tục
         </h2>
         <v-divider class="my-4" />
       </v-col>

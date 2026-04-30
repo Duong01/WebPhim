@@ -46,6 +46,7 @@
                 loading="lazy"
                 class="movie-thumb"
                 referrerpolicy="no-referrer"
+                crossOrigin="anonymous"
                 :alt="movie.title"
               >
                 <template #placeholder>

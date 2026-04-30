@@ -10,7 +10,7 @@
     <FilterMovie @filter-changed="onFilterChanged" />
     <v-row class="mb-6" align="center">
       <v-col cols="12" md="6" class="text-md-left">
-        <h2 class="page-title">🎬 {{ titlePage }}</h2>
+        <h2 class="page-title">🎬 Hoạt Hình Hấp Dẫn - Xem Ngay Phim Vui Nhộn</h2>
       </v-col>
 
       <v-col cols="12" md="6" class="text-md-right">

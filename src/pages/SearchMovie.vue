@@ -3,7 +3,7 @@
     <v-row justify="center" class="mb-6">
       <v-col cols="12">
         <h2 class="text-center">
-          {{ $t("Kết quả tìm kiếm cho") }} "{{ $route.query.keyword }}"
+          Tìm Kiếm Phim Hấp Dẫn - {{ $t("Kết quả tìm kiếm cho") }} "{{ $route.query.keyword }}"
         </h2>
         <v-divider class="my-4" />
       </v-col>
@@ -371,6 +371,7 @@ export default {
       },
     },
     movies() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
       if (!this.observerInited) {
         this.$nextTick(() => {
           this.initObserver();

@@ -41,6 +41,7 @@
           class="trending-poster"
           transition="fade-transition"
           referrerpolicy="no-referrer"
+          crossOrigin="anonymous"
           :alt="item.title"
         >
           <!-- BADGE -->
