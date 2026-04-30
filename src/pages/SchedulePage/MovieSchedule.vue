@@ -40,7 +40,7 @@
           <v-card class="mx-auto movie-item simple-hover" flat @click="goMovie(movie)">
             <div class="card-poster">
               <v-img
-                :src="movie.thumbnail.includes('https') ? movie.thumbnail : 'https://hoathinh3d.vn' +movie.thumbnail"
+                :src="getImage(movie.thumbnail)"
                 aspect-ratio="2/3"
                 cover
                 loading="lazy"
@@ -183,9 +183,14 @@ export default {
       })
       
     },
+    getImage(path) {
+    if (path.startsWith("http")) return path;
+
+    return "https://hoathinh3d.vn" + path;
+  },
     goMovie(url) {
       var slug = url.slug.split('/').pop()
-      this.$store.commit("imageThumbnail",url.cover_image)
+      this.$store.commit("imageThumbnail",this.getImage(url.thumbnail))
       this.$router.push({
         name : 'Movies',
         params: {slug}
