@@ -98,15 +98,7 @@
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
           <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
-            <v-btn  @click="handleInstall" variant="outlined" color="success" height="48" class="app-btn flex-grow-1 justify-start px-3">
-              <v-icon start size="x-large">mdi-download</v-icon>
-              <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
-                <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Install</span>
-                <span class="font-weight-bold text-body-2">Our App</span>
-              </div>
-            </v-btn>
-            
-            <v-btn href="https://www.apple.com/app-store/" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn @click="installApp" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-apple</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
                 <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Download on the</span>
@@ -114,7 +106,7 @@
               </div>
             </v-btn>
             
-            <v-btn href="https://play.google.com/store/games" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn @click="installApp" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
               <v-icon start size="x-large">mdi-google-play</v-icon>
               <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
                 <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">GET IT ON</span>
@@ -122,66 +114,6 @@
               </div>
             </v-btn>
           </div>
-          
-          <!-- Install Instructions Dialog -->
-          <v-dialog v-model="showIOSDialog" max-width="500">
-            <v-card>
-              <v-card-title class="text-center">
-                <v-icon start color="primary" size="large">mdi-download-circle</v-icon>
-                Cài Đặt Ứng Dụng Phim 360
-              </v-card-title>
-              <v-card-text class="text-body-2">
-                <v-tabs>
-                  <v-tab value="ios">
-                    <v-icon start>mdi-apple</v-icon>
-                    iPhone
-                  </v-tab>
-                  <v-tab value="android">
-                    <v-icon start>mdi-android</v-icon>
-                    Android
-                  </v-tab>
-                  <v-tab value="desktop">
-                    <v-icon start>mdi-desktop-mac</v-icon>
-                    Desktop
-                  </v-tab>
-                </v-tabs>
-                
-                <v-window v-model="installTab">
-                  <v-window-item value="ios">
-                    <div class="py-4">
-                      <p class="mb-3"><strong>Bước 1:</strong> Tap nút <v-icon size="small">mdi-share</v-icon> ở thanh dưới</p>
-                      <p class="mb-3"><strong>Bước 2:</strong> Cuộn xuống và chọn "Add to Home Screen"</p>
-                      <p class="mb-3"><strong>Bước 3:</strong> Nhập tên app và chọn "Add"</p>
-                      <p class="text-caption text-grey">Ứng dụng sẽ được cài đặt trên màn hình chính!</p>
-                    </div>
-                  </v-window-item>
-                  
-                  <v-window-item value="android">
-                    <div class="py-4">
-                      <p class="mb-3"><strong>Cách 1 - Từ Chrome:</strong></p>
-                      <p class="mb-2">Tap <v-icon size="small">mdi-dots-vertical</v-icon> → "Install app" hoặc "Add to Home Screen"</p>
-                      <p class="mb-3"><strong>Cách 2 - Từ nút bên dưới:</strong></p>
-                      <p class="mb-2">Tap nút "Install Our App" ở trên và làm theo hướng dẫn</p>
-                      <p class="text-caption text-grey">App sẽ xuất hiện trong danh sách ứng dụng của bạn!</p>
-                    </div>
-                  </v-window-item>
-                  
-                  <v-window-item value="desktop">
-                    <div class="py-4">
-                      <p class="mb-3"><strong>Chrome / Edge:</strong></p>
-                      <p class="mb-3">Click vào biểu tượng <v-icon size="small">mdi-plus-circle</v-icon> ở thanh địa chỉ hoặc vào <v-icon size="small">mdi-dots-vertical</v-icon> → "Install Phim 360"</p>
-                      <p class="mb-3"><strong>Safari:</strong></p>
-                      <p class="mb-2">Click nút Chia sẻ → "Add to Dock" hoặc "Save to Home Screen"</p>
-                      <p class="text-caption text-grey">Ứng dụng sẽ hoạt động giống như một app thực!</p>
-                    </div>
-                  </v-window-item>
-                </v-window>
-              </v-card-text>
-              <v-card-actions class="justify-center">
-                <v-btn variant="outlined" @click="showIOSDialog = false">Đóng</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-col>
       </v-row>
     </v-container>
@@ -200,8 +132,7 @@ export default {
   name: 'FooterPage',
   data() {
     return {
-      showIOSDialog: false,
-      installTab: 'android',
+      deferredPrompt: null,
       tags: [
         { label: this.$t('Phim mới'), link: '/phim-moi' },
         { label: this.$t('Phim hay'), link: '/phim-hay' },
@@ -231,43 +162,26 @@ export default {
     };
   },
   mounted() {
-    console.log('Footer mounted - Install prompt available:', !!this.installPrompt);
-  },
-  computed: {
-    installPrompt() {
-      return this.$store.state.installPrompt;
-    },
-    canShowInstallButton() {
-      return true; // Always show install button on all devices
-    }
-  },
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    this.deferredPrompt = e;
+  });
+},
   methods: {
     slugify(str) {
       return str.toLowerCase()
         .trim().replace(/\s+/g, '-');
     },
-    handleInstall() {
-      // Try to install the PWA app
-      if (this.installPrompt) {
-        this.installApp();
-      } else {
-        // If no install prompt, show universal install instructions
-        this.showIOSDialog = true;
-      }
-    },
     installApp() {
-      if (this.installPrompt) {
-        this.installPrompt.prompt();
-        this.installPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-          } else {
-            console.log('User dismissed the install prompt');
-          }
-          this.$store.commit('setInstallPrompt', null);
-        });
-      }
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then(() => {
+        this.deferredPrompt = null;
+      });
+    } else {
+      alert("Vui lòng dùng Chrome và truy cập lại để cài app");
     }
+  }
   }
 };
 </script>
