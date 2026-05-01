@@ -317,6 +317,7 @@
       class="bottom-navbar"
       :class="{ 'bottom-navbar--hidden': !showBottomBar }"
       grow
+      height="75"
     >
     
       <v-btn 
