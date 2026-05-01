@@ -116,6 +116,28 @@
           </div>
         </v-col>
       </v-row>
+      <!-- Popup hướng dẫn iPhone -->
+<v-dialog v-model="showIOSPopup" max-width="420">
+  <v-card class="pa-4 text-center">
+    <v-icon size="42" color="primary">mdi-apple</v-icon>
+
+    <h3 class="text-h6 mt-3 mb-2">Cài ứng dụng trên iPhone</h3>
+
+    <p class="text-body-2 mb-4">
+      Làm theo các bước sau:
+    </p>
+
+    <div class="text-left text-body-2 mb-4">
+      <p>1. Nhấn nút <strong>⤴️ Share</strong> trên Safari</p>
+      <p>2. Chọn <strong>"Thêm vào Màn hình chính"</strong></p>
+      <p>3. Nhấn <strong>Thêm</strong></p>
+    </div>
+
+    <v-btn color="primary" block @click="showIOSPopup = false">
+      Đã hiểu
+    </v-btn>
+  </v-card>
+</v-dialog>
     </v-container>
 
     <!-- Bottom Copyright Line -->
@@ -133,6 +155,7 @@ export default {
   data() {
     return {
       deferredPrompt: null,
+    showIOSPopup: false,
       tags: [
         { label: this.$t('Phim mới'), link: '/phim-moi' },
         { label: this.$t('Phim hay'), link: '/phim-hay' },
@@ -168,20 +191,42 @@ export default {
   });
 },
   methods: {
+    isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+},
+
+isInStandaloneMode() {
+  return ('standalone' in window.navigator) && window.navigator.standalone;
+},
+
+isInstalled() {
+  return window.matchMedia('(display-mode: standalone)').matches;
+},
     slugify(str) {
       return str.toLowerCase()
         .trim().replace(/\s+/g, '-');
     },
     installApp() {
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then(() => {
-        this.deferredPrompt = null;
-      });
-    } else {
-      alert("Vui lòng dùng Chrome và truy cập lại để cài app");
-    }
+  // 🍎 iPhone
+  if (this.isIOS() && !this.isInStandaloneMode()) {
+    this.showIOSPopup = true;
+    return;
   }
+console.log('Install prompt:', this.deferredPrompt);
+  // 🤖 Android + 💻 Desktop
+  if (this.deferredPrompt) {
+    this.deferredPrompt.prompt();
+
+    this.deferredPrompt.userChoice.then((result) => {
+      if (result.outcome === "accepted") {
+        console.log("Đã cài app");
+      }
+      this.deferredPrompt = null;
+    });
+  } else {
+    alert("Thiết bị không hỗ trợ hoặc bạn đã cài rồi");
+  }
+}
   }
 };
 </script>
