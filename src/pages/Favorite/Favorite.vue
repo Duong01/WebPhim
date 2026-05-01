@@ -68,7 +68,126 @@
 
     <!-- ================= MOVIE GRID ================= -->
 
-    <v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
+    <!-- ================= MOVIE LIST (MOBILE STYLE LIKE IMAGE) ================= -->
+<v-row v-else-if="$vuetify.display.smAndDown" class="movie-list">
+
+  <v-col
+    v-for="movie in filteredMovies"
+    :key="movie.id"
+    cols="12"
+  >
+
+    <v-card class="movie-item" flat>
+
+      <v-row no-gutters>
+
+        <!-- POSTER LEFT -->
+        <v-col cols="4" class="poster-col">
+
+          <div class="poster-wrapper">
+
+            <v-img
+              :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
+              height="140"
+              cover
+              class="poster-img"
+            />
+
+            <!-- TAG -->
+            <div class="tag-new" v-if="movie.currentPage <= 3">
+              Tập mới
+            </div>
+
+          </div>
+
+        </v-col>
+
+        <!-- CONTENT RIGHT -->
+        <v-col cols="8" class="content-col">
+
+          <!-- TITLE -->
+          <div class="movie-title">
+            {{ movie.name }}
+          </div>
+
+          <!-- EPISODE -->
+          <div class="episode-text">
+            Tập đang xem : {{ movie.currentPage }} / {{ movie.total_episode || "?" }}
+          </div>
+
+          <!-- PROGRESS -->
+          <v-progress-linear
+            :model-value="skill"
+            height="6"
+            color="red"
+            rounded
+            class="progress-bar"
+          >
+          <template v-slot:default="{ value }">
+              <strong>{{ roundingEnabled ? value.toFixed(1) : value }}%</strong>
+            </template>
+          </v-progress-linear>
+
+          <!-- NEXT EPISODE -->
+          <div class="next-ep">
+            Tập tiếp theo:
+            <span class="highlight">{{ movie.currentPage.includes("Tập") ? "Tập " + (parseInt(movie.currentPage.split("Tập")[1]) + 1)  : movie.currentPage }}</span>
+          </div>
+
+          <!-- STATUS -->
+          <div class="status">
+            <span class="time">📅 {{ formatDate(movie.Daycreate) }}</span>
+
+            <div class="notify-wrap">
+              <v-icon size="14" class="bell-icon">
+      mdi-bell-outline
+    </v-icon>
+              <span class="notify-label">Nhắc tôi</span>
+
+              <v-switch
+                v-model="movie.notify"
+                color="red"
+                density="compact"
+                hide-details
+                inset
+                class="notify-switch"
+              />
+            </div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div class="actions">
+
+            <v-btn
+              size="small"
+              variant="tonal"
+              color="grey-darken-2"
+              class="btn-outline"
+            >
+              Bỏ theo dõi
+            </v-btn>
+
+            <v-btn
+              size="small"
+              color="red"
+              class="btn-watch"
+              @click="gomovie(movie)"
+            >
+              Xem ngay
+            </v-btn>
+
+          </div>
+
+        </v-col>
+
+      </v-row>
+
+    </v-card>
+
+  </v-col>
+
+</v-row>
+<v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
       <v-col
         v-for="movie in filteredMovies"
         :key="movie.id"
@@ -287,6 +406,12 @@ export default {
     //     },
     //   );
     // },
+    gomovie(movie) {
+      this.$router.push({
+        name : 'Movies',
+        params: {slug: movie.slug}
+      })
+    },
     ListMovie(isLoadMore = false) {
       if (isLoadMore) {
         this.loadingMore = true;
@@ -914,5 +1039,135 @@ export default {
   .hover-overlay {
     display: none;
   }
+}
+/* ===== LIST BACKGROUND ===== */
+.movie-list {
+  background: #0f0f0f;
+}
+
+/* ===== CARD ITEM ===== */
+.movie-item {
+  background: #1a1a1a;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 10px;
+  transition: 0.25s;
+}
+
+.movie-item:hover {
+  transform: scale(1.01);
+  background: #202020;
+}
+
+/* ===== POSTER ===== */
+.poster-wrapper {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.poster-img {
+  border-radius: 10px;
+}
+
+/* TAG "TẬP MỚI" */
+.tag-new {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #ff3d00;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ===== CONTENT ===== */
+.content-col {
+  padding-left: 10px;
+}
+
+/* TITLE */
+.movie-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+/* EPISODE */
+.episode-text {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+/* PROGRESS */
+.progress-bar {
+  margin: 6px 0;
+}
+
+/* NEXT EP */
+.next-ep {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.highlight {
+  color: #ff5252;
+  font-weight: 600;
+}
+
+/* STATUS ROW */
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.time {
+  font-size: 11px;
+  color: #888;
+}
+
+/* SWITCH */
+.notify {
+  transform: scale(0.8);
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.btn-outline {
+  flex: 1;
+  font-size: 11px;
+}
+
+.btn-watch {
+  flex: 1;
+  font-size: 11px;
+}
+.notify-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* TEXT */
+.notify-label {
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* SWITCH */
+.notify-switch {
+  margin: 0;
+  transform: scale(0.8);
 }
 </style>
