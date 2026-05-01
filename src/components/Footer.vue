@@ -1,12 +1,21 @@
 <template>
-  <v-footer class="bg-grey-darken-4 text-grey-lighten-1 pa-0 d-flex flex-column footer-container">
-    
+  <v-footer
+    class="bg-grey-darken-4 text-grey-lighten-1 pa-0 d-flex flex-column footer-container"
+  >
     <!-- Tags / SEO Keywords Ribbon -->
-    <div class="w-100 bg-black pa-4 border-b border-white-10" style="border-bottom: 1px solid rgba(255,255,255,0.05) !important;">
+    <div
+      class="w-100 bg-black pa-4 border-b border-white-10"
+      style="border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important"
+    >
       <v-container class="pa-0">
-        <div class="d-flex flex-wrap gap-2 align-center justify-center justify-md-start">
-          <span class="text-caption font-weight-bold text-white mr-2 d-none d-md-inline-block">
-            <v-icon start size="small" color="primary">mdi-tag-multiple</v-icon> {{ $t('Từ khóa nổi bật:') }}
+        <div
+          class="d-flex flex-wrap gap-2 align-center justify-center justify-md-start"
+        >
+          <span
+            class="text-caption font-weight-bold text-white mr-2 d-none d-md-inline-block"
+          >
+            <v-icon start size="small" color="primary">mdi-tag-multiple</v-icon>
+            {{ $t("Từ khóa nổi bật:") }}
           </span>
           <router-link
             v-for="(tag, index) in tags"
@@ -36,35 +45,100 @@
         <!-- Cột 1: Logo + Mô tả + Social -->
         <v-col cols="12" lg="4" md="12" class="pr-lg-8 mb-6 mb-lg-0">
           <div class="text-h4 font-weight-bold mb-4">
-            <span class="font-italic text-white">Phim</span><span class="logo-gradient">360</span>
+            <span class="font-italic text-white">Phim</span
+            ><span class="logo-gradient">360</span>
           </div>
-          <p class="text-body-2 mb-6" style="line-height: 1.6;">
-            <strong class="text-white">Phim360</strong> - {{ $t('Trang xem phim Online với giao diện hiện đại, thân thiện người dùng.') }}
-            {{ $t('Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7.') }}
+          <p class="text-body-2 mb-6" style="line-height: 1.6">
+            <strong class="text-white">Phim360</strong> -
+            {{
+              $t(
+                "Trang xem phim Online với giao diện hiện đại, thân thiện người dùng."
+              )
+            }}
+            {{
+              $t(
+                "Nguồn phim được tổng hợp tự động từ các website lớn với đa dạng thể loại và quốc gia, cập nhật liên tục 24/7."
+              )
+            }}
           </p>
-          
+
           <!-- Social Icons -->
-          <h5 class="text-subtitle-2 text-white font-weight-bold mb-3">{{ $t('Kết nối với chúng tôi') }}</h5>
+          <h5 class="text-subtitle-2 text-white font-weight-bold mb-3">
+            {{ $t("Kết nối với chúng tôi") }}
+          </h5>
           <div class="d-flex gap-3">
-            <v-btn icon="mdi-facebook" href="https://www.facebook.com/" target="_blank" variant="tonal" color="blue" size="small" class="social-btn"></v-btn>
-            <v-btn icon="mdi-youtube" href="https://www.youtube.com/" target="_blank" variant="tonal" color="red" size="small" class="social-btn"></v-btn>
-            <v-btn icon="mdi-instagram" href="https://www.instagram.com/" target="_blank" variant="tonal" color="pink" size="small" class="social-btn"></v-btn>
-            <v-btn icon href="https://t.me/" target="_blank" variant="tonal" color="light-blue" size="small" class="social-btn" title="Telegram">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.18-.08-.05-.19-.02-.27 0-.11.03-1.84 1.18-5.21 3.45-.49.33-.94.5-1.35.49-.45-.01-1.32-.26-1.96-.46-.79-.24-1.41-.37-1.36-.79.03-.22.34-.44.93-.68 3.63-1.58 6.06-2.63 7.28-3.13 3.47-1.41 4.19-1.66 4.66-1.67.1 0 .33.02.46.14.11.1.14.24.15.34-.01.06-.01.12-.02.21z"/>
+            <v-btn
+              icon="mdi-facebook"
+              href="https://www.facebook.com/"
+              target="_blank"
+              variant="tonal"
+              color="blue"
+              size="small"
+              class="social-btn"
+            ></v-btn>
+            <v-btn
+              icon="mdi-youtube"
+              href="https://www.youtube.com/"
+              target="_blank"
+              variant="tonal"
+              color="red"
+              size="small"
+              class="social-btn"
+            ></v-btn>
+            <v-btn
+              icon="mdi-instagram"
+              href="https://www.instagram.com/"
+              target="_blank"
+              variant="tonal"
+              color="pink"
+              size="small"
+              class="social-btn"
+            ></v-btn>
+            <v-btn
+              icon
+              href="https://t.me/"
+              target="_blank"
+              variant="tonal"
+              color="light-blue"
+              size="small"
+              class="social-btn"
+              title="Telegram"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.18-.08-.05-.19-.02-.27 0-.11.03-1.84 1.18-5.21 3.45-.49.33-.94.5-1.35.49-.45-.01-1.32-.26-1.96-.46-.79-.24-1.41-.37-1.36-.79.03-.22.34-.44.93-.68 3.63-1.58 6.06-2.63 7.28-3.13 3.47-1.41 4.19-1.66 4.66-1.67.1 0 .33.02.46.14.11.1.14.24.15.34-.01.06-.01.12-.02.21z"
+                />
               </svg>
             </v-btn>
-            <v-btn icon="mdi-twitter" href="https://twitter.com/" target="_blank" variant="tonal" color="white" size="small" class="social-btn"></v-btn>
+            <v-btn
+              icon="mdi-twitter"
+              href="https://twitter.com/"
+              target="_blank"
+              variant="tonal"
+              color="white"
+              size="small"
+              class="social-btn"
+            ></v-btn>
           </div>
         </v-col>
 
         <!-- Cột 2: Thể loại -->
         <v-col cols="6" sm="4" lg="2">
-          <h4 class="footer-heading text-white mb-4">{{ $t('Thể loại') }}</h4>
+          <h4 class="footer-heading text-white mb-4">{{ $t("Thể loại") }}</h4>
           <ul class="footer-links pa-0">
             <li v-for="item in genres" :key="item.link" class="mb-2">
-              <router-link :to="`/the-loai/${item.link}`" class="footer-link text-body-2">
-                <v-icon size="x-small" class="mr-1">mdi-chevron-right</v-icon>{{ item.lable }}
+              <router-link
+                :to="`/the-loai/${item.link}`"
+                class="footer-link text-body-2"
+              >
+                <v-icon size="x-small" class="mr-1">mdi-chevron-right</v-icon
+                >{{ item.lable }}
               </router-link>
             </li>
           </ul>
@@ -72,11 +146,15 @@
 
         <!-- Cột 3: Quốc gia -->
         <v-col cols="6" sm="4" lg="2">
-          <h4 class="footer-heading text-white mb-4">{{ $t('Quốc gia') }}</h4>
+          <h4 class="footer-heading text-white mb-4">{{ $t("Quốc gia") }}</h4>
           <ul class="footer-links pa-0">
             <li v-for="item in countries" :key="item.link" class="mb-2">
-              <router-link :to="`/quoc-gia/${item.link}`" class="footer-link text-body-2">
-                <v-icon size="x-small" class="mr-1">mdi-chevron-right</v-icon>{{ item.lable }}
+              <router-link
+                :to="`/quoc-gia/${item.link}`"
+                class="footer-link text-body-2"
+              >
+                <v-icon size="x-small" class="mr-1">mdi-chevron-right</v-icon
+                >{{ item.lable }}
               </router-link>
             </li>
           </ul>
@@ -84,32 +162,90 @@
 
         <!-- Cột 4: Thông tin / Hỗ trợ -->
         <v-col cols="6" sm="4" lg="2">
-          <h4 class="footer-heading text-white mb-4">{{ $t('Hỗ trợ') }}</h4>
+          <h4 class="footer-heading text-white mb-4">{{ $t("Hỗ trợ") }}</h4>
           <ul class="footer-links pa-0">
-            <li class="mb-2"><router-link to="/gioi-thieu" class="footer-link text-body-2"><v-icon size="x-small" class="mr-1">mdi-information-outline</v-icon>{{ $t('Giới thiệu') }}</router-link></li>
-            <li class="mb-2"><router-link to="/gioi-thieu" class="footer-link text-body-2"><v-icon size="x-small" class="mr-1">mdi-email-outline</v-icon>{{ $t('Liên hệ') }}</router-link></li>
-            <li class="mb-2"><router-link to="/gioi-thieu" class="footer-link text-body-2"><v-icon size="x-small" class="mr-1">mdi-shield-check-outline</v-icon>{{ $t('Chính sách riêng tư') }}</router-link></li>
-            <li class="mb-2"><router-link to="/gioi-thieu" class="footer-link text-body-2"><v-icon size="x-small" class="mr-1">mdi-copyright</v-icon>{{ $t('Khiếu nại bản quyền') }}</router-link></li>
-            <li class="mb-2"><router-link to="/gioi-thieu" class="footer-link text-body-2"><v-icon size="x-small" class="mr-1">mdi-help-circle-outline</v-icon>{{ $t('FAQ') }}</router-link></li>
+            <li class="mb-2">
+              <router-link to="/gioi-thieu" class="footer-link text-body-2"
+                ><v-icon size="x-small" class="mr-1"
+                  >mdi-information-outline</v-icon
+                >{{ $t("Giới thiệu") }}</router-link
+              >
+            </li>
+            <li class="mb-2">
+              <router-link to="/gioi-thieu" class="footer-link text-body-2"
+                ><v-icon size="x-small" class="mr-1">mdi-email-outline</v-icon
+                >{{ $t("Liên hệ") }}</router-link
+              >
+            </li>
+            <li class="mb-2">
+              <router-link to="/gioi-thieu" class="footer-link text-body-2"
+                ><v-icon size="x-small" class="mr-1"
+                  >mdi-shield-check-outline</v-icon
+                >{{ $t("Chính sách riêng tư") }}</router-link
+              >
+            </li>
+            <li class="mb-2">
+              <router-link to="/gioi-thieu" class="footer-link text-body-2"
+                ><v-icon size="x-small" class="mr-1">mdi-copyright</v-icon
+                >{{ $t("Khiếu nại bản quyền") }}</router-link
+              >
+            </li>
+            <li class="mb-2">
+              <router-link to="/gioi-thieu" class="footer-link text-body-2"
+                ><v-icon size="x-small" class="mr-1"
+                  >mdi-help-circle-outline</v-icon
+                >{{ $t("FAQ") }}</router-link
+              >
+            </li>
           </ul>
         </v-col>
 
         <!-- Cột 5: Download App -->
         <v-col cols="12" sm="12" lg="2" class="mt-6 mt-lg-0">
-          <h4 class="footer-heading text-white mb-4">{{ $t('Tải ứng dụng') }}</h4>
+          <h4 class="footer-heading text-white mb-4">
+            {{ $t("Tải ứng dụng") }}
+          </h4>
           <div class="d-flex flex-row flex-lg-column gap-3">
-            <v-btn @click="installApp" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
+            <v-btn
+              @click="installApp"
+              target="_blank"
+              variant="outlined"
+              color="white"
+              height="48"
+              class="app-btn flex-grow-1 justify-start px-3"
+            >
               <v-icon start size="x-large">mdi-apple</v-icon>
-              <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
-                <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">Download on the</span>
+              <div
+                class="d-flex flex-column text-left ml-1"
+                style="line-height: 1.2"
+              >
+                <span
+                  class="text-caption"
+                  style="font-size: 0.65rem !important; color: #aaa"
+                  >Download on the</span
+                >
                 <span class="font-weight-bold text-body-2">App Store</span>
               </div>
             </v-btn>
-            
-            <v-btn @click="installApp" target="_blank" variant="outlined" color="white" height="48" class="app-btn flex-grow-1 justify-start px-3">
+
+            <v-btn
+              @click="installApp"
+              target="_blank"
+              variant="outlined"
+              color="white"
+              height="48"
+              class="app-btn flex-grow-1 justify-start px-3"
+            >
               <v-icon start size="x-large">mdi-google-play</v-icon>
-              <div class="d-flex flex-column text-left ml-1" style="line-height: 1.2;">
-                <span class="text-caption" style="font-size: 0.65rem !important; color: #aaa;">GET IT ON</span>
+              <div
+                class="d-flex flex-column text-left ml-1"
+                style="line-height: 1.2"
+              >
+                <span
+                  class="text-caption"
+                  style="font-size: 0.65rem !important; color: #aaa"
+                  >GET IT ON</span
+                >
                 <span class="font-weight-bold text-body-2">Google Play</span>
               </div>
             </v-btn>
@@ -117,33 +253,32 @@
         </v-col>
       </v-row>
       <!-- Popup hướng dẫn iPhone -->
-<v-dialog v-model="showIOSPopup" max-width="420">
-  <v-card class="pa-4 text-center">
-    <v-icon size="42" color="primary">mdi-apple</v-icon>
+      <v-dialog v-model="showIOSPopup" max-width="420">
+        <v-card class="pa-4 text-center">
+          <v-icon size="42" color="primary">mdi-apple</v-icon>
 
-    <h3 class="text-h6 mt-3 mb-2">Cài ứng dụng trên iPhone</h3>
+          <h3 class="text-h6 mt-3 mb-2">Cài ứng dụng trên iPhone</h3>
 
-    <p class="text-body-2 mb-4">
-      Làm theo các bước sau:
-    </p>
+          <p class="text-body-2 mb-4">Làm theo các bước sau:</p>
 
-    <div class="text-left text-body-2 mb-4">
-      <p>1. Nhấn nút <strong>⤴️ Share</strong> trên Safari</p>
-      <p>2. Chọn <strong>"Thêm vào Màn hình chính"</strong></p>
-      <p>3. Nhấn <strong>Thêm</strong></p>
-    </div>
+          <div class="text-left text-body-2 mb-4">
+            <p>1. Nhấn nút <strong>⤴️ Share</strong> trên Safari</p>
+            <p>2. Chọn <strong>"Thêm vào Màn hình chính"</strong></p>
+            <p>3. Nhấn <strong>Thêm</strong></p>
+          </div>
 
-    <v-btn color="primary" block @click="showIOSPopup = false">
-      Đã hiểu
-    </v-btn>
-  </v-card>
-</v-dialog>
+          <v-btn color="primary" block @click="showIOSPopup = false">
+            Đã hiểu
+          </v-btn>
+        </v-card>
+      </v-dialog>
     </v-container>
 
     <!-- Bottom Copyright Line -->
     <div class="w-100 bg-black pa-4 text-center">
       <p class="text-caption text-grey-darken-1 mb-0">
-        © {{ new Date().getFullYear() }} Phim360. All Rights Reserved. Designed for Movie Lovers.
+        © {{ new Date().getFullYear() }} Phim360. All Rights Reserved. Designed
+        for Movie Lovers.
       </p>
     </div>
   </v-footer>
@@ -151,83 +286,77 @@
 
 <script>
 export default {
-  name: 'FooterPage',
+  name: "FooterPage",
   data() {
     return {
       deferredPrompt: null,
-    showIOSPopup: false,
+      showIOSPopup: false,
       tags: [
-        { label: this.$t('Phim mới'), link: '/phim-moi' },
-        { label: this.$t('Phim hay'), link: '/phim-hay' },
-        { label: this.$t('Phim mới chill'), link: '/danh-sach/phim-moi-chill' },
-        { label: this.$t('Phim 18'), link: '/danh-sach/phim-18' },
-        { label: this.$t('Truyện tranh 18'), link: '/danh-sach/truyen-tranh-18' },
-        { label: this.$t('Nettruyen'), link: '/danh-sach/net-truyen' },
-        { label: this.$t('Nettruyen ngôn tình'), link: '/danh-sach/net-truyen-ngon-tinh' },
-        { label: this.$t('Hiện đại'), link: '/danh-sach/hien-dai' }
+        { label: this.$t("Phim mới"), link: "/phim-moi" },
+        { label: this.$t("Phim hay"), link: "/phim-hay" },
+        { label: this.$t("Phim mới chill"), link: "/danh-sach/phim-moi-chill" },
+        { label: this.$t("Phim 18"), link: "/danh-sach/phim-18" },
+        {
+          label: this.$t("Truyện tranh 18"),
+          link: "/danh-sach/truyen-tranh-18",
+        },
+        { label: this.$t("Nettruyen"), link: "/danh-sach/net-truyen" },
+        {
+          label: this.$t("Nettruyen ngôn tình"),
+          link: "/danh-sach/net-truyen-ngon-tinh",
+        },
+        { label: this.$t("Hiện đại"), link: "/danh-sach/hien-dai" },
       ],
       genres: [
-        {lable: this.$t('Chính kịch'), link:'chinh-kich'},  
-        {lable: this.$t('Cổ Trang'), link:'co-trang'},  
-        {lable: this.$t('Tình Cảm'), link:'tinh-cam'},  
-        {lable: this.$t('Phim Bộ'), link:'phim-bo'},  
-        {lable: this.$t('Hành Động'), link:'hanh-dong'},
-        {lable: this.$t('Học đường'), link:'hoc-duong'},
+        { lable: this.$t("Chính kịch"), link: "chinh-kich" },
+        { lable: this.$t("Cổ Trang"), link: "co-trang" },
+        { lable: this.$t("Tình Cảm"), link: "tinh-cam" },
+        { lable: this.$t("Phim Bộ"), link: "phim-bo" },
+        { lable: this.$t("Hành Động"), link: "hanh-dong" },
+        { lable: this.$t("Học đường"), link: "hoc-duong" },
       ],
       countries: [
-        {lable: this.$t('Âu Mỹ'), link:'au-my'},  
-        {lable: this.$t('Hàn Quốc'), link:'han-quoc'},  
-        {lable: this.$t('Trung Quốc'), link:'trung-quoc'},  
-        {lable: this.$t('Nhật Bản'), link:'nhat-ban'},  
-        {lable: this.$t('Ấn Độ'), link:'an-do'},  
-        {lable: this.$t('Việt Nam'), link:'viet-nam'}  
-      ]
+        { lable: this.$t("Âu Mỹ"), link: "au-my" },
+        { lable: this.$t("Hàn Quốc"), link: "han-quoc" },
+        { lable: this.$t("Trung Quốc"), link: "trung-quoc" },
+        { lable: this.$t("Nhật Bản"), link: "nhat-ban" },
+        { lable: this.$t("Ấn Độ"), link: "an-do" },
+        { lable: this.$t("Việt Nam"), link: "viet-nam" },
+      ],
     };
   },
   mounted() {
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    this.deferredPrompt = e;
-  });
-},
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+    });
+  },
   methods: {
-    isIOS() {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent);
-},
-
-isInStandaloneMode() {
-  return ('standalone' in window.navigator) && window.navigator.standalone;
-},
-
-isInstalled() {
-  return window.matchMedia('(display-mode: standalone)').matches;
-},
     slugify(str) {
-      return str.toLowerCase()
-        .trim().replace(/\s+/g, '-');
+      return str.toLowerCase().trim().replace(/\s+/g, "-");
     },
     installApp() {
-  // 🍎 iPhone
-  if (this.isIOS() && !this.isInStandaloneMode()) {
-    this.showIOSPopup = true;
-    return;
-  }
-console.log('Install prompt:', this.deferredPrompt);
-  // 🤖 Android + 💻 Desktop
-  if (this.deferredPrompt) {
-    this.deferredPrompt.prompt();
-
-    this.deferredPrompt.userChoice.then((result) => {
-      if (result.outcome === "accepted") {
-        console.log("Đã cài app");
+      // 🍎 iPhone
+      if (this.$store.state.isIOS) {
+        this.showIOSPopup = true;
+        return;
       }
-      this.deferredPrompt = null;
-    });
-  } else {
-    alert("Thiết bị không hỗ trợ hoặc bạn đã cài rồi");
-  }
-}
-  }
+
+        console.log(this.$store.state.installPrompt)
+      // 🤖 Android + 💻 Desktop
+      const promptEvent = this.$store.state.installPrompt;
+
+      if (promptEvent) {
+        promptEvent.prompt();
+
+        promptEvent.userChoice.then(() => {
+          this.$store.commit("setDeferredPrompt", null);
+        });
+      } else {
+        alert("Thiết bị chưa hỗ trợ hoặc chưa đủ điều kiện cài app");
+      }
+    },
+  },
 };
 </script>
 
@@ -237,10 +366,20 @@ console.log('Install prompt:', this.deferredPrompt);
 }
 
 .footer-container::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #3d4d52, #93abc7, #312f30, #ceb392, #6b6659);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    #3d4d52,
+    #93abc7,
+    #312f30,
+    #ceb392,
+    #6b6659
+  );
   z-index: 10;
 }
 
@@ -283,7 +422,7 @@ console.log('Install prompt:', this.deferredPrompt);
 }
 
 .footer-heading::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -6px;

@@ -134,31 +134,31 @@ function GetNonSession(url, params, success, error) {
 
 
 
-// function GetNew(url, params, success, error) {
-//     axios.create({
-//         baseURL: "/api", // Dùng proxy
-//         timeout: 10000,
-//         headers: {
-//         "Content-Type": "application/json",
-//         },
-//     })
-//       .get(url, { params })
-//       .then((res) => success(res.data))
-//       .catch((err) => error(err));
-//   }
-
 function GetNew(url, params, success, error) {
-    InitAxiosForNoNSession();
-    const headers = {};
-    if (url.includes('hoathinh3d.vn')) {
-        headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
-        headers['Referer'] = 'https://hoathinh3d.vn';
-    }
-    axios
-    .get(url, { params, headers })
-    .then((res) => success(res.data))
-    .catch((err) => error(err));
+    axios.create({
+        baseURL: "/api", // Dùng proxy
+        timeout: 10000,
+        headers: {
+        "Content-Type": "application/json",
+        },
+    })
+      .get(url, { params })
+      .then((res) => success(res.data))
+      .catch((err) => error(err));
   }
+
+// function GetNew(url, params, success, error) {
+//     InitAxiosForNoNSession();
+//     const headers = {};
+//     if (url.includes('hoathinh3d.vn')) {
+//         headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
+//         headers['Referer'] = 'https://hoathinh3d.vn';
+//     }
+//     axios
+//     .get(url, { params, headers })
+//     .then((res) => success(res.data))
+//     .catch((err) => error(err));
+//   }
   
 
 

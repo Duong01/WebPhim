@@ -52,19 +52,35 @@ let deferredPrompt;
 
 function detectDevice() {
   const userAgent = navigator.userAgent;
+
   const isIOS = /iPad|iPhone|iPod/.test(userAgent);
   const isAndroid = /Android/.test(userAgent);
   const isMobile = isIOS || isAndroid;
+
   console.log('Device detection:', { isIOS, isAndroid, isMobile });
+
+  // Reset
+  store.commit('setIOS', false);
+  store.commit('setAndroid', false);
+  store.commit('setCanInstall', false);
+
+  // 🍎 iPhone → chỉ hiển thị popup hướng dẫn
   if (isIOS) {
     store.commit('setIOS', true);
-    store.commit('setCanInstall', true);
+    store.commit('setCanInstall', false); // ❗ QUAN TRỌNG
   }
-  if (isAndroid) {
+
+  // 🤖 Android → có thể install
+  else if (isAndroid) {
     store.commit('setAndroid', true);
     store.commit('setCanInstall', true);
   }
-  
+
+  // 💻 Desktop → cũng cho install
+  else {
+    store.commit('setCanInstall', true);
+  }
+
   return { isIOS, isAndroid, isMobile };
 }
 
@@ -77,10 +93,10 @@ window.addEventListener('load', () => {
 detectDevice();
 
 window.addEventListener('beforeinstallprompt', (e) => {
+  console.log('Install prompt available');
   e.preventDefault();
   deferredPrompt = e;
   store.commit('setInstallPrompt', deferredPrompt);
-  console.log('Install prompt available');
 });
 
 /* =========================
