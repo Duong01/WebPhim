@@ -220,16 +220,27 @@ async function bootstrap() {
 
   /* Register Service Worker */
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => {
-          console.log('Service Worker registered:', registration);
-        })
-        .catch((error) => {
-          console.log('Service Worker registration failed:', error);
-        });
+  navigator.serviceWorker.register('/service-worker.js')
+    .then((registration) => {
+
+      // kiểm tra update
+      registration.onupdatefound = () => {
+        const newWorker = registration.installing;
+
+        newWorker.onstatechange = () => {
+          if (newWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // Có bản mới
+              if (confirm('Có phiên bản mới. Reload?')) {
+                window.location.reload();
+              }
+            }
+          }
+        };
+      };
+
     });
-  }
+}
 
   app.mount('#app')
 }
