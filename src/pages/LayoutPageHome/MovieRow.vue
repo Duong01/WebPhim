@@ -150,6 +150,10 @@ export default {
         name: "",
         year: "",
         lang: "",
+        poster_url:'',
+        time: '',
+        quality: '',
+        vote_average: ''
       },
     };
   },
@@ -220,6 +224,10 @@ export default {
       this.movieFavorite.name = movie.name;
       this.movieFavorite.year = movie.year;
       this.movieFavorite.lang = movie.lang;
+      this.movieFavorite.poster_url = movie.poster_url
+      this.movieFavorite.time = movie.time
+      this.movieFavorite.quality = movie.quality
+      this.movieFavorite.vote_average = movie.tmdb.vote_average
       const token = localStorage.getItem("token");
       if (token) {
         CheckSession(

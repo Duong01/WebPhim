@@ -736,6 +736,11 @@ export default {
         name: "",
         year: "",
         lang: "",
+        poster_url:'',
+        time: '',
+        quality: '',
+        vote_average: '',
+        totalPage: ""
       },
     };
   },
@@ -1065,6 +1070,7 @@ export default {
         time: this.movies.time,
         quality: this.movies.quality,
         vote_average: this.movies.tmdb.vote_average,
+        totalPage: this.movies.episode_total
       }
       UpdateMoviesFavorite(data, () => {
       }, (err) => {
@@ -1205,6 +1211,10 @@ export default {
       this.movieFavorite.name = this.movie.name;
       this.movieFavorite.year = this.movie.year;
       this.movieFavorite.lang = this.movie.lang;
+      this.movieFavorite.poster_url = this.movies.poster_url
+      this.movieFavorite.time = this.movies.time
+      this.movieFavorite.quality = this.movies.quality
+      this.movieFavorite.vote_average = this.movies.tmdb.vote_average
       const token = localStorage.getItem("token");
       if (token) {
         CheckSession(

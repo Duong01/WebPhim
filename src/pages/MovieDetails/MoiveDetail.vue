@@ -880,7 +880,8 @@ export default {
         lang: "",
         time: "",
         quality: "",
-        vote_average: ""
+        vote_average: "",
+        totalPage:""
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -1827,7 +1828,9 @@ export default {
         this.movieFavorite.time= this.movie.time,
         this.movieFavorite.quality= this.movie.quality,
         this.movieFavorite.vote_average= this.movie.vote_average,
-        this.movieFavorite.poster_url= this.movie.poster_url
+        this.movieFavorite.poster_url= this.movie.poster_url,
+        this.movieFavorite.totalPage = this.movie.episode_total;
+
 
 
       // Cập nhật âm thầm không cần alert

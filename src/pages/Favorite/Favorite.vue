@@ -91,6 +91,7 @@
               height="140"
               cover
               class="poster-img"
+              @click="gomovie(movie)"
             />
 
             <!-- TAG -->
@@ -117,21 +118,23 @@
 
           <!-- PROGRESS -->
           <v-progress-linear
-            :model-value="skill"
+            :model-value="getProgress(movie)"
             height="6"
             color="red"
             rounded
             class="progress-bar"
           >
-          <template v-slot:default="{ value }">
-              <strong>{{ roundingEnabled ? value.toFixed(1) : value }}%</strong>
+            <template v-slot:default="{ value }">
+              <strong>{{ value.toFixed(1) }}%</strong>
             </template>
           </v-progress-linear>
 
           <!-- NEXT EPISODE -->
           <div class="next-ep">
             Tập tiếp theo:
-            <span class="highlight">{{ movie.currentPage.includes("Tập") ? "Tập " + (parseInt(movie.currentPage.split("Tập")[1]) + 1)  : movie.currentPage }}</span>
+            <span class="highlight">
+              {{ getNextEpisode(movie) }}
+            </span>
           </div>
 
           <!-- STATUS -->
@@ -140,17 +143,18 @@
 
             <div class="notify-wrap">
               <v-icon size="14" class="bell-icon">
-      mdi-bell-outline
-    </v-icon>
+                mdi-bell-outline
+              </v-icon>
               <span class="notify-label">Nhắc tôi</span>
 
               <v-switch
-                v-model="movie.notify"
+                v-model="movie.notification"
                 color="red"
                 density="compact"
                 hide-details
                 inset
                 class="notify-switch"
+                @click="UpdateNotifi(movie)"
               />
             </div>
           </div>
@@ -160,20 +164,19 @@
 
             <v-btn
               size="small"
-              variant="tonal"
-              color="grey-darken-2"
-              class="btn-outline"
-            >
-              Bỏ theo dõi
-            </v-btn>
-
-            <v-btn
-              size="small"
               color="red"
               class="btn-watch"
               @click="gomovie(movie)"
             >
               Xem ngay
+            </v-btn>
+            <v-btn
+              size="small"
+              variant="tonal"
+              color="grey-darken-2"
+              class="btn-outline"
+            >
+              Bỏ theo dõi
             </v-btn>
 
           </div>
@@ -276,7 +279,7 @@
 </template>
 
 <script>
-import { urlImage1, PostMoviesFavorite } from "@/model/api";
+import { urlImage1, PostMoviesFavorite,UpdateMoviesFavorite } from "@/model/api";
 // import FilterMovie from "@/pages/FilterMovie.vue"
 import { getFavorites } from "@/utils/favorite";
 
@@ -325,6 +328,11 @@ export default {
         name: "",
         year: "",
         lang: "",
+        poster_url:'',
+        time: '',
+        quality: '',
+        vote_average: '',
+        notification: "",
       },
     };
   },
@@ -344,6 +352,46 @@ export default {
     }
   },
   methods: {
+    getNextEpisode(movie) {
+    let raw = movie.currentPage
+    if (!raw) return "?"
+
+    raw = raw.toString().toLowerCase()
+
+    if (raw.includes("full") || raw.includes("hoàn thành")) {
+      return "Đã hoàn thành"
+    }
+
+    const match = raw.match(/\d+/)
+    if (match) {
+      return "Tập " + (parseInt(match[0]) + 1)
+    }
+
+    return "?"
+  },
+    getProgress(movie) {
+    if (!movie.total_episode) return 0
+
+    let current = 0
+    let raw = movie.currentPage
+
+    if (!raw) return 0
+
+    raw = raw.toString().toLowerCase()
+
+    // full / hoàn thành
+    if (raw.includes("full") || raw.includes("hoàn thành")) {
+      return 100
+    }
+
+    // lấy số từ "Tập 6"
+    const match = raw.match(/\d+/)
+    if (match) {
+      current = parseInt(match[0])
+    }
+
+    return (current / movie.total_episode) * 100
+  },
     formatDate(date) {
       if (!date) return "NA";
       try {
@@ -363,6 +411,10 @@ export default {
       this.movieFavorite.name = movie.name;
       this.movieFavorite.year = movie.year;
       this.movieFavorite.lang = movie.lang;
+      this.movieFavorite.poster_url = movie.poster_url
+      this.movieFavorite.time = movie.time
+      this.movieFavorite.quality = movie.quality
+      this.movieFavorite.vote_average = movie.tmdb.vote_average
       PostMoviesFavorite(
         this.movieFavorite,
         (dat) => {
@@ -377,7 +429,18 @@ export default {
         },
       );
     },
+    UpdateNotifi(movie) {
+      this.movieFavorite.IDAccount = this.idAccount;
+      this.movieFavorite.IDMovies = movie.IDMovies;
+      this.movieFavorite.notification = movie.notification;
+      UpdateMoviesFavorite(this.movieFavorite, (dat) => {
+        console.log(dat);
 
+      },(err) =>{
+        console.log(err);
+      })
+      
+    },
     // ListMovie() {
 
     //   this.loading = true;
@@ -408,8 +471,9 @@ export default {
     // },
     gomovie(movie) {
       this.$router.push({
-        name : 'Movies',
-        params: {slug: movie.slug}
+        name : 'MovieDetail',
+        params: { slug: movie.slug }, 
+        query: { page: movie.currentPage }
       })
     },
     ListMovie(isLoadMore = false) {
