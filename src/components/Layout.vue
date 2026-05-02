@@ -19,7 +19,7 @@
         
         <router-view v-slot="{ Component, route }">
           <transition name="page-fade" mode="out-in">
-            <keep-alive :max="10" exclude="MoviesPage,MovieDetail">
+            <keep-alive :max="10" exclude="MoviesPage,FavoritePage">
               <component :is="Component" :key="route.fullPath" />
             </keep-alive>
           </transition>

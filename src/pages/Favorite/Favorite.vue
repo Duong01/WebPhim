@@ -122,7 +122,7 @@
 
           <!-- EPISODE -->
           <div class="episode-text">
-            Tập đang xem : {{ movie.currentPage.includes("Tập") ? movie.currentPage +"/" + movie.totalPage || "?" : movie.currentPage}} 
+            Đang xem : {{ movie.currentPage.includes("Tập") ? movie.currentPage +"/" + movie.totalPage || "?" : movie.currentPage}} 
           </div>
 
           <!-- PROGRESS -->
@@ -246,7 +246,7 @@
 
         <!-- EPISODE -->
         <div class="episode-text">
-          {{ movie.currentPage }} / {{ movie.totalPage || "?" }}
+          Đang xem: {{ movie.currentPage }} / {{ movie.totalPage || "?" }}
         </div>
 
         <!-- PROGRESS -->
