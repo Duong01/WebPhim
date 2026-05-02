@@ -16,7 +16,8 @@
           variant="solo-filled"
           density="compact"
           hide-details
-          width="200"
+          clearable
+          class="search-field"
         />
         <v-select
           v-model="filters.sortOption"
@@ -28,8 +29,8 @@
           density="compact"
           hide-details
           clearable
-          max-width="200"
           hint="Pick your favorite states"
+          class="sort-select"
         />
         
         
@@ -69,12 +70,16 @@
     <!-- ================= MOVIE GRID ================= -->
 
     <!-- ================= MOVIE LIST (MOBILE STYLE LIKE IMAGE) ================= -->
-<v-row v-else-if="$vuetify.display.smAndDown" class="movie-list">
+<v-row v-else-if="$vuetify.display.mdAndDown" class="movie-list">
 
   <v-col
     v-for="movie in filteredMovies"
     :key="movie.id"
     cols="12"
+    sm="6"
+    md="6"
+    lg="6"
+    xl="6"
   >
 
     <v-card class="movie-item" flat>
@@ -88,15 +93,19 @@
 
             <v-img
               :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
-              height="140"
+              height="160"
               cover
+              hover
               class="poster-img"
               @click="gomovie(movie)"
             />
 
             <!-- TAG -->
-            <div class="tag-new" v-if="movie.currentPage <= 3">
-              Tập mới
+            <div class="tag-new" v-if="getNextEpisode(movie).includes('Tập')">
+              Sắp ra
+            </div>
+            <div class="tag-new-comp" v-else>
+              Hoàn tất
             </div>
 
           </div>
@@ -113,21 +122,23 @@
 
           <!-- EPISODE -->
           <div class="episode-text">
-            Tập đang xem : {{ movie.currentPage }} / {{ movie.total_episode || "?" }}
+            Tập đang xem : {{ movie.currentPage.includes("Tập") ? movie.currentPage +"/" + movie.totalPage || "?" : movie.currentPage}} 
           </div>
 
           <!-- PROGRESS -->
-          <v-progress-linear
-            :model-value="getProgress(movie)"
-            height="6"
-            color="red"
-            rounded
-            class="progress-bar"
-          >
-            <template v-slot:default="{ value }">
-              <strong>{{ value.toFixed(1) }}%</strong>
-            </template>
-          </v-progress-linear>
+          <div class="progress-wrapper">
+            <v-progress-linear
+              :model-value="getProgress(movie)"
+              height="6"
+              color="red"
+              rounded
+              class="progress-bar"
+            />
+
+            <span class="progress-text">
+              {{ getProgress(movie).toFixed(1) }}%
+            </span>
+          </div>
 
           <!-- NEXT EPISODE -->
           <div class="next-ep">
@@ -154,7 +165,7 @@
                 hide-details
                 inset
                 class="notify-switch"
-                @click="UpdateNotifi(movie)"
+                @update:model-value="val => UpdateNotifi(movie, val)"
               />
             </div>
           </div>
@@ -175,6 +186,7 @@
               variant="tonal"
               color="grey-darken-2"
               class="btn-outline"
+              @click="handleFavorite(movie)"
             >
               Bỏ theo dõi
             </v-btn>
@@ -190,7 +202,108 @@
   </v-col>
 
 </v-row>
-<v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
+<v-row v-else class="movie-grid-vertical">
+
+  <v-col
+    v-for="movie in filteredMovies"
+    :key="movie.id"
+    cols="12"
+    sm="6"
+    md="4"
+    lg="3"
+  >
+
+    <v-card class="movie-card-vertical" flat>
+
+      <!-- POSTER -->
+      <div class="poster-wrapper">
+
+        <v-img
+          :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
+          height="260"
+          cover
+          class="poster-img"
+          @click="gomovie(movie)"
+        />
+
+        <!-- TAG -->
+        <div class="tag-new" v-if="getNextEpisode(movie).includes('Tập')">
+          Sắp ra
+        </div>
+        <div class="tag-new-comp" v-else>
+          Hoàn tất
+        </div>
+
+      </div>
+
+      <!-- CONTENT -->
+      <div class="card-content">
+
+        <!-- TITLE -->
+        <div class="movie-title">
+          {{ movie.name }}
+        </div>
+
+        <!-- EPISODE -->
+        <div class="episode-text">
+          {{ movie.currentPage }} / {{ movie.totalPage || "?" }}
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrapper">
+          <v-progress-linear
+            :model-value="getProgress(movie)"
+            height="6"
+            color="red"
+            rounded
+          />
+          <span class="progress-text">
+            {{ getProgress(movie).toFixed(1) }}%
+          </span>
+        </div>
+
+        <!-- NEXT -->
+        <div class="next-ep">
+         Tập tiếp theo: {{ getNextEpisode(movie) }}
+        </div>
+
+        <!-- STATUS -->
+        <div class="status">
+          <span class="time">📅 {{ formatDate(movie.Daycreate) }}</span>
+
+          <v-switch
+            v-model="movie.notification"
+            density="compact"
+            hide-details
+            inset
+            color="red"
+            @update:model-value="val => UpdateNotifi(movie, val)"
+          />
+        </div>
+
+        <!-- ACTION -->
+        <div class="actions">
+          <v-btn  color="red" @click="gomovie(movie)">
+            Xem ngay
+          </v-btn>
+
+          <v-btn
+            variant="tonal"
+            @click="handleFavorite(movie)"
+          >
+            Bỏ theo dõi
+          </v-btn>
+        </div>
+
+      </div>
+
+    </v-card>
+
+  </v-col>
+
+</v-row>
+
+<!-- <v-row v-else tag="transition-group" name="fade-scale" class="movie-grid">
       <v-col
         v-for="movie in filteredMovies"
         :key="movie.id"
@@ -212,7 +325,6 @@
                 height="270"
               />
 
-              <!-- overlay -->
               <div class="hover-overlay">
                 <v-btn icon>
                   <v-icon size="40">mdi-play</v-icon>
@@ -227,18 +339,15 @@
                 </v-btn>
               </div>
 
-              <!-- TOP BADGE -->
               <div class="top-badges">
                 <span class="badge quality">{{ movie.quality || "NA" }}</span>
                 <span class="badge lang">{{ movie.lang || "NA" }}</span>
               </div>
 
-              <!-- EPISODE -->
               <div class="episode">
                 {{ movie.currentPage || "NA" }}
               </div>
 
-              <!-- BOTTOM INFO -->
               <div class="bottom-info">
                 ⭐
                 {{
@@ -250,7 +359,6 @@
               </div>
             </div>
 
-            <!-- INFO -->
             <v-card-text class="movie-info">
               <div class="movie-title">
                 {{ movie.name || "NA" }}
@@ -260,7 +368,6 @@
                 <span>{{ movie.origin_name || "NA" }}</span>
               </div>
 
-              <!-- EXTRA INFO -->
               <div class="movie-extra">
                 <span>⏱ {{ movie.time || "NA" }}</span>
                 <span>📅 {{ formatDate(movie.Daycreate) }}</span>
@@ -269,7 +376,8 @@
           </v-card>
         </router-link>
       </v-col>
-    </v-row>
+    </v-row> -->
+
 
     <!-- LOAD MORE TRIGGER -->
     <div ref="loadMoreTrigger" v-show="movies.length > 0 && !isLastPage" class="load-more-trigger">
@@ -355,10 +463,9 @@ export default {
     getNextEpisode(movie) {
     let raw = movie.currentPage
     if (!raw) return "?"
-
     raw = raw.toString().toLowerCase()
 
-    if (raw.includes("full") || raw.includes("hoàn thành")) {
+    if (raw.includes("full") || raw.includes("hoàn")) {
       return "Đã hoàn thành"
     }
 
@@ -370,7 +477,7 @@ export default {
     return "?"
   },
     getProgress(movie) {
-    if (!movie.total_episode) return 0
+    if (!movie.totalPage) return 0
 
     let current = 0
     let raw = movie.currentPage
@@ -378,9 +485,9 @@ export default {
     if (!raw) return 0
 
     raw = raw.toString().toLowerCase()
-
+    console.log("Current raw:", raw)
     // full / hoàn thành
-    if (raw.includes("full") || raw.includes("hoàn thành")) {
+    if (raw.includes("full") || raw.includes("hoàn")) {
       return 100
     }
 
@@ -390,7 +497,7 @@ export default {
       current = parseInt(match[0])
     }
 
-    return (current / movie.total_episode) * 100
+    return (current / movie.totalPage) * 100
   },
     formatDate(date) {
       if (!date) return "NA";
@@ -414,7 +521,11 @@ export default {
       this.movieFavorite.poster_url = movie.poster_url
       this.movieFavorite.time = movie.time
       this.movieFavorite.quality = movie.quality
-      this.movieFavorite.vote_average = movie.tmdb.vote_average
+      this.movieFavorite.vote_average = movie.vote_average
+      this.movieFavorite.totalPage = movie.totalPage
+      this.movieFavorite.notification = movie.notification
+      
+
       PostMoviesFavorite(
         this.movieFavorite,
         (dat) => {
@@ -429,10 +540,10 @@ export default {
         },
       );
     },
-    UpdateNotifi(movie) {
+    UpdateNotifi(movie, val) {
       this.movieFavorite.IDAccount = this.idAccount;
       this.movieFavorite.IDMovies = movie.IDMovies;
-      this.movieFavorite.notification = movie.notification;
+      this.movieFavorite.notification = val;
       UpdateMoviesFavorite(this.movieFavorite, (dat) => {
         console.log(dat);
 
@@ -496,6 +607,7 @@ export default {
             const newMovies = dat.data.data.map((m) => ({
               ...m,
               isFavorite: true,
+              notification: m.notification === true || m.notification === "true"
             }));
 
             if (isLoadMore) {
@@ -1096,13 +1208,37 @@ export default {
 
 .header-right {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 8px;
 }
+.search-field {
+  flex: 1 1 0%;
+  min-width: 250px; /* cực quan trọng */
+}
+
+
 @media (max-width: 768px) {
   .hover-overlay {
     display: none;
   }
+
+  .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+  /* 🔥 search tự giãn full */
+.search-field {
+  flex: 1 1 0%;
+  min-width: 0; /* cực quan trọng */
+}
+
+/* 🔥 select co giãn nhưng nhỏ hơn */
+.sort-select {
+  flex: 0 1 180px; /* max khoảng này */
+  min-width: 150px;
+}
 }
 /* ===== LIST BACKGROUND ===== */
 .movie-list {
@@ -1121,6 +1257,7 @@ export default {
 .movie-item:hover {
   transform: scale(1.01);
   background: #202020;
+  
 }
 
 /* ===== POSTER ===== */
@@ -1132,14 +1269,25 @@ export default {
 
 .poster-img {
   border-radius: 10px;
+  cursor: pointer;
 }
 
 /* TAG "TẬP MỚI" */
-.tag-new {
+.tag-new-comp {
   position: absolute;
   top: 6px;
   left: 6px;
   background: #ff3d00;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.tag-new{
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #ce9e1b;
   color: white;
   font-size: 10px;
   padding: 2px 6px;
@@ -1233,5 +1381,133 @@ export default {
 .notify-switch {
   margin: 0;
   transform: scale(0.8);
+}
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar {
+  flex: 1;
+}
+
+.progress-text {
+  min-width: 45px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+
+/* GRID */
+.movie-grid-vertical {
+  row-gap: 20px;
+}
+
+/* CARD */
+.movie-card-vertical {
+  background: #1a1a1a;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.movie-card-vertical:hover {
+  transform: translateY(-6px);
+  background: #222;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+/* POSTER */
+.poster-wrapper {
+  position: relative;
+}
+
+.poster-img {
+  width: 100%;
+  transition: 0.4s;
+}
+
+.movie-card-vertical:hover .poster-img {
+  transform: scale(1.05);
+}
+
+/* TAG */
+.tag-new,
+.tag-new-comp {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.tag-new {
+  background: #ff9800;
+}
+
+.tag-new-comp {
+  background: #ff3d00;
+}
+
+/* CONTENT */
+.card-content {
+  padding: 12px;
+}
+
+/* TITLE */
+.movie-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* TEXT */
+.episode-text,
+.next-ep {
+  font-size: 13px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* PROGRESS */
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.progress-text {
+  font-size: 12px;
+  min-width: 40px;
+}
+
+/* STATUS */
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.time {
+  font-size: 11px;
+  color: #888;
+}
+
+/* ACTION */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
 }
 </style>

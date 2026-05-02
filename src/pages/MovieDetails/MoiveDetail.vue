@@ -866,6 +866,7 @@ export default {
         poster_url: "",
         quality: "",
         time:"",
+        episode_total:""
       },
       movieFavorite: {
         IDAccount: "",
@@ -1322,6 +1323,7 @@ export default {
               this.movie.poster_url= result.movie.poster_url;
               this.movie.quality= result.movie.quality;
               this.movie.time= result.movie.time
+              this.movie.episode_total= result.movie.episode_total
 
 
               if (this.movie.trailer_url != "") {
@@ -1431,7 +1433,9 @@ export default {
               this.movie.vote_average= result.movie.tmdb?.vote_average;
               this.movie.poster_url= result.movie.poster_url;
               this.movie.quality= result.movie.quality;
-              this.movie.time= result.movie.time
+              this.movie.time= result.movie.time;
+              this.movie.episode_total= result.movie.episode_total
+
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1915,6 +1919,7 @@ export default {
       this.movieFavorite.quality = this.movie.quality;
       this.movieFavorite.vote_average = this.movie.tmdb?.vote_average;
       this.movieFavorite.poster_url = this.movie.poster_url;
+      this.movieFavorite.totalPage = this.movie.episode_total;
       if (
         this.idAccount == "" ||
         this.idAccount == null ||
