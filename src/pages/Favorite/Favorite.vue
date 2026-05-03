@@ -92,7 +92,7 @@
 
             <v-img
               :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
-              height="160"
+              height="170"
               cover
               hover
               class="poster-img"
@@ -177,6 +177,7 @@
               color="red"
               class="btn-watch"
               @click="gomovie(movie)"
+              prepend-icon="mdi-play-circle"
             >
               Xem ngay
             </v-btn>
@@ -282,7 +283,7 @@
 
         <!-- ACTION -->
         <div class="actions">
-          <v-btn  color="red" @click="gomovie(movie)">
+          <v-btn  color="red" @click="gomovie(movie)" prepend-icon="mdi-play-circle">
             Xem ngay
           </v-btn>
 

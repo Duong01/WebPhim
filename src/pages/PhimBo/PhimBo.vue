@@ -1,11 +1,11 @@
 <template>
   <v-container class="search-page" fluid>
-    <v-row justify="center" class="mb-6">
+    <!-- <v-row justify="center" class="mb-6">
       <v-col cols="12">
-        <h2 class="text-center">{{ $t("Danh sách phim:") }} Phim Bộ Hay Nhất - Bộ Sưu Tập Đỉnh Cao</h2>
+        <h2 class="text-title">{{ $t("Danh sách phim:") }} Phim Bộ Hay Nhất - Bộ Sưu Tập Đỉnh Cao</h2>
         <v-divider class="my-4" />
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <FilterMovie @filter-changed="onFilterChanged" />
     <v-row class="mb-6" align="center">

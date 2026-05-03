@@ -46,7 +46,8 @@
           >".
         </v-alert>
 
-        <v-row v-else class="movie-grid">
+        <layout-main v-else :movies="movies" :loading="loading" />
+        <!-- <v-row  class="movie-grid">
           <v-col
             v-for="(movie, index) in movies"
             :key="movie.slug"
@@ -77,26 +78,21 @@
                     </template>
                   </v-img>
 
-                  <!-- overlay -->
                   <div class="gradient-overlay"></div>
 
-                  <!-- hover play -->
                   <div class="hover-overlay">
                     <v-icon size="50">mdi-play-circle</v-icon>
                   </div>
 
-                  <!-- TOP BADGE -->
                   <div class="top-badges">
                     <span class="badge quality">{{ movie.quality }}</span>
                     <span class="badge lang">{{ movie.lang }}</span>
                   </div>
 
-                  <!-- EPISODE -->
                   <div class="episode-badge">
                     {{ movie.episode_current }}
                   </div>
 
-                  <!-- RATING -->
                   <div class="rating" v-if="movie.tmdb && movie.tmdb.vote_average">
                     ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
                   </div>
@@ -123,14 +119,14 @@
               </v-card>
             </router-link>
           </v-col>
-        </v-row>
+        </v-row> -->
           <div
-            ref="loadMoreTrigger"
-            v-show="movies.length > 0 && !isLastPage"
-            class="load-more-trigger"
-          >
-            <v-progress-circular v-if="loadingMore" indeterminate color="red" />
-          </div>
+          ref="loadMoreTrigger"
+          v-show="movies.length > 0 && !isLastPage"
+          class="load-more-trigger"
+        >
+          <v-progress-circular v-if="loadingMore" indeterminate color="red" />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -139,6 +135,7 @@
   <script>
 import { urlImage1, ListMovieByCate1 } from "@/model/api";
 import FilterMovie from "@/pages/FilterMovie.vue";
+import LayoutMain from "@/pages/LayoutMain.vue";
 export default {
   name: "HoatHinh",
   data() {
@@ -171,6 +168,7 @@ export default {
   },
   components: {
     FilterMovie,
+    LayoutMain
   },
   mounted() {
     this.ListMovie();
