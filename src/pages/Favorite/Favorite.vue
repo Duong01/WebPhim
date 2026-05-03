@@ -7,7 +7,7 @@
         <h2>🎬 {{$t('Danh sách yêu thích')}}</h2>
         <span class="sub">{{ filteredMovies.length }} phim</span>
       </div>
-
+<p>dddd</p>
       <div class="header-right">
         <v-text-field
           v-model="search"

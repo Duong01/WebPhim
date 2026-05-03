@@ -35,6 +35,18 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
+if ('caches' in window) {
+  caches.keys().then(names => {
+    names.forEach(name => caches.delete(name))
+  })
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister())
+  })
+}
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -50,47 +62,47 @@ const vuetify = createVuetify({
 ========================= */
 let deferredPrompt;
 
-function detectDevice() {
-  const userAgent = navigator.userAgent;
+// function detectDevice() {
+//   const userAgent = navigator.userAgent;
 
-  const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-  const isAndroid = /Android/.test(userAgent);
-  const isMobile = isIOS || isAndroid;
+//   const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+//   const isAndroid = /Android/.test(userAgent);
+//   const isMobile = isIOS || isAndroid;
 
-  console.log('Device detection:', { isIOS, isAndroid, isMobile });
+//   console.log('Device detection:', { isIOS, isAndroid, isMobile });
 
-  // Reset
-  store.commit('setIOS', false);
-  store.commit('setAndroid', false);
-  store.commit('setCanInstall', false);
+//   // Reset
+//   store.commit('setIOS', false);
+//   store.commit('setAndroid', false);
+//   store.commit('setCanInstall', false);
 
-  // 🍎 iPhone → chỉ hiển thị popup hướng dẫn
-  if (isIOS) {
-    store.commit('setIOS', true);
-    store.commit('setCanInstall', false); // ❗ QUAN TRỌNG
-  }
+//   // 🍎 iPhone → chỉ hiển thị popup hướng dẫn
+//   if (isIOS) {
+//     store.commit('setIOS', true);
+//     store.commit('setCanInstall', false); // ❗ QUAN TRỌNG
+//   }
 
-  // 🤖 Android → có thể install
-  else if (isAndroid) {
-    store.commit('setAndroid', true);
-    store.commit('setCanInstall', true);
-  }
+//   // 🤖 Android → có thể install
+//   else if (isAndroid) {
+//     store.commit('setAndroid', true);
+//     store.commit('setCanInstall', true);
+//   }
 
-  // 💻 Desktop → cũng cho install
-  else {
-    store.commit('setCanInstall', true);
-  }
+//   // 💻 Desktop → cũng cho install
+//   else {
+//     store.commit('setCanInstall', true);
+//   }
 
-  return { isIOS, isAndroid, isMobile };
-}
+//   return { isIOS, isAndroid, isMobile };
+// }
 
 // Detect on page load
-window.addEventListener('load', () => {
-  detectDevice();
-});
+// window.addEventListener('load', () => {
+//   detectDevice();
+// });
 
 // Also detect immediately for faster detection
-detectDevice();
+// detectDevice();
 
 window.addEventListener('beforeinstallprompt', (e) => {
   console.log('Install prompt available');
