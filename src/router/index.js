@@ -1,14 +1,13 @@
-// import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from "vue-router";
-//import { Tracking } from "@/model/api";
-// import { CheckSession } from "@/model/api";
-// import store from "@/store";
 
+/* =========================
+   Routes (giữ nguyên cấu trúc)
+========================= */
 const routes = [
   {
     path: "/login",
     name: "LoginPage",
-    component: () => import("@/components/Login"),
+    component: () => import("@/components/Login.vue"),
     meta: {
       title: "Đăng nhập - Web Phim Online",
       description: "Đăng nhập để trải nghiệm xem phim miễn phí chất lượng cao.",
@@ -18,7 +17,7 @@ const routes = [
   {
     path: "/home1",
     name: "Home1Page",
-    component: () => import("@/pages/Home1"),
+    component: () => import("@/pages/Home1.vue"),
     meta: {
       title: "Trang chủ - Web Phim Online",
       description: "Xem phim online miễn phí chất lượng cao.",
@@ -28,7 +27,7 @@ const routes = [
   {
     path: "/register",
     name: "RegisterPage",
-    component: () => import("@/components/Register"),
+    component: () => import("@/components/Register.vue"),
     meta: {
       title: "Đăng ký tài khoản - Web Phim Online",
       description:
@@ -42,29 +41,28 @@ const routes = [
     component: () => import("@/pages/Error.vue"),
     meta: {
       title: "Lỗi - Không tìm thấy trang",
-      description: "Trang bạn tìm không tồn tại, vui lòng quay lại trang chủ.",
+      description: "Trang bạn tìm không tồn tại.",
       robots: "noindex, nofollow",
     },
   },
   {
-    path: '/chatbot',
-    name: 'ChatbotFull',
-    component: () => import('@/components/ChatbotFull.vue')
+    path: "/chatbot",
+    name: "ChatbotFull",
+    component: () => import("@/components/ChatbotFull.vue"),
   },
   {
     path: "",
     name: "Layout",
     redirect: "/home",
-    component: () => import("@/components/Layout"),
+    component: () => import("@/components/Layout.vue"),
     children: [
       {
         path: "/home",
         name: "HomePage",
-        component: () => import("@/pages/Home"),
+        component: () => import("@/pages/Home.vue"),
         meta: {
           title: "Xem phim online miễn phí - Web Phim Online",
-          description:
-            "Kho phim mới nhất, hot nhất, cập nhật liên tục, xem online miễn phí.",
+          description: "Kho phim mới nhất, hot nhất.",
           keepAlive: true,
         },
       },
@@ -77,9 +75,7 @@ const routes = [
           page: route.query.page,
         }),
         meta: {
-          title: "Chi tiết phim - Web Phim Online",
-          description:
-            "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
+          title: "Chi tiết phim",
           keepAlive: false,
         },
       },
@@ -88,146 +84,85 @@ const routes = [
         name: "Movies",
         component: () => import("@/pages/MovieDetails/Movies.vue"),
         props: true,
-        meta: {
-          title: "Chi tiết phim - Web Phim Online",
-          description:
-            "Xem thông tin chi tiết phim, trailer, đánh giá và link xem miễn phí.",
-          keepAlive: false,
-        },
       },
       {
         path: "/favorite",
         name: "FavoritePage",
         component: () => import("@/pages/Favorite/Favorite.vue"),
         meta: {
-            title: "Phim bộ hay nhất - Web Phim Online",
-            description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
-            auth: true,
-            requiresAuth: true,
-            robots: "noindex, nofollow"
+          requiresAuth: true,
+          robots: "noindex, nofollow",
         },
       },
       {
         path: "/phim-chieu-rap",
         name: "PhimChieuRap",
         component: () => import("@/pages/PhimChieuRap/PhimChieuRap.vue"),
-        meta: {
-            title: "Phim bộ hay nhất - Web Phim Online",
-            description: "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
-            keepAlive: true
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "search",
         name: "SearchMovie",
         component: () => import("@/pages/SearchMovie.vue"),
         props: true,
-        meta: {
-          title: "Tìm kiếm phim - Web Phim Online",
-          description:
-            "Tìm kiếm phim nhanh chóng theo tên, thể loại, quốc gia.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
-
       {
         path: "/phim-bo",
         name: "PhimBo",
         component: () => import("@/pages/PhimBo/PhimBo.vue"),
-        meta: {
-          title: "Phim bộ hay nhất - Web Phim Online",
-          description:
-            "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/movie-schedule",
         name: "MovieSchedule",
         component: () => import("@/pages/SchedulePage/MovieSchedule.vue"),
-        meta: {
-          title: "Phim bộ hay nhất - Web Phim Online",
-          description:
-            "Tuyển tập phim bộ mới nhất, hấp dẫn, cập nhật liên tục.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
-      
       {
         path: "/phim-le",
         name: "PhimLe",
         component: () => import("@/pages/PhimLe/PhimLe.vue"),
-        meta: {
-          title: "Phim lẻ mới nhất - Web Phim Online",
-          description: "Danh sách phim lẻ hot nhất, xem online chất lượng cao.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/tv-shows",
         name: "TVShow",
         component: () => import("@/pages/TVShow/TVShow.vue"),
-        meta: {
-          title: "Phim sắp chiếu - Web Phim Online",
-          description: "Khám phá những bộ phim bom tấn sắp ra mắt.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/gioi-thieu",
         name: "AboutPage",
         component: () => import("@/pages/About.vue"),
-        meta: {
-          title: "Giới thiệu về chúng tôi - Web Phim Online",
-          description: "Tìm hiểu thêm về nền tảng xem phim trực tuyến chất lượng cao của chúng tôi.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/hoat-hinh",
         name: "HoatHinh",
         component: () => import("@/pages/HoatHinh/HoatHinh.vue"),
-        meta: {
-          title: "Phim hoạt hình - Web Phim Online",
-          description:
-            "Phim hoạt hình cho thiếu nhi và người lớn, đa dạng thể loại.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/the-loai/:path",
         name: "TheLoai",
         component: () => import("@/pages/TheLoai/TheLoai.vue"),
         props: true,
-        meta: {
-          title: "Phim theo thể loại - Web Phim Online",
-          description: "Xem danh sách phim theo từng thể loại được yêu thích.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/danh-sach/:path",
         name: "PhimNew",
         component: () => import("@/pages/PhimNew/PhimNew.vue"),
         props: true,
-        meta: {
-          title: "Phim mới & phim hot - Web Phim Online",
-          description:
-            "Cập nhật nhanh các bộ phim mới nhất và được xem nhiều nhất.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/quoc-gia/:path",
         name: "QuocGia",
         component: () => import("@/pages/QuocGia/QuocGia.vue"),
         props: true,
-        meta: {
-          title: "Phim theo quốc gia - Web Phim Online",
-          description:
-            "Khám phá phim từ nhiều quốc gia: Hàn, Trung, Mỹ, Việt Nam.",
-          keepAlive: true,
-        },
+        meta: { keepAlive: true },
       },
       {
         path: "/:catchAll(.*)",
@@ -237,125 +172,95 @@ const routes = [
   },
 ];
 
-// Thời gian session tối đa (ví dụ: 30 phút)
-
-// Lưu thời điểm bắt đầu khi user vào trang lần đầu
-if (!sessionStorage.getItem("sessionStart")) {
-  sessionStorage.setItem("sessionStart", Date.now());
-}
-
+/* =========================
+   Create router
+========================= */
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    // giữ nguyên vị trí nếu back
-    if (savedPosition) {
-      return savedPosition
-    }
 
-    return false
-  }
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    return { top: 0 }; // mượt hơn nhiều
+  },
 });
 
+/* =========================
+   Chunk error fix
+========================= */
 router.onError((error) => {
-  const chunkFailed = /Loading chunk [\d]+ failed/;
-
-  if (chunkFailed.test(error.message)) {
-    console.warn("Chunk failed → Reload");
+  if (/Loading chunk .* failed/i.test(error.message)) {
     window.location.reload();
   }
 });
 
-// router.afterEach((to) => {
-//   // Trì hoãn tracking toàn cục để tránh gây lag khi bắt đầu chuyển trang
-//   setTimeout(() => {
-//     Tracking(
-//       { page: to.fullPath }, 
-//       () => {},
-//       (err) => console.log(err)
-//     )
-//   }, 5000);
-// })
-
+/* =========================
+   BeforeEach (nhẹ, không lag)
+========================= */
 router.beforeEach((to, from, next) => {
-  // Normalize `page` query for MovieDetail: convert numeric `page=125` -> `page=tap125`
-  if (to.name === 'MovieDetail' && to.query?.page) {
+  // normalize page query
+  if (to.name === "MovieDetail" && to.query?.page) {
     const p = String(to.query.page);
-    if (!p.startsWith('tap')) {
+    if (!p.startsWith("tap")) {
       const digits = p.match(/\d+/);
       if (digits) {
-        const newQuery = { ...to.query, page: 'tap' + digits[0] };
-        next({ name: to.name, params: to.params, query: newQuery, replace: true });
-        return;
+        return next({
+          name: to.name,
+          params: to.params,
+          query: { ...to.query, page: "tap" + digits[0] },
+          replace: true,
+        });
       }
     }
   }
-  const matched = router.getRoutes().find(r => r.name === to.name);
 
-  if (matched && typeof matched.components?.default === "function") {
-    matched.components.default(); // preload component
-  }
-
-  //const isLoggedIn = !!store.state.empInfor;
-
+  // auth check
   if (to.meta.requiresAuth) {
     const token = localStorage.getItem("token");
-    if (!token){
+    if (!token) {
       return next({
-      path: "/login",
-      query: { redirect: to.fullPath }
-    });
+        path: "/login",
+        query: { redirect: to.fullPath },
+      });
     }
   }
+
   next();
 });
 
+/* =========================
+   SEO (không block render)
+========================= */
 router.afterEach((to) => {
-  // Chuyển logic SEO sang afterEach để không làm chậm quá trình render component
-  const defaultTitle = "Web Phim Online - Xem phim miễn phí";
-  const defaultDesc = "Xem phim mới nhất, miễn phí, chất lượng cao";
+  requestAnimationFrame(() => {
+    const defaultTitle = "Web Phim Online";
+    const defaultDesc = "Xem phim miễn phí";
 
-  document.title = to.meta.title || defaultTitle;
+    document.title = to.meta.title || defaultTitle;
 
-  const upsertMeta = (attr, key, content) => {
-    if (!content) return;
-    let el = document.querySelector(attr === 'property' ? `meta[property="${key}"]` : `meta[name="${key}"]`);
-    if (!el) {
-      el = document.createElement('meta');
-      el.setAttribute(attr, key);
-      document.head.appendChild(el);
-    }
-    el.setAttribute('content', content);
-  };
+    const setMeta = (attr, key, content) => {
+      if (!content) return;
+      let el = document.querySelector(
+        attr === "property"
+          ? `meta[property="${key}"]`
+          : `meta[name="${key}"]`
+      );
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
 
-  let canonicalUrl = window.location.origin + to.path;
-  if (to.query.page) canonicalUrl += `?page=${to.query.page}`;
+    const url = window.location.origin + to.fullPath;
 
-  const canonical = document.querySelector('link[rel="canonical"]') || (() => {
-    const l = document.createElement('link');
-    l.setAttribute('rel', 'canonical');
-    document.head.appendChild(l);
-    return l;
-  })();
-  canonical.setAttribute('href', canonicalUrl);
-
-  upsertMeta('name', 'description', to.meta.description || defaultDesc);
-  upsertMeta('property', 'og:title', to.meta.title || defaultTitle);
-  upsertMeta('property', 'og:description', to.meta.description || defaultDesc);
-  upsertMeta('property', 'og:url', canonicalUrl);
-  upsertMeta('property', 'og:type', 'website');
-  upsertMeta('name', 'twitter:title', to.meta.title || defaultTitle);
-  upsertMeta('name', 'twitter:description', to.meta.description || defaultDesc);
-  upsertMeta('name', 'twitter:card', 'summary_large_image');
-  upsertMeta('name', 'robots', to.meta.robots || 'index, follow');
+    setMeta("name", "description", to.meta.description || defaultDesc);
+    setMeta("property", "og:title", document.title);
+    setMeta("property", "og:description", to.meta.description || defaultDesc);
+    setMeta("property", "og:url", url);
+    setMeta("name", "robots", to.meta.robots || "index, follow");
+  });
 });
-
-// router.afterEach(() => {
-//   // delay nhẹ cho UX mượt
-//   setTimeout(() => {
-//     store.dispatch('loading/stopLoading')
-//   }, 700)
-// })
-
 
 export default router;

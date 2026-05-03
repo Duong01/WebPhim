@@ -222,7 +222,13 @@ export default {
     // ======================
     handleLogin() {
       this.loading = true;
-
+      if(!this.loginForm.Email || !this.loginForm.Password) {
+        this.Message = "Vui lòng điền đầy đủ thông tin";
+        this.color = "error";
+        this.mess = true;
+        this.loading = false;
+        return;
+      }
       Login(
         this.loginForm,
         (res) => {

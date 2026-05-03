@@ -6,20 +6,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-/* =========================
-   CSS
-========================= */
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap'
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import 'element-plus/dist/index.css'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 
-/* =========================
-   Libraries
-========================= */
-import { BootstrapVue3 } from 'bootstrap-vue-3'
 import ElementPlus from 'element-plus'
 import vue3GoogleLogin from 'vue3-google-login'
 import { createHead } from '@vueuse/head'
@@ -169,8 +159,8 @@ const updateActivity = () => {
   }
 }
 
-document.addEventListener("click", updateActivity)
-document.addEventListener("keydown", updateActivity)
+// document.addEventListener("click", updateActivity)
+// document.addEventListener("keydown", updateActivity)
 window.addEventListener("scroll", updateActivity, { passive: true })
 
 /* =========================
@@ -219,7 +209,6 @@ async function bootstrap() {
 
   app.use(router)
   app.use(store)
-  app.use(BootstrapVue3)
   app.use(ElementPlus)
   app.use(i18n)
   app.use(vuetify)

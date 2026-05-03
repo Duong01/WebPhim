@@ -18,9 +18,9 @@
       <div class="content">
         
         <router-view v-slot="{ Component, route }">
-          <transition name="page" mode="out-in" @after-enter="handleAfterEnter">
-          <keep-alive :max="10" exclude="FavoritePage">
-            <component :is="Component" :key="route.fullPath" />
+          <transition name="page" mode="out-in" >
+          <keep-alive :max="10" :include="cachedViews">
+            <component :is="Component" :key="route.name" />
           </keep-alive>
           </transition>
         </router-view>
@@ -51,13 +51,14 @@ export default {
     HeaderComponent,
     FooterComponent
   },
-  methods: {
-    handleAfterEnter() {
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0)
-      })
-    }
-  },
+  computed: {
+  cachedViews() {
+
+    return this.$router.getRoutes()
+      .filter(r => r.meta?.keepAlive)
+      .map(r => r.name)
+  }
+}
 };
 </script>
 
@@ -107,37 +108,19 @@ export default {
   opacity: 0;
 }
 /* ===== PAGE TRANSITION (PRO LEVEL) ===== */
-
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity, transform, filter;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* Trang mới vào */
 .page-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.98);
-  filter: blur(8px);
+  transform: translateY(10px);
 }
 
-/* Trang hiện tại rời đi */
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-10px) scale(1.02);
-  filter: blur(6px);
+  transform: translateY(-5px);
 }
 
-/* Trạng thái bình thường */
-.page-enter-to,
-.page-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-.page-enter-active,
-.page-leave-active {
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
 </style>
