@@ -102,12 +102,26 @@
                       </div>
                     </div>
 
-                    <div class="progress-wrapper" @click="seek($event)">
+                    <div class="progress-wrapper" @click="seek($event)" @mousemove="updateTimeHover" @mouseleave="hideTimeHover">
                       <div class="progress-bar">
+                        <!-- Buffered progress -->
+                        <div
+                          class="progress-buffered"
+                          :style="{ width: bufferedProgress + '%' }"
+                        ></div>
+                        <!-- Played progress -->
                         <div
                           class="progress-filled"
                           :style="{ width: progress + '%' }"
                         ></div>
+                        <!-- Time hover indicator -->
+                        <div
+                          v-if="showTimeHover"
+                          class="progress-hover-time"
+                          :style="{ left: hoverPosition + '%' }"
+                        >
+                          <div class="hover-tooltip">{{ hoverTime }}</div>
+                        </div>
                       </div>
                     </div>
 
@@ -817,6 +831,11 @@ export default {
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
+      bufferedProgress: 0,
+      showTimeHover: false,
+      hoverPosition: 0,
+      hoverTime: '00:00',
+      lastTimeUpdateTime: 0,
       tab: "",
       shareUrl: window.location.href,
       tabserver: null,
@@ -1665,10 +1684,17 @@ export default {
     onTimeUpdate() {
       const video = this.$refs.videoPlayer;
       if (!video) return;
+      
+      // Throttle updates to 60fps for better performance
+      const now = performance.now();
+      if (now - this.lastTimeUpdateTime < 16) return;
+      this.lastTimeUpdateTime = now;
+      
       this.currentTime = video.currentTime || 0;
       this.duration = video.duration || 0;
       this.progress =
         this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+      this.updateBufferedProgress();
     },
     onLoadedMetadata() {
       const video = this.$refs.videoPlayer;
@@ -1677,6 +1703,7 @@ export default {
       this.currentTime = video.currentTime || 0;
       this.progress =
         this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+      this.updateBufferedProgress();
       this.videoLoaded = true;
     },
     onWaiting() {
@@ -1689,6 +1716,37 @@ export default {
       // Enough data to start playing
       this.videoLoaded = true;
     },
+    updateBufferedProgress() {
+      const video = this.$refs.videoPlayer;
+      if (!video || !video.buffered.length) {
+        this.bufferedProgress = 0;
+        return;
+      }
+      
+      // Get the latest buffered range end time
+      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+      this.bufferedProgress =
+        this.duration > 0 ? (bufferedEnd / this.duration) * 100 : 0;
+    },
+    updateTimeHover(e) {
+      const video = this.$refs.videoPlayer;
+      if (!video || !this.duration) {
+        this.showTimeHover = false;
+        return;
+      }
+      
+      const bar = e.currentTarget.querySelector(".progress-bar");
+      const rect = bar.getBoundingClientRect();
+      const hoverX = e.clientX - rect.left;
+      const ratio = Math.max(0, Math.min(1, hoverX / rect.width));
+      
+      this.hoverPosition = ratio * 100;
+      this.hoverTime = this.formatTime(ratio * this.duration);
+      this.showTimeHover = true;
+    },
+    hideTimeHover() {
+      this.showTimeHover = false;
+    },
     seek(e) {
       const video = this.$refs.videoPlayer;
       if (!video || !this.duration) return;
@@ -1698,6 +1756,7 @@ export default {
       const clickX = e.clientX - rect.left;
       const ratio = Math.max(0, Math.min(1, clickX / rect.width));
       video.currentTime = ratio * this.duration;
+      this.updateBufferedProgress();
       this.onTimeUpdate();
     },
     formatTime(seconds) {
@@ -3208,13 +3267,7 @@ a {
   max-width: 20% !important;
   padding: 4px;
 }
-.video-player {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* hoặc 'cover' nếu bạn muốn full */
-  background-color: black;
-  cursor: pointer;
-}
+.video-player {  width: 100%; height: 100%;  object-fit: contain;  background-color: black;  cursor: pointer;  will-change: auto;  backface-visibility: hidden;  -webkit-backface-visibility: hidden;  transform: translateZ(0);  -webkit-transform: translateZ(0);}
 .suggested-item {
   padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -3506,6 +3559,14 @@ a {
   gap: 8px;
   color: #fff;
 }
+.control-btn {
+  transition: all 0.2s ease;
+  will-change: transform;
+}
+.control-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(248, 178, 48, 0.3);
+}
 .control-btn .v-icon {
   color: #fff;
 }
@@ -3515,17 +3576,54 @@ a {
   padding: 0 8px;
 }
 .progress-bar {
+  position: relative;
   width: 100%;
   height: 8px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
+  cursor: pointer;
+  transition: height 0.2s ease;
+  will-change: background-color;
+}
+.progress-wrapper:hover .progress-bar {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.progress-buffered {
+  position: absolute;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  width: 0%;
+  border-radius: 8px;
+  transition: width 0.15s linear;
+  pointer-events: none;
 }
 .progress-filled {
+  position: absolute;
   height: 100%;
   background: linear-gradient(90deg, #f8b230, #ff6a00);
   width: 0%;
+  border-radius: 8px;
   transition: width 0.1s linear;
+  will-change: width;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(248, 178, 48, 0.5);
+}
+.progress-hover-time {
+  position: absolute;
+  top: -40px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.hover-tooltip {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .right-controls {
   display: flex;

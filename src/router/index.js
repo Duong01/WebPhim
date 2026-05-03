@@ -248,13 +248,12 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    // Nếu có vị trí cũ (back/forward) thì giữ nguyên
+    // giữ nguyên vị trí nếu back
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     }
-    return { top: 0 };
-    // Chuyển trang thường xuyên: giữ nguyên vị trí và không cuộn lên đầu
-    //return false;
+
+    return false
   }
 });
 

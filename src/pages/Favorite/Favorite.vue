@@ -7,7 +7,6 @@
         <h2>🎬 {{$t('Danh sách yêu thích')}}</h2>
         <span class="sub">{{ filteredMovies.length }} phim</span>
       </div>
-<p>dddd</p>
       <div class="header-right">
         <v-text-field
           v-model="search"
@@ -470,6 +469,9 @@ export default {
     }
 
     const match = raw.match(/\d+/)
+    if(parseInt(match[0]) === parseInt(movie.totalPage)){
+      return "Hoàn thành"
+    }
     if (match) {
       return "Tập " + (parseInt(match[0]) + 1)
     }
@@ -485,7 +487,6 @@ export default {
     if (!raw) return 0
 
     raw = raw.toString().toLowerCase()
-    console.log("Current raw:", raw)
     // full / hoàn thành
     if (raw.includes("full") || raw.includes("hoàn")) {
       return 100

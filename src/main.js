@@ -105,7 +105,6 @@ let deferredPrompt;
 // detectDevice();
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  console.log('Install prompt available');
   e.preventDefault();
   deferredPrompt = e;
   store.commit('setInstallPrompt', deferredPrompt);

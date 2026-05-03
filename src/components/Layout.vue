@@ -4,7 +4,7 @@
     <header class="fixed-header">
       <header-component />
     </header>
-    <transition name="progress-fade">
+    <!-- <transition name="progress-fade">
       <v-progress-linear
         v-if="$store.getters['loading/isLoading']"
         color="blue-darken-3"
@@ -12,16 +12,16 @@
         height="3"
         class="global-progress"
       />
-    </transition>
+    </transition> -->
 
     <div class="main">
       <div class="content">
         
         <router-view v-slot="{ Component, route }">
-          <transition name="page-fade" mode="out-in">
-            <keep-alive :max="10" exclude="MoviesPage,FavoritePage">
-              <component :is="Component" :key="route.fullPath" />
-            </keep-alive>
+          <transition name="page" mode="out-in" @after-enter="handleAfterEnter">
+          <keep-alive :max="10" exclude="FavoritePage">
+            <component :is="Component" :key="route.fullPath" />
+          </keep-alive>
           </transition>
         </router-view>
       </div>
@@ -50,7 +50,14 @@ export default {
   components:{
     HeaderComponent,
     FooterComponent
-  }
+  },
+  methods: {
+    handleAfterEnter() {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0)
+      })
+    }
+  },
 };
 </script>
 
@@ -90,29 +97,6 @@ export default {
   width: 100%;
 }
 
-/* Hiệu ứng chuyển trang tối ưu: chỉ dùng Opacity để nhẹ cho thiết bị yếu */
-.page-fade-enter-active,
-.page-fade-leave-active {
-  transition: 
-    opacity 0.25s ease,
-    transform 0.25s ease,
-    filter 0.25s ease;
-  will-change: opacity, transform;
-}
-
-/* Trang mới xuất hiện */
-.page-fade-enter-from {
-  opacity: 0;
-  transform: translateY(8px) scale(0.995);
-  filter: blur(2px);
-}
-
-/* Trang cũ biến mất */
-.page-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-8px) scale(0.995);
-  filter: blur(2px);
-}
 
 .progress-fade-enter-active,
 .progress-fade-leave-active {
@@ -121,5 +105,39 @@ export default {
 .progress-fade-enter-from,
 .progress-fade-leave-to {
   opacity: 0;
+}
+/* ===== PAGE TRANSITION (PRO LEVEL) ===== */
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform, filter;
+}
+
+/* Trang mới vào */
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  filter: blur(8px);
+}
+
+/* Trang hiện tại rời đi */
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(1.02);
+  filter: blur(6px);
+}
+
+/* Trạng thái bình thường */
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+.page-enter-active,
+.page-leave-active {
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 </style>

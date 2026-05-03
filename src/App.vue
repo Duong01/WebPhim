@@ -5,10 +5,8 @@
         <!-- Sử dụng KeepAlive với max="15" để cache danh sách, load mượt không giật lag -->
         <router-view v-slot="{ Component  }">
           <Suspense>
-            <keep-alive include="HomePage,PhimBo,PhimLe,TVShow">
-              <transition name="fade" mode="out-in">
-            <component :is="Component" />
-            </transition>
+            <keep-alive include="FavoritePage">
+              <component :is="Component" />
             </keep-alive>
             <template #fallback>
               <div class="page-loading">
@@ -126,13 +124,4 @@ html {
   scroll-behavior: smooth;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>
