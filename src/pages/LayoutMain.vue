@@ -1,6 +1,11 @@
 <template>
   <v-container class="search-page" fluid>
-    <v-row v-if="$vuetify.display.mdAndDown" class="movie-list">
+    <v-row v-if="movies.length <= 0" class="movie-list">
+      <v-col v-for="n in 12" :key="n" cols="6" sm="6" md="3" lg="3">
+        <v-skeleton-loader type="image" class="rounded-lg" />
+      </v-col>
+    </v-row>
+    <v-row v-else-if="$vuetify.display.mdAndDown" class="movie-list">
       <v-col
         v-for="movie in movies"
         :key="movie.slug"
@@ -35,7 +40,7 @@
             </v-col>
 
             <!-- CONTENT RIGHT -->
-            <v-col cols="8" class="content-col">
+            <v-col cols="8" class="content-col" style="padding: 10px;">
               <!-- TITLE -->
               <div class="movie-title">
                 {{ movie.name }}
@@ -45,7 +50,7 @@
               <div class="episode-text">{{movie.origin_name}}</div>
 
               <!-- NEXT EPISODE -->
-              <div class="next-ep">
+              <div class="next-ep right">
                 Tập hiện tại:
                 <span class="highlight">{{movie.episode_current}} </span>
               </div>
@@ -58,6 +63,15 @@
                   
                   <span class="notify-label">{{movie.lang}}</span>
                 </div>
+              </div>
+              <div class="genre-list">
+                <span
+                  v-for="c in movie.category.slice(0, 2)"
+                  :key="c.id"
+                  class="genre-item"
+                >
+                  {{ c.name }}
+                </span>
               </div>
 
               <!-- ACTION BUTTONS -->
@@ -150,13 +164,21 @@
               <div class="movie-sub">
                 {{ movie.origin_name }}
               </div>
+              <div class="next-ep right">
+                Tập hiện tại:
+                <span class="highlight">{{movie.episode_current}} </span>
+              </div>
 
               <!-- META -->
-              <div class="meta-row">
-                <span>{{ movie.year }}</span>
-                <span>•</span>
-                <span>{{ movie.time }}</span>
+              <div class="status">
+                <span class="time">📅 {{ movie.time }}</span>
+
+                <div class="notify-wrap">
+                  
+                  <span class="notify-label">{{movie.year}}</span>
+                </div>
               </div>
+              
 
               <!-- GENRE -->
               <div class="genre-list">
@@ -168,7 +190,26 @@
                   {{ c.name }}
                 </span>
               </div>
+
             </v-card-text>
+            <div class="actions">
+                <v-btn
+                  color="red"
+                  class="btn-watch"
+                  prepend-icon="mdi-play-circle"
+                >
+                  {{ $t('Xem ngay') }}
+                </v-btn>
+                <v-btn
+                  variant="tonal"
+                  color="grey-darken-6"
+                  class="btn-outline"
+                  prepend-icon="mdi-heart-outline"
+                  @click.prevent.stop="handleFavorite(movie)"
+                >
+                  {{$t('Yêu thích')}}
+                </v-btn>
+              </div>
           </v-card>
         </router-link>
       </v-col>
@@ -209,8 +250,13 @@ export default {
     };
   },
   methods: {
+    gomovie(movie) {
+      this.$router.push({
+        name : 'Movies',
+        params: { slug: movie.slug }
+      })
+    },
     handleFavorite(movie) {
-      this.indexClick++;
       this.movieFavorite.IDMovies = movie._id;
       this.movieFavorite.slug = movie.slug;
       this.movieFavorite.currentPage = movie.page;
@@ -218,10 +264,10 @@ export default {
         this.movieFavorite.UrlMovies = movie.thumb_url;
       } else {
         if (movie.thumb_url.includes("https://phimimg.com/upload")) {
-          this.movieFavorite.UrlMovies = this.urlImage1 + movie.thumb_url;
+          this.movieFavorite.UrlMovies = this.urlImage + movie.thumb_url;
         } else {
           this.movieFavorite.UrlMovies =
-            this.urlImage1 + "https://phimimg.com/" + movie.thumb_url;
+            this.urlImage + "https://phimimg.com/" + movie.thumb_url;
         }
       }
       this.movieFavorite.origin_name = movie.origin_name;
@@ -323,7 +369,12 @@ export default {
   background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   color: #fff;
 }
-
+.v-container {
+    width: 100%;
+    padding: 6px;
+    margin-right: auto;
+    margin-left: auto;
+}
 .page-title {
   font-size: 1.8rem;
   font-weight: 700;
@@ -492,14 +543,11 @@ export default {
 .movie-title {
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.4;
   color: #fff;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 4px;
-  min-height: 42px;
 }
 
 .movie-card:hover .movie-title {
@@ -562,7 +610,6 @@ export default {
   }
   .movie-title {
     font-size: 13px;
-    min-height: 36px;
   }
   .movie-info {
     padding: 10px;
@@ -629,7 +676,7 @@ export default {
 
 /* ===== CONTENT ===== */
 .content-col {
-  padding-left: 10px;
+  padding: 10px;
 }
 
 /* TITLE */
@@ -637,7 +684,6 @@ export default {
   font-size: 15px;
   font-weight: 700;
   color: #fff;
-  line-height: 1.3;
 }
 
 /* EPISODE */
@@ -684,7 +730,7 @@ export default {
 .actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 35px;
+  margin-top: 15px;
   gap: 8px;
 }
 

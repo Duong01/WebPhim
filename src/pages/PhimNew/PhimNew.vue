@@ -10,12 +10,14 @@
     </v-row> -->
     <FilterMovie @filter-changed="onFilterChanged" />
     <v-row justify="center">
-      <v-col cols="12" class="text-center" v-if="loading">
+      <!-- <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
-      </v-col>
+      </v-col> -->
 
-      <v-col cols="12" v-else>
-        <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
+      <v-col cols="12">
+        <layout-main  :movies="movies" :loading="loading" />
+
+        <!-- <v-alert v-if="movies.length === 0 && MessageErr == ''" class="text-center">
           {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             $route.query.keyword
           }}</strong
@@ -31,9 +33,9 @@
             MessageErr
           }}</strong
           >".
-        </v-alert>
+        </v-alert> -->
 
-        <v-row
+        <!-- <v-row
                 no-gutters
                 tag="transition-group"
                 name="fade-scale"
@@ -68,24 +70,8 @@
                         cover
                       >
                         <template #default>
-                          <!-- <v-btn
-                            icon
-                            size="small"
-                            color="red"
-                            variant="flat"
-                            class="favorite-btn"
-                            @click.stop="toggleFavorite(item)"
-                          >
-                            <v-icon>
-                              {{
-                                isFavorite(item)
-                                  ? "mdi-heart"
-                                  : "mdi-heart-outline"
-                              }}
-                            </v-icon>
-                          </v-btn> -->
+                          
 <div class="badge-container">
-                          <!-- hiển thị bên trái -->
                           <v-btn
                             size="small"
                             variant="flat"
@@ -98,7 +84,6 @@
                             ></v-icon>
                           </v-btn>
 
-                          <!-- hiển thị bên phải -->
                           <v-btn
                             icon
                             size="small"
@@ -162,7 +147,7 @@
                     </v-card>
                   </router-link>
                 </v-col>
-              </v-row>
+              </v-row> -->
 
         <!-- <router-link
           v-for="movie in movies"
@@ -249,6 +234,8 @@
 <script>
 import { urlImage1, ListMovieByCate1,ListMovieNew1 } from '@/model/api'
 import FilterMovie from "@/pages/FilterMovie.vue"
+import LayoutMain from "@/pages/LayoutMain.vue";
+
 export default {
   name: 'PhimNew',
   props: ['path'],
@@ -281,7 +268,8 @@ export default {
     this.ListMovie(this.path)
   },
   components:{
-    FilterMovie
+    FilterMovie,
+    LayoutMain
   },
   methods: {
     onFilterChanged(newFilters) {
@@ -410,7 +398,6 @@ export default {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  padding: 3rem 1rem;
   background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   color: #fff;
 }

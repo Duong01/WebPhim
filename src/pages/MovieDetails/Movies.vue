@@ -747,31 +747,25 @@ export default {
   props: ["slug"],
 
   watch: {
-    async slug(newSlug) {
+    async slug() {
       //window.scrollTo({ top: 0, behavior: "smooth" });
       this.isLoading = true;
-      await this.MoveInfor1(newSlug);
+      //await this.MoveInfor1(newSlug);
+      this.fetchMovie();
       this.isLoading = false;
-      //this.playVideo(this.movie.videoUrl);
-
-      //await this.ListMovieByCate();
-      //await this.GetComment();
     },
   },
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      // this.$store.dispatch('loading/startLoading')
-      await this.MoveInfor1(this.slug);
-      // this.$store.dispatch('loading/stopLoading')
-      if (this.movie?.servers?.length) {
-        this.currentServer = this.movie.servers[0].server_name;
-      }
-      this.updateSEO();
-      //this.playVideo(this.movie.videoUrl);
-      //this.UpdateMoviesFavorite();
-      this.ListMovieByCate();
-      this.GetComment();
+      this.fetchMovie();
+      // await this.MoveInfor1(this.slug);
+      // if (this.movie?.servers?.length) {
+      //   this.currentServer = this.movie.servers[0].server_name;
+      // }
+      // this.updateSEO();
+      // this.ListMovieByCate();
+      // this.GetComment();
     } catch (err) {
       console.log(err);
     } finally {
@@ -779,7 +773,29 @@ export default {
     }
   },
   methods: {
+    async fetchMovie() {
+    this.isLoading = true;
 
+    try {
+      await this.MoveInfor1(this.slug);
+    this.isLoading = false;
+
+      if (this.movie?.servers?.length) {
+        this.currentServer = this.movie.servers[0].server_name;
+      }
+
+      this.updateSEO();
+
+      // 👇 load phụ → không cần await
+      this.ListMovieByCate();
+      this.GetComment();
+
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.isLoading = false;
+    }
+  },
     updateSEO() {
       useHead({
         title: `${this.movie.title} - Xem phim HD Vietsub | Phim360`,

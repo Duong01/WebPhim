@@ -22,7 +22,7 @@
       
 
       <v-col cols="12">
-        <v-alert
+        <!-- <v-alert
           v-if="movies.length === 0 && MessageErr == ''"
           class="text-center"
         >
@@ -44,9 +44,9 @@
             MessageErr
           }}</strong
           >".
-        </v-alert>
+        </v-alert> -->
 
-        <layout-main v-else :movies="movies" :loading="loading" />
+        <layout-main  :movies="movies" :loading="loading" />
         <!-- <v-row  class="movie-grid">
           <v-col
             v-for="(movie, index) in movies"
@@ -352,7 +352,6 @@ export default {
   <style scoped>
 .search-page {
   min-height: 100vh;
-  padding: 3rem 1rem;
   background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   color: #fff;
 }

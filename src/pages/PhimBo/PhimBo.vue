@@ -19,12 +19,12 @@
     </v-row>
 
     <v-row justify="center">
-      <v-col cols="12" class="text-center" v-if="loading">
+      <!-- <v-col cols="12" class="text-center" v-if="loading">
         <v-progress-circular indeterminate color="primary" size="50" />
-      </v-col>
+      </v-col> -->
 
-      <v-col cols="12" v-else>
-        <v-alert
+      <v-col cols="12">
+        <!-- <v-alert
           v-if="movies.length === 0 && MessageErr == ''"
           class="text-center"
         >
@@ -48,9 +48,10 @@
             MessageErr
           }}</strong
           >".
-        </v-alert>
+        </v-alert> -->
+        <layout-main  :movies="movies" :loading="loading" />
 
-        <v-row v-else class="movie-grid">
+        <!-- <v-row v-else class="movie-grid">
           <v-col
             v-for="movie in movies"
             :key="movie.slug"
@@ -79,50 +80,41 @@
                     </template>
                   </v-img>
 
-                  <!-- overlay -->
                   <div class="gradient-overlay"></div>
 
-                  <!-- hover play -->
                   <div class="hover-overlay">
                     <v-icon size="50">mdi-play-circle</v-icon>
                   </div>
 
-                  <!-- TOP BADGE -->
                   <div class="top-badges">
                     <span class="badge quality">{{ movie.quality }}</span>
                     <span class="badge lang">{{ movie.lang }}</span>
                   </div>
 
-                  <!-- EPISODE -->
                   <div class="episode-badge">
                     {{ movie.episode_current }}
                   </div>
 
-                  <!-- RATING -->
                   <div class="rating">
                     ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
                   </div>
                 </div>
 
                 <v-card-text class="movie-info">
-                  <!-- TITLE -->
                   <div class="movie-title">
                     {{ movie.name }}
                   </div>
 
-                  <!-- SUB -->
                   <div class="movie-sub">
                     {{ movie.origin_name }}
                   </div>
 
-                  <!-- META -->
                   <div class="meta-row">
                     <span>{{ movie.year }}</span>
                     <span>•</span>
                     <span>{{ movie.time }}</span>
                   </div>
 
-                  <!-- GENRE -->
                   <div class="genre-list">
                     <span
                       v-for="c in movie.category.slice(0, 2)"
@@ -136,7 +128,7 @@
               </v-card>
             </router-link>
           </v-col>
-        </v-row>
+        </v-row> -->
         <div
           ref="loadMoreTrigger"
           v-show="movies.length > 0 && !isLastPage"
@@ -152,6 +144,8 @@
 <script>
 import { urlImage1, ListMovieByCate1 } from "@/model/api";
 import FilterMovie from "@/pages/FilterMovie.vue";
+import LayoutMain from "@/pages/LayoutMain.vue";
+
 export default {
   name: "PhimBo",
   data() {
@@ -182,6 +176,7 @@ export default {
   },
   components: {
     FilterMovie,
+    LayoutMain
   },
   mounted() {
     this.ListMovie();
@@ -341,7 +336,6 @@ export default {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  padding: 3rem 1rem;
   background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   color: #fff;
 }
