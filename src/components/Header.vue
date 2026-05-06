@@ -281,8 +281,11 @@
               class="account-btn"
               :title="account"
             >
-            <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
+            <div class="avatar-with-crown">
+              <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
               <v-icon size="20" v-else>mdi-account-circle</v-icon>
+              <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
+            </div>
 
               <!-- Chỉ hiện tên trên md trở lên -->
               <span
@@ -295,9 +298,13 @@
         </template>
         <v-list>
           <v-list-item v-if="$vuetify.display.mdAndDown">
-            <v-list-item-title>
-              <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
-              <v-icon v-else>mdi-account-circle</v-icon> {{ account }}
+            <v-list-item-title class="d-flex align-center">
+              <div class="avatar-with-crown mr-2">
+                <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
+                <v-icon size="20" v-else>mdi-account-circle</v-icon>
+                <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="14">mdi-crown</v-icon>
+              </div>
+              {{ account }}
             </v-list-item-title>
           </v-list-item>
           <v-list-item @click="NextRouter()">
@@ -632,6 +639,11 @@ export default {
     isLogin() {
       return !!this.$store.state.empInfor?.ID;
     },
+    isFanCung() {
+      // Lấy giá trị từ localStorage với tên là 'name'
+      const fanStatus = localStorage.getItem("name");
+      return fanStatus == 2 || fanStatus == 3;
+    },
   },
   methods: {
     handleScroll() {
@@ -920,5 +932,17 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+.avatar-with-crown {
+  position: relative;
+  display: inline-flex; /* Đảm bảo vương miện được định vị tương đối với avatar */
+  align-items: center;
+  justify-content: center;
+}
+
+.crown-icon {
+  position: absolute;
+  top: -5px; /* Điều chỉnh vị trí theo ý muốn */
+  right: -5px; /* Điều chỉnh vị trí theo ý muốn */
 }
 </style>
