@@ -447,6 +447,8 @@ export default {
   mounted() {
     try {
       this.ListMovie();
+       //window.addEventListener("online", this.ListMovie());
+
       this.$store.dispatch("loading/stopLoading");
     } catch (err) {
       console.log(err);
@@ -454,6 +456,10 @@ export default {
       this.$store.dispatch("loading/stopLoading");
     }
   },
+  // onUnmounted(){
+  //   window.removeEventListener("online", this.ListMovie());
+
+  // },
   beforeUnmount() {
     if (this.observer) {
       this.observer.disconnect();

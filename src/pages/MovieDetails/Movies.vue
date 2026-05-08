@@ -366,7 +366,13 @@
                           :key="index"
                         >
                           <div class="d-flex align-start mb-5">
-                            <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar" v-if="comment.Avartar != '' && comment.Avartar != null"></v-avatar>
+
+                            <div class="avatar-with-crown" v-if="comment.Avartar != '' && comment.Avartar != null">
+                            <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar"></v-avatar>
+                          <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
+
+
+                            </div>
                             <v-avatar size="44" class="me-3" color="blue-grey-darken-3" v-else>
                               <v-icon color="white">mdi-account</v-icon>
                             </v-avatar>
@@ -758,6 +764,7 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
+       window.addEventListener("online", this.fetchMovie());
       this.fetchMovie();
       // await this.MoveInfor1(this.slug);
       // if (this.movie?.servers?.length) {
@@ -771,6 +778,10 @@ export default {
     } finally {
       this.$store.dispatch("loading/stopLoading");
     }
+  },
+  onUnmounted(){
+    window.removeEventListener("online", this.fetchMovie());
+
   },
   methods: {
     async fetchMovie() {
@@ -1360,6 +1371,11 @@ export default {
       return this.showAllEpisodes
         ? this.movie.pageMovie // Hiện tất cả tập
         : this.movie.pageMovie.slice(0, this.episodeLimit); // Chỉ 20 tập đầu
+    },
+    isFanCung() {
+      // Lấy giá trị từ localStorage với tên là 'name'
+      const fanStatus = localStorage.getItem("name");
+      return fanStatus == 2 || fanStatus == 3;
     },
   },
 };
@@ -1977,5 +1993,17 @@ export default {
 @keyframes pageFade {
   from { opacity:0; transform: translateY(15px);}
   to { opacity:1; transform: translateY(0);}
+}
+.avatar-with-crown {
+  position: relative;
+  display: inline-flex; /* Đảm bảo vương miện được định vị tương đối với avatar */
+  align-items: center;
+  justify-content: center;
+}
+
+.crown-icon {
+  position: absolute;
+  top: -5px; /* Điều chỉnh vị trí theo ý muốn */
+  right: 5px; /* Điều chỉnh vị trí theo ý muốn */
 }
 </style>

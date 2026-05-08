@@ -155,6 +155,8 @@ export default {
       const todayIndex = new Date().getDay();
       this.daily = this.days[todayIndex].value;
       this.ListMovie();
+       //window.addEventListener("online", this.ListMovie());
+
     }catch(err){
       console.log(err)
     }finally {
@@ -162,6 +164,10 @@ export default {
     }
     
   },
+  // onUnmounted(){
+  //   window.removeEventListener("online", this.ListMovie());
+
+  // },
   
   methods: {
     changeDay(day) {

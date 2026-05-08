@@ -176,7 +176,13 @@ export default {
   },
   mounted() {
     this.ListMovie();
+       //window.addEventListener("online", this.ListMovie());
+
   },
+  // onUnmounted(){
+  //   window.removeEventListener("online", this.ListMovie());
+
+  // },
   beforeUnmount() {
     if (this.observer) {
       this.observer.disconnect();

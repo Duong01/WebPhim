@@ -497,13 +497,17 @@
                   :key="index"
                   class="d-flex align-start mb-5"
                 >
+                <div class="avatar-with-crown" v-if="comment.Avartar != '' && comment.Avartar != null">
                   <v-avatar
                     size="44"
                     class="me-3"
                     color="blue-grey-darken-3"
                     :image="comment.Avartar"
-                    v-if="comment.Avartar != '' && comment.Avartar != null"
+                    
                   ></v-avatar>
+                  <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
+                </div>
+                  
                   <v-avatar
                     size="44"
                     class="me-3"
@@ -1033,6 +1037,7 @@ export default {
     try {
       // this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
+       window.addEventListener("online", this.MoveInfor1(this.slug));
       // this.$store.dispatch('loading/stopLoading')
       if (this.page) {
         if (this.page == "01") {
@@ -1160,6 +1165,10 @@ export default {
       this.$store.dispatch("loading/stopLoading");
     }
   }, 
+  onUnmounted(){
+    window.removeEventListener("online", this.MoveInfor1(this.slug));
+
+  },
   methods: {
     Tracking() {
       Tracking(
@@ -2406,6 +2415,11 @@ export default {
       return (
         this.$store.state.empInfor?.Avatar || this.$store.state.Avatar || ""
       );
+    },
+    isFanCung() {
+      // Lấy giá trị từ localStorage với tên là 'name'
+      const fanStatus = localStorage.getItem("name");
+      return fanStatus == 2 || fanStatus == 3;
     },
     youtubeEmbedUrl() {
       if (!this.movie.trailer_url) return "";
@@ -3708,5 +3722,17 @@ a {
 }
 .hover-text:hover {
   color: #f8b230;
+}
+.avatar-with-crown {
+  position: relative;
+  display: inline-flex; /* Đảm bảo vương miện được định vị tương đối với avatar */
+  align-items: center;
+  justify-content: center;
+}
+
+.crown-icon {
+  position: absolute;
+  top: -5px; /* Điều chỉnh vị trí theo ý muốn */
+  right: 5px; /* Điều chỉnh vị trí theo ý muốn */
 }
 </style>

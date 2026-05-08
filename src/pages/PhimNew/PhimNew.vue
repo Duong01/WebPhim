@@ -266,7 +266,13 @@ export default {
   },
   mounted() {
     this.ListMovie(this.path)
+      //  window.addEventListener("online", this.ListMovie(this.path));
+
   },
+  // onUnmounted(){
+  //   window.removeEventListener("online", this.ListMovie(this.path));
+
+  // },
   components:{
     FilterMovie,
     LayoutMain
