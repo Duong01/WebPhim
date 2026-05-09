@@ -764,7 +764,7 @@ export default {
   async mounted() {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
-       window.addEventListener("online", this.fetchMovie());
+       //window.addEventListener("online", this.fetchMovie());
       this.fetchMovie();
       // await this.MoveInfor1(this.slug);
       // if (this.movie?.servers?.length) {

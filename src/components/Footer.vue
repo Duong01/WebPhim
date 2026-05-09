@@ -326,10 +326,7 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      this.deferredPrompt = e;
-    });
+    
   },
   methods: {
     slugify(str) {

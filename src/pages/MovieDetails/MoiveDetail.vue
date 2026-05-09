@@ -1037,7 +1037,6 @@ export default {
     try {
       // this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
-       window.addEventListener("online", this.MoveInfor1(this.slug));
       // this.$store.dispatch('loading/stopLoading')
       if (this.page) {
         if (this.page == "01") {
@@ -1164,10 +1163,6 @@ export default {
     } finally {
       this.$store.dispatch("loading/stopLoading");
     }
-  }, 
-  onUnmounted(){
-    window.removeEventListener("online", this.MoveInfor1(this.slug));
-
   },
   methods: {
     Tracking() {

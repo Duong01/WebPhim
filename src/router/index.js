@@ -84,6 +84,10 @@ const routes = [
         name: "Movies",
         component: () => import("@/pages/MovieDetails/Movies.vue"),
         props: true,
+        meta: {
+          title: "Chi tiết phim",
+          keepAlive: true,
+        },
       },
       {
         path: "/favorite",
