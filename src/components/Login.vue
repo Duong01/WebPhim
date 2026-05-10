@@ -191,17 +191,18 @@ export default {
             localStorage.removeItem("user");
             localStorage.removeItem("name");
             localStorage.removeItem("nameShow");
+            localStorage.removeItem("Avatar");
 
 
             localStorage.setItem("token", dat.data.data.token);
             //localStorage.setItem("user", JSON.stringify(dat.data.data.user));
-            localStorage.setItem("Avatar", dat.data.data.user.Avatar);
+            localStorage.setItem("Avatar", dat.data.data.user.Avartar);
             
              localStorage.setItem("name", dat.data.data.user.ID);
             localStorage.setItem("nameShow", dat.data.data.user.EmpName);
 
             this.$store.commit("setEmpInfor", dat.data.data.user);
-            this.$store.commit("setAvatar", dat.data.data.user.Avatar || dat.data.data.user.Avartar);
+            this.$store.commit("setAvatar", dat.data.data.user.Avartar || dat.data.data.user.Avartar);
 
             const redirect = this.$route.query.redirect || "/home";
             this.$router.replace(redirect);
@@ -241,12 +242,15 @@ export default {
             localStorage.removeItem("user");
             localStorage.removeItem("name");
             localStorage.removeItem("nameShow");
+            localStorage.removeItem("Avatar");
+
 
             const { token, user } = data.data;
 
             localStorage.setItem("token", token);
             localStorage.setItem("name", user.ID);
             localStorage.setItem("nameShow", user.EmpName);
+            localStorage.setItem("Avatar", user.Avatar || user.Avartar);
             //localStorage.setItem("user", JSON.stringify(user));
             this.$store.commit("setEmpInfor", user);
             this.$store.commit("setAvatar", user.Avatar || user.Avartar);

@@ -633,7 +633,7 @@ export default {
     },
     avatar(){
       const user = this.$store.state.empInfor || localStorage.getItem("name");
-      return user?.Avatar || user?.Avartar || this.$store.state.Avatar || "";
+      return user?.Avatar || user?.Avartar || this.$store.state.Avatar || localStorage.getItem("Avatar") || "";
     },
     isLogin() {
       return !!this.$store.state.empInfor?.ID || !!localStorage.getItem("name"); 

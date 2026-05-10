@@ -23,7 +23,7 @@
       
 
       <!-- Chatbot Component -->
-      <Chatbot />
+      <!-- <Chatbot /> -->
     </v-app>
   </v-theme-provider>
 </template>
