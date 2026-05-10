@@ -5,7 +5,6 @@
       <v-app-bar-nav-icon
         v-show="$vuetify.display.smAndDown"
         @click="drawer = !drawer"
-        class="bottom-navbar"
       />
       <v-img
         :src="imageLogo"
