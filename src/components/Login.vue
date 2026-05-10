@@ -197,7 +197,7 @@ export default {
             //localStorage.setItem("user", JSON.stringify(dat.data.data.user));
             localStorage.setItem("Avatar", dat.data.data.user.Avatar);
             
-            // localStorage.setItem("name", dat.data.data.user.ID);
+             localStorage.setItem("name", dat.data.data.user.ID);
             localStorage.setItem("nameShow", dat.data.data.user.EmpName);
 
             this.$store.commit("setEmpInfor", dat.data.data.user);
