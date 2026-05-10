@@ -736,14 +736,17 @@ export default {
 
 .btn-outline {
   flex: 1;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
+
 }
 
 .btn-watch {
     background: linear-gradient(45deg,#ffd76b,#ffb700) !important;
   color: black !important;
   flex: 1;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
 }
 .notify-wrap {
   display: flex;

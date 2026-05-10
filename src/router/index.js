@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import Home from "@/pages/Home.vue";
+import PhimBo from "@/pages/PhimBo/PhimBo.vue";
+import PhimChieuRap from "@/pages/PhimChieuRap/PhimChieuRap.vue";
+import PhimLe from "@/pages/PhimLe/PhimLe.vue";
+import TVShow from "@/pages/TVShow/TVShow.vue";
+import HoatHinh from "@/pages/HoatHinh/HoatHinh.vue";
 /* =========================
    Routes (giữ nguyên cấu trúc)
 ========================= */
@@ -59,7 +65,7 @@ const routes = [
       {
         path: "/home",
         name: "HomePage",
-        component: () => import("@/pages/Home.vue"),
+        component: Home,
         meta: {
           title: "Xem phim online miễn phí - Web Phim Online",
           description: "Kho phim mới nhất, hot nhất.",
@@ -101,7 +107,7 @@ const routes = [
       {
         path: "/phim-chieu-rap",
         name: "PhimChieuRap",
-        component: () => import("@/pages/PhimChieuRap/PhimChieuRap.vue"),
+        component: PhimChieuRap,
         meta: { keepAlive: true },
       },
       {
@@ -114,7 +120,7 @@ const routes = [
       {
         path: "/phim-bo",
         name: "PhimBo",
-        component: () => import("@/pages/PhimBo/PhimBo.vue"),
+        component: PhimBo,
         meta: { keepAlive: true },
       },
       {
@@ -126,13 +132,13 @@ const routes = [
       {
         path: "/phim-le",
         name: "PhimLe",
-        component: () => import("@/pages/PhimLe/PhimLe.vue"),
+        component: PhimLe,
         meta: { keepAlive: true },
       },
       {
         path: "/tv-shows",
         name: "TVShow",
-        component: () => import("@/pages/TVShow/TVShow.vue"),
+        component: TVShow,
         meta: { keepAlive: true },
       },
       {
@@ -144,7 +150,7 @@ const routes = [
       {
         path: "/hoat-hinh",
         name: "HoatHinh",
-        component: () => import("@/pages/HoatHinh/HoatHinh.vue"),
+        component: HoatHinh,
         meta: { keepAlive: true },
       },
       {
@@ -185,7 +191,8 @@ const router = createRouter({
 
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    return { top: 0 }; // mượt hơn nhiều
+    return false;
+    //return { top: 0 }; // mượt hơn nhiều
   },
 });
 

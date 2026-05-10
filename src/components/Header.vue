@@ -5,6 +5,7 @@
       <v-app-bar-nav-icon
         v-show="$vuetify.display.smAndDown"
         @click="drawer = !drawer"
+        class="bottom-navbar"
       />
       <v-img
         :src="imageLogo"
@@ -22,7 +23,7 @@
         <v-btn
           text
           :to="{ path: '/home' }"
-          :class="{ 'text-green': $route.path === '/home' }"
+          :class="{ 'bottom-nav-active': $route.path === '/home' }"
         >
         <v-icon size="18">mdi-fire</v-icon>
           {{ $t("Trang chủ") }}
@@ -30,14 +31,14 @@
         <!-- <v-btn
           text
           :to="{ path: '/phim-bo' }"
-          :class="{ 'text-green': $route.path === '/phim-bo' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-bo' }"
         >
           {{ $t("Phim Bộ") }}
         </v-btn> -->
         <!-- <v-btn
           text
           :to="{ path: '/phim-le' }"
-          :class="{ 'text-green': $route.path === '/phim-le' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-le' }"
         >
           {{ $t("Phim Lẻ") }}
         </v-btn> -->
@@ -139,7 +140,7 @@
         <v-btn
           text
           :to="{ path: '/phim-chieu-rap' }"
-          :class="{ 'text-green': $route.path === '/phim-chieu-rap' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-chieu-rap' }"
         >
         <v-icon start size="18">mdi-calendar</v-icon>
           {{ $t("Chiếu rạp") }}
@@ -148,7 +149,7 @@
         <v-btn
           text
           :to="{ path: '/movie-schedule' }"
-          :class="{ 'text-green': $route.path === '/movie-schedule' }"
+          :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
         >
         <v-icon start size="18">mdi-calendar</v-icon>
           {{ $t("Lịch chiếu") }}
@@ -319,38 +320,38 @@
     </v-app-bar>
 
     <!--  header ben duoi an/hien khi scroll -->
-    
       <v-bottom-navigation
-      class="bottom-navbar"
-      :class="{ 'bottom-navbar--hidden': !showBottomBar }"
-      grow
-      height="75"
-    >
+        class="bottom-navbar"
+        :class="{ 'bottom-navbar--hidden': !showBottomBar }"
+        grow
+        height="78"
+        bg-color="transparent"
+      >
     
       <v-btn 
         :to="{ path: '/home' }"
-        :class="{ 'text-green': $route.path === '/home' }"
+        :class="{ 'bottom-nav-active': $route.path === '/home' }"
       >
         <v-icon size="22">mdi-fire</v-icon>
         <span>{{ $t("Trang chủ") }}</span>
       </v-btn>
       <v-btn 
         :to="{ path: '/phim-bo' }"
-        :class="{ 'text-green': $route.path === '/phim-bo' }">
+        :class="{ 'bottom-nav-active': $route.path === '/phim-bo' }">
         <v-icon size="22">mdi-movie</v-icon>
         <span>{{ $t("Phim Bộ") }}</span>
       </v-btn>
       <v-btn
           
           :to="{ path: '/phim-le' }"
-          :class="{ 'text-green': $route.path === '/phim-le' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-le' }"
         >
         <v-icon size="22">mdi-movie</v-icon>
           <span>{{ $t("Phim Lẻ") }}</span>
       </v-btn>
       <v-btn
       :to="{ path: '/hoat-hinh' }"
-      :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+      :class="{ 'bottom-nav-active': $route.path === '/hoat-hinh' }"
       v-show="$vuetify.display.mdAndUp"
       >
         <v-icon size="22">mdi-movie</v-icon>
@@ -360,7 +361,7 @@
       
       <v-btn
           :to="{ path: '/movie-schedule' }"
-          :class="{ 'text-green': $route.path === '/movie-schedule' }"
+          :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
           v-show="$vuetify.display.mdAndDown"
         >
         <v-icon start size="22">mdi-calendar</v-icon>
@@ -368,7 +369,7 @@
         </v-btn>
         <v-btn 
         :to="{ path: '/favorite' }"
-          :class="{ 'text-green': $route.path === '/favorite' }"
+          :class="{ 'bottom-nav-active': $route.path === '/favorite' }"
       >
         <v-icon size="22">mdi-heart</v-icon>
         <span>{{ $t("Đã lưu") }}</span>
@@ -376,14 +377,13 @@
       
     </v-bottom-navigation>
 
-
     <!-- DRAWER CHO MOBILE -->
     <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
       <v-list nav dense>
         <!-- Mục chính -->
         <v-list-item
           :to="{ path: '/home' }"
-          :class="{ 'text-green': $route.path === '/home' }"
+          :class="{ 'bottom-nav-active': $route.path === '/home' }"
         >
           <v-list-item-title>
             <v-icon size="16">mdi-fire</v-icon>
@@ -392,7 +392,7 @@
 
         <v-list-item
           :to="{ path: '/phim-bo' }"
-          :class="{ 'text-green': $route.path === '/phim-bo' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-bo' }"
         >
           <v-list-item-title>
             <v-icon size="16">mdi-movie</v-icon>
@@ -402,7 +402,7 @@
 
         <v-list-item
           :to="{ path: '/phim-le' }"
-          :class="{ 'text-green': $route.path === '/phim-le' }"
+          :class="{ 'bottom-nav-active': $route.path === '/phim-le' }"
         >
           <v-list-item-title>
         <v-icon size="16">mdi-movie</v-icon>
@@ -469,7 +469,7 @@
         <!-- Sắp chiếu -->
           <v-list-item
             :to="{ path: '/tv-shows' }"
-            :class="{ 'text-green': $route.path === '/tv-shows' }"
+            :class="{ 'bottom-nav-active': $route.path === '/tv-shows' }"
           >
             <v-list-item-title>
               <v-icon size="16">mdi-movie</v-icon>
@@ -478,7 +478,7 @@
           </v-list-item>
           <v-list-item
             :to="{ path: '/hoat-hinh' }"
-            :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+            :class="{ 'bottom-nav-active': $route.path === '/hoat-hinh' }"
           >
             <v-list-item-title>
               <v-icon size="16">mdi-movie</v-icon>
@@ -488,13 +488,13 @@
           
           <v-list-item
             :to="{ path: '/movie-schedule' }"
-            :class="{ 'text-green': $route.path === '/movie-schedule' }"
+            :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
           >
             <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Lịch chiếu") }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             :to="{ path: '/phim-chieu-rap' }"
-            :class="{ 'text-green': $route.path === '/phim-chieu-rap' }"
+            :class="{ 'bottom-nav-active': $route.path === '/phim-chieu-rap' }"
           >
             <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Chiếu rạp") }}</v-list-item-title>
           </v-list-item>
@@ -633,11 +633,11 @@ export default {
       return this.$store.state.empInfor?.EmpName || "";
     },
     avatar(){
-      const user = this.$store.state.empInfor;
+      const user = this.$store.state.empInfor || localStorage.getItem("name");
       return user?.Avatar || user?.Avartar || this.$store.state.Avatar || "";
     },
     isLogin() {
-      return !!this.$store.state.empInfor?.ID;
+      return !!this.$store.state.empInfor?.ID || !!localStorage.getItem("name"); 
     },
     isFanCung() {
       // Lấy giá trị từ localStorage với tên là 'name'
@@ -877,11 +877,7 @@ export default {
 .text-green {
   color: #00e165 !important;
 }
-a.router-link-exact-active,
-a.router-link-active,
-a:hover {
-  color: #00e165 !important;
-}
+
 .v-spacer {
   flex-grow: 0 !important;
 }
@@ -904,7 +900,57 @@ a:hover {
 .account-menu-name {
   font-weight: 600;
 }
+/* =========================
+   WRAPPER CENTER
+========================= */
+
+.bottom-navbar-wrapper {
+  position: fixed;
+  bottom: 14px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  z-index: 1005;
+
+  pointer-events: none;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
 .bottom-navbar {
+  pointer-events: auto;
+
+  width: min(780px, calc(100vw - 24px)) !important;
+
+  border-radius: 24px !important;
+
+  background: rgba(20, 20, 20, 0.72) !important;
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  padding: 8px;
+
+  overflow: hidden;
+margin: 0 auto;
+  transition:
+    transform .45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity .35s ease;
+
+  will-change: transform;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -913,10 +959,183 @@ a:hover {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Content */
+
+.bottom-navbar .v-bottom-navigation__content {
+  justify-content: center !important;
+
+  gap: 8px;
+
+  width: 100%;
+}
+
+/* Hidden */
+
 .bottom-navbar--hidden {
-  transform: translateY(100%);
+  transform: translateY(140%);
   opacity: 0;
   pointer-events: none;
+}
+
+/* BUTTON */
+
+.bottom-nav-btn {
+  position: relative;
+
+  border-radius: 18px !important;
+
+  overflow: hidden;
+
+  transition:
+    all .28s cubic-bezier(0.22, 1, 0.36, 1);
+
+  color: rgba(255,255,255,0.72) !important;
+
+  font-weight: 500;
+
+  letter-spacing: 0.2px;
+
+  min-width: unset !important;
+}
+
+/* Hover desktop */
+
+.bottom-nav-btn:hover {
+  transform: translateY(-2px);
+
+  background: rgba(255,255,255,0.06);
+
+  color: white !important;
+}
+
+/* ACTIVE */
+
+.bottom-nav-active {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 229, 255, 0.18),
+      rgba(98, 0, 255, 0.22)
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 4px 18px rgba(0,229,255,0.18);
+
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Thanh sáng phía trên */
+
+.bottom-nav-active::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 32px;
+  height: 4px;
+
+  border-radius: 20px;
+
+
+  background: linear-gradient(
+    90deg,
+    #00e5ff,
+    #7c4dff
+  );
+
+  box-shadow:
+    0 0 12px rgba(0,229,255,0.9);
+}
+
+/* ICON */
+
+.bottom-nav-btn .v-icon {
+  transition:
+    transform .3s ease,
+    color .3s ease;
+
+  margin-bottom: 2px;
+}
+
+/* ACTIVE ICON */
+
+.bottom-nav-active .v-icon {
+  transform: scale(1.18) translateY(-1px);
+
+  color: rgb(88, 151, 247) !important;
+
+  filter: drop-shadow(0 0 8px rgba(0,229,255,0.65));
+}
+
+/* TEXT */
+
+.bottom-nav-btn span {
+  font-size: 11px;
+  font-weight: 600;
+
+  transition: all .25s ease;
+
+  text-transform: none;
+}
+
+/* ACTIVE TEXT */
+
+.bottom-nav-active span {
+  color: white;
+
+  letter-spacing: 0.3px;
+}
+
+/* Ripple đẹp hơn */
+
+.bottom-nav-btn::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: radial-gradient(
+    circle,
+    rgba(255,255,255,0.16),
+    transparent 70%
+  );
+
+  opacity: 0;
+
+  transition: opacity .3s ease;
+}
+
+.bottom-nav-btn:active::after {
+  opacity: 1;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .bottom-navbar {
+    width: calc(100% - 14px);
+
+    bottom: 8px;
+
+    border-radius: 20px !important;
+
+    padding: 6px;
+  }
+
+  .bottom-nav-btn {
+    border-radius: 16px !important;
+  }
+
+  .bottom-nav-btn span {
+    font-size: 10px;
+  }
 }
 .main-navbar {
   backdrop-filter: blur(10px);
