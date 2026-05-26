@@ -15,17 +15,27 @@
     </transition> -->
 
     <div class="main">
-      <div class="content">
-        
-        <router-view v-slot="{ Component, route }">
-          <transition name="page" mode="out-in" >
-          <keep-alive :max="10" :include="cachedViews">
-            <component :is="Component" :key="route.name" />
-          </keep-alive>
-          </transition>
-        </router-view>
-      </div>
-    </div>
+  <div class="content">
+
+    <router-view v-slot="{ Component, route }">
+
+      <transition
+        name="fade-page"
+        mode="out-in"
+      >
+        <keep-alive :include="cachedViews" :max="10">
+          <component
+            :is="Component"
+            :key="route.fullPath"
+            class="page-component"
+          />
+        </keep-alive>
+      </transition>
+
+    </router-view>
+
+  </div>
+</div>
     <hr/>
     <!-- Footer (Chân trang) -->
     <footer>
@@ -36,15 +46,12 @@
 </template>
 
 <script>
-import imgloading from "@/assets/biu.jpg";
 import HeaderComponent from '../components/Header.vue'
 import FooterComponent from '../components/Footer.vue'
 export default {
   name: "LayoutPage",
   data() {
     return {
-      imgloading: imgloading,
-      isLoading1: true,
     };
   },
   components:{
@@ -79,7 +86,8 @@ export default {
 }
 
 .content {
-  width: 90%;
+ width: 90%;
+  overflow-x: hidden;
 }
 
 /* mobile */
@@ -107,20 +115,25 @@ export default {
 .progress-fade-leave-to {
   opacity: 0;
 }
-/* ===== PAGE TRANSITION (PRO LEVEL) ===== */
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+.page-component {
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
-.page-enter-from {
+/* enter */
+.fade-page-enter-active {
+  transition: opacity .12s linear;
+}
+
+/* leave */
+.fade-page-leave-active {
+  transition: opacity .08s linear;
+}
+
+/* states */
+.fade-page-enter-from,
+.fade-page-leave-to {
   opacity: 0;
-  transform: translateY(10px);
 }
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-5px);
-}
-
 </style>

@@ -107,10 +107,10 @@
           <v-col
             v-for="movie in movies"
             :key="movie.slug || movie._id"
-            cols="6"
+            cols="12"
             sm="4"
             md="3"
-            lg="2"
+            lg="3"
           >
             <router-link
               :to="{ name: 'Movies', params: { slug: movie.slug } }"

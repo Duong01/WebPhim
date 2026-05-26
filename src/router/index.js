@@ -6,9 +6,7 @@ import PhimChieuRap from "@/pages/PhimChieuRap/PhimChieuRap.vue";
 import PhimLe from "@/pages/PhimLe/PhimLe.vue";
 import TVShow from "@/pages/TVShow/TVShow.vue";
 import HoatHinh from "@/pages/HoatHinh/HoatHinh.vue";
-/* =========================
-   Routes (giữ nguyên cấu trúc)
-========================= */
+
 const routes = [
   {
     path: "/login",
@@ -191,23 +189,22 @@ const router = createRouter({
 
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    return false;
-    //return { top: 0 }; // mượt hơn nhiều
+    //return false;
+    return {
+    top: 0,
+    left: 0,
+    behavior: "auto",
+  };
+    //return { top: 0 }; // mượt hơn 
   },
 });
 
-/* =========================
-   Chunk error fix
-========================= */
 router.onError((error) => {
   if (/Loading chunk .* failed/i.test(error.message)) {
     window.location.reload();
   }
 });
 
-/* =========================
-   BeforeEach (nhẹ, không lag)
-========================= */
 router.beforeEach((to, from, next) => {
   // normalize page query
   if (to.name === "MovieDetail" && to.query?.page) {
@@ -239,7 +236,7 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-/* =========================
+/* ========================
    SEO (không block render)
 ========================= */
 router.afterEach((to) => {
