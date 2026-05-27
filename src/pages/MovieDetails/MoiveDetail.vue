@@ -1299,7 +1299,6 @@ export default {
         }
         if(this.$store.state.timeWatch != "" && this.$store.state.timeWatch != null){
           video.currentTime = this.$store.state.timeWatch;
-          video.addEventListener("loadedmetadata", setTime);
         }
       } catch (error) {
         console.error("Lỗi load thời gian xem:", error);
