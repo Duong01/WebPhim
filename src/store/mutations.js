@@ -15,6 +15,9 @@ const mutations =
     setAvatar(state, avar){
         state.Avatar = avar
     },
+    settimeWatch(state, time){
+        state.timeWatch = time
+    },
     imageThumbnail(state,newimage){
         state.image = newimage
     },

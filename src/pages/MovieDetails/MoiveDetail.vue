@@ -806,6 +806,7 @@ import {
   UpdateMoviesFavorite,
   CheckSession,
   Tracking,
+  UpdateTimeWatch
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
@@ -926,6 +927,9 @@ export default {
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
     this.saveWatchTime();
+    if(!this.idAccount){
+      this.saveWatchTimeAPI();
+    }
 
     // Dừng save interval
     if (this.saveTimeInterval) {
@@ -1114,6 +1118,10 @@ export default {
       }
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
+        if(!this.idAccount){
+
+          this.saveWatchTimeAPI();
+        }
         // Chỉ tự động cập nhật 1 lần khi đang xem video (sau 30 giây xem liên tục)
         if (this.idAccount && this.isPlaying && !this.hasAutoUpdatedFavorite) {
           this.favoriteUpdateCounter++;
@@ -1165,6 +1173,40 @@ export default {
     }
   },
   methods: {
+
+    saveWatchTimeAPI() {
+    try {
+      const video = this.$refs.videoPlayer;
+
+      // Không có video hoặc chưa phát
+      if (!video || !this.movie?.idMovie) return;
+
+      // Thời gian hiện tại
+      const currentTime = Math.floor(video.currentTime || 0);
+
+      // Không lưu nếu chưa xem gì
+      if (currentTime <= 0) return;
+
+      // Tránh spam API nếu thời gian không đổi
+      if (this.lastTimeUpdateTime === currentTime) return;
+
+      this.lastTimeUpdateTime = currentTime;
+
+      const payload = {
+        IDMovies: this.movie.idMovie,
+        IDAccount: this.idAccount,
+        timeWatch: Math.floor(video.duration || 0),
+      };
+
+      UpdateTimeWatch(payload);
+
+      console.log("Đã lưu thời gian xem:", payload);
+    } catch (error) {
+      console.error("Lỗi lưu thời gian xem:", error);
+    }
+  },
+
+
     Tracking() {
       Tracking(
         { page: window.location.href },
@@ -1254,6 +1296,10 @@ export default {
 
             video.addEventListener("loadedmetadata", setTime);
           }
+        }
+        if(this.$store.state.timeWatch != "" && this.$store.state.timeWatch != null){
+          video.currentTime = this.$store.state.timeWatch;
+          video.addEventListener("loadedmetadata", setTime);
         }
       } catch (error) {
         console.error("Lỗi load thời gian xem:", error);

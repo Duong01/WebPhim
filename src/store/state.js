@@ -25,6 +25,7 @@ export default function state() {
       curri18n: null,//  current $t for i18n
       image: "",
       Avatar: "",
+      timeWatch:"",
       lastActive: Date.now()
       
   

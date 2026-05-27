@@ -594,6 +594,7 @@ export default {
         params: { slug: movie.slug }, 
         query: { page: movie.currentPage }
       })
+      this.$store.commit("settimeWatch", movie.timeWatch);
     },
     ListMovie(isLoadMore = false) {
       if (isLoadMore) {
