@@ -1277,7 +1277,7 @@ export default {
 
       try {
         const watchData = localStorage.getItem("webphim_watchtime");
-        if (watchData) {
+        if (watchData && (this.$store.state.timeWatch == "" || this.$store.state.timeWatch == null)) {
           const data = JSON.parse(watchData);
 
           // Chỉ load nếu là cùng film và cùng tập
