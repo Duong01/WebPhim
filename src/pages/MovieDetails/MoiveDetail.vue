@@ -1014,12 +1014,13 @@ export default {
       this.setupVideo(this.movie.videoUrl);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
-
+if (this.$route.query.page !== normalized) {
         this.$router.replace({
           name: "MovieDetail",
           params: { slug: newSlug },
           query: { page: normalized },
         });
+}
       }
       this.favoriteUpdateCounter = 0;
       this.hasAutoUpdatedFavorite = false;
@@ -1094,11 +1095,14 @@ export default {
         const normalized = epName.replace("Tập ", "tap");
 
         // Cập nhật URL
-        this.$router.replace({
+        if (this.$route.query.page !== normalized) {
+          this.$router.replace({
           name: "MovieDetail",
           params: { slug: this.slug },
           query: { page: normalized },
         });
+        }
+        
       }
 
       this.initLazyLoad();
@@ -2311,11 +2315,13 @@ export default {
         this.movie.page = episode.name;
 
         const normalized = episode.name.replace("Tập ", "tap").trim();
+        if (this.$route.query.page !== normalized) {
         this.$router.replace({
           name: "MovieDetail",
           params: { slug: this.slug },
           query: { page: normalized },
         });
+        }
 
         if (this.videoKey) {
           localStorage.removeItem(this.videoKey);
