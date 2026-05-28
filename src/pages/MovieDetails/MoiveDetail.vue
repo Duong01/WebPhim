@@ -1195,7 +1195,7 @@ export default {
       const payload = {
         IDMovies: this.movie.idMovie,
         IDAccount: this.idAccount,
-        timeWatch: Math.floor(video.duration || 0),
+        timeWatch: Math.floor(currentTime || 0),
       };
 
       UpdateTimeWatch(payload);
