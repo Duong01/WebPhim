@@ -97,7 +97,8 @@ requestIdleCallback(async () => {
 
 async function initSession() {
   try {
-    const token = localStorage.getItem('token')
+    //const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem("token");
 
     if (!token) return
 
