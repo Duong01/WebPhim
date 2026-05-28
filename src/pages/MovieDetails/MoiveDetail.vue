@@ -926,6 +926,7 @@ export default {
   props: ["slug", "page"],
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
+    
     this.saveWatchTime();
     if(this.idAccount){
       this.saveWatchTimeAPI();
@@ -1130,7 +1131,7 @@ export default {
             this.hasAutoUpdatedFavorite = true;
           }
         }
-      }, 5000);
+      }, 30000);
       this.updateMeta();
       // Keyboard shortcuts
       window.addEventListener("keydown", this.onKeyDown);
