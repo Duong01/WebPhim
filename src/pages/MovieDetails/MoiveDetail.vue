@@ -927,7 +927,7 @@ export default {
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
     this.saveWatchTime();
-    if(!this.idAccount){
+    if(this.idAccount){
       this.saveWatchTimeAPI();
     }
 
@@ -1118,7 +1118,7 @@ export default {
       }
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
-        if(!this.idAccount){
+        if(this.idAccount){
 
           this.saveWatchTimeAPI();
         }
