@@ -1577,7 +1577,6 @@ export default {
 /* ================= RECENT WATCH ================= */
 
 .recent-section {
-  margin-bottom: 20px;
   width: 100%;
   overflow: hidden;
 }
@@ -1598,17 +1597,12 @@ export default {
 .recent-scroll {
   display: flex;
   gap: 16px;
-
   overflow-x: auto;
   overflow-y: hidden;
-
   padding-bottom: 8px;
-
   scroll-behavior: smooth;
-
   -webkit-overflow-scrolling: touch;
 
-  touch-action: pan-x;
 }
 .recent-scroll::-webkit-scrollbar {
   height: 8px;
