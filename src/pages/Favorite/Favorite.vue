@@ -790,7 +790,7 @@ export default {
     },
     recentMovies() {
       return [...this.movies]
-        .filter((m) => m.TimeUpdate != "" || m.TimeUpdate != null)
+        .filter((m) => m.TimeUpdate != "" && m.TimeUpdate != null)
         .sort((a, b) => {
           return new Date(b.TimeUpdate) - new Date(a.TimeUpdate);
         })
