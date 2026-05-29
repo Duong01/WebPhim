@@ -1024,7 +1024,7 @@ if (this.$route.query.page !== normalized) {
       }
       this.favoriteUpdateCounter = 0;
       this.hasAutoUpdatedFavorite = false;
-
+      this.$store.state.timeWatch = null;
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1204,8 +1204,6 @@ if (this.$route.query.page !== normalized) {
       };
 
       UpdateTimeWatch(payload);
-
-      console.log("Đã lưu thời gian xem:", payload);
     } catch (error) {
       console.error("Lỗi lưu thời gian xem:", error);
     }
