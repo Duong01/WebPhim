@@ -15,7 +15,7 @@
               <v-icon icon="mdi-chevron-right"></v-icon>
             </template>
           </v-breadcrumbs>
-
+  
           <!-- Bố cục hai cột -->
           <v-row dense>
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->

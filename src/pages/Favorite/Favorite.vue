@@ -71,6 +71,50 @@
     <!-- ================= MOVIE LIST (MOBILE STYLE LIKE IMAGE) ================= -->
 <v-row v-else-if="$vuetify.display.mdAndDown" class="movie-list">
 
+<!-- ================= RECENT WATCH ================= -->
+<div
+  v-if="recentMovies.length"
+  class="recent-section"
+>
+  <div class="recent-header">
+    <h3>🕘 Vừa xem gần đây</h3>
+  </div>
+
+  <div class="recent-scroll">
+    <div
+      v-for="movie in recentMovies"
+      :key="'recent-' + movie.id"
+      class="recent-card"
+      @click="gomovie(movie)"
+    >
+      <div class="recent-poster-wrap">
+        <v-img
+          :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
+          height="140"
+          width="100"
+          cover
+          class="recent-poster"
+        />
+
+        <div class="recent-progress">
+          <div
+            class="recent-progress-inner"
+            :style="{ width: getProgress(movie) + '%' }"
+          />
+        </div>
+      </div>
+
+      <div class="recent-name">
+        {{ movie.name }}
+      </div>
+
+      <div class="recent-ep">
+        {{ movie.currentPage }}
+      </div>
+    </div>
+  </div>
+</div>
+<el-divider border-style="dotted" />
   <v-col
     v-for="movie in filteredMovies"
     :key="movie.id"
@@ -741,6 +785,13 @@ export default {
 
       return list;
     },
+    recentMovies() {
+  return [...this.movies]
+    .sort((a, b) => {
+      return new Date(b.TimeUpdate) - new Date(a.TimeUpdate)
+    })
+    .slice(0, 15)
+},
   },
   watch: {
     movies() {
@@ -1518,5 +1569,111 @@ export default {
   display: flex;
   gap: 8px;
   margin-top: 10px;
+}
+
+/* ================= RECENT WATCH ================= */
+
+.recent-section {
+  margin-bottom: 24px;
+}
+
+.recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.recent-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* scroll ngang */
+.recent-scroll {
+  display: flex;
+  gap: 14px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding-bottom: 6px;
+
+  scroll-behavior: smooth;
+}
+
+/* custom scrollbar */
+.recent-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recent-scroll::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 20px;
+}
+
+.recent-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* card */
+.recent-card {
+  min-width: 100px;
+  max-width: 100px;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+  flex-shrink: 0;
+}
+
+.recent-card:hover {
+  transform: translateY(-4px);
+}
+
+.recent-poster-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.recent-poster {
+  border-radius: 12px;
+}
+
+/* progress */
+.recent-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  background: rgba(255,255,255,0.15);
+}
+
+.recent-progress-inner {
+  height: 100%;
+  background: #ff3d00;
+}
+
+/* text */
+.recent-name {
+  margin-top: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #fff;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-ep {
+  font-size: 11px;
+  color: #aaa;
 }
 </style>
