@@ -123,7 +123,7 @@
   </v-col>
 </v-row>
     <!-- ================= MOVIE LIST (MOBILE STYLE LIKE IMAGE) ================= -->
-    <v-row v-else-if="$vuetify.display.mdAndDown" class="movie-list">
+    <v-row v-if="$vuetify.display.mdAndDown" class="movie-list">
       <!-- ================= RECENT WATCH ================= -->
       
 
@@ -522,6 +522,8 @@ export default {
       }
 
       const match = raw.match(/\d+/);
+      if (!match) return "?";
+
       if (parseInt(match[0]) === parseInt(movie.totalPage)) {
         return "Hoàn thành";
       }
