@@ -779,6 +779,7 @@ export default {
       localStorage.removeItem("user");
       localStorage.removeItem("name");
       localStorage.removeItem("nameShow");
+      localStorage.removeItem("Avatar");
       
 
       this.$router.push("/login");

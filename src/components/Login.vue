@@ -207,8 +207,9 @@ export default {
             this.$store.commit("setEmpInfor", dat.data.data.user);
             this.$store.commit("setAvatar", dat.data.data.user.Avartar || dat.data.data.user.Avartar);
 
-            const redirect = this.$route.query.redirect || "/home";
-            this.$router.replace(redirect);
+            this.$router.back();
+            // const redirect = this.$route.query.redirect || "/home";
+            // this.$router.replace(redirect);
           } else {
             this.Message = dat.data.message;
             this.color = "error";
@@ -259,8 +260,9 @@ export default {
             this.$store.commit("setEmpInfor", user);
             this.$store.commit("setAvatar", user.Avatar || user.Avartar);
 
-            const redirect = this.$route.query.redirect || "/home";
-            this.$router.replace(redirect);
+            this.$router.back();
+            // const redirect = this.$route.query.redirect || "/home";
+            // this.$router.replace(redirect);
           } else {
             this.Message = data.message;
             this.color = "error";
