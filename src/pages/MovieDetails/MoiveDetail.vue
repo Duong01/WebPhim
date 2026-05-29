@@ -1190,7 +1190,7 @@ export default {
       }
       this.favoriteUpdateCounter = 0;
       this.hasAutoUpdatedFavorite = false;
-      this.$store.state.timeWatch = null;
+      this.$store.commit("settimeWatch", null);
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1299,7 +1299,7 @@ export default {
             this.hasAutoUpdatedFavorite = true;
           }
         }
-      }, 30000);
+      }, 60000);
       this.updateMeta();
       // Keyboard shortcuts
       window.addEventListener("keydown", this.onKeyDown);
@@ -1363,7 +1363,7 @@ export default {
         const payload = {
           IDMovies: this.movie.idMovie,
           IDAccount: this.idAccount,
-          timeWatch: Math.floor(currentTime || 0),
+          timeWatch: Math.floor(currentTime || 0)
         };
 
         UpdateTimeWatch(payload);
@@ -1439,7 +1439,7 @@ export default {
         };
 
         // Lưu vào localStorage với key duy nhất
-        const key = `watchtime_${this.movie.idMovie}_${this.currentEpisodeIndex}`;
+        const key = `webphim_watchtime`;
 
         localStorage.setItem(key, JSON.stringify(watchData));
       }
@@ -1480,7 +1480,7 @@ export default {
         }
 
         // key riêng từng tập
-        const key = `watchtime_${this.movie.idMovie}_${this.currentEpisodeIndex}`;
+        const key = `webphim_watchtime`;
 
         const watchData = localStorage.getItem(key);
 
