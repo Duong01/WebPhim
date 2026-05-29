@@ -102,7 +102,12 @@
                       </div>
                     </div>
 
-                    <div class="progress-wrapper" @click="seek($event)" @mousemove="updateTimeHover" @mouseleave="hideTimeHover">
+                    <div
+                      class="progress-wrapper"
+                      @click="seek($event)"
+                      @mousemove="updateTimeHover"
+                      @mouseleave="hideTimeHover"
+                    >
                       <div class="progress-bar">
                         <!-- Buffered progress -->
                         <div
@@ -155,7 +160,9 @@
               </div>
 
               <!-- nut next tap và back tap -->
-              <div class="d-flex justify-center align-center my-4 episode-nav-wrapper">
+              <div
+                class="d-flex justify-center align-center my-4 episode-nav-wrapper"
+              >
                 <v-btn
                   variant="tonal"
                   color="grey-lighten-1"
@@ -167,7 +174,12 @@
                   {{ $t("Tập trước") }}
                 </v-btn>
 
-                <v-chip color="primary" class="mx-3 px-4 font-weight-bold" size="large" variant="elevated">
+                <v-chip
+                  color="primary"
+                  class="mx-3 px-4 font-weight-bold"
+                  size="large"
+                  variant="elevated"
+                >
                   {{ movie.pageMovie[currentEpisodeIndex]?.name }}
                 </v-chip>
 
@@ -182,13 +194,23 @@
                   <v-icon end>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
-              
+
               <!-- Action Bar & Server Tabs -->
-              <div class="player-toolbar d-flex flex-column flex-md-row align-stretch align-md-center justify-space-between mb-6 pa-4 rounded-lg" style="gap: 16px;">
+              <div
+                class="player-toolbar d-flex flex-column flex-md-row align-stretch align-md-center justify-space-between mb-6 pa-4 rounded-lg"
+                style="gap: 16px"
+              >
                 <!-- Server -->
-                <div class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper overflow-x-auto pb-2 pb-md-0">
-                  <div class="text-caption text-grey mr-2 d-flex align-center flex-shrink-0">
-                    <v-icon size="small" class="mr-1">mdi-server-network</v-icon> Server:
+                <div
+                  class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper overflow-x-auto pb-2 pb-md-0"
+                >
+                  <div
+                    class="text-caption text-grey mr-2 d-flex align-center flex-shrink-0"
+                  >
+                    <v-icon size="small" class="mr-1"
+                      >mdi-server-network</v-icon
+                    >
+                    Server:
                   </div>
                   <div class="d-flex gap-2 flex-nowrap">
                     <v-btn
@@ -204,24 +226,65 @@
                       {{ server.server_name || `Server ${index + 1}` }}
                     </v-btn>
                   </div>
-                  <router-link :to="movie.LinkDown || ''" download target="_blank" class="ml-2 flex-shrink-0">
-                    <v-btn size="small" color="success" variant="tonal" icon="mdi-cloud-download" title="Tải xuống"></v-btn>
+                  <router-link
+                    :to="movie.LinkDown || ''"
+                    download
+                    target="_blank"
+                    class="ml-2 flex-shrink-0"
+                  >
+                    <v-btn
+                      size="small"
+                      color="success"
+                      variant="tonal"
+                      icon="mdi-cloud-download"
+                      title="Tải xuống"
+                    ></v-btn>
                   </router-link>
                 </div>
 
                 <!-- Action buttons -->
-                <div class="d-flex align-center gap-2 flex-nowrap action-buttons-group overflow-x-auto pb-2 pb-md-0">
-                  <v-btn variant="tonal" color="white" size="small" @click="dialogTrailer = true" class="action-btn flex-shrink-0 text-no-wrap">
+                <div
+                  class="d-flex align-center gap-2 flex-nowrap action-buttons-group overflow-x-auto pb-2 pb-md-0"
+                >
+                  <v-btn
+                    variant="tonal"
+                    color="white"
+                    size="small"
+                    @click="dialogTrailer = true"
+                    class="action-btn flex-shrink-0 text-no-wrap"
+                  >
                     <v-icon start color="red">mdi-youtube</v-icon> Trailer
                   </v-btn>
-                  <v-btn variant="tonal" color="white" size="small" @click="shareMovie" class="action-btn flex-shrink-0 text-no-wrap">
-                    <v-icon start color="blue">mdi-share-variant</v-icon> {{ $t("Chia sẻ") }}
+                  <v-btn
+                    variant="tonal"
+                    color="white"
+                    size="small"
+                    @click="shareMovie"
+                    class="action-btn flex-shrink-0 text-no-wrap"
+                  >
+                    <v-icon start color="blue">mdi-share-variant</v-icon>
+                    {{ $t("Chia sẻ") }}
                   </v-btn>
-                  <v-btn variant="tonal" color="white" size="small" @click="ResponseError" class="action-btn flex-shrink-0 text-no-wrap">
-                    <v-icon start color="warning">mdi-flag</v-icon> {{ $t("Báo lỗi") }}
+                  <v-btn
+                    variant="tonal"
+                    color="white"
+                    size="small"
+                    @click="ResponseError"
+                    class="action-btn flex-shrink-0 text-no-wrap"
+                  >
+                    <v-icon start color="warning">mdi-flag</v-icon>
+                    {{ $t("Báo lỗi") }}
                   </v-btn>
-                  <v-btn variant="tonal" :color="liked ? 'primary' : 'white'" size="small" @click="handleFavorite" class="action-btn flex-shrink-0 text-no-wrap">
-                    <v-icon start :color="liked ? 'white' : 'pink'">{{ liked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}</v-icon>
+                  <v-btn
+                    variant="tonal"
+                    :color="liked ? 'primary' : 'white'"
+                    size="small"
+                    @click="handleFavorite"
+                    class="action-btn flex-shrink-0 text-no-wrap"
+                  >
+                    <v-icon start :color="liked ? 'white' : 'pink'">{{
+                      liked ? "mdi-bookmark" : "mdi-bookmark-outline"
+                    }}</v-icon>
                     {{ $t("Xem sau") }}
                   </v-btn>
                 </div>
@@ -235,8 +298,12 @@
                 rounded="lg"
                 v-if="$vuetify.display.smAndDown"
               >
-                <v-card-title class="pt-4 pb-3 px-4 border-b d-flex align-center custom-title" style="border-color: rgba(255, 255, 255, 0.08) !important;">
-                  <span class="text-h6 font-weight-bold text-white title-text d-flex align-center w-100"
+                <v-card-title
+                  class="pt-4 pb-3 px-4 border-b d-flex align-center custom-title"
+                  style="border-color: rgba(255, 255, 255, 0.08) !important"
+                >
+                  <span
+                    class="text-h6 font-weight-bold text-white title-text d-flex align-center w-100"
                     >{{ movie.title }}
                     <v-chip
                       class="ml-3 chip-limit"
@@ -263,19 +330,30 @@
                           block
                           size="small"
                           @click="playEpisode(episode)"
-                          :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
+                          :variant="
+                            index === currentEpisodeIndex ? 'flat' : 'tonal'
+                          "
                           :color="
                             index === currentEpisodeIndex
                               ? 'primary'
                               : 'grey-darken-5'
                           "
-                          :class="['episode-item-btn', 'rounded-md', 'font-weight-medium', 'text-none', { 'episode-item-active': index === currentEpisodeIndex }]"
+                          :class="[
+                            'episode-item-btn',
+                            'rounded-md',
+                            'font-weight-medium',
+                            'text-none',
+                            {
+                              'episode-item-active':
+                                index === currentEpisodeIndex,
+                            },
+                          ]"
                         >
                           {{
                             episode.name
-                              ? (episode.name.includes("Tập")
+                              ? episode.name.includes("Tập")
                                 ? episode.name
-                                : $t("Tập ") + episode.name)
+                                : $t("Tập ") + episode.name
                               : "Trailer"
                           }}
                         </v-btn>
@@ -293,7 +371,11 @@
                     >
                       {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
                       <v-icon size="18" class="mr-1">
-                        {{ showAllEpisodes ? "mdi-chevron-up" : "mdi-chevron-down" }}
+                        {{
+                          showAllEpisodes
+                            ? "mdi-chevron-up"
+                            : "mdi-chevron-down"
+                        }}
                       </v-icon>
                     </v-btn>
                   </div>
@@ -301,24 +383,59 @@
               </v-card>
 
               <!-- Thông tin phim -->
-              <v-card class="movie-info-card pa-5 mb-6" color="#1a1a1a" flat rounded="lg">
+              <v-card
+                class="movie-info-card pa-5 mb-6"
+                color="#1a1a1a"
+                flat
+                rounded="lg"
+              >
                 <v-row>
-                  <v-col cols="12" sm="4" md="3" lg="3" v-if="$vuetify.display.smAndUp">
-                    <v-img :src="getOptimizedImage(movie.thumb_url)" aspect-ratio="2/3" cover class="rounded-lg elevation-4"></v-img>
+                  <v-col
+                    cols="12"
+                    sm="4"
+                    md="3"
+                    lg="3"
+                    v-if="$vuetify.display.smAndUp"
+                  >
+                    <v-img
+                      :src="getOptimizedImage(movie.thumb_url)"
+                      aspect-ratio="2/3"
+                      cover
+                      class="rounded-lg elevation-4"
+                    ></v-img>
                   </v-col>
                   <v-col cols="12" sm="8" md="9" lg="9">
-                    <h1 class="text-h5 font-weight-bold text-sm-h4 text-white mb-2">{{ movie.title }}</h1>
-                    <h2 class="text-subtitle-1 text-grey mb-4">{{ movie.name }} </h2>
-                    <div class="text-body-1 text-grey-lighten-2 mb-4 content-desc" v-html="movie.description"></div>
-                    
+                    <h1
+                      class="text-h5 font-weight-bold text-sm-h4 text-white mb-2"
+                    >
+                      {{ movie.title }}
+                    </h1>
+                    <h2 class="text-subtitle-1 text-grey mb-4">
+                      {{ movie.name }}
+                    </h2>
+                    <div
+                      class="text-body-1 text-grey-lighten-2 mb-4 content-desc"
+                      v-html="movie.description"
+                    ></div>
+
                     <v-divider color="grey-darken-3" class="mb-4"></v-divider>
-                    <v-row dense class="text-body-2 text-grey-lighten-1 info-grid-modern">
+                    <v-row
+                      dense
+                      class="text-body-2 text-grey-lighten-1 info-grid-modern"
+                    >
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Thể loại:") }}</span>
                         <span class="info-value text-white">
                           <template v-if="movies?.category?.length">
-                            <span v-for="(cate, ind) in movies.category" :key="ind" class="hover-text">
-                              {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
+                            <span
+                              v-for="(cate, ind) in movies.category"
+                              :key="ind"
+                              class="hover-text"
+                            >
+                              {{ cate.name
+                              }}<span v-if="ind < movies.category.length - 1"
+                                >,
+                              </span>
                             </span>
                           </template>
                           <span v-else>{{ $t("Đang cập nhật") }}</span>
@@ -328,14 +445,16 @@
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Quốc gia:") }}</span>
                         <span class="info-value text-white">
-                          {{ movies?.country?.[0]?.name || $t("Đang cập nhật") }}
+                          {{
+                            movies?.country?.[0]?.name || $t("Đang cập nhật")
+                          }}
                         </span>
                       </v-col>
 
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Số tập:") }}</span>
                         <span class="info-value text-white">
-                          {{ movies?.episode_total || '?' }} {{ $t("tập") }}
+                          {{ movies?.episode_total || "?" }} {{ $t("tập") }}
                         </span>
                       </v-col>
 
@@ -350,8 +469,15 @@
                         <span class="info-label">{{ $t("Diễn viên:") }}</span>
                         <span class="info-value text-white">
                           <template v-if="movies?.actor?.length">
-                            <span v-for="(actor, ind) in movies.actor" :key="ind" class="hover-text">
-                              {{ actor }}<span v-if="ind < movies.actor.length - 1">, </span>
+                            <span
+                              v-for="(actor, ind) in movies.actor"
+                              :key="ind"
+                              class="hover-text"
+                            >
+                              {{ actor
+                              }}<span v-if="ind < movies.actor.length - 1"
+                                >,
+                              </span>
                             </span>
                           </template>
                           <span v-else>{{ $t("Đang cập nhật") }}</span>
@@ -497,17 +623,25 @@
                   :key="index"
                   class="d-flex align-start mb-5"
                 >
-                <div class="avatar-with-crown" v-if="comment.Avartar != '' && comment.Avartar != null">
-                  <v-avatar
-                    size="44"
-                    class="me-3"
-                    color="blue-grey-darken-3"
-                    :image="comment.Avartar"
-                    
-                  ></v-avatar>
-                  <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
-                </div>
-                  
+                  <div
+                    class="avatar-with-crown"
+                    v-if="comment.Avartar != '' && comment.Avartar != null"
+                  >
+                    <v-avatar
+                      size="44"
+                      class="me-3"
+                      color="blue-grey-darken-3"
+                      :image="comment.Avartar"
+                    ></v-avatar>
+                    <v-icon
+                      v-if="isFanCung"
+                      class="crown-icon"
+                      color="yellow-darken-2"
+                      size="18"
+                      >mdi-crown</v-icon
+                    >
+                  </div>
+
                   <v-avatar
                     size="44"
                     class="me-3"
@@ -538,7 +672,7 @@
                 </div>
               </v-card>
             </v-col>
-            
+
             <!-- Cột bên phải: Danh sách tập (Desktop) -->
             <v-col
               cols="12"
@@ -554,13 +688,22 @@
                 rounded="lg"
                 class="episode-panel mb-6"
               >
-                <v-card-title class="pt-4 pb-3 px-4 border-b" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                <v-card-title
+                  class="pt-4 pb-3 px-4 border-b"
+                  style="border-color: rgba(255, 255, 255, 0.08) !important"
+                >
                   <div class="d-flex align-center justify-space-between w-100">
-                    <span class="text-h6 font-weight-bold text-white d-flex align-center">
-                      <v-icon start color="primary" class="mr-2">mdi-format-list-bulleted-square</v-icon>
+                    <span
+                      class="text-h6 font-weight-bold text-white d-flex align-center"
+                    >
+                      <v-icon start color="primary" class="mr-2"
+                        >mdi-format-list-bulleted-square</v-icon
+                      >
                       {{ $t("Danh sách tập") }}
                     </span>
-                    <v-chip color="primary" size="small" variant="tonal">{{ movie.pageMovie.length }} Tập</v-chip>
+                    <v-chip color="primary" size="small" variant="tonal"
+                      >{{ movie.pageMovie.length }} Tập</v-chip
+                    >
                   </div>
                 </v-card-title>
 
@@ -577,14 +720,33 @@
                       >
                         <v-btn
                           block
-                        :variant="index === currentEpisodeIndex ? 'flat' : 'tonal'"
-                          :color="index === currentEpisodeIndex ? 'primary' : 'grey-darken-5'"
-                        :class="['episode-btn', 'rounded-md', 'font-weight-medium', 'text-none', { 'episode-item-active': index === currentEpisodeIndex }]"
+                          :variant="
+                            index === currentEpisodeIndex ? 'flat' : 'tonal'
+                          "
+                          :color="
+                            index === currentEpisodeIndex
+                              ? 'primary'
+                              : 'grey-darken-5'
+                          "
+                          :class="[
+                            'episode-btn',
+                            'rounded-md',
+                            'font-weight-medium',
+                            'text-none',
+                            {
+                              'episode-item-active':
+                                index === currentEpisodeIndex,
+                            },
+                          ]"
                           @click="playEpisode(episode)"
                           height="40"
                         >
                           {{
-                            episode.name ? (episode.name.includes("Tập") ? episode.name : "Tập " + episode.name) : "Trailer"
+                            episode.name
+                              ? episode.name.includes("Tập")
+                                ? episode.name
+                                : "Tập " + episode.name
+                              : "Trailer"
                           }}
                         </v-btn>
                       </v-col>
@@ -599,7 +761,11 @@
             <!-- Gợi ý phim - Responsive Scroll Layout -->
             <v-col cols="12">
               <div class="suggested-movies my-8">
-                <h2 class="text-h5 font-weight-bold text-white mb-4"><v-icon left color="primary" class="mr-2">mdi-movie-open-star</v-icon>{{ $t("Phim được đề xuất") }}</h2>
+                <h2 class="text-h5 font-weight-bold text-white mb-4">
+                  <v-icon left color="primary" class="mr-2"
+                    >mdi-movie-open-star</v-icon
+                  >{{ $t("Phim được đề xuất") }}
+                </h2>
 
                 <!-- Scroll container -->
                 <div class="suggested-scroll-wrapper">
@@ -806,7 +972,7 @@ import {
   UpdateMoviesFavorite,
   CheckSession,
   Tracking,
-  UpdateTimeWatch
+  UpdateTimeWatch,
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
 import Hls from "hls.js";
@@ -839,7 +1005,7 @@ export default {
       bufferedProgress: 0,
       showTimeHover: false,
       hoverPosition: 0,
-      hoverTime: '00:00',
+      hoverTime: "00:00",
       lastTimeUpdateTime: 0,
       tab: "",
       shareUrl: window.location.href,
@@ -886,11 +1052,11 @@ export default {
         origin_name: "",
         year: "",
         slug: "",
-        vote_average:"",
+        vote_average: "",
         poster_url: "",
         quality: "",
-        time:"",
-        episode_total:""
+        time: "",
+        episode_total: "",
       },
       movieFavorite: {
         IDAccount: "",
@@ -906,7 +1072,7 @@ export default {
         time: "",
         quality: "",
         vote_average: "",
-        totalPage:""
+        totalPage: "",
       },
       isTrailer: false,
       urlImage: urlImage,
@@ -926,9 +1092,9 @@ export default {
   props: ["slug", "page"],
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
-    
+
     this.saveWatchTime();
-    if(this.idAccount){
+    if (this.idAccount) {
       this.saveWatchTimeAPI();
     }
 
@@ -1014,13 +1180,13 @@ export default {
       this.setupVideo(this.movie.videoUrl);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
-if (this.$route.query.page !== normalized) {
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: newSlug },
-          query: { page: normalized },
-        });
-}
+        if (this.$route.query.page !== normalized) {
+          this.$router.replace({
+            name: "MovieDetail",
+            params: { slug: newSlug },
+            query: { page: normalized },
+          });
+        }
       }
       this.favoriteUpdateCounter = 0;
       this.hasAutoUpdatedFavorite = false;
@@ -1097,12 +1263,11 @@ if (this.$route.query.page !== normalized) {
         // Cập nhật URL
         if (this.$route.query.page !== normalized) {
           this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: this.slug },
-          query: { page: normalized },
-        });
+            name: "MovieDetail",
+            params: { slug: this.slug },
+            query: { page: normalized },
+          });
         }
-        
       }
 
       this.initLazyLoad();
@@ -1123,8 +1288,7 @@ if (this.$route.query.page !== normalized) {
       }
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
-        if(this.idAccount){
-
+        if (this.idAccount) {
           this.saveWatchTimeAPI();
         }
         // Chỉ tự động cập nhật 1 lần khi đang xem video (sau 30 giây xem liên tục)
@@ -1178,37 +1342,35 @@ if (this.$route.query.page !== normalized) {
     }
   },
   methods: {
-
     saveWatchTimeAPI() {
-    try {
-      const video = this.$refs.videoPlayer;
+      try {
+        const video = this.$refs.videoPlayer;
 
-      // Không có video hoặc chưa phát
-      if (!video || !this.movie?.idMovie) return;
+        // Không có video hoặc chưa phát
+        if (!video || !this.movie?.idMovie) return;
 
-      // Thời gian hiện tại
-      const currentTime = Math.floor(video.currentTime || 0);
+        // Thời gian hiện tại
+        const currentTime = Math.floor(video.currentTime || 0);
 
-      // Không lưu nếu chưa xem gì
-      if (currentTime <= 0) return;
+        // Không lưu nếu chưa xem gì
+        if (currentTime <= 0) return;
 
-      // Tránh spam API nếu thời gian không đổi
-      if (this.lastTimeUpdateTime === currentTime) return;
+        // Tránh spam API nếu thời gian không đổi
+        if (this.lastTimeUpdateTime === currentTime) return;
 
-      this.lastTimeUpdateTime = currentTime;
+        this.lastTimeUpdateTime = currentTime;
 
-      const payload = {
-        IDMovies: this.movie.idMovie,
-        IDAccount: this.idAccount,
-        timeWatch: Math.floor(currentTime || 0),
-      };
+        const payload = {
+          IDMovies: this.movie.idMovie,
+          IDAccount: this.idAccount,
+          timeWatch: Math.floor(currentTime || 0),
+        };
 
-      UpdateTimeWatch(payload);
-    } catch (error) {
-      console.error("Lỗi lưu thời gian xem:", error);
-    }
-  },
-
+        UpdateTimeWatch(payload);
+      } catch (error) {
+        console.error("Lỗi lưu thời gian xem:", error);
+      }
+    },
 
     Tracking() {
       Tracking(
@@ -1220,11 +1382,19 @@ if (this.$route.query.page !== normalized) {
 
     updateMeta() {
       useHead({
-        title: `${this.movie.title || this.movie.name} Tập ${this.movie.page} Vietsub HD`,
+        title: `${this.movie.title || this.movie.name} Tập ${
+          this.movie.page
+        } Vietsub HD`,
         meta: [
           {
             name: "description",
-            content: `Xem ${this.movie.title} tập ${this.movie.page} vietsub, chất lượng cao cực mượt. ${this.movie.description ? this.movie.description.substring(0, 100) + '...' : ''}`,
+            content: `Xem ${this.movie.title} tập ${
+              this.movie.page
+            } vietsub, chất lượng cao cực mượt. ${
+              this.movie.description
+                ? this.movie.description.substring(0, 100) + "..."
+                : ""
+            }`,
           },
           { property: "og:title", content: this.movie.title },
           { property: "og:description", content: this.movie.description },
@@ -1239,13 +1409,13 @@ if (this.$route.query.page !== normalized) {
             children: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "VideoObject",
-              "name": `${this.movie.title} Tập ${this.movie.page}`,
-              "description": this.movie.description,
-              "thumbnailUrl": this.movie.thumb_url,
-              "uploadDate": new Date().toISOString(),
-              "embedUrl": window.location.href
+              name: `${this.movie.title} Tập ${this.movie.page}`,
+              description: this.movie.description,
+              thumbnailUrl: this.movie.thumb_url,
+              uploadDate: new Date().toISOString(),
+              embedUrl: window.location.href,
             }),
-          }
+          },
         ],
       });
     },
@@ -1269,40 +1439,68 @@ if (this.$route.query.page !== normalized) {
         };
 
         // Lưu vào localStorage với key duy nhất
-        localStorage.setItem("webphim_watchtime", JSON.stringify(watchData));
+        const key = `watchtime_${this.movie.idMovie}_${this.currentEpisodeIndex}`;
+
+        localStorage.setItem(key, JSON.stringify(watchData));
       }
     },
 
     // Load thời gian xem từ localStorage
     loadWatchTime() {
       const video = this.$refs.videoPlayer;
+
       if (!video || !this.movie.idMovie) return;
 
       try {
-        const watchData = localStorage.getItem("webphim_watchtime");
-        if (watchData && (this.$store.state.timeWatch == "" || this.$store.state.timeWatch == null)) {
-          const data = JSON.parse(watchData);
+        // ưu tiên từ favorite/store
+        if (
+          this.$store.state.timeWatch !== "" &&
+          this.$store.state.timeWatch != null
+        ) {
+          const storeTime = Number(this.$store.state.timeWatch);
 
-          // Chỉ load nếu là cùng film và cùng tập
+          const setStoreTime = () => {
+            if (
+              isFinite(storeTime) &&
+              storeTime > 0 &&
+              storeTime < video.duration
+            ) {
+              video.currentTime = storeTime;
+            }
+
+            // reset sau khi dùng
+            this.$store.commit("settimeWatch", null);
+
+            video.removeEventListener("loadedmetadata", setStoreTime);
+          };
+
+          video.addEventListener("loadedmetadata", setStoreTime);
+
+          return;
+        }
+
+        // key riêng từng tập
+        const key = `watchtime_${this.movie.idMovie}_${this.currentEpisodeIndex}`;
+
+        const watchData = localStorage.getItem(key);
+
+        if (!watchData) return;
+
+        const data = JSON.parse(watchData);
+
+        const setTime = () => {
           if (
-            data.movieId === this.movie.idMovie &&
-            data.episode ===
-              this.movie.pageMovie[this.currentEpisodeIndex]?.name
+            isFinite(data.currentTime) &&
+            data.currentTime > 0 &&
+            data.currentTime < video.duration
           ) {
-            // Đợi video loadedmetadata để set currentTime
-            const setTime = () => {
-              if (isFinite(data.currentTime) && data.currentTime > 0) {
-                video.currentTime = data.currentTime;
-              }
-              video.removeEventListener("loadedmetadata", setTime);
-            };
-
-            video.addEventListener("loadedmetadata", setTime);
+            video.currentTime = data.currentTime;
           }
-        }
-        if(this.$store.state.timeWatch != "" && this.$store.state.timeWatch != null){
-          video.currentTime = this.$store.state.timeWatch;
-        }
+
+          video.removeEventListener("loadedmetadata", setTime);
+        };
+
+        video.addEventListener("loadedmetadata", setTime);
       } catch (error) {
         console.error("Lỗi load thời gian xem:", error);
       }
@@ -1340,29 +1538,29 @@ if (this.$route.query.page !== normalized) {
       }
     },
     timeAgo(timestamp) {
-  const time = new Date(timestamp).getTime();
-  const now = Date.now();
+      const time = new Date(timestamp).getTime();
+      const now = Date.now();
 
-  if (time > now) return "Vừa xong";
+      if (time > now) return "Vừa xong";
 
-  const diff = now - time;
+      const diff = now - time;
 
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "Vừa xong";
-  if (minutes < 60) return `${minutes} phút trước`;
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 1) return "Vừa xong";
+      if (minutes < 60) return `${minutes} phút trước`;
 
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} giờ trước`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} giờ trước`;
 
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} ngày trước`;
+      const days = Math.floor(hours / 24);
+      if (days < 30) return `${days} ngày trước`;
 
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months} tháng trước`;
+      const months = Math.floor(days / 30);
+      if (months < 12) return `${months} tháng trước`;
 
-  const years = Math.floor(months / 12);
-  return `${years} năm trước`;
-},
+      const years = Math.floor(months / 12);
+      return `${years} năm trước`;
+    },
     // Call API
     MoveInfor(slug) {
       return new Promise((resolve, reject) => {
@@ -1390,12 +1588,11 @@ if (this.$route.query.page !== normalized) {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
-              this.movie.vote_average= result.movie.tmdb?.vote_average;
-              this.movie.poster_url= result.movie.poster_url;
-              this.movie.quality= result.movie.quality;
-              this.movie.time= result.movie.time
-              this.movie.episode_total= result.movie.episode_total
-
+              this.movie.vote_average = result.movie.tmdb?.vote_average;
+              this.movie.poster_url = result.movie.poster_url;
+              this.movie.quality = result.movie.quality;
+              this.movie.time = result.movie.time;
+              this.movie.episode_total = result.movie.episode_total;
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1501,12 +1698,11 @@ if (this.$route.query.page !== normalized) {
               this.movie.origin_name = result.movie.origin_name;
               this.movie.year = result.movie.year;
               this.movie.slug = result.movie.slug;
-              this.movie.vote_average= result.movie.tmdb?.vote_average;
-              this.movie.poster_url= result.movie.poster_url;
-              this.movie.quality= result.movie.quality;
-              this.movie.time= result.movie.time;
-              this.movie.episode_total= result.movie.episode_total
-
+              this.movie.vote_average = result.movie.tmdb?.vote_average;
+              this.movie.poster_url = result.movie.poster_url;
+              this.movie.quality = result.movie.quality;
+              this.movie.time = result.movie.time;
+              this.movie.episode_total = result.movie.episode_total;
 
               if (this.movie.trailer_url != "") {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
@@ -1736,12 +1932,12 @@ if (this.$route.query.page !== normalized) {
     onTimeUpdate() {
       const video = this.$refs.videoPlayer;
       if (!video) return;
-      
+
       // Throttle updates to 60fps for better performance
       const now = performance.now();
       if (now - this.lastTimeUpdateTime < 16) return;
       this.lastTimeUpdateTime = now;
-      
+
       this.currentTime = video.currentTime || 0;
       this.duration = video.duration || 0;
       this.progress =
@@ -1774,7 +1970,7 @@ if (this.$route.query.page !== normalized) {
         this.bufferedProgress = 0;
         return;
       }
-      
+
       // Get the latest buffered range end time
       const bufferedEnd = video.buffered.end(video.buffered.length - 1);
       this.bufferedProgress =
@@ -1786,12 +1982,12 @@ if (this.$route.query.page !== normalized) {
         this.showTimeHover = false;
         return;
       }
-      
+
       const bar = e.currentTarget.querySelector(".progress-bar");
       const rect = bar.getBoundingClientRect();
       const hoverX = e.clientX - rect.left;
       const ratio = Math.max(0, Math.min(1, hoverX / rect.width));
-      
+
       this.hoverPosition = ratio * 100;
       this.hoverTime = this.formatTime(ratio * this.duration);
       this.showTimeHover = true;
@@ -1929,63 +2125,72 @@ if (this.$route.query.page !== normalized) {
     autoUpdateFavorite() {
       if (!this.idAccount || !this.movie.idMovie) return;
 
-      const currentEp = this.movie.pageMovie[this.currentEpisodeIndex]?.name || this.movie.page;
+      const currentEp =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.name || this.movie.page;
 
-        this.movieFavorite.IDAccount= this.idAccount,
-        this.movieFavorite.IDMovies= this.movie.idMovie,
-        this.movieFavorite.slug= this.movie.slug,
-        this.movieFavorite.currentPage= currentEp,
-        this.movieFavorite.UrlMovies= this.movie.thumb_url,
-        this.movieFavorite.origin_name= this.movie.origin_name,
-        this.movieFavorite.name= this.movie.name,
-        this.movieFavorite.year= this.movie.year,
-        this.movieFavorite.lang= this.movie.lang,
-        this.movieFavorite.time= this.movie.time,
-        this.movieFavorite.quality= this.movie.quality,
-        this.movieFavorite.vote_average= this.movie.vote_average,
-        this.movieFavorite.poster_url= this.movie.poster_url,
-        this.movieFavorite.totalPage = this.movie.episode_total;
-
-
+      (this.movieFavorite.IDAccount = this.idAccount),
+        (this.movieFavorite.IDMovies = this.movie.idMovie),
+        (this.movieFavorite.slug = this.movie.slug),
+        (this.movieFavorite.currentPage = currentEp),
+        (this.movieFavorite.UrlMovies = this.movie.thumb_url),
+        (this.movieFavorite.origin_name = this.movie.origin_name),
+        (this.movieFavorite.name = this.movie.name),
+        (this.movieFavorite.year = this.movie.year),
+        (this.movieFavorite.lang = this.movie.lang),
+        (this.movieFavorite.time = this.movie.time),
+        (this.movieFavorite.quality = this.movie.quality),
+        (this.movieFavorite.vote_average = this.movie.vote_average),
+        (this.movieFavorite.poster_url = this.movie.poster_url),
+        (this.movieFavorite.totalPage = this.movie.episode_total);
 
       // Cập nhật âm thầm không cần alert
-      UpdateMoviesFavorite(this.movieFavorite, (res) => {
-        if (res.data.status === "success") {
-          this.liked = true;
+      UpdateMoviesFavorite(
+        this.movieFavorite,
+        (res) => {
+          if (res.data.status === "success") {
+            this.liked = true;
+          }
+        },
+        (err) => {
+          console.error("Auto update favorite failed:", err);
         }
-      }, (err) => {
-        console.error("Auto update favorite failed:", err);
-      });
+      );
     },
     scrollToActiveEpisode() {
       this.$nextTick(() => {
         // Tìm tất cả elements có class episode-item-active
-        const activeElements = this.$el.querySelectorAll('.episode-item-active');
-        
-        activeElements.forEach(activeBtn => {
+        const activeElements = this.$el.querySelectorAll(
+          ".episode-item-active"
+        );
+
+        activeElements.forEach((activeBtn) => {
           if (activeBtn) {
             // Tìm container episode-list gần nhất
-            const episodeList = activeBtn.closest('.episode-list');
+            const episodeList = activeBtn.closest(".episode-list");
             if (episodeList) {
               // Tính vị trí của activeBtn trong container
               const containerRect = episodeList.getBoundingClientRect();
               const activeRect = activeBtn.getBoundingClientRect();
               const relativeTop = activeRect.top - containerRect.top;
               const containerHeight = episodeList.clientHeight;
-              
+
               // Cuộn để đưa activeBtn vào giữa container
-              const scrollTop = episodeList.scrollTop + relativeTop - containerHeight / 2 + activeRect.height / 2;
-              
+              const scrollTop =
+                episodeList.scrollTop +
+                relativeTop -
+                containerHeight / 2 +
+                activeRect.height / 2;
+
               episodeList.scrollTo({
                 top: scrollTop,
-                behavior: 'smooth'
+                behavior: "smooth",
               });
             } else {
               // Fallback: cuộn toàn trang nếu không tìm thấy container
               activeBtn.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'nearest'
+                behavior: "smooth",
+                block: "center",
+                inline: "nearest",
               });
             }
           }
@@ -2087,8 +2292,8 @@ if (this.$route.query.page !== normalized) {
       // } else {
       return `${
         imagePath.includes("https://phimimg.com/upload")
-            ? this.urlImage1 + imagePath
-            : this.urlImage1 + "https://phimimg.com/" + imagePath
+          ? this.urlImage1 + imagePath
+          : this.urlImage1 + "https://phimimg.com/" + imagePath
         //this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;
       // }
@@ -2183,7 +2388,7 @@ if (this.$route.query.page !== normalized) {
     },
     ResponseError() {
       Tracking(
-        { page: "Có xảy ra lỗi: "+ window.location.href },
+        { page: "Có xảy ra lỗi: " + window.location.href },
         () => {},
         (err) => console.log(err)
       );
@@ -2314,11 +2519,11 @@ if (this.$route.query.page !== normalized) {
 
         const normalized = episode.name.replace("Tập ", "tap").trim();
         if (this.$route.query.page !== normalized) {
-        this.$router.replace({
-          name: "MovieDetail",
-          params: { slug: this.slug },
-          query: { page: normalized },
-        });
+          this.$router.replace({
+            name: "MovieDetail",
+            params: { slug: this.slug },
+            query: { page: normalized },
+          });
         }
 
         if (this.videoKey) {
@@ -3326,7 +3531,18 @@ a {
   max-width: 20% !important;
   padding: 4px;
 }
-.video-player {  width: 100%; height: 100%;  object-fit: contain;  background-color: black;  cursor: pointer;  will-change: auto;  backface-visibility: hidden;  -webkit-backface-visibility: hidden;  transform: translateZ(0);  -webkit-transform: translateZ(0);}
+.video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: black;
+  cursor: pointer;
+  will-change: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
 .suggested-item {
   padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -3419,7 +3635,7 @@ a {
   transition: all 0.2s ease;
 }
 .episode-item-active {
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
   transform: scale(1.02);
 }
 .controls {
