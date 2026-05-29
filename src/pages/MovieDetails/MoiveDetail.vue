@@ -2040,7 +2040,7 @@ if (this.$route.query.page !== normalized) {
         this.$router.push("/login");
         return;
       }
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (token) {
         CheckSession(
           (dat) => {
