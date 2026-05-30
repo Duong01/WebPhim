@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { urlImage, ListMovieByCateHome } from '@/model/api'
+import { urlImage, ListMovieByCateHome1 } from '@/model/api'
 import FilterMovie from "@/pages/FilterMovie.vue"
 import LayoutMain from "@/pages/LayoutMain.vue";
 
@@ -219,7 +219,7 @@ export default {
       if (this.currentPage === 1) {
         this.movies = [];
       }
-      ListMovieByCateHome(`danh-sach/${this.path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=24`, (result) => {
+      ListMovieByCateHome1(`danh-sach/${this.path}?keyword=${this.filters.keyword}&page=${this.currentPage}&sort_field=${this.filters.sortOption}&sort_type=desc&sort_lang=${this.filters.lang}&category=${this.filters.category}&country=${this.filters.country}&year=${this.filters.year}&limit=24`, (result) => {
         if (result.status === 'success' || result.status == true) {
           const newMovies = result.data.items || [];
           if (isLoadMore) {
