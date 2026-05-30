@@ -2246,7 +2246,7 @@ export default {
         this.$router.push("/login");
         return;
       }
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (token) {
         CheckSession(
           (dat) => {

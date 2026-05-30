@@ -774,7 +774,7 @@ export default {
     },
     Logout() {
       localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
+      localStorage.removeItem("token");
       localStorage.removeItem("favoriteMovies");
       localStorage.removeItem("user");
       localStorage.removeItem("name");

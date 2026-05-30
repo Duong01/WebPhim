@@ -187,7 +187,7 @@ export default {
 
             // xoa du lieu cu
             localStorage.removeItem("token");
-            sessionStorage.removeItem("token");
+            localStorage.removeItem("token");
             localStorage.removeItem("favoriteMovies");
             localStorage.removeItem("user");
             localStorage.removeItem("name");
@@ -196,7 +196,7 @@ export default {
 
 
             //localStorage.setItem("token", dat.data.data.token);
-            sessionStorage.setItem("token", dat.data.data.token);
+            localStorage.setItem("token", dat.data.data.token);
 
             //localStorage.setItem("user", JSON.stringify(dat.data.data.user));
             localStorage.setItem("Avatar", dat.data.data.user.Avartar);
@@ -241,7 +241,7 @@ export default {
 
           if (data.status === "success") {
             localStorage.removeItem("token");
-            sessionStorage.removeItem("token");
+            localStorage.removeItem("token");
             localStorage.removeItem("favoriteMovies");
             localStorage.removeItem("user");
             localStorage.removeItem("name");
@@ -251,7 +251,7 @@ export default {
 
             const { token, user } = data.data;
 
-            sessionStorage.setItem("token", token);
+            localStorage.setItem("token", token);
             localStorage.setItem("name", user.ID);
             localStorage.setItem("nameShow", user.EmpName);
             localStorage.setItem("Avatar", user.Avatar || user.Avartar);

@@ -228,7 +228,7 @@ export default {
       this.movieFavorite.time = movie.time
       this.movieFavorite.quality = movie.quality
       this.movieFavorite.vote_average = movie.tmdb.vote_average
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (token) {
         CheckSession(
           (dat) => {

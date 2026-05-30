@@ -224,7 +224,7 @@ router.beforeEach((to, from, next) => {
 
   // auth check
   if (to.meta.requiresAuth) {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       return next({
         path: "/login",
