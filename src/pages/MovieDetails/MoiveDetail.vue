@@ -1029,6 +1029,7 @@ export default {
       Message: "",
       color: "",
       mess: false,
+      movies:[],
       movie: {
         title: "",
         valueRate: 4.5,
@@ -1431,12 +1432,25 @@ export default {
       // Chỉ lưu nếu video đã tải được
       if (isFinite(currentTime) && isFinite(duration) && duration > 0) {
         const watchData = {
-          movieId: this.movie.idMovie,
-          slug: this.movie.slug,
+          IDMovies: this.movies._id,
+          slug: this.movies.slug,
           episode: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
-          currentTime: currentTime,
+          timeWatch: currentTime,
           duration: duration,
           timestamp: Date.now(),
+          currentPage: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
+          lang: this.movies.lang,
+          quality: this.movies.quality,
+          name: this.movies.name,
+          thumb_url: this.movies.thumb_url,
+          poster_url: this.movies.poster_url,
+          origin_name: this.movies.origin_name,
+          year: this.movies.year,
+          time: this.movies.time,
+          episode_total: this.movies.episode_total,
+          totalPage: this.movies.episode_total,
+          year: this.movies.year
+          
         };
 
         // Lưu vào localStorage với key duy nhất
@@ -1569,6 +1583,7 @@ export default {
           slug,
           (result) => {
             if (result.status == true || result.status == "success") {
+              this.movies = result.movie;
               this.link = "";
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
@@ -1679,6 +1694,7 @@ export default {
           slug,
           (result) => {
             if (result.status == true || result.status == "success") {
+              this.movies = result.movie;
               this.link = "link";
               this.movies = result.movie;
               this.movie.page = result.movie.episode_current;

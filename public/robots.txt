@@ -16,4 +16,4 @@ Disallow: /search
 
 # Sitemap
 
-Sitemap: https://web-phim-one.vercel.app/sitemap.xml
+Sitemap: https://zcines.com/sitemap.xml

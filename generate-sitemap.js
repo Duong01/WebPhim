@@ -2,7 +2,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const BASE_URL = process.env.BASE_URL || "https://web-phim-one.vercel.app"; // đổi thành domain của bạn
+// const BASE_URL = process.env.BASE_URL || "https://web-phim-one.vercel.app"; // đổi thành domain của bạn
+const BASE_URL = process.env.BASE_URL || "https://zcines.com"; // đổi thành domain của bạn
 
 // Optional: provide an API endpoint that returns movie list JSON. Example response format expected:
 // [{ slug: 'ten-phim', episodes: 125, updatedAt: '2024-01-01' }, ...]
