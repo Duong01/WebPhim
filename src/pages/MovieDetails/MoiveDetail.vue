@@ -1448,8 +1448,7 @@ export default {
           year: this.movies.year,
           time: this.movies.time,
           episode_total: this.movies.episode_total,
-          totalPage: this.movies.episode_total,
-          year: this.movies.year
+          totalPage: this.movies.episode_total
           
         };
 
