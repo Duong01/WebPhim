@@ -1,40 +1,79 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="vi">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
-        <meta property="og:url" content="https://zcines.com/" />
-        <link rel="canonical" href="https://zcines.com/" />
-        <meta name="next-size-adjust" content=""/>
-        <link rel="manifest" href="/manifest.json"/>
-        <title>Phim 360 - Kho Phim Quốc Dân | Xem Phim Hay Online Miễn Phí</title>
-        <meta name="description" content="Phim 360 - Trang xem phim online miễn phí tốc độ cao, chất lượng HD &amp; 4K cực nét. Cập nhật liên tục những bộ phim mới nhất, phim bộ HD Vietsub, phim chiếu rạp đỉnh cao 2026."/>
-        <meta name="keywords" content="Phim 360,phim hay,xem phim online,phim moi,phim vietsub,motchill,rophim,phim4k,phim1080"/>
-        <meta name="robots" content="index, follow"/>
-        <meta name="mobile-web-app-capable" content="yes"/>
-        <meta name="apple-mobile-web-app-title" content="Phim 360"/>
-        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <link rel="apple-touch-icon" href="./Logo.png"/>
-        <meta name="apple-mobile-web-app-title" content="Phim 360"/>
-        <meta property="og:title" content="PHIM 360 - Kho Phim Quốc Dân | Xem Phim Không Quảng Cáo"/>
-        <meta property="og:description" content="Khám phá kho phim khổng lồ tại Phim 360 . Xem phim online miễn phí chất lượng 4K, tốc độ tải siêu nhanh, xem mượt trên mọi thiết bị."/>
-        <meta property="og:locale" content="vi_VN"/>
-        <meta property="og:type" content="website"/>
-        <meta name="twitter:card" content="summary"/>
-        <meta name="twitter:title" content="PHIM 360 - Kho Phim Quốc Dân"/>
-        <meta name="twitter:description" content="Xem phim 4K Vietsub mượt mà, tốc độ load cực nhanh tại Phim 360. Nền tảng miễn phí tốt nhất 2026."/>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="Phim360" />
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <!-- Canonical: set your site domain in build or replace the fallback URL -->
+    <link rel="canonical" href="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <title><%= htmlWebpackPlugin.options.title || 'Zcines - Kho phim quốc dân | Xem phim hay online miễn phí' %></title>
+
+    <meta name="description" content="Zcines — Kho phim quốc dân, mọi phim đều có: phim bộ, phim lẻ, phim chiếu rạp, hoạt hình, anime, 4K, Vietsub. Xem online miễn phí, tốc độ cao, cập nhật liên tục." />
+    <meta name="keywords" content="Zcines,zcines,xem phim online,kho phim,phim vietsub,phim 4k,phim hd,phim bộ,phim lẻ" />
+    <meta name="robots" content="index, follow" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Zcines" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="/Logo.png" />
     <link rel="icon" href="<%= BASE_URL %>icon.png" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <!-- Open Graph -->
+    <meta property="og:url" content="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" />
+    <meta property="og:title" content="<%= htmlWebpackPlugin.options.ogTitle || 'Zcines - Kho phim quốc dân | Xem phim hay online miễn phí' %>" />
+    <meta property="og:description" content="<%= htmlWebpackPlugin.options.ogDescription || 'Zcines — Kho phim quốc dân, phim bộ & phim lẻ Vietsub, 4K. Xem online miễn phí, cập nhật liên tục.' %>" />
+    <meta property="og:image" content="<%= htmlWebpackPlugin.options.ogImage || '/og-image.jpg' %>" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<%= htmlWebpackPlugin.options.ogTitle || 'Zcines - Kho phim quốc dân | Xem phim hay online miễn phí' %>" />
+    <meta name="twitter:description" content="<%= htmlWebpackPlugin.options.ogDescription || 'Zcines — Kho phim quốc dân, phim bộ & phim lẻ Vietsub, 4K. Xem online miễn phí, cập nhật liên tục.' %>" />
+    <meta name="twitter:image" content="<%= htmlWebpackPlugin.options.ogImage || '/og-image.jpg' %>" />
+
+    <!-- Hreflang: adjust URLs to match your language routes -->
+    <link rel="alternate" href="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" hreflang="vi" />
+    <link rel="alternate" href="<%= (htmlWebpackPlugin.options.canonical || 'https://zcines.com/') + 'en/' %>" hreflang="en" />
+    <link rel="alternate" href="<%= (htmlWebpackPlugin.options.canonical || 'https://zcines.com/') + 'zh/' %>" hreflang="zh-CN" />
+
+    <!-- Sitemap reference -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <!-- Structured Data: WebSite + Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>#website",
+          "url": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>",
+          "name": "<%= htmlWebpackPlugin.options.title || 'Zcines' %>",
+          "inLanguage": "vi",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": "<%= htmlWebpackPlugin.options.title || 'Zcines' %>",
+          "url": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>",
+          "logo": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>Logo.png"
+        }
+      ]
+    }
+    </script>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
   </head>
   <style>
     .selector-for-some-widget {

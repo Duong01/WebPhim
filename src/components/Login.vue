@@ -80,6 +80,7 @@
             <v-divider class="my-6 opacity-50" />
 
             <div class="text-center text-caption">
+              
               Chưa có tài khoản?
               <router-link
                 to="/register"
@@ -88,6 +89,15 @@
                 Đăng ký ngay
               </router-link>
             </div>
+            <div class="text-center text-caption">
+
+          <router-link
+                to="/home"
+                class="font-weight-bold text-orange-accent-2 ml-1"
+              >
+                Trở về trang Home
+              </router-link>
+          </div>
           </v-form>
         </v-card>
       </v-col>

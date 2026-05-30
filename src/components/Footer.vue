@@ -69,7 +69,7 @@
           <div class="d-flex gap-3">
             <v-btn
               icon="mdi-facebook"
-              href="https://www.facebook.com/"
+              href="https://www.facebook.com/duongitbg01"
               target="_blank"
               variant="tonal"
               color="blue"
@@ -78,7 +78,7 @@
             ></v-btn>
             <v-btn
               icon="mdi-youtube"
-              href="https://www.youtube.com/"
+              href="https://www.youtube.com/@nguyenduongit01"
               target="_blank"
               variant="tonal"
               color="red"
@@ -96,7 +96,7 @@
             ></v-btn>
             <v-btn
               icon
-              href="https://t.me/"
+              href="https://t.me/zcines"
               target="_blank"
               variant="tonal"
               color="light-blue"

@@ -109,18 +109,7 @@ export default {
       ],
 
       sections: [
-        {
-          title: "Phim Đề Cử – Những Tác Phẩm Không Thể Bỏ Lỡ",
-          type: "slider",
-          url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
-          movies: [],
-          link: {
-            name: "HoatHinh",
-            params: { path: "hoat-hinh" },
-          },
-          loaded: false,
-          loading: false
-        },
+        
 
         {
           title: "Phim Đang Thịnh Hành – Xu Hướng Xem Nhiều Nhất Hiện Nay",
@@ -167,6 +156,19 @@ export default {
           link: {
             name: "PhimChieuRap",
             params: { path: "phim-chieu-rap" },
+          },
+          loaded: false,
+          loading: false
+        },
+
+        {
+          title: "Phim Đề Cử – Những Tác Phẩm Không Thể Bỏ Lỡ",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "HoatHinh",
+            params: { path: "hoat-hinh" },
           },
           loaded: false,
           loading: false
