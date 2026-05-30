@@ -92,7 +92,7 @@
             <v-img
               :src="getOptimizedImage(movie.poster_url || movie.UrlMovies)"
               height="150"
-              width="110"
+              width="100%"
               cover
               class="recent-poster"
             />
@@ -1630,7 +1630,7 @@ export default {
 @media (min-width: 960px) {
 
   .recent-card {
-    width: 160px;
+    width: 140px;
   }
 
   .recent-poster {
