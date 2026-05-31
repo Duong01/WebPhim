@@ -69,7 +69,7 @@
           <div class="d-flex gap-3">
             <v-btn
               icon="mdi-facebook"
-              href="https://www.facebook.com/duongitbg01"
+              href="https://www.facebook.com"
               target="_blank"
               variant="tonal"
               color="blue"

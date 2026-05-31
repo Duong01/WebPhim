@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       trending: [],
-      cache: new Map(),
+      cache: null,
       
       categories: [
         {
@@ -249,7 +249,15 @@ export default {
       ],
     };
   },
-
+  created() {
+  this.cache = new Map();
+},
+beforeUnmount() {
+  if (this.observer) {
+    this.observer.disconnect();
+    this.observer = null;
+  }
+},
   async mounted() {
     this.ListNewUpdate();
 
@@ -311,7 +319,7 @@ export default {
         const data = await res.json();
 
         const raw = data.items || data.data?.items || [];
-        const movies = this.normalizeMovies(raw);
+        const movies = this.normalizeMovies(raw).slice(0, 12);
 
         section.movies = movies;
         this.cache.set(section.url, movies);
@@ -323,44 +331,59 @@ export default {
       }
     },
     initLazyLoad() {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const index = entry.target.dataset.index;
-              const section = this.sections[index];
+  this.observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
 
-              if (!section.loading && !section.loaded) {
-                section.loading = true;
+        const index = Number(entry.target.dataset.index);
+        const section = this.sections[index];
 
-                this.loadSection(section).finally(() => {
-                  section.loaded = true;
-                  section.loading = false;
-                });
-              }
-            }
+        if (!section) {
+          this.observer.unobserve(entry.target);
+          return;
+        }
+
+        if (section.loaded || section.loading) {
+          this.observer.unobserve(entry.target);
+          return;
+        }
+
+        section.loading = true;
+
+        this.loadSection(section)
+          .finally(() => {
+            section.loaded = true;
+            section.loading = false;
+
+            // Ngừng theo dõi sau khi load xong
+            this.observer.unobserve(entry.target);
           });
-        },
-        {
-          rootMargin: "300px",
-          threshold: 0.1
-        },
-      );
-
-      this.$nextTick(() => {
-        this.sections.forEach((section, index) => {
-          const comp = this.$refs["section" + index];
-
-          const el = Array.isArray(comp) ? comp[0].$el : comp?.$el;
-
-          if (el) {
-            el.dataset.index = index;
-
-            observer.observe(el);
-          }
-        });
       });
     },
+    {
+      root: null,
+      rootMargin: "200px 0px",
+      threshold: 0.01,
+    }
+  );
+
+  this.$nextTick(() => {
+    this.sections.forEach((_, index) => {
+      const comp = this.$refs[`section${index}`];
+
+      const el = Array.isArray(comp)
+        ? comp[0]?.$el
+        : comp?.$el;
+
+      if (!el) return;
+
+      el.dataset.index = index;
+
+      this.observer.observe(el);
+    });
+  });
+},
   },
 };
 </script>

@@ -16,30 +16,48 @@
     </div>
 
     <component
-  :is="componentType"
-  :movies="movies"
-  :loading="loading"
-  v-memo="[movies]"
-  />
+      v-if="movies.length"
+      :is="componentType"
+      :movies="movies"
+      :loading="loading"
+      v-memo="[movies]"
+    />
 
   <div v-if="loading" class="skeleton-row">
-    <div v-for="i in 6" :key="i" class="skeleton-card"></div>
+    <div v-for="i in 12" :key="i" class="skeleton-card"></div>
   </div>
-      <v-divider
-    :thickness="2"
-    class="border-opacity-25"
-    color="success"
-  ></v-divider>
+      <hr class="section-divider">
   </div>
 </template>
 
 <script>
-import MovieRow from "./MovieRow.vue";
-import MovieGrid from "./MovieGrid.vue";
-import MovieRanking from "./MovieRanking.vue";
-import MovieSlide from "./MovieSlide.vue";
-import MovieDashboard from "./MovieDashboard.vue";
-import MovieSpotlightVue from './MovieSpotlight.vue';
+import { defineAsyncComponent } from "vue";
+
+const MovieRow = defineAsyncComponent(() =>
+  import("./MovieRow.vue")
+);
+
+const MovieGrid = defineAsyncComponent(() =>
+  import("./MovieGrid.vue")
+);
+const MovieRanking = defineAsyncComponent(() =>
+  import("./MovieRanking.vue")
+);
+const MovieSlide = defineAsyncComponent(() =>
+  import("./MovieSlide.vue")
+);
+const MovieDashboard = defineAsyncComponent(() =>
+  import("./MovieDashboard.vue")
+);
+const MovieSpotlightVue = defineAsyncComponent(() =>
+  import("./MovieSpotlight.vue")
+);
+// import MovieRow from "./MovieRow.vue";
+// import MovieGrid from "./MovieGrid.vue";
+// import MovieRanking from "./MovieRanking.vue";
+// import MovieSlide from "./MovieSlide.vue";
+// import MovieDashboard from "./MovieDashboard.vue";
+// import MovieSpotlightVue from './MovieSpotlight.vue';
 
 
 export default {
@@ -236,5 +254,10 @@ export default {
 @keyframes shimmer {
   0% { background-position: 100% 0; }
   100% { background-position: 0 0; }
+}
+.section-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,.1);
 }
 </style>
