@@ -28,7 +28,7 @@ module.exports = defineConfig({
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: 'Phim Hay Mỗi Ngày', // 👉 Đây là tiêu đề bạn muốn
+      title: 'Xem Phim Online Vietsub FullHD, Thuyết Minh, Phim Bộ, Phim Lẻ, Phim Chiếu Rạp Mới Nhất | ZCines', // 👉 Đây là tiêu đề bạn muốn
     },
   },
 })

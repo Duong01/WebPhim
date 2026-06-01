@@ -8,7 +8,7 @@
       />
       <v-img
         :src="imageLogo"
-        alt="Phim360"
+        alt="Zcines"
         class=""
         cover
         :max-width="$vuetify.display.smAndDown ? 120 : 180"

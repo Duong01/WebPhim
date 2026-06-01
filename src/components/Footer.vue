@@ -45,11 +45,11 @@
         <!-- Cột 1: Logo + Mô tả + Social -->
         <v-col cols="12" lg="4" md="12" class="pr-lg-8 mb-6 mb-lg-0">
           <div class="text-h4 font-weight-bold mb-4">
-            <span class="font-italic text-white">Phim</span
+            <span class="font-italic text-white">Zcines</span
             ><span class="logo-gradient">360</span>
           </div>
           <p class="text-body-2 mb-6" style="line-height: 1.6">
-            <strong class="text-white">Phim360</strong> -
+            <strong class="text-white">Zcines</strong> -
             {{
               $t(
                 "Trang xem phim Online với giao diện hiện đại, thân thiện người dùng."
@@ -277,7 +277,7 @@
     <!-- Bottom Copyright Line -->
     <div class="w-100 bg-black pa-4 text-center">
       <p class="text-caption text-grey-darken-1 mb-0">
-        © {{ new Date().getFullYear() }} Phim360. All Rights Reserved. Designed
+        © {{ new Date().getFullYear() }} Zcines. All Rights Reserved. Designed
         for Movie Lovers.
       </p>
     </div>
