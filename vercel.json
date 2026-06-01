@@ -7,9 +7,6 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
-    },
-    {
-      "buildCommand": "npm run generate-sitemap && npm run build"
     }
   ]
 }
