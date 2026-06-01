@@ -1,103 +1,222 @@
 
 const fs = require("fs");
 const path = require("path");
+const https = require("https");
 
-// const BASE_URL = process.env.BASE_URL || "https://web-phim-one.vercel.app"; // đổi thành domain của bạn
-const BASE_URL = process.env.BASE_URL || "https://zcines.com"; // đổi thành domain của bạn
+const BASE_URL = "https://zcines.com";
 
-// Optional: provide an API endpoint that returns movie list JSON. Example response format expected:
-// [{ slug: 'ten-phim', episodes: 125, updatedAt: '2024-01-01' }, ...]
-const MOVIES_API = process.env.MOVIES_API || null;
+const STATIC_URLS = [
+  "/",
+  "/home",
 
-async function fetchMovies() {
-  if (!MOVIES_API) return null;
-  try {
-    const https = require('https');
-    return await new Promise((resolve, reject) => {
-      https.get(MOVIES_API, (res) => {
-        let data = '';
-        res.on('data', (chunk) => (data += chunk));
-        res.on('end', () => {
+  "/the-loai/phim-bo",
+  "/the-loai/phim-le",
+  "/the-loai/tv-shows",
+  "/the-loai/phim-vietsub",
+  "/the-loai/phim-thuyet-minh",
+  "/the-loai/phim-long-tieng",
+  "/the-loai/hoat-hinh",
+  "/the-loai/phim-moi",
+  "/the-loai/phim-hot",
+
+  "/the-loai/hanh-dong",
+  "/the-loai/mien-tay",
+  "/the-loai/tre-em",
+  "/the-loai/lich-su",
+  "/the-loai/co-trang",
+  "/the-loai/chien-tranh",
+  "/the-loai/vien-tuong",
+  "/the-loai/kinh-di",
+  "/the-loai/tai-lieu",
+  "/the-loai/bi-an",
+  "/the-loai/phim-18",
+  "/the-loai/tinh-cam",
+  "/the-loai/tam-ly",
+  "/the-loai/the-thao",
+  "/the-loai/phieu-luu",
+  "/the-loai/am-nhac",
+  "/the-loai/gia-dinh",
+  "/the-loai/hoc-duong",
+  "/the-loai/hai-huoc",
+  "/the-loai/hinh-su",
+  "/the-loai/vo-thuat",
+  "/the-loai/khoa-hoc",
+  "/the-loai/than-thoai",
+  "/the-loai/chinh-kich",
+  "/the-loai/kinh-dien",
+  "/the-loai/phim-ngan",
+
+  "/quoc-gia/viet-nam",
+  "/quoc-gia/trung-quoc",
+  "/quoc-gia/thai-lan",
+  "/quoc-gia/hong-kong",
+  "/quoc-gia/phap",
+  "/quoc-gia/duc",
+  "/quoc-gia/ha-lan",
+  "/quoc-gia/mexico",
+  "/quoc-gia/thuy-dien",
+  "/quoc-gia/philippines",
+  "/quoc-gia/dan-mach",
+  "/quoc-gia/thuy-si",
+  "/quoc-gia/ukraina",
+  "/quoc-gia/han-quoc",
+  "/quoc-gia/au-my",
+  "/quoc-gia/an-do",
+  "/quoc-gia/canada",
+  "/quoc-gia/tay-ban-nha",
+  "/quoc-gia/indonesia",
+  "/quoc-gia/ba-lan",
+  "/quoc-gia/malaysia",
+  "/quoc-gia/bo-dao-nha",
+  "/quoc-gia/uae",
+  "/quoc-gia/chau-phi",
+  "/quoc-gia/a-rap-xe-ut",
+  "/quoc-gia/nhat-ban",
+  "/quoc-gia/dai-loan",
+  "/quoc-gia/anh",
+  "/quoc-gia/quoc-gia-khac",
+  "/quoc-gia/tho-nhi-ky",
+  "/quoc-gia/nga",
+  "/quoc-gia/uc",
+  "/quoc-gia/brazil",
+  "/quoc-gia/y",
+  "/quoc-gia/na-uy",
+  "/quoc-gia/nam-phi"
+];
+
+function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        let data = "";
+
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
+
+        res.on("end", () => {
           try {
-            const json = JSON.parse(data);
-            resolve(json);
-          } catch (e) {
-            reject(e);
+            resolve(JSON.parse(data));
+          } catch (err) {
+            reject(err);
           }
         });
-      }).on('error', reject);
-    });
-  } catch (e) {
-    console.error('Failed to fetch movies from API', e);
-    return null;
-  }
+      })
+      .on("error", reject);
+  });
 }
 
-function buildUrlEntries(staticUrls, movies) {
-  const entries = [];
-  const now = new Date().toISOString();
+async function fetchAllMovies() {
+  const movies = [];
 
-  staticUrls.forEach((u) => {
-    entries.push({ loc: `${BASE_URL}${u}`, lastmod: now, changefreq: 'weekly', priority: 0.8 });
-  });
+  for (let page = 1; page <= 300; page++) {
+    try {
+      const url =
+        `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`;
 
-  if (movies && Array.isArray(movies)) {
-    movies.forEach((m) => {
-      const slug = m.slug || m._id || m.name || null;
-      const episodes = m.episodes || m.episode_count || m.episode || 1;
-      const updated = m.updatedAt || m.lastmod || now;
-      if (!slug) return;
-      // add canonical movie main page
-      entries.push({ loc: `${BASE_URL}/movie/${slug}`, lastmod: updated, changefreq: 'weekly', priority: 0.9 });
-      // add per-episode URLs (limit to reasonable count to avoid huge sitemap)
-      const max = Math.min(Number(episodes) || 1, 200);
-      for (let i = 1; i <= max; i++) {
-        const page = i === 1 ? 'tap01' : `tap${i}`;
-        entries.push({ loc: `${BASE_URL}/movie/${slug}?page=${page}`, lastmod: updated, changefreq: 'weekly', priority: 0.7 });
+      const data = await fetchJson(url);
+
+      if (!data.items || !data.items.length) {
+        break;
       }
-    });
+
+      movies.push(...data.items);
+
+      console.log(
+        `Fetched page ${page} - ${data.items.length} movies`
+      );
+    } catch (err) {
+      console.error(`Page ${page} error`);
+      console.error(err);
+      break;
+    }
   }
 
-  return entries;
+  return movies;
+}
+
+function buildSitemap(staticUrls, movies) {
+  const urls = [];
+
+  const now = new Date().toISOString();
+
+  staticUrls.forEach((url) => {
+    urls.push({
+      loc: `${BASE_URL}${url}`,
+      lastmod: now,
+      changefreq: "daily",
+      priority: "0.8"
+    });
+  });
+
+  movies.forEach((movie) => {
+    if (!movie.slug) return;
+
+    urls.push({
+      loc: `${BASE_URL}/movies/${movie.slug}`,
+      lastmod:
+        movie.modified?.time ||
+        movie.updatedAt ||
+        now,
+      changefreq: "daily",
+      priority: "0.9"
+    });
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+${urls
+  .map(
+    (url) => `
+  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${url.lastmod}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`
+  )
+  .join("")}
+
+</urlset>`;
 }
 
 async function generate() {
-  const staticUrls = [
-    '/',
-    '/home',
-    '/phim-bo',
-    '/phim-le',
-    '/tv-shows',
-    '/hoat-hinh',
-    '/phim-moi',
-    '/phim-hot',
-    '/quoc-gia/viet-nam?page=1&limit=20'
-  ];
+  console.log("Generating sitemap...");
 
-  const movies = await fetchMovies();
-  const entries = buildUrlEntries(staticUrls, movies);
+  const movies = await fetchAllMovies();
 
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries
-    .map(
-      (e) => `  <url>\n    <loc>${e.loc}</loc>\n    <lastmod>${e.lastmod}</lastmod>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
-    )
-    .join('\n')}
-</urlset>`;
+  console.log(
+    `Total movies: ${movies.length}`
+  );
 
-  // Đường dẫn tới thư mục public
-  const publicDir = path.join(__dirname, 'public');
+  const sitemap = buildSitemap(
+    STATIC_URLS,
+    movies
+  );
 
-  // Nếu chưa có thì tạo thư mục public
+  const publicDir = path.join(
+    __dirname,
+    "public"
+  );
+
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir);
   }
 
-  // Ghi file sitemap.xml vào public
-  fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap, 'utf8');
+  fs.writeFileSync(
+    path.join(publicDir, "sitemap.xml"),
+    sitemap,
+    "utf8"
+  );
 
+  console.log(
+    "sitemap.xml generated successfully"
+  );
 }
 
-generate().catch((e) => {
-  console.error('Sitemap generation failed', e);
+generate().catch((err) => {
+  console.error(err);
   process.exit(1);
 });
+

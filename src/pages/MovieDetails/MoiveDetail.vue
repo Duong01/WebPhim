@@ -1270,7 +1270,7 @@ export default {
           });
         }
       }
-
+      this.updateSEO();
       this.initLazyLoad();
 
       // Load thời gian xem từ localStorage
@@ -1301,6 +1301,7 @@ export default {
           }
         }
       }, 60000);
+      
       this.updateMeta();
       // Keyboard shortcuts
       window.addEventListener("keydown", this.onKeyDown);
@@ -1781,6 +1782,7 @@ export default {
               }
               this.movie.categoris = result.movie.category[0].slug;
               this.isLoading = false;
+
               this.updateMeta();
 
               resolve(true);
@@ -1845,7 +1847,33 @@ export default {
         this.lastSavedTime = current;
       }
     },
-
+    updateSEO() {
+      useHead({
+        title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
+        meta: [
+          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.` },
+          { property: "og:title", content: this.movie.title },
+          { property: "og:description", content: this.movie.description },
+          { property: "og:image", content: this.movie.thumb_url || this.movie.poster_url },
+          { property: "og:url", content: window.location.href },
+          { property: "og:type", content: "video.movie" },
+        ],
+        link: [{ rel: "canonical", href: window.location.href }],
+        script: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Movie",
+              "name": this.movie.title,
+              "image": this.movie.thumb_url || this.movie.poster_url,
+              "description": this.movie.description,
+              "dateCreated": this.movie.year || new Date().getFullYear().toString()
+            }),
+          },
+        ],
+      });
+    },
     restoreTime() {
       const video = this.$refs.videoPlayer;
       const savedTime = localStorage.getItem(this.videoKey);

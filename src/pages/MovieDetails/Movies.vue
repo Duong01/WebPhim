@@ -809,9 +809,9 @@ export default {
   },
     updateSEO() {
       useHead({
-        title: `${this.movie.title} - Xem phim HD Vietsub | Phim360`,
+        title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
         meta: [
-          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} bản đẹp, HD Vietsub. Cập nhật các tập mới nhất tại Phim360.` },
+          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.` },
           { property: "og:title", content: this.movie.title },
           { property: "og:description", content: this.movie.description },
           { property: "og:image", content: this.movie.thumb_url || this.movie.poster_url },
