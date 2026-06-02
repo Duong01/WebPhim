@@ -1,10 +1,10 @@
 <template>
 <v-row no-gutters class="align-center mt-6 mb-2">
   <v-col cols="12">
-    <h1 class="category-title d-flex align-center" style="color: orange">
+    <h2 class="category-title d-flex align-center" style="color: orange">
       
       🔥 {{ $t('Hoạt Hình Trung Quốc - Bảng Xếp Hạng Thịnh Hành') }}
-    </h1>
+    </h2>
   </v-col>
 </v-row>
 
@@ -26,7 +26,7 @@
   v-if="movie.length"
 >
   <v-slide-group-item
-    v-for="(item, index) in movie"
+    v-for="(item, index) in visibleMovies"
     :key="`${item._type}-${index}`"
     class="trending-item"
   >
@@ -40,9 +40,7 @@
           loading="lazy"
           class="trending-poster"
           transition="fade-transition"
-          referrerpolicy="no-referrer"
-          crossOrigin="anonymous"
-          :alt="item.title"
+          @error="imageError(index)"
         >
           <!-- BADGE -->
           <div class="trending-rank" :class="'rank-' + (index + 1)">
@@ -94,21 +92,40 @@
 <script>
 export default {
   props: ["movie"],
+  data() {
+    return {
+      hiddenItems: new Set(),
+    };
+  },
+  computed: {
+    visibleMovies() {
+      return this.movie.filter(
+        (_, index) => !this.hiddenItems.has(index)
+      );
+    },
+  },
   methods: {
     getImage(path) {
-    if (path.startsWith("https")) return path;
+      if (!path) return "";
 
-    return "https://hoathinh3d.vn" + path;
-  },
+      if (path.startsWith("https")) return path;
+
+      return "https://hoathinh3d.vn" + path;
+    },
+  imageError(index) {
+      this.hiddenItems.add(index);
+      this.hiddenItems = new Set(this.hiddenItems);
+    },
     goMovies(url) {
-      var slug = url.slug
-      
-      var urlImage = this.getImage(url.thumbnail || url.cover_image);
-      this.$store.commit("imageThumbnail",urlImage)
+      const slug = url.slug;
+      const urlImage = this.getImage(url.thumbnail || url.cover_image);
+
+      this.$store.commit("imageThumbnail", urlImage);
+
       this.$router.push({
-        name : 'Movies',
-        params: {slug}
-      })
+        name: "Movies",
+        params: { slug },
+      });
     },
   },
 };
@@ -119,7 +136,7 @@ export default {
 /* ===== TITLE ===== */
 
 .category-title{
-font-size:22px;
+ font-size: clamp(12px, 3.2vw, 18px);
 font-weight:800;
 letter-spacing:.6px;
 margin-bottom:8px;
