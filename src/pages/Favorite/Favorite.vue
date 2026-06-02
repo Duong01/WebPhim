@@ -770,7 +770,7 @@ export default {
       return this.$store.state.empInfor.ID || localStorage.getItem("name");
     },
     filteredMovies() {
-      let list = [...this.movies];
+      let list = [...this.movies].filter((m) => m.Status != "NoFavorite");
 
       // search
       if (this.search) {
