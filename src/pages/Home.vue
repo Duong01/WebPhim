@@ -6,7 +6,8 @@
     <CategoryQuick :items="categories" />
 
     <!-- HERO -->
-    <HeroBanner v-if="trending.length && $vuetify.display.smAndUp" :movie="trending" />
+    <!-- && $vuetify.display.smAndUp -->
+    <HeroBanner v-if="trending.length " :movie="trending" />
 
     <!-- MOVIE SECTIONS -->
     <SectionWrapper
