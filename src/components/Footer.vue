@@ -52,7 +52,7 @@
             <strong class="text-white">Zcines</strong> -
             {{
               $t(
-                "Trang xem phim Online với giao diện hiện đại, thân thiện người dùng."
+                "là website xem phim online miễn phí với kho phim Vietsub, Thuyết Minh và Lồng Tiếng chất lượng cao. Cập nhật liên tục phim bộ, phim lẻ, anime, hoạt hình, phim Hàn Quốc, Trung Quốc, Âu Mỹ và các bộ phim chiếu rạp mới nhất mỗi ngày."
               )
             }}
             {{
@@ -280,6 +280,24 @@
         © {{ new Date().getFullYear() }} Zcines. All Rights Reserved. Designed
         for Movie Lovers.
       </p>
+      <div class="seo-footer-content text-grey-lighten-1 mt-6">
+  <h2 class="text-h6 text-white mb-3">
+    Xem Phim Online Vietsub Full HD Tại ZCines
+  </h2>
+
+  <p>
+    ZCines cung cấp kho phim online miễn phí với hàng nghìn bộ phim Vietsub,
+    Thuyết Minh và Lồng Tiếng chất lượng Full HD. Người xem có thể dễ dàng tìm
+    kiếm phim bộ, phim lẻ, anime, hoạt hình, phim Hàn Quốc, Trung Quốc, Nhật
+    Bản, Âu Mỹ cùng nhiều thể loại hấp dẫn như hành động, tình cảm, kinh dị,
+    viễn tưởng và cổ trang.
+  </p>
+
+  <p>
+    Nội dung được cập nhật thường xuyên giúp người xem theo dõi những bộ phim
+    mới nhất, phim chiếu rạp nổi bật và các series đang được yêu thích.
+  </p>
+</div>
     </div>
   </v-footer>
 </template>
@@ -292,21 +310,71 @@ export default {
       deferredPrompt: null,
       showIOSPopup: false,
       tags: [
-        { label: this.$t("Phim mới"), link: "/phim-moi" },
-        { label: this.$t("Phim hay"), link: "/phim-hay" },
-        { label: this.$t("Phim mới chill"), link: "/danh-sach/phim-moi-chill" },
-        { label: this.$t("Phim 18"), link: "/danh-sach/phim-18" },
-        {
-          label: this.$t("Truyện tranh 18"),
-          link: "/danh-sach/truyen-tranh-18",
-        },
-        { label: this.$t("Nettruyen"), link: "/danh-sach/net-truyen" },
-        {
-          label: this.$t("Nettruyen ngôn tình"),
-          link: "/danh-sach/net-truyen-ngon-tinh",
-        },
-        { label: this.$t("Hiện đại"), link: "/danh-sach/hien-dai" },
-      ],
+  {
+    label: "Xem phim online",
+    link: "/"
+  },
+  {
+    label: "Phim Vietsub",
+    link: "/the-loai/phim-vietsub"
+  },
+  {
+    label: "Phim Thuyết Minh",
+    link: "/the-loai/phim-thuyet-minh"
+  },
+  {
+    label: "Phim Lồng Tiếng",
+    link: "/the-loai/phim-long-tieng"
+  },
+  {
+    label: "Phim Bộ Hay",
+    link: "/the-loai/phim-bo"
+  },
+  {
+    label: "Phim Lẻ Mới",
+    link: "/the-loai/phim-le"
+  },
+  {
+    label: "Anime Hay",
+    link: "/the-loai/hoat-hinh"
+  },
+  {
+    label: "Phim Hàn Quốc",
+    link: "/quoc-gia/han-quoc"
+  },
+  {
+    label: "Phim Trung Quốc",
+    link: "/quoc-gia/trung-quoc"
+  },
+  {
+    label: "Phim Nhật Bản",
+    link: "/quoc-gia/nhat-ban"
+  },
+  {
+    label: "Phim Âu Mỹ",
+    link: "/quoc-gia/au-my"
+  },
+  {
+    label: "Phim Chiếu Rạp",
+    link: "/the-loai/phim-moi"
+  },
+  {
+    label: "Phim Hành Động",
+    link: "/the-loai/hanh-dong"
+  },
+  {
+    label: "Phim Tình Cảm",
+    link: "/the-loai/tinh-cam"
+  },
+  {
+    label: "Phim Kinh Dị",
+    link: "/the-loai/kinh-di"
+  },
+  {
+    label: "Phim Viễn Tưởng",
+    link: "/the-loai/vien-tuong"
+  }
+],
       genres: [
         { lable: this.$t("Chính kịch"), link: "chinh-kich" },
         { lable: this.$t("Cổ Trang"), link: "co-trang" },
