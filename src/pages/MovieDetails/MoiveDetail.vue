@@ -1362,14 +1362,31 @@ export default {
 
         this.lastTimeUpdateTime = currentTime;
 
+      
+
         const payload = {
           IDMovies: this.movie.idMovie,
           IDAccount: this.idAccount,
           timeWatch: Math.floor(currentTime || 0),
           currentPage: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
+          slug : this.movie.slug,
+          currentPage : this.movie.page,
+          UrlMovies : this.movie.thumb_url,
+          origin_name : this.movie.origin_name,
+          name : this.movie.name,
+          year : this.movie.year,
+          lang : this.movie.lang,
+          time : this.movie.time,
+          quality : this.movie.quality,
+          vote_average : this.movie.tmdb?.vote_average,
+          poster_url : this.movie.poster_url,
+          totalPage : this.movie.episode_total
         };
 
-        UpdateTimeWatch(payload);
+        UpdateTimeWatch(payload, ()=>{
+        },(err)=>{
+          console.error(err);
+        })
       } catch (error) {
         console.error("Lỗi lưu thời gian xem:", error);
       }
