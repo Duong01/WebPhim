@@ -1370,7 +1370,6 @@ export default {
           timeWatch: Math.floor(currentTime || 0),
           currentPage: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
           slug : this.movie.slug,
-          currentPage : this.movie.page,
           UrlMovies : this.movie.thumb_url,
           origin_name : this.movie.origin_name,
           name : this.movie.name,
