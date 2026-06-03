@@ -310,6 +310,9 @@
           <v-list-item @click="NextRouter()">
             <v-list-item-title>{{ $t("Đã lưu") }}</v-list-item-title>
           </v-list-item>
+          <v-list-item @click="$router.push('/profile')">
+            <v-list-item-title>{{ $t("Hồ sơ") }}</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="Logout()">
             <v-list-item-title>{{ $t("Đăng xuất") }}</v-list-item-title>
           </v-list-item>

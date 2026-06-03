@@ -61,7 +61,7 @@
             />
 
             <div class="text-right mb-4">
-              <router-link class="text-caption text-orange-accent-2">
+              <router-link to="/forgot-password" class="text-caption text-orange-accent-2">
                 Quên mật khẩu?
               </router-link>
             </div>

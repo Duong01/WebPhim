@@ -19,6 +19,28 @@ const routes = [
     },
   },
   {
+    path: "/profile",
+    name: "ProfilePage",
+    component: () => import("@/components/Profile.vue"),
+    meta: {
+      title: "Đăng ký tài khoản - Web Phim Online",
+      description: "Đăng ký tài khoản để trải nghiệm xem phim miễn phí chất lượng cao.",
+      robots: "noindex, nofollow",
+    },
+  },
+
+  {
+    path: "/forgot-password",
+    name: "ForgotPasswordPage",
+    component: () => import("@/components/ForgotPassword.vue"),
+    meta: {
+      title: "Quên mật khẩu - Web Phim Online",
+      description: "Quên mật khẩu để trải nghiệm xem phim miễn phí chất lượng cao.",
+      robots: "noindex, nofollow",
+    },
+  },
+  
+  {
     path: "/home1",
     name: "Home1Page",
     component: () => import("@/pages/Home1.vue"),
