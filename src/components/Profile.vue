@@ -62,7 +62,7 @@
             
             <v-text-field
               v-model="profileForm.PasswordOld"
-              :label="$t('Mật khẩu mới (để trống nếu không đổi)')"
+              :label="$t('Mật khẩu hiện tại')"
               :type="showPasswordOld ? 'text' : 'password'"
               prepend-inner-icon="mdi-lock-outline"
               :append-inner-icon="showPasswordOld ? 'mdi-eye-off' : 'mdi-eye'"
@@ -70,6 +70,7 @@
               variant="outlined"
               color="deep-orange-accent-2"
               class="mb-3"
+              :rules="profileForm.PasswordOld ? [v => !!v || $t('Vui lòng nhập mật khẩu hiện tại')] : []"
             />
 
             <v-text-field
@@ -168,7 +169,10 @@ export default {
   computed: {
     isValid() {
       if (this.profileForm.Password) {
-        return this.confirmPassword === this.profileForm.Password;
+        return !!this.profileForm.PasswordOld && 
+               this.confirmPassword === this.profileForm.Password &&
+               !!this.profileForm.EmpName &&
+               !!this.profileForm.Email;
       }
       return !!this.profileForm.EmpName && !!this.profileForm.Email;
     },
@@ -209,6 +213,12 @@ export default {
       
       const updateData = { ...this.profileForm };
       
+      // Nếu không nhập mật khẩu mới, loại bỏ trường mật khẩu khỏi dữ liệu gửi đi
+      if (!updateData.Password) {
+        delete updateData.Password;
+        delete updateData.PasswordOld;
+      }
+
       if (typeof UpdateProfile === 'function') {
         UpdateProfile(updateData, (dat) => {
           if (dat.status == 200 && dat.data.status == true) {
@@ -220,6 +230,10 @@ export default {
             this.$store.commit("setEmpInfor", updatedUser);
             if (updateData.EmpName) localStorage.setItem('nameShow', updateData.EmpName);
             
+            // Xóa trắng mật khẩu trên form sau khi cập nhật thành công
+            this.profileForm.Password = '';
+            this.profileForm.PasswordOld = '';
+            this.confirmPassword = '';
           } else {
             this.snackbarMessage = dat.data.message || this.$t('Cập nhật thất bại');
             this.snackbarColor = "error";
