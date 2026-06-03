@@ -120,7 +120,6 @@ const routes = [
         name: "FavoritePage",
         component: () => import("@/pages/Favorite/Favorite.vue"),
         meta: {
-          requiresAuth: true,
           robots: "noindex, nofollow",
         },
       },
@@ -291,6 +290,30 @@ router.afterEach((to) => {
     setMeta("property", "og:url", url);
     setMeta("name", "robots", to.meta.robots || "index, follow");
   });
+});
+
+/* ========================
+   Prevent DevTools Globally
+========================= */
+window.addEventListener('keydown', (e) => {
+  // Ngăn chặn phím F12
+  if (e.key === 'F12' || e.keyCode === 123) {
+    e.preventDefault();
+    return false;
+  }
+  // Ngăn chặn Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U / Ctrl+C
+  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+    e.preventDefault();
+    return false;
+  }
+  if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
 });
 
 export default router;

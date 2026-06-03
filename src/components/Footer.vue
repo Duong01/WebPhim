@@ -281,22 +281,8 @@
         for Movie Lovers.
       </p>
       <div class="seo-footer-content text-grey-lighten-1 mt-6">
-  <h2 class="text-h6 text-white mb-3">
-    Xem Phim Online Vietsub Full HD Tại ZCines
-  </h2>
+  
 
-  <p>
-    ZCines cung cấp kho phim online miễn phí với hàng nghìn bộ phim Vietsub,
-    Thuyết Minh và Lồng Tiếng chất lượng Full HD. Người xem có thể dễ dàng tìm
-    kiếm phim bộ, phim lẻ, anime, hoạt hình, phim Hàn Quốc, Trung Quốc, Nhật
-    Bản, Âu Mỹ cùng nhiều thể loại hấp dẫn như hành động, tình cảm, kinh dị,
-    viễn tưởng và cổ trang.
-  </p>
-
-  <p>
-    Nội dung được cập nhật thường xuyên giúp người xem theo dõi những bộ phim
-    mới nhất, phim chiếu rạp nổi bật và các series đang được yêu thích.
-  </p>
 </div>
     </div>
   </v-footer>

@@ -5,9 +5,9 @@
     <div class="header-bar">
       <div class="header-left" v-show="$vuetify.display.smAndUp">
         <h2>🎬 {{ $t("Danh sách yêu thích") }}</h2>
-        <span class="sub">{{ filteredMovies.length }} phim</span>
+        <span class="sub" v-if="idAccount">{{ filteredMovies.length }} phim</span>
       </div>
-      <div class="header-right">
+      <div class="header-right" v-if="idAccount">
         <v-text-field
           v-model="search"
           :placeholder="$t('Tìm phim...')"
@@ -35,7 +35,7 @@
     </div>
 
     <!-- STATS -->
-    <v-row class="mb-2">
+    <v-row class="mb-2" v-if="idAccount">
       <v-col cols="12">
         <div class="stats-bar">
           <span>🎬 {{ filteredMovies.length }} phim</span>
@@ -51,6 +51,20 @@
         <v-skeleton-loader type="image" class="rounded-lg" />
       </v-col>
     </v-row>
+
+    <!-- ================= NOT LOGGED IN ================= -->
+    <div v-else-if="!idAccount" class="empty-state">
+      <v-icon size="80" color="grey-lighten-1"> mdi-account-lock </v-icon>
+
+      <h3 class="mt-4">{{ $t("Vui lòng đăng nhập") }}</h3>
+
+      <p>{{ $t("Bạn cần đăng nhập để quản lý danh sách phim yêu thích") }}</p>
+
+      <v-btn color="red" class="mt-4" to="/login">
+        <v-icon start>mdi-login</v-icon>
+        {{ $t("Đăng nhập ngay") }}
+      </v-btn>
+    </div>
 
     <!-- ================= EMPTY ================= -->
 
@@ -646,6 +660,11 @@ export default {
       this.$store.commit("settimeWatch", movie.timeWatch);
     },
     ListMovie(isLoadMore = false) {
+      if (!this.idAccount) {
+        this.loading = false;
+        return;
+      }
+
       if (isLoadMore) {
         this.loadingMore = true;
       } else {
@@ -767,7 +786,7 @@ export default {
   },
   computed: {
     idAccount() {
-      return this.$store.state.empInfor.ID || localStorage.getItem("name");
+      return this.$store.state.empInfor?.ID || localStorage.getItem("name");
     },
     filteredMovies() {
       let list = [...this.movies].filter((m) => m.Status != "NoFavorite");

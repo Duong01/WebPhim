@@ -634,9 +634,14 @@ export default {
     account() {
       return this.$store.state.empInfor?.EmpName || "";
     },
-    avatar(){
-      const user = this.$store.state.empInfor || localStorage.getItem("name");
-      return user?.Avatar || user?.Avartar || this.$store.state.Avatar || localStorage.getItem("Avatar") || "";
+    avatar() {
+      const user = this.$store.state.empInfor;
+      let av = user?.Avatar || user?.Avartar || this.$store.state.Avatar || localStorage.getItem("Avatar");
+      // Kiểm tra loại bỏ các giá trị trống, null thật hoặc chuỗi "null"/"undefined"
+      if (!av || av === "null" || av === "undefined" || String(av).trim() === "") {
+        return "";
+      }
+      return av;
     },
     isLogin() {
       return !!this.$store.state.empInfor?.ID || !!localStorage.getItem("name"); 
@@ -784,6 +789,11 @@ export default {
       localStorage.removeItem("nameShow");
       localStorage.removeItem("Avatar");
       
+      // Xóa dữ liệu trong store để cập nhật giao diện (avatar & info) ngay lập tức
+      if (this.$store) {
+        this.$store.commit("setEmpInfor", {});
+        this.$store.commit("setAvatar", "");
+      }
 
       this.$router.push("/login");
     },
@@ -866,7 +876,7 @@ export default {
 .search-wrapper {
   flex: 1;                /* 🔥 cho phép giãn */
   max-width: 420px;       /* desktop */
-  min-width: 250px;
+  min-width: 200px;
 }
 
 @media (max-width: 960px) {
