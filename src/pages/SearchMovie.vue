@@ -319,6 +319,7 @@ export default {
   data() {
     return {
       movies: [],
+      domain:'',
       loading: true,
       urlImage: urlImage,
       urlImage1: urlImage1,
@@ -403,6 +404,7 @@ export default {
             clearTimeout(timer);
             if (result.status == "success" || result.status == true) {
               this.link = "";
+              this.domain = result.data.APP_DOMAIN_CDN_IMAGE;
               if (result.data.items.length != 0 && result.data.items != null) {
                 this.movies = result.data.items.sort((a, b) => {
                   return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
@@ -463,6 +465,7 @@ export default {
             if (result.status == "success" || result.status == true) {
               if (result.data.items != null && result.data.items.length != 0) {
                 this.link = "link1";
+                this.domain = result.data.APP_DOMAIN_CDN_IMAGE;
                 const sortedItems = result.data.items.sort((a, b) => {
                   return parseInt(b.year) - parseInt(a.year);
                 });
@@ -621,9 +624,15 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      if (this.link == "") {
+      if (this.domain.includes("img.ophim")) {
+        if(imagePath.includes("https")){
+          return imagePath;
+        }
         return `${this.urlImage + encodeURIComponent(imagePath)}`;
       } else {
+        if(imagePath.includes("https")){
+          return imagePath;
+        }
         return `${
           this.urlImage1 +
           "https://phimimg.com/" +

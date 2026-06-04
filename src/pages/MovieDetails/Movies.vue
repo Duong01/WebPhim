@@ -663,6 +663,7 @@ export default {
   name: "MoviesPage",
   data() {
     return {
+      domain:'',
       activeNames: "1",
       tab: "one",
       status: false,
@@ -1285,15 +1286,21 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      if (imagePath.includes("img.ophim.live")) {
-        return imagePath;
+      if (imagePath.includes("img.ophim")) {
+        if(imagePath.includes("https")){
+          return imagePath;
+        }
+        return `${this.urlImage + encodeURIComponent(imagePath)}`;
+      } else {
+        if(imagePath.includes("https")){
+          return imagePath;
+        }
+        return `${
+          this.urlImage1 +
+          "https://phimimg.com/" +
+          encodeURIComponent(imagePath)
+        }`;
       }
-      return `${
-        imagePath.includes("https://phimimg.com/upload")
-          ? this.urlImage1 + imagePath
-          : this.urlImage1 + "https://phimimg.com/" + imagePath
-      }`;
-      // }
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
