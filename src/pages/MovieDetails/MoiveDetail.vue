@@ -1093,7 +1093,12 @@ export default {
   props: ["slug", "page"],
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
-
+    if (this.orientationHandler) {
+    window.removeEventListener(
+      "orientationchange",
+      this.orientationHandler
+    );
+  }
     this.saveWatchTime();
     if (this.idAccount) {
       this.saveWatchTimeAPI();
@@ -1322,6 +1327,26 @@ export default {
         "MSFullscreenChange",
         this.handleFullscreenChange
       );
+      this.orientationHandler = () => {
+    const angle =
+      screen.orientation?.angle ||
+      window.orientation ||
+      0;
+
+    console.log("orientation:", angle);
+
+    // Có thể xử lý UI ở đây
+    if (Math.abs(angle) === 90) {
+      console.log("Đang nằm ngang");
+    } else {
+      console.log("Đang dọc");
+    }
+  };
+
+  window.addEventListener(
+    "orientationchange",
+    this.orientationHandler
+  );
 
       // Show controls on hover (ensure visible when cursor over video)
       const wrapper = this.$el.querySelector(".video-wrapper");
@@ -2092,58 +2117,54 @@ export default {
       if (video) video.volume = v;
       this.muted = v === 0;
     },
-    toggleFullScreen() {
-      const wrapper = this.$el.querySelector(".video-wrapper");
-      if (!wrapper) return;
-      const doc = document;
-      const lockLandscape = () => {
-        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-        if (orientation && typeof orientation.lock === "function") {
-          orientation.lock("landscape").catch(() => {});
-        }
-      };
-      const unlockOrientation = () => {
-        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-        if (orientation && typeof orientation.unlock === "function") {
-          orientation.unlock();
-        }
-      };
+    async toggleFullScreen() {
+  const wrapper = this.$el.querySelector(".video-wrapper");
+  const video = this.$refs.videoPlayer;
 
-      if (!this.isFullscreen) {
-        const video = this.$refs.videoPlayer;
-        if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-        else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
-        else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
-        else if (video && typeof video.webkitEnterFullscreen === "function") {
-          try {
-            video.webkitEnterFullscreen();
-            this.isFullscreen = true;
-            lockLandscape();
-            return;
-          } catch (e) {
-            // ignore
-          }
+  if (!wrapper) return;
+
+  try {
+    if (!document.fullscreenElement) {
+
+      await wrapper.requestFullscreen?.();
+
+      // Mobile Android Chrome
+      if (
+        screen.orientation &&
+        typeof screen.orientation.lock === "function"
+      ) {
+        try {
+          if (
+  video &&
+  typeof video.webkitEnterFullscreen === "function"
+) {
+  video.webkitEnterFullscreen();
+}
+        } catch (err) {
+          console.log("Orientation lock blocked");
         }
-        lockLandscape();
-        this.isFullscreen = true;
-      } else {
-        const video = this.$refs.videoPlayer;
-        if (doc.exitFullscreen) doc.exitFullscreen();
-        else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
-        else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
-        else if (doc.msExitFullscreen) doc.msExitFullscreen();
-        else if (video && typeof video.webkitExitFullscreen === "function") {
-          try {
-            video.webkitExitFullscreen();
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        unlockOrientation();
-        this.isFullscreen = false;
       }
-    },
+
+      this.isFullscreen = true;
+
+    } else {
+
+      await document.exitFullscreen?.();
+
+      if (
+        screen.orientation &&
+        typeof screen.orientation.unlock === "function"
+      ) {
+        screen.orientation.unlock();
+      }
+
+      this.isFullscreen = false;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+},
+
     handleFullscreenChange() {
       const doc = document;
       const isFs = !!(
