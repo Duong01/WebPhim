@@ -295,22 +295,22 @@ router.afterEach((to) => {
 /* ========================
    Prevent DevTools Globally
 ========================= */
-window.addEventListener('keydown', (e) => {
-  // Ngăn chặn phím F12
-  if (e.key === 'F12' || e.keyCode === 123) {
-    e.preventDefault();
-    return false;
-  }
-  // Ngăn chặn Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U / Ctrl+C
-  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
-    e.preventDefault();
-    return false;
-  }
-  if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-    e.preventDefault();
-    return false;
-  }
-});
+// window.addEventListener('keydown', (e) => {
+//   // Ngăn chặn phím F12
+//   if (e.key === 'F12' || e.keyCode === 123) {
+//     e.preventDefault();
+//     return false;
+//   }
+//   // Ngăn chặn Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+U / Ctrl+C
+//   if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+//     e.preventDefault();
+//     return false;
+//   }
+//   if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+//     e.preventDefault();
+//     return false;
+//   }
+// });
 
 window.addEventListener('contextmenu', (e) => {
   e.preventDefault();

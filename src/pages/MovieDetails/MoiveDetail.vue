@@ -2096,23 +2096,36 @@ export default {
       const wrapper = this.$el.querySelector(".video-wrapper");
       if (!wrapper) return;
       const doc = document;
+      const lockLandscape = () => {
+        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+        if (orientation && typeof orientation.lock === "function") {
+          orientation.lock("landscape").catch(() => {});
+        }
+      };
+      const unlockOrientation = () => {
+        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+        if (orientation && typeof orientation.unlock === "function") {
+          orientation.unlock();
+        }
+      };
+
       if (!this.isFullscreen) {
         const video = this.$refs.videoPlayer;
         if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-        else if (wrapper.webkitRequestFullscreen)
-          wrapper.webkitRequestFullscreen();
+        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
         else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
         else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
         else if (video && typeof video.webkitEnterFullscreen === "function") {
-          // iOS Safari / some WebKit-based players
           try {
             video.webkitEnterFullscreen();
             this.isFullscreen = true;
+            lockLandscape();
             return;
           } catch (e) {
             // ignore
           }
         }
+        lockLandscape();
         this.isFullscreen = true;
       } else {
         const video = this.$refs.videoPlayer;
@@ -2127,6 +2140,7 @@ export default {
             console.log(e);
           }
         }
+        unlockOrientation();
         this.isFullscreen = false;
       }
     },
@@ -2139,10 +2153,17 @@ export default {
         doc.msFullscreenElement
       );
       this.isFullscreen = isFs;
+      const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
       if (!isFs) {
+        if (orientation && typeof orientation.unlock === "function") {
+          orientation.unlock();
+        }
         this.showControls = true;
         this.clearHideControlsTimer();
       } else {
+        if (orientation && typeof orientation.lock === "function") {
+          orientation.lock("landscape").catch(() => {});
+        }
         this.startHideControlsTimer();
       }
     },

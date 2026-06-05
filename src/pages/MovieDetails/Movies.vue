@@ -26,6 +26,7 @@
               class="banner-img"
               cover
               loading="eager"
+              @error="onImageError(movie)"
             >
               <!-- Overlay Gradient -->
               <div class="banner-overlay"></div>
@@ -73,6 +74,7 @@
                       width="30%"
                       cover
                       @click="showPreview = true"
+                      @error="onImageError(movie)"
                       v-show="$vuetify.display.mdAndUp"
                     >
                       <template #placeholder>
@@ -429,6 +431,7 @@
                                     "
                                     aspect-ratio="16/9"
                                     cover
+                                    @error="onImageError(movie)"
                                   >
                                     <template #placeholder>
                                       <div
@@ -610,6 +613,7 @@
                 show-progress
                 :initial-index="0"
                 @close="showPreview = false"
+                @error="onImageError(movie)"
               >
               </el-image-viewer>
             </div>
@@ -1286,7 +1290,9 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      if (imagePath.includes("img.ophim")) {
+      console.log(imagePath)
+      console.log(imagePath)
+      if (this.domain.includes("img.ophim")) {
         if(imagePath.includes("https")){
           return imagePath;
         }
@@ -1298,9 +1304,14 @@ export default {
         return `${
           this.urlImage1 +
           "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
+          imagePath
         }`;
       }
+    },
+    onImageError(movie) {
+
+      alert(movie)
+      movie.poster_url = "https://via.placeholder.com/300x450?text=No+Image";
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
