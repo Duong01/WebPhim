@@ -312,8 +312,8 @@ router.afterEach((to) => {
 //   }
 // });
 
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-});
+// window.addEventListener('contextmenu', (e) => {
+//   e.preventDefault();
+// });
 
 export default router;

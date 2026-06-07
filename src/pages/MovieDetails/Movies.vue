@@ -1310,7 +1310,6 @@ export default {
     },
     onImageError(movie) {
 
-      alert(movie)
       movie.poster_url = "https://via.placeholder.com/300x450?text=No+Image";
     },
     ListMovieByCate() {
