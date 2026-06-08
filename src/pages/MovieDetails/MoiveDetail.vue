@@ -15,14 +15,13 @@
               <v-icon icon="mdi-chevron-right"></v-icon>
             </template>
           </v-breadcrumbs>
-  
+
           <!-- Bố cục hai cột -->
           <v-row dense>
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" lg="9" md="8">
               <!-- VIDEO -->
-              <div class="video-wrapper">
-                <!-- Video chính -->
+              <!-- <div class="video-wrapper">
                 <video
                   ref="videoPlayer"
                   class="video-player"
@@ -41,7 +40,6 @@
                   @pause="onPause"
                 ></video>
 
-                <!-- Play overlay khi chưa click -->
                 <div
                   v-if="!videoStarted && $vuetify.display.mdAndUp"
                   class="video-play-overlay"
@@ -52,7 +50,6 @@
                   <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
                 </div>
 
-                <!-- Loading overlay while video buffers/loads -->
                 <div
                   v-if="videoStarted && !videoLoaded"
                   class="video-loading-overlay"
@@ -64,7 +61,6 @@
                   />
                 </div>
 
-                <!-- Custom controls -->
                 <div
                   class="custom-controls"
                   :class="{ 'controls-hidden': !showControls }"
@@ -109,17 +105,14 @@
                       @mouseleave="hideTimeHover"
                     >
                       <div class="progress-bar">
-                        <!-- Buffered progress -->
                         <div
                           class="progress-buffered"
                           :style="{ width: bufferedProgress + '%' }"
                         ></div>
-                        <!-- Played progress -->
                         <div
                           class="progress-filled"
                           :style="{ width: progress + '%' }"
                         ></div>
-                        <!-- Time hover indicator -->
                         <div
                           v-if="showTimeHover"
                           class="progress-hover-time"
@@ -139,16 +132,7 @@
                         <v-icon v-else>mdi-volume-medium</v-icon>
                       </v-btn>
 
-                      <!-- <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        v-model.number="volume"
-                        @input="setVolume($event.target.value)"
-                        class="volume-slider"
-                        aria-label="Volume"
-                      /> -->
+  
 
                       <v-btn icon class="control-btn" @click="toggleFullScreen">
                         <v-icon v-if="isFullscreen">mdi-fullscreen-exit</v-icon>
@@ -157,60 +141,118 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
+              <div class="video-wrapper modern-player">
+  <div id="jwplayer-container"></div>
+  <transition name="fade">
+  <div
+    v-if="playerInitialized && !isPlaying && currentTime > 0"
+    class="pause-overlay"
+    @click="togglePlay"
+  >
+    <div class="pause-play-btn">
+      <v-icon size="70">mdi-play</v-icon>
+    </div>
+  </div>
+</transition>
+
+  <!-- overlay -->
+  <div
+    v-if="!playerInitialized"
+    class="video-overlay"
+    @click="startPlayer"
+  >
+    <img
+      :src="movie.thumb_url"
+      class="overlay-poster"
+    />
+
+    <div class="overlay-gradient"></div>
+
+    <div class="overlay-center">
+      <div class="modern-play-btn">
+        <v-icon size="60">mdi-play</v-icon>
+      </div>
+
+
+      <div class="overlay-subtitle">
+        {{ movie.pageMovie[currentEpisodeIndex]?.name }}
+      </div>
+    </div>
+  </div>
+
+  <!-- loading -->
+  <!-- <div
+    v-if="playerInitialized && !videoLoaded"
+    class="video-loading-overlay"
+  >
+    <v-progress-circular
+      indeterminate
+      color="primary"
+      size="55"
+    />
+  </div> -->
+</div>
 
               <!-- nut next tap và back tap -->
               <div
-                class="d-flex justify-center align-center my-4 episode-nav-wrapper"
+                class="episode-navigation modern-nav my-6 d-flex justify-center align-center"
               >
                 <v-btn
-                  variant="tonal"
-                  color="grey-lighten-1"
-                  class="nav-episode-btn"
+                  variant="elevated"
+                  color="grey-darken-4"
+                  class="nav-episode-btn rounded-pill px-5"
                   @click="prevEpisode()"
                   :disabled="currentEpisodeIndex <= 0"
+                  elevation="4"
+                  height="44"
                 >
-                  <v-icon start>mdi-chevron-left</v-icon>
-                  {{ $t("Tập trước") }}
+                  <v-icon start size="20">mdi-skip-previous-circle</v-icon>
+                  <span class="font-weight-medium">{{ $t("Tập trước") }}</span>
                 </v-btn>
 
-                <v-chip
-                  color="primary"
-                  class="mx-3 px-4 font-weight-bold"
-                  size="large"
-                  variant="elevated"
-                >
-                  {{ movie.pageMovie[currentEpisodeIndex]?.name }}
-                </v-chip>
+                <div class="current-episode-badge mx-4">
+                  <div class="badge-glow"></div>
+                  <v-chip
+                    color="primary"
+                    class="px-6 font-weight-bold text-subtitle-1"
+                    size="large"
+                    variant="flat"
+                    elevation="6"
+                  >
+                    {{ movie.pageMovie[currentEpisodeIndex]?.name }}
+                  </v-chip>
+                </div>
 
                 <v-btn
-                  variant="tonal"
-                  color="grey-lighten-1"
-                  class="nav-episode-btn"
+                  variant="elevated"
+                  color="grey-darken-4"
+                  class="nav-episode-btn rounded-pill px-5"
                   @click="nextEpisode()"
                   :disabled="currentEpisodeIndex >= movie.pageMovie.length - 1"
+                  elevation="4"
+                  height="44"
                 >
-                  {{ $t("Tập tiếp") }}
-                  <v-icon end>mdi-chevron-right</v-icon>
+                  <span class="font-weight-medium">{{ $t("Tập tiếp") }}</span>
+                  <v-icon end size="20">mdi-skip-next-circle</v-icon>
                 </v-btn>
               </div>
 
               <!-- Action Bar & Server Tabs -->
               <div
-                class="player-toolbar d-flex flex-column flex-md-row align-stretch align-md-center justify-space-between mb-6 pa-4 rounded-lg"
-                style="gap: 16px"
+                class="player-toolbar modern-toolbar d-flex flex-column flex-md-row align-stretch align-md-center justify-space-between mb-6 pa-4 rounded-xl"
               >
                 <!-- Server -->
                 <div
-                  class="d-flex align-center flex-nowrap gap-2 server-tabs-wrapper overflow-x-auto pb-2 pb-md-0"
+                  class="d-flex align-center flex-nowrap gap-3 server-tabs-wrapper overflow-x-auto pb-2 pb-md-0"
                 >
                   <div
-                    class="text-caption text-grey mr-2 d-flex align-center flex-shrink-0"
+                    class="server-label text-caption text-grey-lighten-1 d-flex align-center flex-shrink-0 font-weight-medium"
                   >
-                    <v-icon size="small" class="mr-1"
+                    <v-icon size="small" class="mr-1" color="primary"
                       >mdi-server-network</v-icon
                     >
-                    Server:
+                    Server
                   </div>
                   <div class="d-flex gap-2 flex-nowrap">
                     <v-btn
@@ -220,71 +262,76 @@
                       :color="tabserver === index ? 'primary' : 'grey-darken-3'"
                       :variant="tabserver === index ? 'flat' : 'elevated'"
                       size="small"
-                      class="text-none server-btn font-weight-medium flex-shrink-0"
+                      class="text-none server-btn font-weight-bold flex-shrink-0 rounded-pill"
                       elevation="2"
                     >
+                      <v-icon start size="small" v-if="tabserver === index">mdi-check-circle</v-icon>
                       {{ server.server_name || `Server ${index + 1}` }}
                     </v-btn>
                   </div>
-                  <router-link
-                    :to="movie.LinkDown || ''"
-                    download
-                    target="_blank"
-                    class="ml-2 flex-shrink-0"
-                  >
-                    <v-btn
-                      size="small"
-                      color="success"
-                      variant="tonal"
-                      icon="mdi-cloud-download"
-                      title="Tải xuống"
-                    ></v-btn>
-                  </router-link>
+                  <v-divider vertical class="mx-2 hidden-sm-and-down" color="grey-darken-2"></v-divider>
+                  <v-tooltip location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        v-bind="props"
+                        :href="movie.LinkDown || ''"
+                        target="_blank"
+                        size="small"
+                        color="success"
+                        variant="tonal"
+                        icon="mdi-cloud-download"
+                        class="download-btn flex-shrink-0"
+                      ></v-btn>
+                    </template>
+                    <span>{{ $t("Tải xuống") }}</span>
+                  </v-tooltip>
                 </div>
 
                 <!-- Action buttons -->
                 <div
-                  class="d-flex align-center gap-2 flex-nowrap action-buttons-group overflow-x-auto pb-2 pb-md-0"
+                  class="d-flex align-center gap-3 flex-nowrap action-buttons-group overflow-x-auto pb-2 pb-md-0 mt-3 mt-md-0"
                 >
                   <v-btn
-                    variant="tonal"
-                    color="white"
+                    variant="flat"
+                    color="rgba(255, 255, 255, 0.1)"
                     size="small"
                     @click="dialogTrailer = true"
-                    class="action-btn flex-shrink-0 text-no-wrap"
+                    class="modern-action-btn text-white flex-shrink-0 text-no-wrap rounded-pill"
                   >
-                    <v-icon start color="red">mdi-youtube</v-icon> Trailer
+                    <v-icon start color="red-accent-3">mdi-youtube</v-icon> Trailer
                   </v-btn>
+
                   <v-btn
-                    variant="tonal"
-                    color="white"
+                    variant="flat"
+                    color="rgba(255, 255, 255, 0.1)"
                     size="small"
                     @click="shareMovie"
-                    class="action-btn flex-shrink-0 text-no-wrap"
+                    class="modern-action-btn text-white flex-shrink-0 text-no-wrap rounded-pill"
                   >
-                    <v-icon start color="blue">mdi-share-variant</v-icon>
-                    {{ $t("Chia sẻ") }}
+                    <v-icon start color="blue-lighten-1">mdi-share-variant</v-icon> {{ $t("Chia sẻ") }}
                   </v-btn>
+
                   <v-btn
-                    variant="tonal"
-                    color="white"
+                    variant="flat"
+                    color="rgba(255, 255, 255, 0.1)"
                     size="small"
                     @click="ResponseError"
-                    class="action-btn flex-shrink-0 text-no-wrap"
+                    class="modern-action-btn text-white flex-shrink-0 text-no-wrap rounded-pill"
                   >
-                    <v-icon start color="warning">mdi-flag</v-icon>
-                    {{ $t("Báo lỗi") }}
+                    <v-icon start color="amber-accent-3">mdi-alert-circle-outline</v-icon> {{ $t("Báo lỗi") }}
                   </v-btn>
+
                   <v-btn
-                    variant="tonal"
-                    :color="liked ? 'primary' : 'white'"
+                    variant="flat"
+                    :color="liked ? 'primary' : 'rgba(255, 255, 255, 0.1)'"
                     size="small"
                     @click="handleFavorite"
-                    class="action-btn flex-shrink-0 text-no-wrap"
+                    class="modern-action-btn text-white flex-shrink-0 text-no-wrap rounded-pill"
+                    :class="{ 'liked-btn': liked }"
                   >
-                    <v-icon start :color="liked ? 'white' : 'pink'">{{
-                      liked ? "mdi-bookmark" : "mdi-bookmark-outline"
-                    }}</v-icon>
+                    <v-icon start :color="liked ? 'white' : 'pink-accent-2'">
+                      {{ liked ? "mdi-heart" : "mdi-heart-outline" }}
+                    </v-icon>
                     {{ $t("Xem sau") }}
                   </v-btn>
                 </div>
@@ -975,7 +1022,8 @@ import {
   UpdateTimeWatch,
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
-import Hls from "hls.js";
+// import Hls from "hls.js";
+const jwplayer = window.jwplayer;
 import { useHead } from "@vueuse/head";
 export default {
   name: "MovieDetail",
@@ -986,12 +1034,10 @@ export default {
       trailerSkipped: false,
       trailerPlayable: false,
       mainVideoUrl: "",
-      videoStarted: false,
       isPlaying: false,
       currentTime: 0,
       duration: 0,
       progress: 0,
-      volume: 1,
       muted: false,
       isFullscreen: false,
       showControls: true,
@@ -1002,16 +1048,15 @@ export default {
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
-      bufferedProgress: 0,
-      showTimeHover: false,
-      hoverPosition: 0,
-      hoverTime: "00:00",
-      lastTimeUpdateTime: 0,
       tab: "",
       shareUrl: window.location.href,
       tabserver: null,
       currentEpisodeIndex: 0,
       currentEpisode: [],
+
+      player: null,
+      playerInitialized: false,
+      watchInterval: null,
       items: [
         {
           title: "Home",
@@ -1029,7 +1074,7 @@ export default {
       Message: "",
       color: "",
       mess: false,
-      movies:[],
+      movies: [],
       movie: {
         title: "",
         valueRate: 4.5,
@@ -1092,56 +1137,21 @@ export default {
   },
   props: ["slug", "page"],
   beforeUnmount() {
-    // Lưu thời gian xem trước khi rời khỏi
-
-    this.saveWatchTime();
-    if (this.idAccount) {
-      this.saveWatchTimeAPI();
+    if (this.watchInterval) {
+      clearInterval(this.watchInterval);
     }
-
-    // Dừng save interval
-    if (this.saveTimeInterval) {
-      clearInterval(this.saveTimeInterval);
+    window.removeEventListener("beforeunload", this.saveWatchTime);
+    if (this.player) {
+      this.player.remove();
+      this.player = null;
     }
-
-    // Hủy video HTML5
-    if (this.$refs.videoPlayer) {
-      this.$refs.videoPlayer.pause();
-      this.$refs.videoPlayer.src = "";
-      this.$refs.videoPlayer.load();
-    }
-
-    // Hủy iframe
-    if (this.$refs.videoIframe) {
-      this.$refs.videoIframe.src = "";
-    }
-
-    // Hủy HLS nếu có
-    if (this.hls) {
-      this.hls.destroy();
-      this.hls = null;
-    }
-    // remove keyboard listener
-    window.removeEventListener("keydown", this.onKeyDown);
-    // remove fullscreen listeners
-    document.removeEventListener(
-      "fullscreenchange",
-      this.handleFullscreenChange
-    );
-    document.removeEventListener(
-      "webkitfullscreenchange",
-      this.handleFullscreenChange
-    );
-    document.removeEventListener(
-      "mozfullscreenchange",
-      this.handleFullscreenChange
-    );
-    document.removeEventListener(
-      "MSFullscreenChange",
-      this.handleFullscreenChange
-    );
   },
   watch: {
+    currentEpisodeIndex() {
+      this.$nextTick(() => {
+        this.setupJWPlayer();
+      });
+    },
     async slug(newSlug) {
       await this.MoveInfor1(newSlug);
       if (this.page) {
@@ -1177,8 +1187,6 @@ export default {
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
       this.movie.videoUrl =
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
-
-      this.setupVideo(this.movie.videoUrl);
       if (epName) {
         const normalized = epName.replace("Tập ", "tap");
         if (this.$route.query.page !== normalized) {
@@ -1287,6 +1295,13 @@ export default {
       if (this.saveTimeInterval) {
         clearInterval(this.saveTimeInterval);
       }
+      this.watchInterval = setInterval(() => {
+        this.saveWatchTime();
+        if (this.idAccount) {
+          this.saveWatchTimeAPI();
+        }
+      }, 60000);
+
       this.saveTimeInterval = setInterval(() => {
         this.saveWatchTime();
         if (this.idAccount) {
@@ -1301,7 +1316,7 @@ export default {
           }
         }
       }, 60000);
-      
+
       this.updateMeta();
       // Keyboard shortcuts
       window.addEventListener("keydown", this.onKeyDown);
@@ -1322,6 +1337,12 @@ export default {
         "MSFullscreenChange",
         this.handleFullscreenChange
       );
+      window.addEventListener("beforeunload", this.saveWatchTime);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          this.saveWatchTime();
+        }
+      });
 
       // Show controls on hover (ensure visible when cursor over video)
       const wrapper = this.$el.querySelector(".video-wrapper");
@@ -1334,6 +1355,13 @@ export default {
           this.startHideControlsTimer();
         });
       }
+      this.$nextTick(() => {
+        this.setupJWPlayer();
+      });
+      this.watchInterval = setInterval(() => {
+        this.saveWatchTime();
+      }, 60000);
+      window.addEventListener("beforeunload", this.saveWatchTime);
 
       // await this.ListMovieByCate();
       // await this.GetComment();
@@ -1346,13 +1374,16 @@ export default {
   methods: {
     saveWatchTimeAPI() {
       try {
-        const video = this.$refs.videoPlayer;
+        // Support both native video element and jwplayer instance
+        let currentTime = 0;
+        if (this.player && typeof this.player.getPosition === "function") {
+          currentTime = Math.floor(this.player.getPosition() || 0);
+        } else {
+          const video = this.$refs.videoPlayer;
+          currentTime = Math.floor((video && video.currentTime) || 0);
+        }
 
-        // Không có video hoặc chưa phát
-        if (!video || !this.movie?.idMovie) return;
-
-        // Thời gian hiện tại
-        const currentTime = Math.floor(video.currentTime || 0);
+        if (!this.movie?.idMovie) return;
 
         // Không lưu nếu chưa xem gì
         if (currentTime <= 0) return;
@@ -1362,30 +1393,31 @@ export default {
 
         this.lastTimeUpdateTime = currentTime;
 
-      
-
         const payload = {
           IDMovies: this.movie.idMovie,
           IDAccount: this.idAccount,
           timeWatch: Math.floor(currentTime || 0),
           currentPage: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
-          slug : this.movie.slug,
-          UrlMovies : this.movie.thumb_url,
-          origin_name : this.movie.origin_name,
-          name : this.movie.name,
-          year : this.movie.year,
-          lang : this.movie.lang,
-          time : this.movie.time,
-          quality : this.movie.quality,
-          vote_average : this.movie.tmdb?.vote_average,
-          poster_url : this.movie.poster_url,
-          totalPage : this.movie.episode_total
+          slug: this.movie.slug,
+          UrlMovies: this.movie.thumb_url,
+          origin_name: this.movie.origin_name,
+          name: this.movie.name,
+          year: this.movie.year,
+          lang: this.movie.lang,
+          time: this.movie.time,
+          quality: this.movie.quality,
+          vote_average: this.movie.tmdb?.vote_average,
+          poster_url: this.movie.poster_url,
+          totalPage: this.movie.episode_total,
         };
 
-        UpdateTimeWatch(payload, ()=>{
-        },(err)=>{
-          console.error(err);
-        })
+        UpdateTimeWatch(
+          payload,
+          () => {},
+          (err) => {
+            console.error(err);
+          }
+        );
       } catch (error) {
         console.error("Lỗi lưu thời gian xem:", error);
       }
@@ -1438,104 +1470,81 @@ export default {
         ],
       });
     },
-    // Lưu thời gian xem vào localStorage
+    startPlayer() {
+  if (this.playerInitialized) {
+    if (this.player) {
+      this.player.play(true);
+    }
+    return;
+  }
+
+  this.playerInitialized = true;
+
+  this.$nextTick(() => {
+    this.setupJWPlayer();
+  });
+},
+    // Lưu thời gian xem vào localStorage (per movie+episode)
     saveWatchTime() {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.movie.idMovie) return;
+      if (!this.player || !this.movie.idMovie) return;
 
-      const currentTime = video.currentTime;
-      const duration = video.duration;
+      const currentTime = this.player.getPosition();
+      const duration = this.player.getDuration();
 
-      // Chỉ lưu nếu video đã tải được
-      if (isFinite(currentTime) && isFinite(duration) && duration > 0) {
+      // Chỉ lưu nếu video đang phát và có vị trí hợp lệ
+      if (isFinite(currentTime) && isFinite(duration) && duration > 0 && currentTime > 0) {
         const watchData = {
-          IDMovies: this.movies._id,
-          slug: this.movies.slug,
+          IDMovies: this.movie.idMovie,
+          slug: this.movie.slug,
           episode: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
           timeWatch: currentTime,
           duration: duration,
           timestamp: Date.now(),
-          currentPage: this.movie.pageMovie[this.currentEpisodeIndex]?.name,
-          lang: this.movies.lang,
-          quality: this.movies.quality,
-          name: this.movies.name,
-          thumb_url: this.movies.thumb_url,
-          poster_url: this.movies.poster_url,
-          origin_name: this.movies.origin_name,
-          year: this.movies.year,
-          time: this.movies.time,
-          episode_total: this.movies.episode_total,
-          totalPage: this.movies.episode_total
-          
+          name: this.movie.name,
+          thumb_url: this.movie.thumb_url,
+          poster_url: this.movie.poster_url,
         };
-
-        // Lưu vào localStorage với key duy nhất
-        const key = `webphim_watchtime`;
-
-        localStorage.setItem(key, JSON.stringify(watchData));
+        localStorage.setItem('webphim_watchtime', JSON.stringify(watchData));
       }
     },
 
     // Load thời gian xem từ localStorage
-    loadWatchTime() {
-      const video = this.$refs.videoPlayer;
-
-      if (!video || !this.movie.idMovie) return;
+loadWatchTime() {
+      if (!this.player || !this.movie.idMovie) return;
 
       try {
-        // ưu tiên từ favorite/store
-        if (
-          this.$store.state.timeWatch !== "" &&
-          this.$store.state.timeWatch != null
-        ) {
-          const storeTime = Number(this.$store.state.timeWatch);
+        let seekTime = 0;
+        const storeTime = this.$store.state.timeWatch;
 
-          const setStoreTime = () => {
-            if (
-              isFinite(storeTime) &&
-              storeTime > 0 &&
-              storeTime < video.duration
-            ) {
-              video.currentTime = storeTime;
+        // 1. Ưu tiên dữ liệu từ Store/API
+        if (storeTime !== "" && storeTime != null) {
+          seekTime = Number(storeTime);
+          // Reset store sau khi dùng để tránh seek nhầm khi chuyển tập
+          this.$store.commit("settimeWatch", null);
+        } 
+        // 2. Nếu store trống, sử dụng LocalStorage làm phương án dự phòng
+        else {
+          const watchData = localStorage.getItem('webphim_watchtime');
+          if (watchData) {
+            const data = JSON.parse(watchData);
+            const currentEpName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+            // Kiểm tra khớp phim và tập hiện tại
+            if (data.IDMovies === this.movie.idMovie && data.episode === currentEpName) {
+              seekTime = data.timeWatch;
             }
-
-            // reset sau khi dùng
-            this.$store.commit("settimeWatch", null);
-
-            video.removeEventListener("loadedmetadata", setStoreTime);
-          };
-
-          video.addEventListener("loadedmetadata", setStoreTime);
-
-          return;
+          }
         }
 
-        // key riêng từng tập
-        const key = `webphim_watchtime`;
-
-        const watchData = localStorage.getItem(key);
-
-        if (!watchData) return;
-
-        const data = JSON.parse(watchData);
-
-        const setTime = () => {
-          if (
-            isFinite(data.currentTime) &&
-            data.currentTime > 0 &&
-            data.currentTime < video.duration
-          ) {
-            video.currentTime = data.currentTime;
-          }
-
-          video.removeEventListener("loadedmetadata", setTime);
-        };
-
-        video.addEventListener("loadedmetadata", setTime);
+        if (seekTime > 0) {
+          console.log("Resuming watch at:", seekTime);
+          this.player.seek(seekTime);
+        }
       } catch (error) {
         console.error("Lỗi load thời gian xem:", error);
       }
     },
+
+
 
     extractYoutubeId(url) {
       const match = url.match(
@@ -1544,30 +1553,7 @@ export default {
       return match ? match[1] : null;
     },
 
-    resetPlayer() {
-      const video = this.$refs.videoPlayer;
-      const iframe = this.$refs.videoIframe;
 
-      // mark as not loaded
-      this.videoLoaded = false;
-
-      if (video) {
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-        video.style.display = "block";
-      }
-
-      if (iframe) {
-        iframe.src = "";
-        iframe.style.display = "none";
-      }
-
-      if (this.hls) {
-        this.hls.destroy();
-        this.hls = null;
-      }
-    },
     timeAgo(timestamp) {
       const time = new Date(timestamp).getTime();
       const now = Date.now();
@@ -1852,25 +1838,23 @@ export default {
     //   // lưu vị trí xem
     //   video.addEventListener("timeupdate", this.saveTime);
     // },
-    saveTime() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
 
-      const current = Math.floor(video.currentTime);
-
-      if (!this.lastSavedTime || current - this.lastSavedTime >= 5) {
-        localStorage.setItem(this.videoKey, current);
-        this.lastSavedTime = current;
-      }
-    },
     updateSEO() {
       useHead({
         title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
         meta: [
-          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.` },
+          {
+            name: "description",
+            content:
+              this.movie.description ||
+              `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.`,
+          },
           { property: "og:title", content: this.movie.title },
           { property: "og:description", content: this.movie.description },
-          { property: "og:image", content: this.movie.thumb_url || this.movie.poster_url },
+          {
+            property: "og:image",
+            content: this.movie.thumb_url || this.movie.poster_url,
+          },
           { property: "og:url", content: window.location.href },
           { property: "og:type", content: "video.movie" },
         ],
@@ -1881,269 +1865,101 @@ export default {
             children: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Movie",
-              "name": this.movie.title,
-              "image": this.movie.thumb_url || this.movie.poster_url,
-              "description": this.movie.description,
-              "dateCreated": this.movie.year || new Date().getFullYear().toString()
+              name: this.movie.title,
+              image: this.movie.thumb_url || this.movie.poster_url,
+              description: this.movie.description,
+              dateCreated:
+                this.movie.year || new Date().getFullYear().toString(),
             }),
           },
         ],
       });
     },
-    restoreTime() {
-      const video = this.$refs.videoPlayer;
-      const savedTime = localStorage.getItem(this.videoKey);
 
-      if (video && savedTime) {
-        video.currentTime = parseFloat(savedTime);
+
+    setupJWPlayer() {
+      const videoUrl =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
+      if (!videoUrl) return;
+      if (this.player) {
+        this.player.remove();
       }
-    },
-    toggleEpisodes() {
-      this.showAllEpisodes = !this.showAllEpisodes;
-    },
-    setupVideo(url) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !url) return;
+      this.player = jwplayer("jwplayer-container");
+      this.player.setup({
+        file: videoUrl,
+        image: this.movie.thumb_url || "",
+        width: "100%",
+        aspectratio: "16:9",
+        preload: "none",
+        autostart: false,
+        mute: this.muted,
+        stretching: "uniform",
+        controls: true,
+        displaytitle: true,
+        title: this.movie.name,
+        playbackRateControls: [0.5, 1, 1.25, 1.5, 2],
+        abouttext: "ZCines",
+        aboutlink: window.location.origin,
+        skin: { name: "netflix" },
+        logo: { file: "/icon.png", position: "top-right", hide: false },
+      });
+      this.player.on("ready", () => {
+  this.videoLoaded = true;
 
-      this.videoLoaded = false;
+  this.loadWatchTime();
 
-      if (this.hls) {
-        this.hls.destroy();
-        this.hls = null;
+  // autoplay ngay lần click đầu tiên
+  if (this.playerInitialized) {
+    setTimeout(() => {
+      if (this.player) {
+        this.player.play(true);
       }
-
-      if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        this.hls = new Hls({
-          maxBufferLength: 60, // Tải trước tối thiểu 60 giây
-          maxMaxBufferLength: 300, // Cho phép tải trước tối đa lên đến 5 phút nếu mạng nhanh
-          maxBufferSize: 150 * 1000 * 1000, // Giới hạn bộ nhớ đệm 150MB để tránh tràn RAM nhưng vẫn đủ cho HD
-          enableWorker: true, // Chạy trong worker để không gây lag giao diện (UI)
-          startLevel: -1, // Tự động chọn chất lượng tốt nhất lúc khởi đầu
-          capLevelToPlayerSize: true, // Giới hạn chất lượng theo kích thước màn hình để tiết kiệm băng thông
-          fragLoadingMaxRetry: 10, // Thử lại nhiều lần hơn khi lỗi tải phân đoạn
-          fragLoadingRetryDelay: 1000, // Chờ 1 giây trước khi thử lại
-          manifestLoadingRetryDelay: 1000,
-          appendErrorMaxRetry: 10, // Thử lại khi gặp lỗi ghi dữ liệu vào buffer
-        });
-
-        this.hls.loadSource(url);
-        this.hls.attachMedia(video);
-      } else {
-        video.src = url;
-      }
-    },
-    playVideo(url) {
-      // Setup video source nếu cần
-      if (url) {
-        this.setupVideo(url);
-      }
-
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      // Nếu là lần đầu click hoặc chuyển tập thì unmute
-
-      video.play().catch(() => {
-        video.play();
+    }, 100);
+  }
+});
+      this.player.on("play", () => {
+        this.isPlaying = true;
+        this.videoStarted = true;
+      });
+      this.player.on("pause", () => {
+        this.isPlaying = false;
+        this.saveWatchTime();
+      });
+      this.player.on("time", (e) => {
+        this.currentTime = e.position;
+        this.duration = e.duration;
+        this.progress = (e.position / e.duration) * 100;
+      });
+      // this.player.on("buffer", () => {
+      //   this.videoLoaded = false;
+      // });
+      // this.player.on("bufferChange", () => {
+      //   this.videoLoaded = true;
+      // });
+      this.player.on("complete", () => {
+        this.nextEpisode();
       });
     },
-    playVideoOnClick() {
-      if (!this.videoStarted) {
-        this.videoStarted = true;
 
-        if (this.movie.videoUrl && !this.hls) {
-          this.setupVideo(this.movie.videoUrl);
-        }
 
-        const video = this.$refs.videoPlayer;
-
-        setTimeout(() => {
-          video.muted = false;
-          video.play().catch(() => {});
-        }, 800);
-      }
-    },
     // --- Custom control methods ---
     togglePlay() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      if (!this.videoStarted) {
-        this.playVideoOnClick();
-      }
-
-      if (video.paused) {
-        video.play().catch(() => {});
+      if (!this.player) return;
+      const state = this.player.getState();
+      if (state === "playing") {
+        this.player.pause(true);
       } else {
-        video.pause();
+        this.player.play();
       }
     },
-    onPlay() {
-      this.isPlaying = true;
-      this.showControls = true;
-      this.startHideControlsTimer();
-      this.videoLoaded = true;
-    },
-    onPause() {
-      this.isPlaying = false;
-      this.showControls = true;
-      this.clearHideControlsTimer();
-    },
-    onTimeUpdate() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
 
-      // Throttle updates to 60fps for better performance
-      const now = performance.now();
-      if (now - this.lastTimeUpdateTime < 16) return;
-      this.lastTimeUpdateTime = now;
-
-      this.currentTime = video.currentTime || 0;
-      this.duration = video.duration || 0;
-      this.progress =
-        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
-      this.updateBufferedProgress();
-    },
-    onLoadedMetadata() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-      this.duration = video.duration || 0;
-      this.currentTime = video.currentTime || 0;
-      this.progress =
-        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
-      this.updateBufferedProgress();
-      this.videoLoaded = true;
-    },
-    onWaiting() {
-      // Browser is buffering or waiting for data
-      this.videoLoaded = false;
-      this.showControls = true;
-      this.clearHideControlsTimer();
-    },
-    onCanPlay() {
-      // Enough data to start playing
-      this.videoLoaded = true;
-    },
-    updateBufferedProgress() {
-      const video = this.$refs.videoPlayer;
-      if (!video || !video.buffered.length) {
-        this.bufferedProgress = 0;
-        return;
-      }
-
-      // Get the latest buffered range end time
-      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-      this.bufferedProgress =
-        this.duration > 0 ? (bufferedEnd / this.duration) * 100 : 0;
-    },
-    updateTimeHover(e) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.duration) {
-        this.showTimeHover = false;
-        return;
-      }
-
-      const bar = e.currentTarget.querySelector(".progress-bar");
-      const rect = bar.getBoundingClientRect();
-      const hoverX = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(1, hoverX / rect.width));
-
-      this.hoverPosition = ratio * 100;
-      this.hoverTime = this.formatTime(ratio * this.duration);
-      this.showTimeHover = true;
-    },
-    hideTimeHover() {
-      this.showTimeHover = false;
-    },
-    seek(e) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.duration) return;
-
-      const bar = e.currentTarget.querySelector(".progress-bar");
-      const rect = bar.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
-      video.currentTime = ratio * this.duration;
-      this.updateBufferedProgress();
-      this.onTimeUpdate();
-    },
-    formatTime(seconds) {
-      if (!isFinite(seconds) || seconds <= 0) return "00:00";
-      const s = Math.floor(seconds);
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = s % 60;
-      const pad = (n) => String(n).padStart(2, "0");
-      return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
-    },
     toggleMute() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-      this.muted = !this.muted;
-      video.muted = this.muted;
-      if (!this.muted && video.volume === 0 && this.volume > 0) {
-        video.volume = this.volume;
-      }
+      if (!this.player) return;
+      const isMuted = this.player.getMute();
+      this.player.setMute(!isMuted);
+      this.muted = !isMuted;
     },
-    setVolume(val) {
-      const video = this.$refs.videoPlayer;
-      const v = Number(val);
-      this.volume = v;
-      if (video) video.volume = v;
-      this.muted = v === 0;
-    },
-    toggleFullScreen() {
-      const wrapper = this.$el.querySelector(".video-wrapper");
-      if (!wrapper) return;
-      const doc = document;
-      const lockLandscape = () => {
-        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-        if (orientation && typeof orientation.lock === "function") {
-          orientation.lock("landscape").catch(() => {});
-        }
-      };
-      const unlockOrientation = () => {
-        const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
-        if (orientation && typeof orientation.unlock === "function") {
-          orientation.unlock();
-        }
-      };
 
-      if (!this.isFullscreen) {
-        const video = this.$refs.videoPlayer;
-        if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-        else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-        else if (wrapper.mozRequestFullScreen) wrapper.mozRequestFullScreen();
-        else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
-        else if (video && typeof video.webkitEnterFullscreen === "function") {
-          try {
-            video.webkitEnterFullscreen();
-            this.isFullscreen = true;
-            lockLandscape();
-            return;
-          } catch (e) {
-            // ignore
-          }
-        }
-        lockLandscape();
-        this.isFullscreen = true;
-      } else {
-        const video = this.$refs.videoPlayer;
-        if (doc.exitFullscreen) doc.exitFullscreen();
-        else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
-        else if (doc.mozCancelFullScreen) doc.mozCancelFullScreen();
-        else if (doc.msExitFullscreen) doc.msExitFullscreen();
-        else if (video && typeof video.webkitExitFullscreen === "function") {
-          try {
-            video.webkitExitFullscreen();
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        unlockOrientation();
-        this.isFullscreen = false;
-      }
-    },
     handleFullscreenChange() {
       const doc = document;
       const isFs = !!(
@@ -2153,7 +1969,8 @@ export default {
         doc.msFullscreenElement
       );
       this.isFullscreen = isFs;
-      const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+      const orientation =
+        screen.orientation || screen.mozOrientation || screen.msOrientation;
       if (!isFs) {
         if (orientation && typeof orientation.unlock === "function") {
           orientation.unlock();
@@ -2558,22 +2375,7 @@ export default {
       );
     },
 
-    scrollLeft() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: -220, behavior: "smooth" });
-      }
-    },
-    scrollRight() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: 220, behavior: "smooth" });
-      }
-    },
-    getTrailer() {
-      this.movie.videoUrl = this.movie.trailer_url;
-      this.isTrailer = true;
-    },
+
     playEpisode(episode) {
       try {
         console.log(episode);
@@ -2621,19 +2423,10 @@ export default {
         // tạo key mới cho tập mới
         this.videoKey = `movie_${this.slug}_${this.page}`;
 
-        // Setup video và play tập mới (auto-play với unmute)
+        // Setup video và play tập mới
         this.movie.videoUrl = episode.link_m3u8;
-        this.setupVideo(this.movie.videoUrl);
         this.videoStarted = true;
-        this.$nextTick(() => {
-          const video = this.$refs.videoPlayer;
-          if (video) {
-            video.muted = false;
-            video.play().catch(() => {
-              video.play();
-            });
-          }
-        });
+        this.setupJWPlayer();
 
         //this.GetComment();
         this.isLoading = false;
@@ -2692,51 +2485,7 @@ export default {
         this.playEpisode(prevEp);
       }
     },
-    generateEmbedHtml(url) {
-      if (this.isTrailer) {
-        const youtubeMatch = this.movie.trailer_url.split("?v=");
-        // const youtubeMatch = url.match(
-        //   /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        // );
-        if (youtubeMatch.length > 0) {
-          const videoId = youtubeMatch[1];
 
-          return `
-            <iframe width="100%" height="100%"
-              src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-              >
-            </iframe>
-          `;
-        } else {
-          // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
-          return `
-            <video width="100%" height="100%" controls preload="none" style="touch-action: manipulation;">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-        //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
-      } else {
-        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
-        <iframe
-          src="${url}"
-          frameborder="0"
-          class="w-full h-full"
-          webkit-playsinline
-          loading="lazy"
-          allowfullscreen
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-        ></iframe>
-      </div>`;
-      }
-    },
   },
   computed: {
     idAccount() {
@@ -2886,10 +2635,11 @@ export default {
 }
 
 /* Toolbar hiện đại phía dưới video */
-.player-toolbar {
-  background-color: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+.modern-toolbar {
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .server-tabs-wrapper::-webkit-scrollbar,
@@ -2907,14 +2657,91 @@ export default {
   border-radius: 4px;
 }
 
-.action-btn {
+.modern-action-btn {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   text-transform: none;
-  font-weight: 500;
-  letter-spacing: 0;
-  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modern-action-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modern-action-btn:active {
+  transform: translateY(0);
+}
+
+.liked-btn {
+  box-shadow: 0 4px 15px rgba(var(--v-theme-primary), 0.4) !important;
 }
 
 .server-btn {
+  text-transform: none;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+.server-btn:hover {
+  transform: translateY(-2px);
+}
+
+.download-btn {
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.modern-nav .nav-episode-btn {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-transform: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modern-nav .nav-episode-btn:hover:not(:disabled) {
+  background-color: #333 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+  color: #f8b230 !important;
+}
+
+.modern-nav .nav-episode-btn:disabled {
+  opacity: 0.5;
+}
+
+.current-episode-badge {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-glow {
+  position: absolute;
+  inset: -4px;
+  background: var(--v-theme-primary);
+  filter: blur(12px);
+  opacity: 0.4;
+  border-radius: 20px;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.current-episode-badge:hover .badge-glow {
+  opacity: 0.6;
+}
+
+.current-episode-badge .v-chip {
+  position: relative;
+  z-index: 1;
+
   letter-spacing: 0;
   transition: all 0.2s ease;
 }
@@ -3713,10 +3540,14 @@ a {
   height: 44px !important;
   letter-spacing: 0.3px;
   border-radius: 10px !important;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.episode-item-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-2px);
 }
 .episode-item-active {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  box-shadow: 0 4px 15px rgba(var(--v-theme-primary), 0.4) !important;
   transform: scale(1.02);
 }
 .controls {
@@ -4010,7 +3841,7 @@ a {
 }
 
 /* Loading overlay for video */
-.video-loading-overlay {
+/* .video-loading-overlay {
   position: absolute;
   inset: 0;
   display: flex;
@@ -4018,7 +3849,7 @@ a {
   justify-content: center;
   z-index: 25;
   background: rgba(0, 0, 0, 0.35);
-}
+} */
 /* Thông tin phim */
 .movie-info-grid p,
 .movie-description,
@@ -4076,5 +3907,381 @@ a {
   position: absolute;
   top: -5px; /* Điều chỉnh vị trí theo ý muốn */
   right: 5px; /* Điều chỉnh vị trí theo ý muốn */
+}
+
+.video-wrapper {
+  width: 100%;
+  position: relative;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+#jwplayer-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+/* JWPlayer modern */
+.jwplayer {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.jw-controlbar {
+  backdrop-filter: blur(20px);
+}
+
+.jw-icon {
+  transition: all 0.2s ease;
+}
+
+.jw-icon:hover {
+  transform: scale(1.1);
+}
+.video-wrapper {
+  width: 100%;
+  position: relative;
+  background: #000;
+  border-radius: 18px;
+  overflow: hidden;
+}
+#jwplayer-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+} /* modern */
+.jwplayer {
+  border-radius: 18px !important;
+  overflow: hidden !important;
+} /* blur controls */
+.jw-controlbar {
+  backdrop-filter: blur(20px);
+} /* icon animation */
+.jw-icon {
+  transition: all 0.2s ease;
+}
+.jw-icon:hover {
+  transform: scale(1.1);
+} /* loading */
+/* .video-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 20;
+}  */
+/* mobile */
+@media (max-width: 768px) {
+  .video-wrapper {
+    border-radius: 0;
+  }
+  .jwplayer {
+    border-radius: 0 !important;
+  }
+}
+/* PLAYER */
+
+.modern-player {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #000;
+
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.05);
+
+  transition: .3s;
+}
+
+.modern-player:hover {
+  transform: translateY(-2px);
+}
+
+/* JWPLAYER */
+
+.modern-player .jwplayer {
+  border-radius: 22px !important;
+  overflow: hidden !important;
+}
+
+/* VIDEO LOADING */
+/* 
+.video-loading-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0,0,0,.45);
+
+  backdrop-filter: blur(6px);
+
+  z-index: 30;
+} */
+
+/* OVERLAY */
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+
+  z-index: 20;
+
+  cursor: pointer;
+}
+
+.overlay-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transform: scale(1.02);
+}
+
+.overlay-gradient {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.92),
+      rgba(0,0,0,.15)
+    );
+}
+
+.overlay-center {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+}
+
+/* PLAY BUTTON */
+
+.modern-play-btn {
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  backdrop-filter: blur(14px);
+
+  background: rgba(255,255,255,.12);
+
+  border: 1px solid rgba(255,255,255,.18);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.4),
+    inset 0 0 12px rgba(255,255,255,.08);
+
+  transition: .25s;
+}
+
+.modern-play-btn:hover {
+  transform: scale(1.08);
+
+  background: rgba(255,255,255,.2);
+}
+
+/* TITLE */
+
+.overlay-title {
+  margin-top: 24px;
+
+  color: white;
+
+  font-size: 30px;
+  font-weight: 800;
+
+  text-shadow: 0 3px 12px rgba(0,0,0,.6);
+}
+
+.overlay-subtitle {
+  margin-top: 10px;
+
+  color: rgba(255,255,255,.82);
+
+  font-size: 15px;
+}
+
+/* PAUSE OVERLAY */
+
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+
+  z-index: 25;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  animation: fadeOverlay .25s ease;
+
+  pointer-events: none;
+}
+
+.modern-player {
+  position: relative;
+  overflow: hidden;
+
+  transform: translateZ(0);
+}
+
+.pause-play-btn {
+  width: 60px;
+  height: 60px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  background: rgba(0,0,0,.45);
+
+  border: 1px solid rgba(255,255,255,.18);
+
+  transition:
+    transform .25s,
+    background .25s;
+
+  pointer-events: auto;
+
+  cursor: pointer;
+}
+
+
+@keyframes fadeOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.pause-play-btn:hover {
+  transform: scale(1.08);
+
+  background: rgba(255,255,255,.22);
+}
+
+.pause-play-btn:hover {
+  transform: scale(1.08);
+
+  background: rgba(255,255,255,.22);
+}
+
+/* JW CONTROLS */
+
+.modern-player .jw-controls {
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.92),
+      rgba(0,0,0,0)
+    ) !important;
+}
+
+/* CONTROL BUTTONS */
+
+.modern-player .jw-icon {
+  transition: .2s !important;
+}
+
+.modern-player .jw-icon:hover {
+  transform: scale(1.12);
+}
+
+/* PROGRESS BAR */
+
+.modern-player .jw-slider-time {
+  height: 5px !important;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+}
+
+.modern-player .jw-buffer {
+  background: rgba(255,255,255,.2) !important;
+}
+
+.modern-player .jw-progress {
+  background:
+    linear-gradient(
+      90deg,
+      #ff004c,
+      #ff5500
+    ) !important;
+}
+
+/* CONTROL BAR */
+
+.modern-player .jw-controlbar {
+  padding: 0 14px 10px !important;
+}
+
+/* TIME TEXT */
+
+.modern-player .jw-text-duration,
+.modern-player .jw-text-elapsed {
+  font-weight: 600 !important;
+}
+
+/* ANIMATION */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .25s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .modern-play-btn {
+    width: 88px;
+    height: 88px;
+  }
+
+  .pause-play-btn {
+    width: 88px;
+    height: 88px;
+  }
+
+  .overlay-title {
+    font-size: 20px;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .overlay-subtitle {
+    font-size: 13px;
+  }
 }
 </style>
