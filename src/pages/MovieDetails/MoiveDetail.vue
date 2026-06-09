@@ -21,23 +21,39 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" lg="9" md="8">
               <!-- VIDEO -->
-              <div class="video-wrapper">
+              <div class="video-wrapper" @dblclick="toggleFullScreen">
                 <!-- Iframe Player -->
                 <iframe
                   v-if="videoStarted"
+                  ref="videoPlayer"
                   :src="movie.videoUrl"
                   class="video-player"
+                  :class="{ 'video-loading': isIframeLoading }"
                   allowfullscreen
                   allow="autoplay; fullscreen"
                   frameborder="0"
-                  loading="lazy"
+                  @load="onIframeLoad"
                 ></iframe>
+
+                <!-- Loading State / Smooth transition -->
+                <div
+                  v-if="videoStarted && isIframeLoading"
+                  class="video-loading-overlay"
+                >
+                  <v-img :src="movie.thumb_url" cover class="video-player-poster-blur"></v-img>
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="64"
+                  />
+                </div>
 
                 <!-- Poster / Play overlay -->
                 <div
-                  v-else
+                  v-if="!videoStarted"
                   class="video-play-overlay"
                   @click="playVideoOnClick"
+                  @dblclick="toggleFullScreen"
                 >
                   <v-img :src="movie.thumb_url" cover class="video-player-poster"></v-img>
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
@@ -887,6 +903,7 @@ export default {
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
+      isIframeLoading: false,
       bufferedProgress: 0,
       showTimeHover: false,
       hoverPosition: 0,
@@ -2419,6 +2436,9 @@ export default {
           });
         }
 
+        this.isIframeLoading = true;
+        this.movie.videoUrl = this.ensureAutoplay(episode.link_embed);
+
         if (this.videoKey) {
           localStorage.removeItem(this.videoKey);
         }
@@ -2433,7 +2453,6 @@ export default {
         // tạo key mới cho tập mới
         this.videoKey = `movie_${this.slug}_${this.page}`;
 
-        this.videoStarted = true;
         //this.GetComment();
         this.isLoading = false;
         this.$nextTick(() => {
@@ -2448,16 +2467,18 @@ export default {
       this.isLoading = true;
 
       // this.movie.pageMovie = server.server_data;
+      this.isIframeLoading = true;
       this.movie.pageMovie = server.server_data.sort(
         (a, b) => parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
       );
+      
       if (
         this.movie.page == "Full" ||
         // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
         this.movie.page.includes("/")
       ) {
         this.movie.videoUrl =
-          server.server_data[server.server_data.length - 1].link_embed;
+          this.ensureAutoplay(server.server_data[server.server_data.length - 1].link_embed);
         this.movie.LinkDown =
           server.server_data[server.server_data.length - 1].link_m3u8;
         this.isTrailer = false;
@@ -2465,7 +2486,7 @@ export default {
         var tap = this.movie.page.split("Tập ")[1].trim();
         const data = server.server_data.includes(tap);
         if (data) {
-          this.movie.videoUrl = data.link_embed;
+          this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
           this.movie.LinkDown = data.link_m3u8;
           this.isTrailer = false;
         }
@@ -2653,6 +2674,31 @@ export default {
 
   /* Smooth focus state */
   cursor: pointer;
+}
+
+.video-player.video-loading {
+  opacity: 0;
+}
+
+.video-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: #000;
+}
+
+.video-player-poster-blur {
+  position: absolute;
+  inset: 0;
+  filter: blur(8px);
+  opacity: 0.6;
+}
+
+.video-loading-overlay .v-progress-circular {
+  z-index: 3;
 }
 
 .video-wrapper:hover,
