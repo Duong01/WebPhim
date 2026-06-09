@@ -22,143 +22,28 @@
             <v-col cols="12" lg="9" md="8">
               <!-- VIDEO -->
               <div class="video-wrapper">
-                <!-- Video chính -->
-                <video
-                  ref="videoPlayer"
+                <!-- Iframe Player -->
+                <iframe
+                  v-if="videoStarted"
+                  :src="movie.videoUrl"
                   class="video-player"
-                  playsinline
-                  webkit-playsinline
-                  preload="metadata"
-                  :muted="muted"
-                  :poster="movie.thumb_url || ''"
-                  @click="togglePlay"
-                  @dblclick="toggleFullScreen"
-                  @timeupdate="onTimeUpdate"
-                  @loadedmetadata="onLoadedMetadata"
-                  @waiting="onWaiting"
-                  @canplay="onCanPlay"
-                  @play="onPlay"
-                  @pause="onPause"
-                ></video>
+                  allowfullscreen
+                  allow="autoplay; fullscreen"
+                  frameborder="0"
+                  loading="lazy"
+                ></iframe>
 
-                <!-- Play overlay khi chưa click -->
+                <!-- Poster / Play overlay -->
                 <div
-                  v-if="!videoStarted && $vuetify.display.mdAndUp"
+                  v-else
                   class="video-play-overlay"
                   @click="playVideoOnClick"
-                  @dblclick="toggleFullScreen"
                 >
+                  <v-img :src="movie.thumb_url" cover class="video-player-poster"></v-img>
                   <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
                   <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
                 </div>
-
-                <!-- Loading overlay while video buffers/loads -->
-                <div
-                  v-if="videoStarted && !videoLoaded"
-                  class="video-loading-overlay"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    color="primary"
-                    size="48"
-                  />
-                </div>
-
-                <!-- Custom controls -->
-                <div
-                  class="custom-controls"
-                  :class="{ 'controls-hidden': !showControls }"
-                  @mousemove="showControlsTemporarily"
-                  @mouseleave="startHideControlsTimer"
-                >
-                  <div class="controls-row">
-                    <div class="left-controls">
-                      <v-btn icon class="control-btn" @click="togglePlay">
-                        <v-icon v-if="!isPlaying">mdi-play</v-icon>
-                        <v-icon v-else>mdi-pause</v-icon>
-                      </v-btn>
-
-                      <v-btn
-                        icon
-                        class="control-btn"
-                        @click="prevEpisode"
-                        v-if="$vuetify.display.smAndUp"
-                      >
-                        <v-icon>mdi-skip-previous</v-icon>
-                      </v-btn>
-
-                      <v-btn
-                        icon
-                        class="control-btn"
-                        @click="nextEpisode"
-                        v-if="$vuetify.display.smAndUp"
-                      >
-                        <v-icon>mdi-skip-next</v-icon>
-                      </v-btn>
-
-                      <div class="time-text">
-                        {{ formatTime(currentTime) }} /
-                        {{ formatTime(duration) }}
-                      </div>
-                    </div>
-
-                    <div
-                      class="progress-wrapper"
-                      @click="seek($event)"
-                      @mousemove="updateTimeHover"
-                      @mouseleave="hideTimeHover"
-                    >
-                      <div class="progress-bar">
-                        <!-- Buffered progress -->
-                        <div
-                          class="progress-buffered"
-                          :style="{ width: bufferedProgress + '%' }"
-                        ></div>
-                        <!-- Played progress -->
-                        <div
-                          class="progress-filled"
-                          :style="{ width: progress + '%' }"
-                        ></div>
-                        <!-- Time hover indicator -->
-                        <div
-                          v-if="showTimeHover"
-                          class="progress-hover-time"
-                          :style="{ left: hoverPosition + '%' }"
-                        >
-                          <div class="hover-tooltip">{{ hoverTime }}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="right-controls">
-                      <v-btn icon class="control-btn" @click="toggleMute">
-                        <v-icon v-if="muted">mdi-volume-mute</v-icon>
-                        <v-icon v-else-if="volume > 0.5"
-                          >mdi-volume-high</v-icon
-                        >
-                        <v-icon v-else>mdi-volume-medium</v-icon>
-                      </v-btn>
-
-                      <!-- <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        v-model.number="volume"
-                        @input="setVolume($event.target.value)"
-                        class="volume-slider"
-                        aria-label="Volume"
-                      /> -->
-
-                      <v-btn icon class="control-btn" @click="toggleFullScreen">
-                        <v-icon v-if="isFullscreen">mdi-fullscreen-exit</v-icon>
-                        <v-icon v-else>mdi-fullscreen</v-icon>
-                      </v-btn>
-                    </div>
-                  </div>
-                </div>
               </div>
-
               <!-- nut next tap và back tap -->
               <div
                 class="d-flex justify-center align-center my-4 episode-nav-wrapper"
@@ -975,7 +860,7 @@ import {
   UpdateTimeWatch,
 } from "@/model/api";
 //import {  toggleFavorite } from "@/utils/favorite";
-import Hls from "hls.js";
+// import Hls from "hls.js";
 import { useHead } from "@vueuse/head";
 export default {
   name: "MovieDetail",
@@ -1244,12 +1129,8 @@ export default {
           return epNumber === page;
         });
       }
-      this.movie.title =
-        this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
-
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl =
-        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
+      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
       this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
 
       // Không setup video khi vào page - chỉ setup khi user click play
@@ -1902,80 +1783,11 @@ export default {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
     setupVideo(url) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !url) return;
-
-      this.videoLoaded = false;
-
-      if (this.hls) {
-        this.hls.destroy();
-        this.hls = null;
-      }
-
-      if (Hls.isSupported() && url.endsWith(".m3u8")) {
-        this.hls = new Hls({
-          maxBufferLength: 60, // Tải trước tối thiểu 60 giây
-          maxMaxBufferLength: 300, // Cho phép tải trước tối đa lên đến 5 phút nếu mạng nhanh
-          maxBufferSize: 150 * 1000 * 1000, // Giới hạn bộ nhớ đệm 150MB để tránh tràn RAM nhưng vẫn đủ cho HD
-          enableWorker: true, // Chạy trong worker để không gây lag giao diện (UI)
-          startLevel: -1, // Tự động chọn chất lượng tốt nhất lúc khởi đầu
-          capLevelToPlayerSize: true, // Giới hạn chất lượng theo kích thước màn hình để tiết kiệm băng thông
-          fragLoadingMaxRetry: 10, // Thử lại nhiều lần hơn khi lỗi tải phân đoạn
-          fragLoadingRetryDelay: 1000, // Chờ 1 giây trước khi thử lại
-          manifestLoadingRetryDelay: 1000,
-          appendErrorMaxRetry: 10, // Thử lại khi gặp lỗi ghi dữ liệu vào buffer
-        });
-
-        this.hls.loadSource(url);
-        this.hls.attachMedia(video);
-      } else {
-        video.src = url;
-      }
-    },
-    playVideo(url) {
-      // Setup video source nếu cần
-      if (url) {
-        this.setupVideo(url);
-      }
-
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      // Nếu là lần đầu click hoặc chuyển tập thì unmute
-
-      video.play().catch(() => {
-        video.play();
-      });
+      this.movie.videoUrl = url;
     },
     playVideoOnClick() {
       if (!this.videoStarted) {
         this.videoStarted = true;
-
-        if (this.movie.videoUrl && !this.hls) {
-          this.setupVideo(this.movie.videoUrl);
-        }
-
-        const video = this.$refs.videoPlayer;
-
-        setTimeout(() => {
-          video.muted = false;
-          video.play().catch(() => {});
-        }, 800);
-      }
-    },
-    // --- Custom control methods ---
-    togglePlay() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      if (!this.videoStarted) {
-        this.playVideoOnClick();
-      }
-
-      if (video.paused) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
       }
     },
     onPlay() {
@@ -2621,20 +2433,7 @@ export default {
         // tạo key mới cho tập mới
         this.videoKey = `movie_${this.slug}_${this.page}`;
 
-        // Setup video và play tập mới (auto-play với unmute)
-        this.movie.videoUrl = episode.link_m3u8;
-        this.setupVideo(this.movie.videoUrl);
         this.videoStarted = true;
-        this.$nextTick(() => {
-          const video = this.$refs.videoPlayer;
-          if (video) {
-            video.muted = false;
-            video.play().catch(() => {
-              video.play();
-            });
-          }
-        });
-
         //this.GetComment();
         this.isLoading = false;
         this.$nextTick(() => {
@@ -4076,5 +3875,11 @@ a {
   position: absolute;
   top: -5px; /* Điều chỉnh vị trí theo ý muốn */
   right: 5px; /* Điều chỉnh vị trí theo ý muốn */
+}
+.video-player-poster {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
 }
 </style>
