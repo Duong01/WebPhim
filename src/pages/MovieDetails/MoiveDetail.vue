@@ -21,10 +21,10 @@
             <!-- Cột bên trái: Video + nút + danh sách tập + info -->
             <v-col cols="12" lg="9" md="8">
               <!-- VIDEO -->
-              <div class="video-wrapper" @dblclick="toggleFullScreen">
+              <div class="video-wrapper" @dblclick="toggleFullScreen" style="background-color: #000;">
                 <!-- Iframe Player -->
                 <iframe
-                  v-if="videoStarted"
+                  v-if="hasStartedPlaying"
                   ref="videoPlayer"
                   :src="movie.videoUrl"
                   class="video-player"
@@ -32,12 +32,13 @@
                   allowfullscreen
                   allow="autoplay; fullscreen"
                   frameborder="0"
+                  style="background-color: #000;"
                   @load="onIframeLoad"
                 ></iframe>
 
                 <!-- Loading State / Smooth transition -->
                 <div
-                  v-if="videoStarted && isIframeLoading"
+                  v-if="hasStartedPlaying && isIframeLoading"
                   class="video-loading-overlay"
                 >
                   <v-img :src="movie.thumb_url" cover class="video-player-poster-blur"></v-img>
@@ -50,14 +51,20 @@
 
                 <!-- Poster / Play overlay -->
                 <div
-                  v-if="!videoStarted"
+                  v-if="!hasStartedPlaying"
                   class="video-play-overlay"
-                  @click="playVideoOnClick"
-                  @dblclick="toggleFullScreen"
+                  :class="{ 'video-unavailable': !hasPlayableVideo }"
+                  @click="hasPlayableVideo ? startPlaying() : null"
                 >
-                  <v-img :src="movie.thumb_url" cover class="video-player-poster"></v-img>
-                  <v-icon size="x-large" color="white">mdi-play-circle</v-icon>
-                  <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
+                  <v-img :src="movie.thumb_url || movie.poster_url" cover class="video-player-poster"></v-img>
+                  <template v-if="hasPlayableVideo">
+                    <v-icon size="80" color="white">mdi-play-circle</v-icon>
+                    <p class="overlay-text">{{ $t("Click để xem phim") }}</p>
+                  </template>
+                  <template v-else>
+                    <v-icon size="80" color="grey-lighten-1">mdi-movie-open-off</v-icon>
+                    <p class="overlay-text text-grey-lighten-1">{{ $t("Phim đang cập nhật") }}</p>
+                  </template>
                 </div>
               </div>
               <!-- nut next tap và back tap -->
@@ -314,10 +321,18 @@
                     <h2 class="text-subtitle-1 text-grey mb-4">
                       {{ movie.name }}
                     </h2>
-                    <div
-                      class="text-body-1 text-grey-lighten-2 mb-4 content-desc"
-                      v-html="movie.description"
-                    ></div>
+                    <div class="content-wrapper mb-4">
+                      <div
+                        class="text-body-1 text-grey-lighten-2 content-desc"
+                        :class="{'content-collapsed': isLongDescription && !isDescriptionExpanded}"
+                        v-html="movie.description"
+                      ></div>
+                      <v-btn v-if="isLongDescription" variant="text" size="small" @click="isDescriptionExpanded = !isDescriptionExpanded" class="mt-1 pa-0 text-primary font-weight-bold text-none">
+                        {{ isDescriptionExpanded ? $t('Thu gọn') : $t('Xem thêm') }}
+                        <v-icon end size="small">{{ isDescriptionExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                      </v-btn>
+                    </div>
+
 
                     <v-divider color="grey-darken-3" class="mb-4"></v-divider>
                     <v-row
@@ -865,7 +880,7 @@ import {
   MoveInfor1,
   // ListMovieByCate,
   Categoris1,
-  urlImage,
+  // urlImage,
   urlImage1,
   GetComments,
   AddComment,
@@ -882,38 +897,17 @@ export default {
   name: "MovieDetail",
   data() {
     return {
-      // phat trailler
-      playTrailerFirst: false,
-      trailerSkipped: false,
-      trailerPlayable: false,
-      mainVideoUrl: "",
-      videoStarted: false,
-      isPlaying: false,
-      currentTime: 0,
-      duration: 0,
-      progress: 0,
-      volume: 1,
-      muted: false,
       isFullscreen: false,
-      showControls: true,
-      hideControlsTimeout: null,
 
       hasLoadedCate: false,
       hasLoadedComment: false,
       showAllEpisodes: false,
       dialogTrailer: false,
-      videoLoaded: false,
-      isIframeLoading: false,
-      bufferedProgress: 0,
-      showTimeHover: false,
-      hoverPosition: 0,
-      hoverTime: "00:00",
+      isIframeLoading: true,
       lastTimeUpdateTime: 0,
-      tab: "",
       shareUrl: window.location.href,
       tabserver: null,
       currentEpisodeIndex: 0,
-      currentEpisode: [],
       items: [
         {
           title: "Home",
@@ -977,19 +971,18 @@ export default {
         vote_average: "",
         totalPage: "",
       },
-      isTrailer: false,
-      urlImage: urlImage,
       urlImage1: urlImage1,
       suggestedMovies: [],
       comments: [],
       newComment: "",
       shareDialog: false,
-      link: "",
       liked: false,
-      videoKey: "",
       saveTimeInterval: null,
+      timeSpentWatching: 0,
       favoriteUpdateCounter: 0,
       hasAutoUpdatedFavorite: false,
+      hasStartedPlaying: false,
+      isDescriptionExpanded: false,
     };
   },
   props: ["slug", "page"],
@@ -1006,25 +999,11 @@ export default {
       clearInterval(this.saveTimeInterval);
     }
 
-    // Hủy video HTML5
-    if (this.$refs.videoPlayer) {
-      this.$refs.videoPlayer.pause();
-      this.$refs.videoPlayer.src = "";
-      this.$refs.videoPlayer.load();
-    }
-
     // Hủy iframe
-    if (this.$refs.videoIframe) {
-      this.$refs.videoIframe.src = "";
+    if (this.$refs.videoPlayer) {
+      this.$refs.videoPlayer.src = "";
     }
 
-    // Hủy HLS nếu có
-    if (this.hls) {
-      this.hls.destroy();
-      this.hls = null;
-    }
-    // remove keyboard listener
-    window.removeEventListener("keydown", this.onKeyDown);
     // remove fullscreen listeners
     document.removeEventListener(
       "fullscreenchange",
@@ -1093,6 +1072,7 @@ export default {
       }
       this.favoriteUpdateCounter = 0;
       this.hasAutoUpdatedFavorite = false;
+      this.hasStartedPlaying = false; // Reset iframe khi đổi phim
       this.$store.commit("settimeWatch", null);
       // Load thời gian xem cho film mới
       this.$nextTick(() => {
@@ -1148,10 +1128,6 @@ export default {
       }
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
       this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
-      this.videoKey = `movie_${this.slug}_${this.page || "01"}`;
-
-      // Không setup video khi vào page - chỉ setup khi user click play
-      this.isTrailer = false;
 
       //this.playVideo(this.movie.videoUrl);
 
@@ -1181,19 +1157,20 @@ export default {
         this.scrollToActiveEpisode();
       });
 
-      // Bắt đầu save thời gian xem mỗi 5 giây
+      // Bắt đầu save thời gian xem
       if (this.saveTimeInterval) {
         clearInterval(this.saveTimeInterval);
       }
       this.saveTimeInterval = setInterval(() => {
+        this.timeSpentWatching += 60;
         this.saveWatchTime();
         if (this.idAccount) {
           this.saveWatchTimeAPI();
         }
-        // Chỉ tự động cập nhật 1 lần khi đang xem video (sau 30 giây xem liên tục)
-        if (this.idAccount && this.isPlaying && !this.hasAutoUpdatedFavorite) {
+        // Tự động cập nhật vào danh sách yêu thích/lịch sử
+        if (this.idAccount && !this.hasAutoUpdatedFavorite) {
           this.favoriteUpdateCounter++;
-          if (this.favoriteUpdateCounter >= 6) {
+          if (this.favoriteUpdateCounter >= 1) {
             this.autoUpdateFavorite();
             this.hasAutoUpdatedFavorite = true;
           }
@@ -1201,8 +1178,6 @@ export default {
       }, 60000);
       
       this.updateMeta();
-      // Keyboard shortcuts
-      window.addEventListener("keydown", this.onKeyDown);
       // Fullscreen change listeners (update isFullscreen state across browsers)
       document.addEventListener(
         "fullscreenchange",
@@ -1221,18 +1196,6 @@ export default {
         this.handleFullscreenChange
       );
 
-      // Show controls on hover (ensure visible when cursor over video)
-      const wrapper = this.$el.querySelector(".video-wrapper");
-      if (wrapper) {
-        wrapper.addEventListener("mouseenter", () => {
-          this.showControls = true;
-          this.clearHideControlsTimer();
-        });
-        wrapper.addEventListener("mouseleave", () => {
-          this.startHideControlsTimer();
-        });
-      }
-
       // await this.ListMovieByCate();
       // await this.GetComment();
     } catch (err) {
@@ -1244,16 +1207,10 @@ export default {
   methods: {
     saveWatchTimeAPI() {
       try {
-        const video = this.$refs.videoPlayer;
+        if (!this.movie?.idMovie) return;
 
-        // Không có video hoặc chưa phát
-        if (!video || !this.movie?.idMovie) return;
-
-        // Thời gian hiện tại
-        const currentTime = Math.floor(video.currentTime || 0);
-
-        // Không lưu nếu chưa xem gì
-        if (currentTime <= 0) return;
+        // Vì dùng iframe nên không lấy được currentTime, sử dụng biến đếm thời gian xem
+        const currentTime = this.timeSpentWatching || 1;
 
         // Tránh spam API nếu thời gian không đổi
         if (this.lastTimeUpdateTime === currentTime) return;
@@ -1338,14 +1295,12 @@ export default {
     },
     // Lưu thời gian xem vào localStorage
     saveWatchTime() {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.movie.idMovie) return;
+      if (!this.movie.idMovie) return;
 
-      const currentTime = video.currentTime;
-      const duration = video.duration;
+      const currentTime = this.timeSpentWatching || 1;
+      const duration = this.movie.time ? parseInt(this.movie.time) * 60 : 3600; // Giả định thời lượng
 
-      // Chỉ lưu nếu video đã tải được
-      if (isFinite(currentTime) && isFinite(duration) && duration > 0) {
+      if (currentTime > 0) {
         const watchData = {
           IDMovies: this.movies._id,
           slug: this.movies.slug,
@@ -1376,96 +1331,33 @@ export default {
 
     // Load thời gian xem từ localStorage
     loadWatchTime() {
-      const video = this.$refs.videoPlayer;
-
-      if (!video || !this.movie.idMovie) return;
+      if (!this.movie.idMovie) return;
 
       try {
-        // ưu tiên từ favorite/store
         if (
           this.$store.state.timeWatch !== "" &&
           this.$store.state.timeWatch != null
         ) {
           const storeTime = Number(this.$store.state.timeWatch);
-
-          const setStoreTime = () => {
-            if (
-              isFinite(storeTime) &&
-              storeTime > 0 &&
-              storeTime < video.duration
-            ) {
-              video.currentTime = storeTime;
-            }
-
-            // reset sau khi dùng
-            this.$store.commit("settimeWatch", null);
-
-            video.removeEventListener("loadedmetadata", setStoreTime);
-          };
-
-          video.addEventListener("loadedmetadata", setStoreTime);
-
+          this.timeSpentWatching = storeTime;
+          this.$store.commit("settimeWatch", null);
           return;
         }
 
-        // key riêng từng tập
         const key = `webphim_watchtime`;
-
         const watchData = localStorage.getItem(key);
 
         if (!watchData) return;
 
         const data = JSON.parse(watchData);
-
-        const setTime = () => {
-          if (
-            isFinite(data.currentTime) &&
-            data.currentTime > 0 &&
-            data.currentTime < video.duration
-          ) {
-            video.currentTime = data.currentTime;
-          }
-
-          video.removeEventListener("loadedmetadata", setTime);
-        };
-
-        video.addEventListener("loadedmetadata", setTime);
+        if (data.slug === this.movies.slug) {
+          this.timeSpentWatching = data.timeWatch || 0;
+        }
       } catch (error) {
         console.error("Lỗi load thời gian xem:", error);
       }
     },
 
-    extractYoutubeId(url) {
-      const match = url.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
-      );
-      return match ? match[1] : null;
-    },
-
-    resetPlayer() {
-      const video = this.$refs.videoPlayer;
-      const iframe = this.$refs.videoIframe;
-
-      // mark as not loaded
-      this.videoLoaded = false;
-
-      if (video) {
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-        video.style.display = "block";
-      }
-
-      if (iframe) {
-        iframe.src = "";
-        iframe.style.display = "none";
-      }
-
-      if (this.hls) {
-        this.hls.destroy();
-        this.hls = null;
-      }
-    },
     timeAgo(timestamp) {
       const time = new Date(timestamp).getTime();
       const now = Date.now();
@@ -1498,7 +1390,6 @@ export default {
           (result) => {
             if (result.status == true || result.status == "success") {
               this.movies = result.movie;
-              this.link = "";
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
@@ -1525,29 +1416,37 @@ export default {
               this.movie.episode_total = result.movie.episode_total;
 
               if (this.movie.trailer_url != "") {
-                this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
+                let tUrl = this.movie.trailer_url;
+                if (tUrl.includes("youtube.com/embed/")) {
+                  this.movie.trailer_id = tUrl.split("embed/")[1].split("?")[0];
+                } else {
+                  this.movie.trailer_id = tUrl.includes("?v=") 
+                    ? tUrl.split("?v=")[1].split("&")[0] 
+                    : (tUrl.includes("youtu.be/") ? tUrl.split("youtu.be/")[1].split("?")[0] : "");
+                }
               }
 
-              if (
-                result.movie.status == "trailer" &&
-                result.episodes[0].server_data[0].link_embed == ""
-              ) {
-                this.movie.videoUrl = result.movie.trailer_url;
-                // this.movie.title = result.movie.name;
-                this.isTrailer = true;
+              const hasActualEpisodes = result.episodes && result.episodes[0]?.server_data?.length > 0 && result.episodes[0].server_data[0].link_embed !== "";
+
+              if (!hasActualEpisodes) {
+                if (this.movie.trailer_id) {
+                  this.movie.videoUrl = `https://www.youtube.com/embed/${this.movie.trailer_id}?autoplay=1`;
+                } else {
+                  this.movie.videoUrl = "";
+                }
               } else {
                 if (
                   this.movie.page == "Full" ||
                   this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
                   this.movie.page.includes("/")
                 ) {
-                  this.movie.videoUrl =
+                  this.movie.videoUrl = this.ensureAutoplay(
                     result.episodes[0].server_data[
                       result.episodes[0].server_data.length - 1
-                    ].link_embed;
+                    ].link_embed
+                  );
                   this.currentEpisodeIndex = 0;
                   // this.movie.title = result.movie.name;
-                  this.isTrailer = false;
                 } else {
                   var tap = this.movie.page.split("Tập ")[1].trim();
                   const data = result.episodes[0].server_data.find(
@@ -1561,23 +1460,19 @@ export default {
                     this.currentEpisodeIndex = idx;
                   }
                   if (data) {
-                    this.movie.videoUrl = data.link_embed;
+                    this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
                     this.movie.LinkDown = data.link_m3u8;
                     // this.movie.title = data.filename;
-                    this.isTrailer = false;
                   } else {
                     const data = result.episodes[1].server_data.find(
                       (ep) => ep.slug === tap || ep.slug.includes(tap)
                     );
                     if (data) {
-                      this.movie.videoUrl = data.link_embed;
+                      this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
                       this.movie.LinkDown = data.link_m3u8;
                       // this.movie.title = data.filename;
-                      this.isTrailer = false;
                     }
                   }
-                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                  // this.isTrailer = false;
                 }
               }
               this.movie.actors = result.movie.actor;
@@ -1609,8 +1504,6 @@ export default {
           (result) => {
             if (result.status == true || result.status == "success") {
               this.movies = result.movie;
-              this.link = "link";
-              this.movies = result.movie;
               this.movie.page = result.movie.episode_current;
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
@@ -1636,29 +1529,38 @@ export default {
               this.movie.episode_total = result.movie.episode_total;
 
               if (this.movie.trailer_url != "") {
-                this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
+                let tUrl = this.movie.trailer_url;
+                if (tUrl.includes("youtube.com/embed/")) {
+                  this.movie.trailer_id = tUrl.split("embed/")[1].split("?")[0];
+                } else {
+                  this.movie.trailer_id = tUrl.includes("?v=") 
+                    ? tUrl.split("?v=")[1].split("&")[0] 
+                    : (tUrl.includes("youtu.be/") ? tUrl.split("youtu.be/")[1].split("?")[0] : "");
+                }
               }
-              if (
-                result.movie.status == "trailer" &&
-                result.episodes[0].server_data[0].link_embed == ""
-              ) {
-                this.movie.videoUrl = result.movie.trailer_url;
-                this.movie.title = result.movie.name;
-                this.isTrailer = true;
+
+              const hasActualEpisodes = result.episodes && result.episodes[0]?.server_data?.length > 0 && result.episodes[0].server_data[0].link_embed !== "";
+
+              if (!hasActualEpisodes) {
+                if (this.movie.trailer_id) {
+                  this.movie.videoUrl = `https://www.youtube.com/embed/${this.movie.trailer_id}?autoplay=1`;
+                } else {
+                  this.movie.videoUrl = "";
+                }
               } else {
                 if (
                   this.movie.page == "Full" ||
                   this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
                   this.movie.page.includes("/")
                 ) {
-                  this.movie.videoUrl =
+                  this.movie.videoUrl = this.ensureAutoplay(
                     result.episodes[0].server_data[
                       result.episodes[0].server_data.length - 1
-                    ].link_embed;
+                    ].link_embed
+                  );
                   // this.currentEpisodeIndex = result.episodes[0].server_data.length-1
                   this.currentEpisodeIndex = 0;
                   this.movie.title = result.movie.name;
-                  this.isTrailer = false;
                 } else {
                   var tap = this.movie.page.split("Tập ")[1].trim();
                   const data = result.episodes[0].server_data.find(
@@ -1673,21 +1575,17 @@ export default {
                   }
 
                   if (data) {
-                    this.movie.videoUrl = data.link_embed;
+                    this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
                     this.movie.title = data.filename;
-                    this.isTrailer = false;
                   } else {
                     const data = result.episodes[1].server_data.find(
                       (ep) => ep.slug === tap || ep.slug.includes(tap)
                     );
                     if (data) {
-                      this.movie.videoUrl = data.link_embed;
+                      this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
                       this.movie.title = data.filename;
-                      this.isTrailer = false;
                     }
                   }
-                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                  // this.isTrailer = false;
                 }
               }
               this.movie.actors = result.movie.actor;
@@ -1740,27 +1638,6 @@ export default {
       if (this.$refs.lazyComment) observer.observe(this.$refs.lazyComment);
     },
 
-    // bindVideoEvents() {
-    //   const video = this.$refs.videoPlayer;
-    //   if (!video) return;
-
-    //   // khi video load xong metadata → mới set currentTime
-    //   video.addEventListener("loadedmetadata", this.restoreTime);
-
-    //   // lưu vị trí xem
-    //   video.addEventListener("timeupdate", this.saveTime);
-    // },
-    saveTime() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      const current = Math.floor(video.currentTime);
-
-      if (!this.lastSavedTime || current - this.lastSavedTime >= 5) {
-        localStorage.setItem(this.videoKey, current);
-        this.lastSavedTime = current;
-      }
-    },
     updateSEO() {
       useHead({
         title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
@@ -1788,138 +1665,30 @@ export default {
         ],
       });
     },
-    restoreTime() {
-      const video = this.$refs.videoPlayer;
-      const savedTime = localStorage.getItem(this.videoKey);
-
-      if (video && savedTime) {
-        video.currentTime = parseFloat(savedTime);
-      }
-    },
     toggleEpisodes() {
       this.showAllEpisodes = !this.showAllEpisodes;
     },
+    ensureAutoplay(url) {
+      if (!url) return url;
+      if (url.includes('?')) {
+        if (!url.includes('autoplay=1')) {
+          return url + '&autoplay=1';
+        }
+      } else {
+        return url + '?autoplay=1';
+      }
+      return url;
+    },
+    onIframeLoad() {
+      this.isIframeLoading = false;
+    },
     setupVideo(url) {
-      this.movie.videoUrl = url;
+      this.isIframeLoading = true;
+      this.movie.videoUrl = this.ensureAutoplay(url);
     },
-    playVideoOnClick() {
-      if (!this.videoStarted) {
-        this.videoStarted = true;
-      }
-    },
-    onPlay() {
-      this.isPlaying = true;
-      this.showControls = true;
-      this.startHideControlsTimer();
-      this.videoLoaded = true;
-    },
-    onPause() {
-      this.isPlaying = false;
-      this.showControls = true;
-      this.clearHideControlsTimer();
-    },
-    onTimeUpdate() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-
-      // Throttle updates to 60fps for better performance
-      const now = performance.now();
-      if (now - this.lastTimeUpdateTime < 16) return;
-      this.lastTimeUpdateTime = now;
-
-      this.currentTime = video.currentTime || 0;
-      this.duration = video.duration || 0;
-      this.progress =
-        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
-      this.updateBufferedProgress();
-    },
-    onLoadedMetadata() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-      this.duration = video.duration || 0;
-      this.currentTime = video.currentTime || 0;
-      this.progress =
-        this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
-      this.updateBufferedProgress();
-      this.videoLoaded = true;
-    },
-    onWaiting() {
-      // Browser is buffering or waiting for data
-      this.videoLoaded = false;
-      this.showControls = true;
-      this.clearHideControlsTimer();
-    },
-    onCanPlay() {
-      // Enough data to start playing
-      this.videoLoaded = true;
-    },
-    updateBufferedProgress() {
-      const video = this.$refs.videoPlayer;
-      if (!video || !video.buffered.length) {
-        this.bufferedProgress = 0;
-        return;
-      }
-
-      // Get the latest buffered range end time
-      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-      this.bufferedProgress =
-        this.duration > 0 ? (bufferedEnd / this.duration) * 100 : 0;
-    },
-    updateTimeHover(e) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.duration) {
-        this.showTimeHover = false;
-        return;
-      }
-
-      const bar = e.currentTarget.querySelector(".progress-bar");
-      const rect = bar.getBoundingClientRect();
-      const hoverX = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(1, hoverX / rect.width));
-
-      this.hoverPosition = ratio * 100;
-      this.hoverTime = this.formatTime(ratio * this.duration);
-      this.showTimeHover = true;
-    },
-    hideTimeHover() {
-      this.showTimeHover = false;
-    },
-    seek(e) {
-      const video = this.$refs.videoPlayer;
-      if (!video || !this.duration) return;
-
-      const bar = e.currentTarget.querySelector(".progress-bar");
-      const rect = bar.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const ratio = Math.max(0, Math.min(1, clickX / rect.width));
-      video.currentTime = ratio * this.duration;
-      this.updateBufferedProgress();
-      this.onTimeUpdate();
-    },
-    formatTime(seconds) {
-      if (!isFinite(seconds) || seconds <= 0) return "00:00";
-      const s = Math.floor(seconds);
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = s % 60;
-      const pad = (n) => String(n).padStart(2, "0");
-      return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
-    },
-    toggleMute() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-      this.muted = !this.muted;
-      video.muted = this.muted;
-      if (!this.muted && video.volume === 0 && this.volume > 0) {
-        video.volume = this.volume;
-      }
-    },
-    setVolume(val) {
-      const video = this.$refs.videoPlayer;
-      const v = Number(val);
-      this.volume = v;
-      if (video) video.volume = v;
-      this.muted = v === 0;
+    startPlaying() {
+      this.hasStartedPlaying = true;
+      this.isIframeLoading = true;
     },
     toggleFullScreen() {
       const wrapper = this.$el.querySelector(".video-wrapper");
@@ -2107,29 +1876,6 @@ export default {
         });
       });
     },
-    showControlsTemporarily() {
-      this.showControls = true;
-      this.clearHideControlsTimer();
-      this.startHideControlsTimer();
-    },
-    startHideControlsTimer() {
-      this.clearHideControlsTimer();
-      // Hide controls after 3s if playing
-      if (this.isPlaying) {
-        this.hideControlsTimeout = setTimeout(() => {
-          this.showControls = false;
-        }, 1500);
-      }
-    },
-    clearHideControlsTimer() {
-      if (this.hideControlsTimeout) {
-        clearTimeout(this.hideControlsTimeout);
-        this.hideControlsTimeout = null;
-      }
-    },
-    DownloadVideo(linkdown) {
-      window.open(linkdown);
-    },
     handleFavorite() {
       this.liked = !this.liked;
       this.movieFavorite.IDAccount = this.idAccount;
@@ -2197,38 +1943,14 @@ export default {
     },
 
     getOptimizedImage(imagePath) {
-      // if (this.link == "") {
-      //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      // } else {
       return `${
         imagePath.includes("https://phimimg.com/upload")
           ? this.urlImage1 + imagePath
           : this.urlImage1 + "https://phimimg.com/" + imagePath
-        //this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;
-      // }
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
-        // if (this.link == "") {
-        //   ListMovieByCate(
-        //     this.movie.categoris,
-
-        //     (data) => {
-        //       if (data.status == "success") {
-        //         this.suggestedMovies = data.data.items;
-        //         this.isLoading = false;
-        //         resolve(true);
-        //       } else {
-        //         reject("error");
-        //       }
-        //     },
-        //     (err) => {
-        //       console.log(err);
-        //       reject(err);
-        //     }
-        //   );
-        // } else {
         Categoris1(
           this.movie.categoris,
 
@@ -2246,7 +1968,6 @@ export default {
             reject(err);
           }
         );
-        // }
       });
     },
     shareMovie() {
@@ -2387,26 +2108,9 @@ export default {
       );
     },
 
-    scrollLeft() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: -220, behavior: "smooth" });
-      }
-    },
-    scrollRight() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: 220, behavior: "smooth" });
-      }
-    },
-    getTrailer() {
-      this.movie.videoUrl = this.movie.trailer_url;
-      this.isTrailer = true;
-    },
     playEpisode(episode) {
       try {
         console.log(episode);
-        this.currentEpisode = episode;
         this.isLoading = true;
         if (
           episode.filename != undefined ||
@@ -2439,19 +2143,12 @@ export default {
         this.isIframeLoading = true;
         this.movie.videoUrl = this.ensureAutoplay(episode.link_embed);
 
-        if (this.videoKey) {
-          localStorage.removeItem(this.videoKey);
-        }
-
         // cập nhật tập mới
         this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
           (e) => e.name === episode.name
         );
         this.favoriteUpdateCounter = 0; // Reset bộ đếm khi đổi tập
         this.hasAutoUpdatedFavorite = false;
-
-        // tạo key mới cho tập mới
-        this.videoKey = `movie_${this.slug}_${this.page}`;
 
         //this.GetComment();
         this.isLoading = false;
@@ -2481,14 +2178,12 @@ export default {
           this.ensureAutoplay(server.server_data[server.server_data.length - 1].link_embed);
         this.movie.LinkDown =
           server.server_data[server.server_data.length - 1].link_m3u8;
-        this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
         const data = server.server_data.includes(tap);
         if (data) {
           this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
           this.movie.LinkDown = data.link_m3u8;
-          this.isTrailer = false;
         }
       }
 
@@ -2512,51 +2207,6 @@ export default {
         this.playEpisode(prevEp);
       }
     },
-    generateEmbedHtml(url) {
-      if (this.isTrailer) {
-        const youtubeMatch = this.movie.trailer_url.split("?v=");
-        // const youtubeMatch = url.match(
-        //   /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        // );
-        if (youtubeMatch.length > 0) {
-          const videoId = youtubeMatch[1];
-
-          return `
-            <iframe width="100%" height="100%"
-              src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-              >
-            </iframe>
-          `;
-        } else {
-          // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
-          return `
-            <video width="100%" height="100%" controls preload="none" style="touch-action: manipulation;">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-        //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
-      } else {
-        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
-        <iframe
-          src="${url}"
-          frameborder="0"
-          class="w-full h-full"
-          webkit-playsinline
-          loading="lazy"
-          allowfullscreen
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-        ></iframe>
-      </div>`;
-      }
-    },
   },
   computed: {
     idAccount() {
@@ -2572,14 +2222,6 @@ export default {
       const fanStatus = localStorage.getItem("name");
       return fanStatus == 2 || fanStatus == 3;
     },
-    youtubeEmbedUrl() {
-      if (!this.movie.trailer_url) return "";
-
-      const id = this.extractYoutubeId(this.movie.trailer_url);
-      if (!id) return "";
-
-      return `https://www.youtube.com/embed/${id}?mute=0&playsinline=1&rel=0`;
-    },
     visibleEpisodes() {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
@@ -2590,59 +2232,11 @@ export default {
     visibleEpisodesRight() {
       return this.movie.pageMovie; // Hiện tất cả tập
     },
-    thumbnailUrl() {
-      const match = this.movie.videoUrl.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-      );
-      return match
-        ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`
-        : "/placeholder.jpg"; // fallback ảnh tĩnh nếu không phải YouTube
+    hasPlayableVideo() {
+      return !!this.movie.videoUrl;
     },
-
-    embedHtml() {
-      const url = this.movie.videoUrl;
-      if (this.isTrailer) {
-        const youtubeMatch = url.match(
-          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        );
-        if (youtubeMatch) {
-          const videoId = youtubeMatch[1];
-          return `
-            <iframe width="100%" height="600"
-              src="https://www.youtube.com/embed/${videoId}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-              
-              >
-            </iframe>
-          `;
-        } else {
-          return `
-            <video width="100%" height="600" controls preload="none" style="touch-action: manipulation;">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-      } else {
-        return `
-          <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
-            <iframe
-              src="${url}"
-              frameborder="0"
-              class="w-full h-full"
-              webkit-playsinline
-              loading="lazy"
-              allowfullscreen
-              allow=" fullscreen"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: manipulation;"
-            ></iframe>
-          </div>
-        `;
-      }
+    isLongDescription() {
+      return this.movie?.description?.length > 200;
     },
   },
 };
@@ -2813,21 +2407,6 @@ export default {
   to {
     opacity: 1;
   }
-}
-
-.suggested-item {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-radius: 8px;
-}
-
-.text-wrap {
-  white-space: normal !important;
-  overflow-wrap: break-word;
-}
-
-.suggested-item:hover {
-  background-color: #2e2e2e;
 }
 
 /* ===== SUGGESTED MOVIES SCROLL LAYOUT ===== */
@@ -3217,183 +2796,8 @@ export default {
   }
 }
 
-.movie-detail {
-  padding: 12px 0;
-}
 a {
   color: #fff;
-}
-.custom-tabs .v-tab {
-  color: white;
-  background-color: transparent;
-  border-radius: 8px;
-  transition: all 0.3s;
-}
-.custom-tabs .v-tab.active-tab {
-  color: #000;
-  background-color: #f8b230;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-.movie-info p {
-  margin-bottom: 8px;
-}
-
-.scroll-container {
-  scroll-behavior: smooth;
-  gap: 16px;
-}
-
-.movie-card-link {
-  text-decoration: none;
-  color: inherit;
-  flex-shrink: 0;
-}
-
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.position-absolute {
-  position: absolute;
-}
-
-.top-0 {
-  top: 0;
-}
-
-.left-0 {
-  left: 0;
-}
-.suggested-slide-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;
-}
-
-.suggested-slide {
-  display: flex;
-  gap: 16px;
-  transition: transform 0.3s ease-in-out;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.movie-card {
-  flex: 0 0 auto;
-  width: 200px;
-  background-color: #2e2e2e;
-  border-radius: 12px;
-  overflow: hidden;
-  scroll-snap-align: start;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.movie-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
-
-.card-inner {
-  position: relative;
-}
-
-.card-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  height: 300px;
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.movie-card:hover .card-image {
-  transform: scale(1.05);
-}
-
-.card-hover-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  text-align: center;
-  padding: 8px;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-}
-
-.movie-card:hover .card-hover-overlay {
-  transform: translateY(0);
-}
-
-.card-title {
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-info {
-  padding: 12px;
-  color: #ccc;
-}
-
-.episode-chip {
-  display: inline-block;
-  background-color: #ffd600;
-  color: black;
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-.origin {
-  font-weight: bold;
-  color: #fff;
-}
-
-.meta {
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
-/* Nút điều hướng trái phải */
-.nav-btn {
-  background-color: rgba(0, 0, 0, 0.6);
-  border: none;
-  color: white;
-  font-size: clamp(12px, 3vw, 16px);
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 50%;
-  user-select: none;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-  flex-shrink: 0;
-}
-
-.nav-btn:hover {
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
-.nav-btn.left {
-  margin-right: 8px;
-}
-
-.nav-btn.right {
-  margin-left: 8px;
 }
 
 .trailer-thumb {
@@ -3452,11 +2856,6 @@ a {
   transform: translate(-50%, -50%) scale(1);
 }
 
-.episode-col {
-  flex: 0 0 20% !important;
-  max-width: 20% !important;
-  padding: 4px;
-}
 .video-player {
   width: 100%;
   height: 100%;
@@ -3469,22 +2868,18 @@ a {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
-.suggested-item {
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background-color 0.2s;
-}
-.suggested-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-.v-list-item {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
 .content-desc {
   font-size: 14px;
   line-height: 1.6;
 }
+.content-collapsed {
+  max-height: 65px; /* ~3 lines */
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
 .custom-title {
   display: flex;
   flex-wrap: wrap;
@@ -3564,28 +2959,6 @@ a {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
   transform: scale(1.02);
 }
-.controls {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-.controls button {
-  color: white;
-  background: none;
-  border: none;
-  font-size: clamp(12px, 3vw, 16px);
-  cursor: pointer;
-}
-
-.controls input[type="range"] {
-  flex: 1;
-}
 
 /* Mobile - YouTube responsive design */
 @media (max-width: 768px) {
@@ -3649,15 +3022,6 @@ a {
   .btn-text-short {
     display: inline;
     font-size: 0.85rem;
-  }
-
-  .server-tabs-wrapper {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .custom-tabs {
-    width: 100%;
   }
 
   /* Episode buttons in mobile */
@@ -3730,130 +3094,6 @@ a {
   }
 }
 
-/* Custom modern controls */
-.custom-controls {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 12;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.18));
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.custom-controls.controls-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(6px);
-}
-.controls-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.left-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #fff;
-}
-.control-btn {
-  transition: all 0.2s ease;
-  will-change: transform;
-}
-.control-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(248, 178, 48, 0.3);
-}
-.control-btn .v-icon {
-  color: #fff;
-}
-.progress-wrapper {
-  flex: 1;
-  cursor: pointer;
-  padding: 0 8px;
-}
-.progress-bar {
-  position: relative;
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  overflow: visible;
-  cursor: pointer;
-  transition: height 0.2s ease;
-  will-change: background-color;
-}
-.progress-wrapper:hover .progress-bar {
-  height: 12px;
-  background: rgba(255, 255, 255, 0.12);
-}
-.progress-buffered {
-  position: absolute;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.25);
-  width: 0%;
-  border-radius: 8px;
-  transition: width 0.15s linear;
-  pointer-events: none;
-}
-.progress-filled {
-  position: absolute;
-  height: 100%;
-  background: linear-gradient(90deg, #f8b230, #ff6a00);
-  width: 0%;
-  border-radius: 8px;
-  transition: width 0.1s linear;
-  will-change: width;
-  pointer-events: none;
-  box-shadow: 0 0 8px rgba(248, 178, 48, 0.5);
-}
-.progress-hover-time {
-  position: absolute;
-  top: -40px;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-.hover-tooltip {
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.right-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.volume-slider {
-  width: 90px;
-  height: 28px;
-  background: transparent;
-}
-.time-text {
-  color: #ddd;
-  font-size: 13px;
-  margin-left: 8px;
-}
-
-@media (max-width: 768px) {
-  .custom-controls {
-    padding: 8px 10px;
-  }
-  .volume-slider {
-    width: 60px;
-  }
-  .time-text {
-    font-size: 12px;
-  }
-}
-
 /* Loading overlay for video */
 .video-loading-overlay {
   position: absolute;
@@ -3864,32 +3104,55 @@ a {
   z-index: 25;
   background: rgba(0, 0, 0, 0.35);
 }
-/* Thông tin phim */
-.movie-info-grid p,
-.movie-description,
-.movie-info-grid div {
+
+.video-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  color: #ccc;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.movie-info-grid strong {
-  color: orange;
-}
-
-.category-nowrap {
-  white-space: nowrap;
-}
-
-.rating-row {
-  margin-top: 10px;
-  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s ease;
 }
-
+.video-play-overlay:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+.video-play-overlay .v-icon {
+  transition: transform 0.3s ease;
+}
+.video-play-overlay:hover .v-icon {
+  transform: scale(1.1);
+}
+.video-play-overlay.video-unavailable {
+  cursor: default;
+}
+.video-play-overlay.video-unavailable:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+.video-play-overlay.video-unavailable:hover .v-icon {
+  transform: scale(1);
+}
+.video-player-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.overlay-text {
+  color: white;
+  margin-top: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+/* Thông tin phim */
 /* Info Grid Modern */
 .info-grid-modern {
   line-height: 1.6;
@@ -3921,11 +3184,5 @@ a {
   position: absolute;
   top: -5px; /* Điều chỉnh vị trí theo ý muốn */
   right: 5px; /* Điều chỉnh vị trí theo ý muốn */
-}
-.video-player-poster {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
 }
 </style>

@@ -44,257 +44,213 @@
             </v-img>
           </div>
 
-          <!--  PHẦN 2: 2 CỘT (VIDEO + INFO/TRAILER) -->
-          <div
-            class="h-full container mx-auto flex flex-col lg:flex-row gap-12"
-          >
-            <v-row class="mt-0 pt-0" dense>
-              <!-- CỘT TRÁI: VIDEO -->
-              <v-col cols="12" md="4">
-                <v-card flat class="poster-card">
+          <!--  PHẦN 2: 2 CỘT (POSTER + INFO/TABS) -->
+          <v-container class="px-0 mx-auto layout-container" style="max-width: 1300px;">
+            <v-row class="mt-n16 position-relative z-10 px-3 px-md-0" dense>
+              <!-- CỘT TRÁI: POSTER -->
+              <v-col cols="12" sm="4" md="3" lg="3" class="poster-column">
+                <v-card flat color="transparent" class="poster-card">
                   <div
                     v-if="isLoading || !movie.poster_url"
                     class="default-placeholder"
                   >
                     <v-skeleton-loader
-                      type="image, article"
-                      height="220"
-                      class="rounded-lg"
+                      type="image"
+                      height="350"
+                      class="rounded-xl"
                     />
                   </div>
                   <!-- Ảnh + hiệu ứng hover -->
-                  <div v-else class="poster-wrapper">
+                  <div v-else class="poster-wrapper rounded-xl elevation-10 mb-4">
                     <v-img
                       :src="
                         this.$store.state.image ||
                         getOptimizedImage(movie.poster_url)
                       "
                       class="poster-img"
-                      height="220"
-                      width="30%"
+                      aspect-ratio="2/3"
                       cover
                       @click="showPreview = true"
                       @error="onImageError(movie)"
-                      v-show="$vuetify.display.mdAndUp"
                     >
                       <template #placeholder>
                         <div
                           class="d-flex align-center justify-center fill-height"
                         >
                           <v-progress-circular
-                            color="blue-lighten-3"
-                            :width="5"
+                            color="primary"
                             indeterminate
                           ></v-progress-circular>
                         </div>
                       </template>
                     </v-img>
-
-                    <!-- Overlay mờ khi hover -->
-                    <!-- <div class="poster-overlay"></div> -->
-
-                    <!-- Nút xem ngay -->
-                    <!-- <div class="poster-btn">▶ Xem ngay</div> -->
-
-                    <div class="banner-right text-left">
-                      <div class="info-row mb-1 white--text">
-                        <h5 class="movie-title">{{ movies.name }}</h5>
-                        <p class="movie-sub">{{ movies.origin_name }}</p>
-                        <div class="d-flex justify-center ga-2 pb-2 pt-0">
-                          <v-chip variant="flat" size="small">
-                            {{ movies.year }}
-                          </v-chip>
-                          <v-chip variant="flat" size="small">
-                            {{ movies.episode_current }}
-                          </v-chip>
-                          <v-chip variant="flat" size="small">
-                            {{ movies.quality }}
-                          </v-chip>
-                          <v-chip size="small" color="amber-darken-2" variant="flat">
-                            ⭐ {{ movies.tmdb?.vote_average || '8.5' }}
-                          </v-chip>
-
-                          <v-chip size="small" color="green-darken-2" variant="flat">
-                            👁 {{ movies.view || '12.5K' }}
-                          </v-chip>
-                        </div>
-                        <!-- <el-collapse v-model="activeNames" v-if="$vuetify.display.smAndDown">
-      
-                      <el-collapse-item title="Giới thiệu" name="1" >
-                        <template #icon="{ isActive }">
-                          <span class="icon-ele">
-                            {{ isActive ? 'Thu gọn' : 'Xem thêm' }}
-                          </span>
-                        </template>
-                        <div
-                          class="movie-description text-left"
-                          style="font-size: 12px"
-                          v-html="movies.content"
-                        ></div>
-                        
-                      </el-collapse-item>
-                      
-                    </el-collapse> -->
-                        <div class="center-buttons">
-                          <v-btn
-                            class="watch-now"
-                            size="large"
-                            @click="goToWatch('now')"
-                          >
-                            ▶ {{ $t("Xem Ngay") }}
-                          </v-btn>
-
-                          <div class="hero-actions">
-                            <div class="action-item">
-                              <v-btn
-                                variant="text"
-                                @click="goToWatch('first')"
-                                class="action-btn"
-                              >
-                                <v-icon>mdi-play</v-icon>
-                                <span v-if="!smAndDown" class="action-text">{{
-                                  $t("Xem từ đầu")
-                                }}</span>
-                              </v-btn>
-                            </div>
-                            <div class="action-item">
-                              <v-btn
-                                variant="text"
-                                @click="handleFavorite()"
-                                class="action-btn"
-                              >
-                                <v-icon>mdi-heart-outline</v-icon>
-                                <span v-if="!smAndDown" class="action-text">{{
-                                  $t("Xem sau")
-                                }}</span>
-                              </v-btn>
-                            </div>
-                            <div class="action-item">
-                              <v-btn
-                                variant="text"
-                                @click="shareMovie()"
-                                class="action-btn"
-                              >
-                                <v-icon>mdi-share-variant</v-icon>
-                                <span v-if="!smAndDown" class="action-text">{{
-                                  $t("Chia sẻ")
-                                }}</span>
-                              </v-btn>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Giới thiệu film -->
-                        <div>
-                          <p class="movie-sub">{{ $t("Giới thiệu:") }}</p>
-                          <div
-                            class="movie-description text-left"
-                            style="font-size: 12px"
-                            v-html="movies.content"
-                          ></div>
-                        </div>
-
-                        <div class="movie-info-grid text-left">
-                          <div>
-                            <strong>{{ $t("Thể loại:") }}</strong>
-                            <div
-                              class="category-nowrap"
-                              v-for="(cate, ind) in movies.category"
-                              :key="ind"
-                            >
-                              <!-- khong xuong dong -->
-                              {{ cate.name }}
-                              <span v-if="ind < movies.category.length - 1">
-                                ,
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <strong>{{ $t("Quốc gia:") }}</strong>
-                            {{ movies.country[0].name || $t("Đang cập nhật") }}
-                          </div>
-
-                          <div>
-                            <strong>{{ $t("Số tập:") }}</strong>
-                            {{ movies.episode_total }} {{ $t("tập") }}
-                          </div>
-                          <div>
-                            <strong>{{ $t("Thời lượng:") }}</strong>
-                            {{ movies.time }}
-                          </div>
-                          <div>
-                            <strong>{{ $t("Diễn viên:") }}</strong>
-                            <div
-                              class="category-nowrap"
-                              v-for="(actor, ind) in movies.actor"
-                              :key="ind"
-                            >
-                              <!-- khong xuong dong -->
-                              {{ actor }}
-                              <span v-if="ind < movies.actor.length - 1">
-                                ,
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </v-card>
               </v-col>
 
-              <!-- CỘT PHẢI: TRAILER + INFO PHIM -->
-              <v-col cols="12" md="8">
-                <v-sheet elevation="4">
-                  <v-tabs color="primary" v-model="tab">
-                    <v-tab value="one">{{ $t("Tập phim") }}</v-tab>
-                    <v-tab value="two">Trailer</v-tab>
-                    <v-tab value="three">{{ $t("Bình luận") }}</v-tab>
-                    <v-tab value="four">{{ $t("Đề xuất") }}</v-tab>
+              <!-- CỘT PHẢI: INFO + TABS -->
+              <v-col cols="12" sm="8" md="9" lg="9" class="info-column pl-md-8 pt-md-10 text-left text-white">
+                <h1 class="text-h4 font-weight-black mb-1 title-shadow">{{ movies.name }}</h1>
+                <h2 class="text-h6 text-grey-lighten-1 mb-4">{{ movies.origin_name }}</h2>
+
+                <div class="d-flex flex-wrap align-center gap-2 mb-6">
+                  <v-chip color="primary" variant="flat" size="small" class="font-weight-bold">
+                    {{ movies.year }}
+                  </v-chip>
+                  <v-chip color="success" variant="flat" size="small" class="font-weight-bold">
+                    {{ movies.episode_current }}
+                  </v-chip>
+                  <v-chip color="info" variant="flat" size="small" class="font-weight-bold">
+                    {{ movies.quality }}
+                  </v-chip>
+                  <v-chip color="warning" variant="flat" size="small" prepend-icon="mdi-star" class="font-weight-bold">
+                    {{ movies.tmdb?.vote_average || 'N/A' }}
+                  </v-chip>
+                  <v-chip color="grey-darken-3" variant="flat" size="small" prepend-icon="mdi-eye" class="font-weight-bold">
+                    {{ movies.view || '0' }}
+                  </v-chip>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 mb-8">
+                  <v-btn
+                    color="primary"
+                    size="large"
+                    rounded="pill"
+                    prepend-icon="mdi-play-circle"
+                    class="font-weight-bold px-6 play-btn-glow"
+                    elevation="8"
+                    @click="goToWatch('now')"
+                  >
+                    {{ $t("Xem Ngay") }}
+                  </v-btn>
+
+                  <v-btn
+                    variant="tonal"
+                    color="white"
+                    size="large"
+                    rounded="pill"
+                    prepend-icon="mdi-skip-previous-circle-outline"
+                    @click="goToWatch('first')"
+                  >
+                    <span v-if="$vuetify.display.smAndUp">{{ $t("Từ đầu") }}</span>
+                  </v-btn>
+
+                  <v-btn
+                    variant="tonal"
+                    :color="liked ? 'pink' : 'white'"
+                    size="large"
+                    rounded="pill"
+                    :prepend-icon="liked ? 'mdi-heart' : 'mdi-heart-outline'"
+                    @click="handleFavorite()"
+                  >
+                    <span v-if="$vuetify.display.smAndUp">{{ $t("Lưu") }}</span>
+                  </v-btn>
+
+                  <v-btn
+                    variant="tonal"
+                    color="white"
+                    size="large"
+                    rounded="pill"
+                    prepend-icon="mdi-share-variant"
+                    @click="shareMovie()"
+                  >
+                    <span v-if="$vuetify.display.smAndUp">{{ $t("Chia sẻ") }}</span>
+                  </v-btn>
+                </div>
+
+                <div class="mb-6 content-wrapper">
+                  <h3 class="text-h6 font-weight-bold mb-2 text-primary">{{ $t("Nội dung phim") }}</h3>
+                  <div 
+                    class="text-body-1 text-grey-lighten-1 content-desc" 
+                    :class="{ 'content-collapsed': isLongDescription && !isDescriptionExpanded }"
+                    v-html="movies.content"></div>
+                   <v-btn v-if="isLongDescription" variant="text" size="small" @click="isDescriptionExpanded = !isDescriptionExpanded" class="mt-1 pa-0 text-primary font-weight-bold text-none">
+                    {{ isDescriptionExpanded ? $t('Thu gọn') : $t('Xem thêm') }}
+                    <v-icon end size="small">{{ isDescriptionExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                  </v-btn>
+                </div>
+
+                <v-row dense class="text-body-2 mb-8 info-grid">
+                  <v-col cols="12" sm="6" md="4" class="mb-2">
+                    <span class="text-grey">{{ $t("Thể loại:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">
+                      <span v-for="(cate, ind) in movies.category" :key="ind">
+                        {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
+                      </span>
+                    </span>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mb-2">
+                    <span class="text-grey">{{ $t("Quốc gia:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ movies.country?.[0]?.name || $t("Đang cập nhật") }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mb-2">
+                    <span class="text-grey">{{ $t("Số tập:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ movies.episode_total }} {{ $t("tập") }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mb-2">
+                    <span class="text-grey">{{ $t("Thời lượng:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ movies.time }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="8" class="mb-2">
+                    <span class="text-grey">{{ $t("Diễn viên:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">
+                      <span v-for="(actor, ind) in movies.actor" :key="ind">
+                        {{ actor }}<span v-if="ind < movies.actor.length - 1">, </span>
+                      </span>
+                    </span>
+                  </v-col>
+                </v-row>
+
+                <!-- TABS NỘI DUNG -->
+                <v-sheet color="transparent" class="mt-4">
+                  <v-tabs color="primary" v-model="tab" bg-color="transparent" class="mb-4 modern-tabs">
+                    <v-tab value="one" class="text-none font-weight-bold text-subtitle-1">{{ $t("Tập phim") }}</v-tab>
+                    <v-tab value="two" class="text-none font-weight-bold text-subtitle-1">Trailer</v-tab>
+                    <v-tab value="three" class="text-none font-weight-bold text-subtitle-1">{{ $t("Bình luận") }}</v-tab>
+                    <v-tab value="four" class="text-none font-weight-bold text-subtitle-1">{{ $t("Đề xuất") }}</v-tab>
                   </v-tabs>
 
-                  <v-divider></v-divider>
+                  <v-divider color="grey-darken-3" class="mb-6"></v-divider>
 
-                  <v-tabs-window v-model="tab">
+                  <v-tabs-window v-model="tab" style="background: transparent;">
                     <v-tabs-window-item value="one">
-                      <!-- ========================= -->
-                      <!--  PHẦN 3: DANH SÁCH TẬP PHIM -->
-                      <!-- ========================= -->
+                      <!-- DANH SÁCH TẬP PHIM -->
                       <v-tabs
                         v-model="currentServer"
-                        color="orange"
+                        color="primary"
                         show-arrows
+                        class="mb-4"
                       >
                         <v-tab
                           v-for="(server, i) in movie.servers"
                           :key="i"
                           :value="server.server_name"
+                          class="text-none"
                         >
                           {{ server.server_name }}
                         </v-tab>
                       </v-tabs>
 
-                      <!-- NỘI DUNG THEO SERVER -->
-                      <v-tabs-window v-model="currentServer">
+                      <v-tabs-window v-model="currentServer" style="background: transparent;">
                         <v-tabs-window-item
                           v-for="(server, i) in movie.servers"
                           :key="i"
                           :value="server.server_name"
                         >
-                          <!-- DANH SÁCH TẬP -->
-                          <v-sheet class="episode-list mt-4" elevation="0">
-                            <v-row class="mt-4">
+                          <v-sheet class="episode-list mt-2" color="transparent" elevation="0">
+                            <v-row dense>
                               <v-col
                                 v-for="(ep, idx) in server.server_data"
                                 :key="idx"
                                 cols="4"
-                                sm="4"
+                                sm="3"
                                 md="2"
-                                lg="2"
                               >
                                 <v-btn
                                   block
-                                  color="primary"
-                                  class="episode-btn"
+                                  color="grey-darken-4"
+                                  variant="elevated"
+                                  class="episode-btn modern-ep-btn"
                                   @click="goToWatch(ep)"
                                 >
                                   {{ formatEpisodeName(ep.name) }}
@@ -303,38 +259,37 @@
                             </v-row>
                           </v-sheet>
 
-                          <div class="text-center mt-4">
+                          <div class="text-center mt-6">
                             <v-btn
-                              color="gray"
+                              color="grey-lighten-1"
                               variant="tonal"
                               @click="goToWatch('first')"
-                              class="btnnext"
+                              class="btnnext px-6"
+                              rounded="pill"
                               v-if="episodeLimit < movie.pageMovie.length"
                             >
                               {{ $t("Xem thêm") }}
-                              <v-icon size="12" class="mr-1"
-                                >mdi-chevron-down</v-icon
-                              >
+                              <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
                             </v-btn>
 
                             <v-btn
-                              color="gray"
+                              color="grey-lighten-1"
                               variant="tonal"
                               @click="goToWatch('first')"
-                              class="btnnext"
+                              class="btnnext px-6"
+                              rounded="pill"
                               v-else
                             >
                               {{ $t("Thu gọn") }}
-                              <v-icon size="12" class="mr-1"
-                                >mdi-chevron-up</v-icon
-                              >
+                              <v-icon size="16" class="ml-1">mdi-chevron-up</v-icon>
                             </v-btn>
                           </div>
                         </v-tabs-window-item>
                       </v-tabs-window>
                     </v-tabs-window-item>
+
                     <v-tabs-window-item value="two">
-                      <div class="trailer-box">
+                      <div class="trailer-box rounded-xl elevation-6">
                         <v-lazy min-height="300">
                           <iframe
                             class="trailer-iframe"
@@ -347,55 +302,37 @@
                         </v-lazy>
                       </div>
                     </v-tabs-window-item>
+
                     <v-tabs-window-item value="three">
-                      <v-sheet class="pa-5">
-                        <div v-if="comments.length <= 0">
-                          <span
-                            class="text-black-lighten-3 font-weight-medium me-2 text-center"
-                            >{{
-                              $t(
-                                "Chưa có bình luận nào. Hãy là người đầu tiên!"
-                              )
-                            }}</span
-                          >
+                      <v-sheet class="pa-0" color="transparent">
+                        <div v-if="comments.length <= 0" class="text-center py-8">
+                          <span class="text-grey-lighten-1 font-weight-medium">{{ $t("Chưa có bình luận nào. Hãy là người đầu tiên!") }}</span>
                         </div>
 
                         <v-sheet
                           class="episode-list mt-4"
+                          color="transparent"
                           elevation="0"
                           v-else
                           v-for="(comment, index) in comments"
                           :key="index"
                         >
-                          <div class="d-flex align-start mb-5">
-
+                          <div class="d-flex align-start mb-5 bg-grey-darken-4 pa-4 rounded-xl">
                             <div class="avatar-with-crown" v-if="comment.Avartar != '' && comment.Avartar != null">
-                            <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar"></v-avatar>
-                          <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
-
-
+                              <v-avatar size="44" class="me-3" color="blue-grey-darken-3" :image="comment.Avartar"></v-avatar>
+                              <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
                             </div>
                             <v-avatar size="44" class="me-3" color="blue-grey-darken-3" v-else>
                               <v-icon color="white">mdi-account</v-icon>
                             </v-avatar>
                             <div class="flex-grow-1">
                               <div class="d-flex align-center mb-1">
-                                <span
-                                  class="text-blue-lighten-3 font-weight-medium me-2"
-                                  >{{ comment.NameCreate }}</span
-                                >
-                                <v-chip
-                                  size="x-small"
-                                  color="grey-darken-4"
-                                  text-color="grey-lighten-1"
-                                  variant="flat"
-                                >
+                                <span class="text-blue-lighten-3 font-weight-medium me-2">{{ comment.NameCreate }}</span>
+                                <v-chip size="x-small" color="grey-darken-3" text-color="grey-lighten-1" variant="flat">
                                   {{ timeAgo(comment.DayCreate) }}
                                 </v-chip>
                               </div>
-                              <div
-                                class="d-flex text-white text-body-2 align-start text-white text-body-2"
-                              >
+                              <div class="d-flex text-white text-body-2 align-start">
                                 {{ comment.Comments }}
                               </div>
                             </div>
@@ -403,61 +340,45 @@
                         </v-sheet>
                       </v-sheet>
                     </v-tabs-window-item>
+
                     <v-tabs-window-item value="four">
-                      <div class="suggested-movies my-8">
-                        <v-row>
+                      <div class="suggested-movies mt-2">
+                        <v-row dense>
                           <v-col
                             v-for="suggested in suggestedMovies"
                             :key="suggested._id"
                             cols="6"
                             sm="4"
-                            md="4"
+                            md="3"
                           >
                             <v-lazy transition="fade-transition">
                               <router-link
-                                :to="{
-                                  name: 'Movies',
-                                  params: { slug: suggested.slug },
-                                }"
+                                :to="{ name: 'Movies', params: { slug: suggested.slug } }"
                                 class="text-decoration-none"
                               >
-                                <v-card class="suggest-card" elevation="0">
-                                  <v-img
-                                    :lazy-src="
-                                      getOptimizedImage(suggested.thumb_url)
-                                    "
-                                    :src="
-                                      getOptimizedImage(suggested.thumb_url)
-                                    "
-                                    aspect-ratio="16/9"
-                                    cover
-                                    @error="onImageError(movie)"
-                                  >
-                                    <template #placeholder>
-                                      <div
-                                        class="d-flex align-center justify-center fill-height"
-                                      >
-                                        <v-progress-circular
-                                          color="blue-lighten-3"
-                                          :width="5"
-                                          indeterminate
-                                        ></v-progress-circular>
-                                      </div>
-                                    </template>
-                                  </v-img>
-                                  <div class="ml-3 flex-grow-1">
-                                    <div
-                                      class="text-white text-body-2 font-weight-medium text-truncate"
+                                <v-card class="suggest-card" elevation="0" color="transparent">
+                                  <div class="suggest-card-inner rounded-xl overflow-hidden mb-2 elevation-4">
+                                    <v-img
+                                      :lazy-src="getOptimizedImage(suggested.thumb_url)"
+                                      :src="getOptimizedImage(suggested.thumb_url)"
+                                      aspect-ratio="16/9"
+                                      cover
+                                      @error="onImageError(movie)"
                                     >
+                                      <template #placeholder>
+                                        <div class="d-flex align-center justify-center fill-height bg-grey-darken-4">
+                                          <v-progress-circular color="primary" indeterminate></v-progress-circular>
+                                        </div>
+                                      </template>
+                                    </v-img>
+                                  </div>
+                                  <div class="px-1">
+                                    <div class="text-white text-body-2 font-weight-bold text-truncate mb-1">
                                       {{ suggested.name }}
                                     </div>
-                                    <div
-                                      class="text-grey-lighten-1 text-caption"
-                                    >
-                                      {{ suggested.episode_current }} |
-                                      {{ suggested.lang }}<br />
-                                      {{ suggested.category[0]?.name }} •
-                                      {{ suggested.year }}
+                                    <div class="text-grey-lighten-1 text-caption d-flex align-center gap-1 text-truncate">
+                                      <v-chip size="x-small" color="primary" variant="flat">{{ suggested.episode_current }}</v-chip>
+                                      <span>• {{ suggested.lang }}</span>
                                     </div>
                                   </div>
                                 </v-card>
@@ -469,10 +390,9 @@
                     </v-tabs-window-item>
                   </v-tabs-window>
                 </v-sheet>
-                <!-- TRAILER -->
               </v-col>
             </v-row>
-          </div>
+          </v-container>
 
           <!-- dialog share -->
           <v-dialog v-model="shareDialog" max-width="500">
@@ -753,6 +673,7 @@ export default {
         vote_average: '',
         totalPage: ""
       },
+      isDescriptionExpanded: false,
     };
   },
   props: ["slug"],
@@ -1394,6 +1315,9 @@ export default {
       const fanStatus = localStorage.getItem("name");
       return fanStatus == 2 || fanStatus == 3;
     },
+    isLongDescription() {
+      return this.movies?.content?.length > 250;
+    },
   },
 };
 </script>
@@ -2022,5 +1946,39 @@ export default {
   position: absolute;
   top: -5px; /* Điều chỉnh vị trí theo ý muốn */
   right: 5px; /* Điều chỉnh vị trí theo ý muốn */
+}
+
+.z-10 {
+  z-index: 10;
+}
+.title-shadow {
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+.play-btn-glow {
+  background: linear-gradient(45deg, #ffd76b, #ffb700) !important;
+  color: black !important;
+  box-shadow: 0 6px 20px rgba(255, 183, 0, 0.4) !important;
+  transition: all 0.3s ease;
+}
+.play-btn-glow:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(255, 183, 0, 0.6) !important;
+}
+.modern-ep-btn {
+  border-radius: 8px !important;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+.modern-ep-btn:hover {
+  background: #f8b230 !important;
+  color: black !important;
+  transform: translateY(-3px);
+}
+.suggest-card-inner {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.suggest-card:hover .suggest-card-inner {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5) !important;
 }
 </style>
