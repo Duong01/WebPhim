@@ -45,10 +45,10 @@
           </div>
 
           <!--  PHẦN 2: 2 CỘT (POSTER + INFO/TABS) -->
-          <v-container class="px-0 mx-auto layout-container" style="max-width: 1300px;">
+          <v-container class="px-0 mx-auto layout-container" style="max-width: 1000px;">
             <v-row class="mt-n16 position-relative z-10 px-3 px-md-0" dense>
               <!-- CỘT TRÁI: POSTER -->
-              <v-col cols="12" sm="4" md="3" lg="3" class="poster-column">
+              <v-col cols="12" sm="4" md="3" lg="3" class="poster-column" v-if="$vuetify.display.smAndDown">
                 <v-card flat color="transparent" class="poster-card">
                   <div
                     v-if="isLoading || !movie.poster_url"

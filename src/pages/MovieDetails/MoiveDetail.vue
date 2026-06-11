@@ -24,7 +24,7 @@
               <div class="video-wrapper" @dblclick="toggleFullScreen" style="background-color: #000;">
                 <!-- Iframe Player -->
                 <iframe
-                  v-if="hasStartedPlaying"
+                  v-if="(hasStartedPlaying || $vuetify.display.smAndDown) && hasPlayableVideo"
                   ref="videoPlayer"
                   :src="movie.videoUrl"
                   class="video-player"
@@ -38,7 +38,7 @@
 
                 <!-- Loading State / Smooth transition -->
                 <div
-                  v-if="hasStartedPlaying && isIframeLoading"
+                  v-if="(hasStartedPlaying || $vuetify.display.smAndDown) && hasPlayableVideo && isIframeLoading"
                   class="video-loading-overlay"
                 >
                   <v-img :src="movie.thumb_url" cover class="video-player-poster-blur"></v-img>
@@ -51,7 +51,7 @@
 
                 <!-- Poster / Play overlay -->
                 <div
-                  v-if="!hasStartedPlaying"
+                  v-if="(!hasStartedPlaying && !$vuetify.display.smAndDown) || !hasPlayableVideo"
                   class="video-play-overlay"
                   :class="{ 'video-unavailable': !hasPlayableVideo }"
                   @click="hasPlayableVideo ? startPlaying() : null"
