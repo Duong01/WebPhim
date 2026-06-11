@@ -2873,7 +2873,7 @@ a {
   line-height: 1.6;
 }
 .content-collapsed {
-  max-height: 65px; /* ~3 lines */
+  max-height: 75px; /* ~3 lines */
   overflow: hidden;
   position: relative;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
