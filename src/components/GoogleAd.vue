@@ -7,6 +7,7 @@
          :data-ad-format="adFormat"
          :data-full-width-responsive="fullWidthResponsive"></ins>
   </div>
+  
 </template>
 
 <script>

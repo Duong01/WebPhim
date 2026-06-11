@@ -10,9 +10,9 @@
     <HeroBanner v-if="trending.length " :movie="trending" />
 
     <!-- Quảng cáo dưới phần Banner chính -->
-    <v-container class="py-2">
+    <!-- <v-container class="py-2">
       <GoogleAd ad-slot="ca-pub-5101049500206214" />
-    </v-container>
+    </v-container> -->
 
     <!-- MOVIE SECTIONS -->
     <template v-for="(section, index) in sections" :key="section.title">
@@ -28,7 +28,7 @@
 
       <!-- Quảng cáo xen kẽ sau mỗi 3 danh mục phim -->
       <v-container class="py-2" v-if="(index + 1) % 3 === 0">
-        <GoogleAd ad-slot="ca-pub-5101049500206214" />
+        <GoogleAd ad-slot="1366382121" />
       </v-container>
     </template>
   </div>
