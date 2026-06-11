@@ -134,20 +134,15 @@
                       {{ server.server_name || `Server ${index + 1}` }}
                     </v-btn>
                   </div>
-                  <router-link
-                    :to="movie.LinkDown || ''"
-                    download
-                    target="_blank"
+                  <v-btn
+                    size="small"
+                    color="success"
+                    variant="tonal"
+                    icon="mdi-cloud-download"
+                    title="Tải xuống"
                     class="ml-2 flex-shrink-0"
-                  >
-                    <v-btn
-                      size="small"
-                      color="success"
-                      variant="tonal"
-                      icon="mdi-cloud-download"
-                      title="Tải xuống"
-                    ></v-btn>
-                  </router-link>
+                    @click="handleDownloadAd"
+                  ></v-btn>
                 </div>
 
                 <!-- Action buttons -->
@@ -864,6 +859,28 @@
               </v-btn>
             </v-card>
           </v-dialog>
+
+          <!-- Dialog Quảng cáo khi click button -->
+          <v-dialog v-model="adDialog" max-width="500" persistent>
+            <v-card class="bg-grey-darken-4 text-center pa-4 rounded-xl">
+              <div class="d-flex justify-space-between align-center mb-2">
+                <span class="text-caption text-grey-lighten-1">{{ $t("Quảng cáo") }}</span>
+                <v-btn variant="text" size="small" color="grey-lighten-1" :disabled="adCountdown > 0" @click="proceedAfterAd">
+                  {{ adCountdown > 0 ? $t("Đóng sau ") + adCountdown + 's' : $t("Đóng quảng cáo (X)") }}
+                </v-btn>
+              </div>
+              
+              <!-- Component Quảng Cáo -->
+              <GoogleAd ad-slot="THAY_BANG_ID_QUANG_CAO_CUA_BAN" />
+          
+              <div class="mt-4">
+                <v-btn color="primary" block @click="proceedAfterAd" :disabled="adCountdown > 0">
+                  {{ $t("Tiếp tục tải xuống") }}
+                </v-btn>
+              </div>
+            </v-card>
+          </v-dialog>
+
           <!-- Snackbar -->
           <v-snackbar v-model="mess" :timeout="3000" :color="color">
             {{ Message }}
@@ -890,11 +907,15 @@ import {
   Tracking,
   UpdateTimeWatch,
 } from "@/model/api";
+import GoogleAd from "@/components/GoogleAd.vue";
 //import {  toggleFavorite } from "@/utils/favorite";
 // import Hls from "hls.js";
 import { useHead } from "@vueuse/head";
 export default {
   name: "MovieDetail",
+  components: {
+    GoogleAd
+  },
   data() {
     return {
       isFullscreen: false,
@@ -983,6 +1004,11 @@ export default {
       hasAutoUpdatedFavorite: false,
       hasStartedPlaying: false,
       isDescriptionExpanded: false,
+
+      adDialog: false,
+      adCountdown: 5,
+      adTimer: null,
+      pendingAction: null,
     };
   },
   props: ["slug", "page"],
@@ -1678,6 +1704,35 @@ export default {
         return url + '?autoplay=1';
       }
       return url;
+    },
+    handleDownloadAd() {
+      if (!this.movie.LinkDown) {
+        alert(this.$t("Đang cập nhật link tải"));
+        return;
+      }
+      this.pendingAction = () => {
+        window.open(this.movie.LinkDown, '_blank');
+      };
+      this.showAdModal();
+    },
+    showAdModal() {
+      this.adDialog = true;
+      this.adCountdown = 5;
+      this.adTimer = setInterval(() => {
+        if (this.adCountdown > 0) {
+          this.adCountdown--;
+        } else {
+          clearInterval(this.adTimer);
+        }
+      }, 1000);
+    },
+    proceedAfterAd() {
+      if (this.adCountdown > 0) return;
+      this.adDialog = false;
+      if (this.pendingAction) {
+        this.pendingAction();
+        this.pendingAction = null;
+      }
     },
     onIframeLoad() {
       this.isIframeLoading = false;

@@ -106,7 +106,7 @@ export default {
     return {
       pathImage: urlImage1 + "https://phimimg.com/",
       videoList: [],
-      path: "hoat-hinh",
+      path: "phim-chieu-rap",
     };
   },
   async created() {
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     ListMovie() {
-      ListMovieByCate(`${this.path}?page=1&sort_field=modified.time&sort_type=desc&limit=6`, (result) => {
+      ListMovieByCate(`${this.path}?country=viet-nam,trung-quoc&sort_field=year&page=1&limit=6`, (result) => {
         if (result.status === "success" || result.status == true) {
           // Giả sử dữ liệu có rating, duration, short_description
           this.videoList = result.data.items.slice(0, 5).map(item => ({

@@ -9,18 +9,28 @@
     <!-- && $vuetify.display.smAndUp -->
     <HeroBanner v-if="trending.length " :movie="trending" />
 
+    <!-- Quảng cáo dưới phần Banner chính -->
+    <v-container class="py-2">
+      <GoogleAd ad-slot="ca-pub-5101049500206214" />
+    </v-container>
+
     <!-- MOVIE SECTIONS -->
-    <SectionWrapper
-      v-for="(section, index) in sections"
-      :key="section.title"
-      :ref="'section' + index"
-      :title="section.title"
-      :type="section.type"
-      :movies="section.movies"
-      :link="section.link"
-      :loading="!section.loaded"
-      class="lazy-section"
-    />
+    <template v-for="(section, index) in sections" :key="section.title">
+      <SectionWrapper
+        :ref="'section' + index"
+        :title="section.title"
+        :type="section.type"
+        :movies="section.movies"
+        :link="section.link"
+        :loading="!section.loaded"
+        class="lazy-section"
+      />
+
+      <!-- Quảng cáo xen kẽ sau mỗi 3 danh mục phim -->
+      <v-container class="py-2" v-if="(index + 1) % 3 === 0">
+        <GoogleAd ad-slot="ca-pub-5101049500206214" />
+      </v-container>
+    </template>
   </div>
 </template>
 
@@ -31,6 +41,7 @@ import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
 
 import { NewUpdate } from "@/model/api";
+import GoogleAd from "@/components/GoogleAd.vue";
 
 export default {
   name: "Home1Page",
@@ -39,6 +50,7 @@ export default {
     HeroBanner,
     CategoryQuick,
     CarouselPage,
+    GoogleAd,
   },
 
   data() {
@@ -243,6 +255,126 @@ export default {
           link: {
             name: "QuocGia",
             params: { path: "han-quoc" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Hành Động Đỉnh Cao – Kịch Tính Từng Giây",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/the-loai/hanh-dong?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "hanh-dong" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Cổ Trang Kiếm Hiệp – Vang Bóng Một Thời",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/the-loai/co-trang?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "co-trang" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Tình Cảm Lãng Mạn – Chạm Đến Trái Tim",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/the-loai/tinh-cam?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "tinh-cam" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Siêu Phẩm Âu Mỹ – Đẳng Cấp Hollywood",
+          type: "spotlight",
+          url: "https://phimapi.com/v1/api/quoc-gia/au-my?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "au-my" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Hài Hước Vui Nhộn – Xả Stress Cuối Tuần",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/the-loai/hai-huoc?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "hai-huoc" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Kinh Dị Ám Ảnh – Thót Tim Từng Phút",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/the-loai/kinh-di?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "kinh-di" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "TV Shows & Truyền Hình Thực Tế",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/danh-sach/tv-shows?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TVShow",
+            params: { path: "tv-shows" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Viễn Tưởng Đột Phá – Khám Phá Tương Lai",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/the-loai/vien-tuong?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "TheLoai",
+            params: { path: "vien-tuong" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Điện Ảnh Nhật Bản – Tinh Tế & Sâu Lắng",
+          type: "slider",
+          url: "https://phimapi.com/v1/api/quoc-gia/nhat-ban?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "nhat-ban" },
+          },
+          loaded: false,
+          loading: false
+        },
+        {
+          title: "Phim Thái Lan – Kịch Tính & Bất Ngờ",
+          type: "grid",
+          url: "https://phimapi.com/v1/api/quoc-gia/thai-lan?page=1&limit=12",
+          movies: [],
+          link: {
+            name: "QuocGia",
+            params: { path: "thai-lan" },
           },
           loaded: false,
           loading: false
