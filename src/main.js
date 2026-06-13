@@ -1,6 +1,3 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -25,9 +22,6 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 /* Google login */
 import vue3GoogleLogin from 'vue3-google-login'
-
-/* API */
-import { CheckSession } from '@/model/api'
 
 /* Polyfills */
 import 'intersection-observer'
@@ -84,18 +78,21 @@ app.mount('#app')
    Background tasks AFTER render
 ========================= */
 
-requestIdleCallback(async () => {
-  initSession()
-  initActivityTracking()
-  initVisibilityReload()
-  initResizeObserverWarning()
+window.addEventListener('load', () => {
+  requestIdleCallback(async () => {
+    const { CheckSession } = await import('@/model/api')
+    initSession(CheckSession)
+    initActivityTracking()
+    initVisibilityReload()
+    initResizeObserverWarning()
+  })
 })
 
 /* =========================
    Session
 ========================= */
 
-async function initSession() {
+async function initSession(CheckSession) {
   try {
     //const token = localStorage.getItem('token')
     const token = localStorage.getItem("token");

@@ -106,14 +106,25 @@ function fetchJson(url) {
   });
 }
 
-async function fetchAllMovies() {
+async function fetchMovieDetail(slug) {
+  return new Promise((resolve) => {
+    const url = `https://phimapi.com/phim/${slug}`;
+    https.get(url, (res) => {
+      let data = "";
+      res.on("data", (chunk) => data += chunk);
+      res.on("end", () => {
+        try { resolve(JSON.parse(data)); } catch (e) { resolve(null); }
+      });
+    }).on("error", () => resolve(null));
+  });
+}
+
+async function fetchAllMovies(maxPages = 30) {
   const movies = [];
-
-  for (let page = 1; page <= 300; page++) {
+  // Giới hạn số trang để tránh file sitemap quá lớn (>50,000 URL) và chạy quá lâu
+  for (let page = 1; page <= maxPages; page++) {
     try {
-      const url =
-        `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`;
-
+      const url = `https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`;
       const data = await fetchJson(url);
 
       if (!data.items || !data.items.length) {
@@ -135,13 +146,19 @@ async function fetchAllMovies() {
   return movies;
 }
 
-function buildSitemap(staticUrls, movies) {
-  const urls = [];
+async function generate() {
+  console.log("Starting sitemap generation with episodes...");
+  
+  // Lấy danh sách phim mới cập nhật (mặc định lấy 30 trang đầu để tối ưu tốc độ và dung lượng file)
+  const moviesList = await fetchAllMovies(30);
+  console.log(`Found ${moviesList.length} movies. Fetching episodes for each...`);
 
+  const sitemapEntries = [];
   const now = new Date().toISOString();
 
-  staticUrls.forEach((url) => {
-    urls.push({
+  // 1. URL tĩnh
+  STATIC_URLS.forEach((url) => {
+    sitemapEntries.push({
       loc: `${BASE_URL}${url}`,
       lastmod: now,
       changefreq: "daily",
@@ -149,51 +166,68 @@ function buildSitemap(staticUrls, movies) {
     });
   });
 
-  movies.forEach((movie) => {
-    if (!movie.slug) return;
+  // 2. Duyệt qua từng phim để lấy tập phim
+  const batchSize = 10; // Xử lý 10 phim cùng lúc để tăng tốc
+  for (let i = 0; i < moviesList.length; i += batchSize) {
+    const batch = moviesList.slice(i, i + batchSize);
+    
+    await Promise.all(batch.map(async (movie) => {
+      if (!movie.slug) return;
+      
+      const lastmod = movie.modified?.time || movie.updatedAt || now;
 
-    urls.push({
-      loc: `${BASE_URL}/movies/${movie.slug}`,
-      lastmod:
-        movie.modified?.time ||
-        movie.updatedAt ||
-        now,
-      changefreq: "daily",
-      priority: "0.9"
-    });
-  });
+      // Thêm URL trang thông tin phim
+      sitemapEntries.push({
+        loc: `${BASE_URL}/movies/${movie.slug}`,
+        lastmod,
+        changefreq: "daily",
+        priority: "0.9"
+      });
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
+      // Lấy chi tiết để lấy danh sách tập
+      const detail = await fetchMovieDetail(movie.slug);
+      if (detail && detail.episodes) {
+        detail.episodes.forEach(server => {
+          if (server.server_data) {
+            server.server_data.forEach(ep => {
+              // Chuẩn hóa định dạng tập phim: Nếu là số thì thêm tiền tố "tap" (ví dụ: 12 -> tap12)
+              // Điều này giúp khớp với logic normalize trong router/index.js
+              let episodeQuery = ep.slug;
+              if (episodeQuery && !episodeQuery.startsWith("tap")) {
+                const digits = episodeQuery.match(/\d+/);
+                if (digits) {
+                  episodeQuery = "tap" + digits[0];
+                }
+              }
+
+              sitemapEntries.push({
+                loc: `${BASE_URL}/movie/${movie.slug}?page=${episodeQuery}`,
+                lastmod,
+                changefreq: "weekly",
+                priority: "0.7"
+              });
+            });
+          }
+        });
+      }
+    }));
+    
+    console.log(`Processed ${Math.min(i + batchSize, moviesList.length)}/${moviesList.length} movies...`);
+    // Nghỉ một chút để tránh bị API chặn
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  // 3. Tạo nội dung XML
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-${urls
-  .map(
-    (url) => `
+${sitemapEntries.map(entry => `
   <url>
-    <loc>${url.loc}</loc>
-    <lastmod>${url.lastmod}</lastmod>
-    <changefreq>${url.changefreq}</changefreq>
-    <priority>${url.priority}</priority>
-  </url>`
-  )
-  .join("")}
-
+    <loc>${entry.loc}</loc>
+    <lastmod>${entry.lastmod}</lastmod>
+    <changefreq>${entry.changefreq}</changefreq>
+    <priority>${entry.priority}</priority>
+  </url>`).join("")}
 </urlset>`;
-}
-
-async function generate() {
-  console.log("Generating sitemap...");
-
-  const movies = await fetchAllMovies();
-
-  console.log(
-    `Total movies: ${movies.length}`
-  );
-
-  const sitemap = buildSitemap(
-    STATIC_URLS,
-    movies
-  );
 
   const publicDir = path.join(
     __dirname,
@@ -206,17 +240,14 @@ async function generate() {
 
   fs.writeFileSync(
     path.join(publicDir, "sitemap.xml"),
-    sitemap,
+    sitemapXml,
     "utf8"
   );
 
-  console.log(
-    "sitemap.xml generated successfully"
-  );
+  console.log(`Sitemap generated with ${sitemapEntries.length} URLs.`);
 }
 
 generate().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

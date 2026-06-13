@@ -1,12 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Home from "@/pages/Home.vue";
-import PhimBo from "@/pages/PhimBo/PhimBo.vue";
-import PhimChieuRap from "@/pages/PhimChieuRap/PhimChieuRap.vue";
-import PhimLe from "@/pages/PhimLe/PhimLe.vue";
-import TVShow from "@/pages/TVShow/TVShow.vue";
-import HoatHinh from "@/pages/HoatHinh/HoatHinh.vue";
-
 const routes = [
   {
     path: "/login",
@@ -85,7 +78,7 @@ const routes = [
       {
         path: "/home",
         name: "HomePage",
-        component: Home,
+        component: () => import("@/pages/Home.vue"),
         meta: {
           title: "Xem phim online miễn phí - Web Phim Online",
           description: "Kho phim mới nhất, hot nhất.",
@@ -126,7 +119,7 @@ const routes = [
       {
         path: "/phim-chieu-rap",
         name: "PhimChieuRap",
-        component: PhimChieuRap,
+        component: () => import("@/pages/PhimChieuRap/PhimChieuRap.vue"),
         meta: { keepAlive: true },
       },
       {
@@ -139,7 +132,7 @@ const routes = [
       {
         path: "/phim-bo",
         name: "PhimBo",
-        component: PhimBo,
+        component: () => import("@/pages/PhimBo/PhimBo.vue"),
         meta: { keepAlive: true },
       },
       {
@@ -151,13 +144,13 @@ const routes = [
       {
         path: "/phim-le",
         name: "PhimLe",
-        component: PhimLe,
+        component: () => import("@/pages/PhimLe/PhimLe.vue"),
         meta: { keepAlive: true },
       },
       {
         path: "/tv-shows",
         name: "TVShow",
-        component: TVShow,
+        component: () => import("@/pages/TVShow/TVShow.vue"),
         meta: { keepAlive: true },
       },
       {
@@ -169,7 +162,7 @@ const routes = [
       {
         path: "/hoat-hinh",
         name: "HoatHinh",
-        component: HoatHinh,
+        component: () => import("@/pages/HoatHinh/HoatHinh.vue"),
         meta: { keepAlive: true },
       },
       {
