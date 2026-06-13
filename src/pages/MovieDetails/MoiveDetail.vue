@@ -32,6 +32,8 @@
                   allowfullscreen
                   allow="autoplay; fullscreen"
                   frameborder="0"
+                  referrerpolicy="origin"
+                  loading="lazy"
                   style="background-color: #000;"
                   @load="onIframeLoad"
                 ></iframe>
@@ -416,6 +418,7 @@
                         :src="`https://img.youtube.com/vi/${movie.trailer_id}/mqdefault.jpg`"
                         :alt="`Trailer ${movie.name}`"
                         loading="lazy"
+                    decoding="async"
                       />
 
                       <!-- dark overlay khi hover -->
@@ -469,6 +472,7 @@
                     :src="`https://www.youtube.com/embed/${movie.trailer_id}?autoplay=1`"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    referrerpolicy="origin"
                     allowfullscreen
                     loading="lazy"
                   >
@@ -1281,7 +1285,7 @@ export default {
     },
 
     updateMeta() {
-      useHead({
+      const headData = {
         title: `${this.movie.title || this.movie.name} Tập ${
           this.movie.page
         } Vietsub HD`,
@@ -1317,6 +1321,9 @@ export default {
             }),
           },
         ],
+      };
+      requestIdleCallback(() => {
+        useHead(headData);
       });
     },
     // Lưu thời gian xem vào localStorage
@@ -1665,7 +1672,7 @@ export default {
     },
 
     updateSEO() {
-      useHead({
+      const seoData = {
         title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
         meta: [
           { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.` },
@@ -1689,6 +1696,9 @@ export default {
             }),
           },
         ],
+      };
+      requestIdleCallback(() => {
+        useHead(seoData);
       });
     },
     toggleEpisodes() {
@@ -2280,12 +2290,12 @@ export default {
     visibleEpisodes() {
       if (!this.movie?.pageMovie) return [];
       return this.showAllEpisodes
-        ? this.movie.pageMovie // Hiện tất cả tập
-        : this.movie.pageMovie; // Chỉ 20 tập đầu
-      //: this.movie.pageMovie.slice(0, 20); // Chỉ 20 tập đầu
+        ? this.movie.pageMovie 
+        : this.movie.pageMovie.slice(0, 48); // Chỉ hiện 48 tập đầu, còn lại dùng "Xem thêm"
     },
     visibleEpisodesRight() {
-      return this.movie.pageMovie; // Hiện tất cả tập
+      // Giới hạn để panel bên phải không quá dài gây lag scroll
+      return this.movie.pageMovie; 
     },
     hasPlayableVideo() {
       return !!this.movie.videoUrl;
@@ -2293,6 +2303,117 @@ export default {
     isLongDescription() {
       return this.movie?.description?.length > 200;
     },
+  },
+  async created() {
+    // Add keyboard event listener for video controls
+    window.addEventListener("keydown", this.onKeyDown);
+  },
+  async beforeDestroy() {
+    // Remove keyboard event listener
+    window.removeEventListener("keydown", this.onKeyDown);
+  },
+  methods: {
+    // New method to consolidate movie data loading and initialization
+    async fetchAndSetupMovie(slug, initialLoad = false) {
+      this.isLoading = true; // Show global loading indicator
+      this.isLoadingData = false; // Reset error state
+      try {
+        await this.MoveInfor1(slug); // Fetch movie details
+
+        // --- Episode Index Logic ---
+        let targetEpisodeIndex = 0; // Default to first episode
+        if (this.page) {
+          const pageNum = this.page.replace("tap", "");
+          // Try to find by exact slug match (e.g., "tap12")
+          targetEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.slug === this.page
+          );
+          // If not found, try to find by "tap" + number (e.g., "tap12" for episode name "Tập 12")
+          if (targetEpisodeIndex === -1 && this.page.startsWith("tap")) {
+            targetEpisodeIndex = this.movie.pageMovie.findIndex(
+              (ep) => ep.name.replace("Tập ", "tap") === this.page
+            );
+          }
+          // If still not found, try to find by number only (e.g., "12" for episode name "Tập 12")
+          if (targetEpisodeIndex === -1 && pageNum) {
+            targetEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
+              const epNumber = parseInt((ep.name.toString().match(/\d+/) || [])[0], 10);
+              return epNumber === parseInt(pageNum, 10);
+            });
+          }
+        }
+        // Ensure targetEpisodeIndex is within bounds
+        this.currentEpisodeIndex = Math.max(0, Math.min(targetEpisodeIndex, this.movie.pageMovie.length - 1));
+
+        // --- Video URL and Title Setup ---
+        const currentEpisode = this.movie.pageMovie[this.currentEpisodeIndex];
+        if (currentEpisode) {
+          this.movie.videoUrl = this.ensureAutoplay(currentEpisode.link_embed);
+          this.movie.LinkDown = currentEpisode.link_m3u8;
+          this.movie.title = currentEpisode.filename || this.movie.name;
+          // Normalize URL in browser history
+          const normalized = currentEpisode.name.replace("Tập ", "tap").trim();
+          if (this.$route.query.page !== normalized) {
+            this.$router.replace({
+              name: "MovieDetail",
+              params: { slug: slug },
+              query: { page: normalized },
+            });
+          }
+        } else if (this.movie.trailer_id) { // Fallback to trailer if no episodes
+          this.movie.videoUrl = `https://www.youtube.com/embed/${this.movie.trailer_id}?autoplay=1`;
+          this.movie.title = `${this.movie.name} - Trailer`;
+        } else {
+          this.movie.videoUrl = ""; // No playable video
+          this.movie.title = this.movie.name;
+        }
+
+        // --- Reset states ---
+        this.favoriteUpdateCounter = 0;
+        this.hasAutoUpdatedFavorite = false;
+        this.hasStartedPlaying = false;
+        this.$store.commit("settimeWatch", null);
+        this.isIframeLoading = true; // Indicate iframe is loading for new video
+
+        // --- Defer non-critical tasks ---
+        this.$nextTick(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          this.loadWatchTime();
+          this.scrollToActiveEpisode();
+          requestIdleCallback(() => {
+            this.Tracking();
+            this.updateSEO(); // Update SEO for the movie
+            this.updateMeta(); // Update meta for the current episode
+          });
+        });
+
+        // --- Watch time interval setup (only once on initial load) ---
+        if (initialLoad && !this.saveTimeInterval) {
+          this.saveTimeInterval = setInterval(() => {
+            this.timeSpentWatching += 60;
+            this.saveWatchTime();
+            if (this.idAccount) {
+              this.saveWatchTimeAPI();
+            }
+            if (this.idAccount && !this.hasAutoUpdatedFavorite) {
+              this.favoriteUpdateCounter++;
+              if (this.favoriteUpdateCounter >= 1) { // Only update once after 1 minute
+                this.autoUpdateFavorite();
+                this.hasAutoUpdatedFavorite = true;
+              }
+            }
+          }, 60000);
+        }
+
+      } catch (err) {
+        console.error("Error loading movie data:", err);
+        this.isLoadingData = true; // Show error message
+      } finally {
+        this.isLoading = false; // Hide global loading indicator
+        this.$store.dispatch("loading/stopLoading"); // Ensure global loading is stopped
+      }
+    },
+    // Existing methods below...
   },
 };
 </script>
@@ -2323,6 +2444,8 @@ export default {
 
   /* Smooth focus state */
   cursor: pointer;
+  will-change: transform;
+  contain: layout;
 }
 
 .video-player.video-loading {
