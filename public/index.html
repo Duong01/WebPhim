@@ -1,99 +1,176 @@
+
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
-    <!-- Canonical: set your site domain in build or replace the fallback URL -->
-    <link rel="canonical" href="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" />
-    <link rel="manifest" href="/manifest.json" />
+  <!-- Primary SEO -->
+  <title>
+    Xem Phim Online Vietsub FullHD, Phim Bộ, Phim Lẻ, Anime Mới Nhất | ZCines
+  </title>
 
-    <title><%= htmlWebpackPlugin.options.title || 'Xem Phim Online Vietsub FullHD, Thuyết Minh, Phim Bộ, Phim Lẻ, Phim Chiếu Rạp Mới Nhất | ZCines' %></title>
+  <meta
+    name="description"
+    content="Xem phim online Vietsub FullHD miễn phí tại ZCines. Cập nhật phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp mới nhất với chất lượng cao."
+  />
 
-    <meta name="description" content="Xem phim online Vietsub FullHD miễn phí tại ZCines. Cập nhật nhanh phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp, thuyết minh, lồng tiếng chất lượng cao mỗi ngày." />
-    <meta name="keywords" content="Zcines,zcines,xem phim online,kho phim,phim vietsub,phim 4k,phim hd,phim bộ,phim lẻ" />
-    <meta name="robots" content="index, follow" />
+  <meta
+    name="keywords"
+    content="zcines,xem phim online,phim vietsub,phim hd,phim 4k,anime,phim bộ,phim lẻ"
+  />
 
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Zcines" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-icon" href="/Logo.png" />
-    <link rel="icon" href="<%= BASE_URL %>icon.png" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#000000" />
 
-    <!-- Open Graph -->
-    <meta property="og:url" content="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" />
-    <meta property="og:title" content="<%= htmlWebpackPlugin.options.ogTitle || 'Xem Phim Online Vietsub FullHD, Phim Bộ, Phim Lẻ, Phim Chiếu Rạp Mới Nhất | ZCines' %>" />
-    <meta property="og:description" content="<%= htmlWebpackPlugin.options.ogDescription || 'Kho phim Vietsub FullHD chất lượng cao. Xem phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp mới nhất hoàn toàn miễn phí tại ZCines.' %>" />
-    <meta property="og:image" content="<%= htmlWebpackPlugin.options.ogImage || '/og-image.jpg' %>" />
-    <meta property="og:locale" content="vi_VN" />
-    <meta property="og:type" content="website" />
-     
+  <!-- Canonical -->
+  <link rel="canonical" href="https://zcines.com/" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="<%= htmlWebpackPlugin.options.ogTitle || 'Xem Phim Online Vietsub HD, Phim Bộ, Phim Lẻ Mới Nhất | ZCines' %>" />
-    <meta name="twitter:description" content="<%= htmlWebpackPlugin.options.ogDescription || 'Kho phim Vietsub HD chất lượng cao. Xem phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp mới nhất hoàn toàn miễn phí tại ZCines.' %>" />
-    <meta name="twitter:image" content="<%= htmlWebpackPlugin.options.ogImage || '/og-image.jpg' %>" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://zcines.com/icon.png" />
+  <link rel="apple-touch-icon" href="https://zcines.com/Logo.png" />
 
-    <!-- Hreflang: adjust URLs to match your language routes -->
-    <link rel="alternate" href="<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>" hreflang="vi" />
-    <link rel="alternate" href="<%= (htmlWebpackPlugin.options.canonical || 'https://zcines.com/') + 'en/' %>" hreflang="en" />
-    <link rel="alternate" href="<%= (htmlWebpackPlugin.options.canonical || 'https://zcines.com/') + 'zh/' %>" hreflang="zh-CN" />
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json" />
 
-    <!-- Sitemap reference -->
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-    <meta name="google-adsense-account" content="ca-pub-5101049500206214">
-    <!-- Structured Data: WebSite + Organization -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5101049500206214"
-     crossorigin="anonymous"></script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebSite",
-          "@id": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>#website",
-          "url": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>",
-          "name": "<%= htmlWebpackPlugin.options.title || 'ZCines - Xem Phim Online Vietsub FullHD' %>",
-          "inLanguage": "vi",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
-        },
-        {
-          "@type": "Organization",
-          "name": "<%= htmlWebpackPlugin.options.title || 'ZCines - Xem Phim Online Vietsub FullHD' %>",
-          "url": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/' %>",
-          "logo": "<%= htmlWebpackPlugin.options.canonical || 'https://zcines.com/Logo.png' %>Logo.png"
+  <!-- Sitemap -->
+  <link
+    rel="sitemap"
+    type="application/xml"
+    title="Sitemap"
+    href="https://zcines.com/sitemap.xml"
+  />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ZCines" />
+  <meta property="og:locale" content="vi_VN" />
+
+  <meta property="og:url" content="https://zcines.com/" />
+
+  <meta
+    property="og:title"
+    content="Xem Phim Online Vietsub FullHD, Phim Bộ, Phim Lẻ Mới Nhất | ZCines"
+  />
+
+  <meta
+    property="og:description"
+    content="Kho phim Vietsub FullHD chất lượng cao. Xem phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp mới nhất hoàn toàn miễn phí tại ZCines."
+  />
+
+  <!-- IMPORTANT -->
+  <meta
+    property="og:image"
+    content="https://zcines.com/og-image.jpg"
+  />
+
+  <meta
+    property="og:image:secure_url"
+    content="https://zcines.com/og-image.jpg"
+  />
+
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta
+    name="twitter:title"
+    content="Xem Phim Online Vietsub FullHD | ZCines"
+  />
+
+  <meta
+    name="twitter:description"
+    content="Xem phim Vietsub FullHD miễn phí chất lượng cao tại ZCines."
+  />
+
+  <meta
+    name="twitter:image"
+    content="https://zcines.com/og-image.jpg"
+  />
+
+  <!-- Language -->
+  <link rel="alternate" hreflang="vi" href="https://zcines.com/" />
+  <link rel="alternate" hreflang="en" href="https://zcines.com/en/" />
+  <link rel="alternate" hreflang="zh-CN" href="https://zcines.com/zh/" />
+
+  <!-- Mobile -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="ZCines" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://cdn.jwplayer.com" />
+  <link rel="dns-prefetch" href="https://cdn.jwplayer.com" />
+
+  <!-- Adsense -->
+  <meta
+    name="google-adsense-account"
+    content="ca-pub-5101049500206214"
+  />
+
+  <!-- <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5101049500206214"
+    crossorigin="anonymous"
+  ></script> -->
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://zcines.com/#website",
+        "url": "https://zcines.com/",
+        "name": "ZCines",
+        "inLanguage": "vi",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://zcines.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
         }
-      ]
-    }
-    </script>
-    
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://zcines.com/#organization",
+        "name": "ZCines",
+        "url": "https://zcines.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://zcines.com/Logo.png"
+        }
+      }
+    ]
+  }
+  </script>
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-  </head>
-  <style>
-    .selector-for-some-widget {
-      box-sizing: content-box;
-    }
-  </style>
-  <body>
-    <noscript>
-      <strong
-        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
-        properly without JavaScript enabled. Please enable it to
-        continue.</strong
-      >
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-    <script src="https://cdn.jwplayer.com/libraries/SAHhwvZq.js"></script>
-  </body>
+  <!-- Performance -->
+  <meta http-equiv="Cache-Control" content="public" />
+
+</head>
+
+<body>
+
+  <noscript>
+    <strong>
+      Website cần bật JavaScript để hoạt động.
+    </strong>
+  </noscript>
+
+  <div id="app"></div>
+
+  <!-- JWPlayer -->
+  <script src="https://cdn.jwplayer.com/libraries/SAHhwvZq.js"></script>
+
+</body>
 </html>
+

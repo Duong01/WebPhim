@@ -27,9 +27,9 @@
       />
 
       <!-- Quảng cáo xen kẽ sau mỗi 3 danh mục phim -->
-      <v-container class="py-2" v-if="(index + 1) % 3 === 0">
+      <!-- <v-container class="py-2" v-if="(index + 1) % 3 === 0">
         <GoogleAd ad-slot="1366382121" />
-      </v-container>
+      </v-container> -->
     </template>
   </div>
 </template>
@@ -41,7 +41,7 @@ import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
 
 import { NewUpdate } from "@/model/api";
-import GoogleAd from "@/components/GoogleAd.vue";
+// import GoogleAd from "@/components/GoogleAd.vue";
 
 export default {
   name: "Home1Page",
@@ -50,7 +50,7 @@ export default {
     HeroBanner,
     CategoryQuick,
     CarouselPage,
-    GoogleAd,
+    // GoogleAd,
   },
 
   data() {
