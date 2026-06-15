@@ -123,31 +123,10 @@
                   </div>
                   <div class="d-flex gap-2 flex-nowrap">
                     <v-btn
-                      @click="switchApiServer(1)"
-                      :color="apiServer === 1 ? 'primary' : 'grey-darken-3'"
-                      :variant="apiServer === 1 ? 'flat' : 'elevated'"
-                      size="small"
-                      class="text-none server-btn font-weight-medium flex-shrink-0"
-                      elevation="2"
-                    >
-                      Server 1
-                    </v-btn>
-                    <v-btn
-                      @click="switchApiServer(2)"
-                      :color="apiServer === 2 ? 'primary' : 'grey-darken-3'"
-                      :variant="apiServer === 2 ? 'flat' : 'elevated'"
-                      size="small"
-                      class="text-none server-btn font-weight-medium flex-shrink-0"
-                      elevation="2"
-                    >
-                      Server 2
-                    </v-btn>
-                    <v-divider vertical class="mx-2" color="white" v-if="movie.servers && movie.servers.length > 0"></v-divider>
-                    <v-btn
                       v-for="(server, index) in movie.servers"
                       :key="index"
-                      @click="switchServer(server, index)"
-                      :color="tabserver === index ? 'secondary' : 'grey-darken-3'"
+                      @click="switchServer(server)"
+                      :color="tabserver === index ? 'primary' : 'grey-darken-3'"
                       :variant="tabserver === index ? 'flat' : 'elevated'"
                       size="small"
                       class="text-none server-btn font-weight-medium flex-shrink-0"
@@ -988,7 +967,6 @@ export default {
       showAllEpisodes: false,
       dialogTrailer: false,
       isIframeLoading: true,
-      apiServer: 1,
       lastTimeUpdateTime: 0,
       shareUrl: window.location.href,
       tabserver: null,
@@ -1116,40 +1094,150 @@ export default {
   watch: {
     async slug(newSlug) {
       this.handleUnload();
-      await this.loadMovieFromSource(this.apiServer, newSlug);
-      this.playInitialEpisode();
+      await this.MoveInfor1(newSlug);
+      if (this.page) {
+        if (this.page == "01") {
+          this.currentEpisodeIndex = 0;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === this.page
+          );
+        }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        var page = this.page.replace("tap", "");
+        if (this.page == "01") {
+          this.currentEpisodeIndex = 0;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === page
+          );
+        }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
+      }
+      this.movie.title =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
+      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+      this.movie.videoUrl =
+        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
+
+      this.setupVideo(this.movie.videoUrl);
+      if (epName) {
+        const normalized = epName.replace("Tập ", "tap");
+        if (this.$route.query.page !== normalized) {
+          this.$router.replace({
+            name: "MovieDetail",
+            params: { slug: newSlug },
+            query: { page: normalized },
+          });
+        }
+      }
+      this.favoriteUpdateCounter = 0;
+      this.hasAutoUpdatedFavorite = false;
+      this.hasStartedPlaying = false; // Reset iframe khi đổi phim
+      this.timeSpentWatching = 0;
+      this.$store.commit("settimeWatch", null);
+      // Load thời gian xem cho film mới
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
+        this.loadWatchTime();
+        // Trì hoãn tracking để ưu tiên render và load các dữ liệu quan trọng
         setTimeout(() => {
           this.Tracking();
         }, 1500);
+        this.scrollToActiveEpisode();
       });
+      // await this.ListMovieByCate();
+      // await this.GetComment();
     },
   },
   async mounted() {
     try {
-      await this.loadMovieFromSource(this.apiServer, this.slug);
-      this.playInitialEpisode();
+      // this.$store.dispatch('loading/stopLoading')
+      await this.MoveInfor1(this.slug);
+      // this.$store.dispatch('loading/stopLoading')
+      if (this.page) {
+        if (this.page == "01") {
+          this.currentEpisodeIndex = 0;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === this.page
+          );
+        }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        var page = this.page.replace("tap", "");
+        if (this.page == "01") {
+          this.currentEpisodeIndex = 0;
+        } else {
+          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === page
+          );
+          if (this.currentEpisodeIndex == -1) {
+            this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
+              (ep) => ep.name.replace("Tập ", "") === page.replace("0", "")
+            );
+          }
+        }
+      }
+      if (this.currentEpisodeIndex == -1) {
+        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
+          const epNumber = parseInt(
+            (ep.name.toString().match(/\d+/) || [])[0],
+            10
+          );
+          return epNumber === page;
+        });
+      }
+      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
 
+      //this.playVideo(this.movie.videoUrl);
+
+      //this.bindVideoEvents();
+      if (epName) {
+        const normalized = epName.replace("Tập ", "tap");
+
+        // Cập nhật URL
+        if (this.$route.query.page !== normalized) {
+          this.$router.replace({
+            name: "MovieDetail",
+            params: { slug: this.slug },
+            query: { page: normalized },
+          });
+        }
+      }
       this.updateSEO();
       this.initLazyLoad();
 
+      // Load thời gian xem từ localStorage
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
+        this.loadWatchTime();
         setTimeout(() => {
           this.Tracking();
         }, 1500);
+        this.scrollToActiveEpisode();
       });
 
+      // Bắt đầu save thời gian xem
       if (this.saveTimeInterval) {
         clearInterval(this.saveTimeInterval);
       }
       this.saveTimeInterval = setInterval(() => {
         this.timeSpentWatching += 10;
         this.saveWatchTime();
-      }, 10000);
       
       this.updateMeta();
+      // Fullscreen change listeners (update isFullscreen state across browsers)
       document.addEventListener(
         "fullscreenchange",
         this.handleFullscreenChange
@@ -1168,6 +1256,10 @@ export default {
       );
       window.addEventListener('beforeunload', this.handleUnload);
       window.addEventListener('visibilitychange', this.handleVisibilityChange);
+
+      // await this.ListMovieByCate();
+      // await this.GetComment();
+    });
     } catch (err) {
       console.log(err);
     } finally {
@@ -1175,163 +1267,6 @@ export default {
     }
   },
   methods: {
-    async switchApiServer(server) {
-      if (this.apiServer === server) return;
-      this.apiServer = server;
-      this.tabserver = 0;
-      this.handleUnload();
-      await this.loadMovieFromSource(server, this.slug);
-      this.playInitialEpisode();
-    },
-    playInitialEpisode() {
-      if (!this.movie.pageMovie || this.movie.pageMovie.length === 0) return;
-      
-      let targetIndex = -1;
-      if (this.page) {
-        if (this.page === "01") {
-          targetIndex = 0;
-        } else {
-          targetIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === this.page
-          );
-          if (targetIndex === -1) {
-            let pageNum = this.page.replace("tap", "");
-            targetIndex = this.movie.pageMovie.findIndex(
-              (ep) => ep.name.replace("Tập ", "tap") === pageNum || 
-                      ep.name.replace("Tập ", "") === pageNum.replace("0", "")
-            );
-            if (targetIndex === -1) {
-              targetIndex = this.movie.pageMovie.findIndex((ep) => {
-                const epNumber = parseInt((ep.name.toString().match(/\d+/) || [])[0], 10);
-                return epNumber == pageNum;
-              });
-            }
-          }
-        }
-      }
-      
-      if (targetIndex === -1) targetIndex = 0;
-      
-      this.currentEpisodeIndex = targetIndex;
-      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
-      this.setupVideo(this.movie.videoUrl);
-
-      if (epName) {
-        const normalized = epName.replace("Tập ", "tap");
-        if (this.$route.query.page !== normalized) {
-          this.$router.replace({
-            name: "MovieDetail",
-            params: { slug: this.slug },
-            query: { page: normalized },
-          });
-        }
-      }
-      
-      this.favoriteUpdateCounter = 0;
-      this.hasAutoUpdatedFavorite = false;
-      this.hasStartedPlaying = false;
-      this.timeSpentWatching = 0;
-      this.$store.commit("settimeWatch", null);
-      
-      this.$nextTick(() => {
-        this.loadWatchTime();
-        this.scrollToActiveEpisode();
-      });
-    },
-    async loadMovieFromSource(source, slug) {
-      return new Promise((resolve) => {
-        this.isLoading = true;
-        try {
-          const url = source === 1 
-            ? `https://phimapi.com/phim/${slug}` 
-            : `https://ophim1.com/phim/${slug}`;
-          
-          const response = fetch(url);
-          const result = response.json();
-
-          if (result.status === true || result.status === "success") {
-            this.movies = result.movie;
-            this.movie.page = result.movie.episode_current;
-            this.movie.idMovie = result.movie._id;
-            this.movie.title = result.movie.name;
-            this.movie.description = result.movie.content;
-
-            if (result.episodes && result.episodes.length > 0 && result.episodes[0].server_data) {
-              this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) => parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
-              );
-              this.movie.servers = result.episodes;
-            } else {
-              this.movie.pageMovie = [];
-              this.movie.servers = [];
-            }
-
-            this.movie.director = result.movie.director;
-            this.movie.trailer_url = result.movie.trailer_url;
-            this.movie.name = result.movie.name;
-            this.movie.thumb_url = result.movie.thumb_url;
-            this.movie.lang = result.movie.lang;
-            this.movie.origin_name = result.movie.origin_name;
-            this.movie.year = result.movie.year;
-            this.movie.slug = result.movie.slug;
-            this.movie.vote_average = result.movie.tmdb?.vote_average;
-            this.movie.poster_url = result.movie.poster_url;
-            this.movie.quality = result.movie.quality;
-            this.movie.time = result.movie.time;
-            this.movie.episode_total = result.movie.episode_total;
-
-            if (this.movie.trailer_url != "") {
-              let tUrl = this.movie.trailer_url;
-              if (tUrl.includes("youtube.com/embed/")) {
-                this.movie.trailer_id = tUrl.split("embed/")[1].split("?")[0];
-              } else {
-                this.movie.trailer_id = tUrl.includes("?v=") 
-                  ? tUrl.split("?v=")[1].split("&")[0] 
-                  : (tUrl.includes("youtu.be/") ? tUrl.split("youtu.be/")[1].split("?")[0] : "");
-              }
-            }
-
-            this.movie.actors = result.movie.actor;
-            if (result.movie.country && result.movie.country.length > 0) {
-              this.movie.genre = result.movie.country[0];
-            }
-            if (result.movie.category && result.movie.category.length > 0) {
-              this.movie.categoris = result.movie.category[0].slug;
-            }
-            this.updateMeta();
-            this.isLoading = false;
-            resolve(true);
-          } else {
-            this.clearMovieData();
-            this.isLoading = false;
-            resolve(false);
-          }
-        } catch (err) {
-          console.error(err);
-          this.clearMovieData();
-          this.isLoading = false;
-          resolve(false);
-        }
-      });
-    },
-    clearMovieData() {
-      this.movies = {};
-      this.movie.pageMovie = [];
-      this.movie.servers = [];
-      this.movie.videoUrl = "";
-      this.currentEpisodeIndex = 0;
-      this.movie.title = this.$t("Chưa có dữ liệu");
-      this.movie.description = "";
-      this.movie.thumb_url = "";
-      this.movie.poster_url = "";
-      this.movie.director = [];
-      this.movie.actors = [];
-      this.movie.origin_name = "";
-      this.movie.lang = "";
-      this.movie.quality = "";
-      this.movie.year = "";
-    },
     formatDate(dateString) {
       if (!dateString) return 'N/A';
       const date = new Date(dateString);
@@ -2349,9 +2284,8 @@ export default {
         this.isLoading = false;
       }
     },
-    switchServer(server, index) {
+    switchServer(server) {
       this.handleUnload();
-      this.tabserver = index;
       
       this.isLoading = true;
 
@@ -2363,23 +2297,19 @@ export default {
       
       if (
         this.movie.page == "Full" ||
-        this.movie.page?.includes("/")
+        // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+        this.movie.page.includes("/")
       ) {
         this.movie.videoUrl =
           this.ensureAutoplay(server.server_data[server.server_data.length - 1].link_embed);
         this.movie.LinkDown =
           server.server_data[server.server_data.length - 1].link_m3u8;
       } else {
-        var tap = this.movie.page?.split("Tập ")[1]?.trim() || "";
-        const data = server.server_data.find((ep) => ep.name.includes(tap));
+        var tap = this.movie.page.split("Tập ")[1].trim();
+        const data = server.server_data.includes(tap);
         if (data) {
           this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
           this.movie.LinkDown = data.link_m3u8;
-        } else if (server.server_data.length > 0) {
-          this.movie.videoUrl =
-            this.ensureAutoplay(server.server_data[0].link_embed);
-          this.movie.LinkDown =
-            server.server_data[0].link_m3u8;
         }
       }
 
