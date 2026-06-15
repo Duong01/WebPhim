@@ -94,6 +94,9 @@
                 <h2 class="text-h6 text-grey-lighten-1 mb-4">{{ movies.origin_name }}</h2>
 
                 <div class="d-flex flex-wrap align-center gap-2 mb-6">
+                  <v-chip v-if="movies.chieurap" color="error" variant="flat" size="small" prepend-icon="mdi-movie-roll" class="font-weight-bold">
+                    {{ $t("Chiếu rạp") }}
+                  </v-chip>
                   <v-chip color="primary" variant="flat" size="small" class="font-weight-bold">
                     {{ movies.year }}
                   </v-chip>
@@ -103,8 +106,11 @@
                   <v-chip color="info" variant="flat" size="small" class="font-weight-bold">
                     {{ movies.quality }}
                   </v-chip>
+                  <v-chip color="purple" variant="flat" size="small" class="font-weight-bold">
+                    {{ movies.lang }}
+                  </v-chip>
                   <v-chip color="warning" variant="flat" size="small" prepend-icon="mdi-star" class="font-weight-bold">
-                    {{ movies.tmdb?.vote_average || 'N/A' }}
+                    {{ (movies.tmdb?.vote_average || 0).toFixed(1) }} ({{ movies.tmdb?.vote_count || 0 }} đánh giá)
                   </v-chip>
                   <v-chip color="grey-darken-3" variant="flat" size="small" prepend-icon="mdi-eye" class="font-weight-bold">
                     {{ movies.view || '0' }}
@@ -172,16 +178,8 @@
 
                 <v-row dense class="text-body-2 mb-8 info-grid">
                   <v-col cols="12" sm="6" md="4" class="mb-2">
-                    <span class="text-grey">{{ $t("Thể loại:") }}</span>
-                    <span class="text-white ml-2 font-weight-medium">
-                      <span v-for="(cate, ind) in movies.category" :key="ind">
-                        {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
-                      </span>
-                    </span>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4" class="mb-2">
-                    <span class="text-grey">{{ $t("Quốc gia:") }}</span>
-                    <span class="text-white ml-2 font-weight-medium">{{ movies.country?.[0]?.name || $t("Đang cập nhật") }}</span>
+                    <span class="text-grey">Trạng thái:</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ movies.status === 'completed' ? 'Hoàn thành' : 'Đang cập nhật' }}</span>
                   </v-col>
                   <v-col cols="12" sm="6" md="4" class="mb-2">
                     <span class="text-grey">{{ $t("Số tập:") }}</span>
@@ -191,7 +189,31 @@
                     <span class="text-grey">{{ $t("Thời lượng:") }}</span>
                     <span class="text-white ml-2 font-weight-medium">{{ movies.time }}</span>
                   </v-col>
-                  <v-col cols="12" sm="12" md="8" class="mb-2">
+                  <v-col cols="12" sm="6" md="4" class="mb-2">
+                    <span class="text-grey">{{ $t("Quốc gia:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ movies.country?.[0]?.name || $t("Đang cập nhật") }}</span>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="8" class="mb-2">
+                    <span class="text-grey">Cập nhật:</span>
+                    <span class="text-white ml-2 font-weight-medium">{{ formatDate(movies.modified.time) }}</span>
+                  </v-col>
+                  <v-col cols="12" class="mb-2">
+                    <span class="text-grey">{{ $t("Thể loại:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">
+                      <span v-for="(cate, ind) in movies.category" :key="ind">
+                        {{ cate.name }}<span v-if="ind < movies.category.length - 1">, </span>
+                      </span>
+                    </span>
+                  </v-col>
+                  <v-col cols="12" class="mb-2">
+                    <span class="text-grey">{{ $t("Đạo diễn:") }}</span>
+                    <span class="text-white ml-2 font-weight-medium">
+                      <span v-for="(d, ind) in movies.director" :key="ind">
+                        {{ d }}<span v-if="ind < movies.director.length - 1">, </span>
+                      </span>
+                    </span>
+                  </v-col>
+                  <v-col cols="12" class="mb-2">
                     <span class="text-grey">{{ $t("Diễn viên:") }}</span>
                     <span class="text-white ml-2 font-weight-medium">
                       <span v-for="(actor, ind) in movies.actor" :key="ind">
@@ -733,6 +755,16 @@ export default {
       this.isLoading = false;
     }
   },
+    formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    },
+
     updateSEO() {
       useHead({
         title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,

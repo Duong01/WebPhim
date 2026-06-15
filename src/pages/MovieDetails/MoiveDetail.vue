@@ -33,7 +33,6 @@
                   allow="autoplay; fullscreen"
                   frameborder="0"
                   referrerpolicy="origin"
-                  loading="lazy"
                   style="background-color: #000;"
                   @load="onIframeLoad"
                 ></iframe>
@@ -124,10 +123,31 @@
                   </div>
                   <div class="d-flex gap-2 flex-nowrap">
                     <v-btn
+                      @click="switchApiServer(1)"
+                      :color="apiServer === 1 ? 'primary' : 'grey-darken-3'"
+                      :variant="apiServer === 1 ? 'flat' : 'elevated'"
+                      size="small"
+                      class="text-none server-btn font-weight-medium flex-shrink-0"
+                      elevation="2"
+                    >
+                      Server 1
+                    </v-btn>
+                    <v-btn
+                      @click="switchApiServer(2)"
+                      :color="apiServer === 2 ? 'primary' : 'grey-darken-3'"
+                      :variant="apiServer === 2 ? 'flat' : 'elevated'"
+                      size="small"
+                      class="text-none server-btn font-weight-medium flex-shrink-0"
+                      elevation="2"
+                    >
+                      Server 2
+                    </v-btn>
+                    <v-divider vertical class="mx-2" color="white" v-if="movie.servers && movie.servers.length > 0"></v-divider>
+                    <v-btn
                       v-for="(server, index) in movie.servers"
                       :key="index"
-                      @click="switchServer(server)"
-                      :color="tabserver === index ? 'primary' : 'grey-darken-3'"
+                      @click="switchServer(server, index)"
+                      :color="tabserver === index ? 'secondary' : 'grey-darken-3'"
                       :variant="tabserver === index ? 'flat' : 'elevated'"
                       size="small"
                       class="text-none server-btn font-weight-medium flex-shrink-0"
@@ -318,6 +338,25 @@
                     <h2 class="text-subtitle-1 text-grey mb-4">
                       {{ movie.name }}
                     </h2>
+
+                    <div class="d-flex flex-wrap align-center gap-2 mb-4">
+                      <v-chip v-if="movies.chieurap" color="error" variant="flat" size="small" prepend-icon="mdi-movie-roll" class="font-weight-bold">
+                        {{ $t("Chiếu rạp") }}
+                      </v-chip>
+                      <v-chip color="primary" variant="flat" size="small" class="font-weight-bold">
+                        {{ movies.year }}
+                      </v-chip>
+                      <v-chip color="info" variant="flat" size="small" class="font-weight-bold">
+                        {{ movies.quality }}
+                      </v-chip>
+                      <v-chip color="purple" variant="flat" size="small" class="font-weight-bold">
+                        {{ movies.lang }}
+                      </v-chip>
+                      <v-chip color="warning" variant="flat" size="small" prepend-icon="mdi-star" class="font-weight-bold">
+                        {{ (movies.tmdb?.vote_average || 0).toFixed(1) }} ({{ movies.tmdb?.vote_count || 0 }} đánh giá)
+                      </v-chip>
+                    </div>
+
                     <div class="content-wrapper mb-4">
                       <div
                         class="text-body-1 text-grey-lighten-2 content-desc"
@@ -337,6 +376,37 @@
                       class="text-body-2 text-grey-lighten-1 info-grid-modern"
                     >
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">Trạng thái:</span>
+                        <span class="info-value text-white">{{ movies.status === 'completed' ? 'Hoàn thành' : 'Đang cập nhật' }}</span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Số tập:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.episode_total || "?" }} {{ $t("tập") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Thời lượng:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.time || $t("Đang cập nhật") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Quốc gia:") }}</span>
+                        <span class="info-value text-white">
+                          {{ movies?.country?.[0]?.name || $t("Đang cập nhật") }}
+                        </span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
+                        <span class="info-label">Cập nhật:</span>
+                        <span class="info-value text-white">{{ formatDate(movies?.modified?.time) }}</span>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Thể loại:") }}</span>
                         <span class="info-value text-white">
                           <template v-if="movies?.category?.length">
@@ -355,26 +425,15 @@
                         </span>
                       </v-col>
 
-                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
-                        <span class="info-label">{{ $t("Quốc gia:") }}</span>
+                      <v-col cols="12" class="d-flex align-start mb-2">
+                        <span class="info-label">{{ $t("Đạo diễn:") }}</span>
                         <span class="info-value text-white">
-                          {{
-                            movies?.country?.[0]?.name || $t("Đang cập nhật")
-                          }}
-                        </span>
-                      </v-col>
-
-                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
-                        <span class="info-label">{{ $t("Số tập:") }}</span>
-                        <span class="info-value text-white">
-                          {{ movies?.episode_total || "?" }} {{ $t("tập") }}
-                        </span>
-                      </v-col>
-
-                      <v-col cols="12" md="6" class="d-flex align-start mb-2">
-                        <span class="info-label">{{ $t("Thời lượng:") }}</span>
-                        <span class="info-value text-white">
-                          {{ movies?.time || $t("Đang cập nhật") }}
+                          <template v-if="movies?.director?.length">
+                            <span v-for="(d, ind) in movies.director" :key="ind" class="hover-text">
+                              {{ d }}<span v-if="ind < movies.director.length - 1">, </span>
+                            </span>
+                          </template>
+                          <span v-else>{{ $t("Đang cập nhật") }}</span>
                         </span>
                       </v-col>
 
@@ -929,6 +988,7 @@ export default {
       showAllEpisodes: false,
       dialogTrailer: false,
       isIframeLoading: true,
+      apiServer: 1,
       lastTimeUpdateTime: 0,
       shareUrl: window.location.href,
       tabserver: null,
@@ -1019,10 +1079,7 @@ export default {
   beforeUnmount() {
     // Lưu thời gian xem trước khi rời khỏi
 
-    this.saveWatchTime();
-    if (this.idAccount) {
-      this.saveWatchTimeAPI();
-    }
+    this.handleUnload();
 
     // Dừng save interval
     if (this.saveTimeInterval) {
@@ -1051,164 +1108,48 @@ export default {
       "MSFullscreenChange",
       this.handleFullscreenChange
     );
+    // Remove keyboard event listener
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener('beforeunload', this.handleUnload);
+    window.removeEventListener('visibilitychange', this.handleVisibilityChange);
   },
   watch: {
     async slug(newSlug) {
-      await this.MoveInfor1(newSlug);
-      if (this.page) {
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === this.page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        var page = this.page.replace("tap", "");
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-          const epNumber = parseInt(
-            (ep.name.toString().match(/\d+/) || [])[0],
-            10
-          );
-          return epNumber === page;
-        });
-      }
-      this.movie.title =
-        this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
-      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl =
-        this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
-
-      this.setupVideo(this.movie.videoUrl);
-      if (epName) {
-        const normalized = epName.replace("Tập ", "tap");
-        if (this.$route.query.page !== normalized) {
-          this.$router.replace({
-            name: "MovieDetail",
-            params: { slug: newSlug },
-            query: { page: normalized },
-          });
-        }
-      }
-      this.favoriteUpdateCounter = 0;
-      this.hasAutoUpdatedFavorite = false;
-      this.hasStartedPlaying = false; // Reset iframe khi đổi phim
-      this.$store.commit("settimeWatch", null);
-      // Load thời gian xem cho film mới
+      this.handleUnload();
+      await this.loadMovieFromSource(this.apiServer, newSlug);
+      this.playInitialEpisode();
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-        this.loadWatchTime();
-        // Trì hoãn tracking để ưu tiên render và load các dữ liệu quan trọng
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        this.scrollToActiveEpisode();
       });
-      // await this.ListMovieByCate();
-      // await this.GetComment();
     },
   },
   async mounted() {
     try {
-      // this.$store.dispatch('loading/stopLoading')
-      await this.MoveInfor1(this.slug);
-      // this.$store.dispatch('loading/stopLoading')
-      if (this.page) {
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === this.page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        var page = this.page.replace("tap", "");
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === page
-          );
-          if (this.currentEpisodeIndex == -1) {
-            this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-              (ep) => ep.name.replace("Tập ", "") === page.replace("0", "")
-            );
-          }
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-          const epNumber = parseInt(
-            (ep.name.toString().match(/\d+/) || [])[0],
-            10
-          );
-          return epNumber === page;
-        });
-      }
-      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
-      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
+      await this.loadMovieFromSource(this.apiServer, this.slug);
+      this.playInitialEpisode();
 
-      //this.playVideo(this.movie.videoUrl);
-
-      //this.bindVideoEvents();
-      if (epName) {
-        const normalized = epName.replace("Tập ", "tap");
-
-        // Cập nhật URL
-        if (this.$route.query.page !== normalized) {
-          this.$router.replace({
-            name: "MovieDetail",
-            params: { slug: this.slug },
-            query: { page: normalized },
-          });
-        }
-      }
       this.updateSEO();
       this.initLazyLoad();
 
-      // Load thời gian xem từ localStorage
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-        this.loadWatchTime();
         setTimeout(() => {
           this.Tracking();
         }, 1500);
-        this.scrollToActiveEpisode();
       });
 
-      // Bắt đầu save thời gian xem
       if (this.saveTimeInterval) {
         clearInterval(this.saveTimeInterval);
       }
       this.saveTimeInterval = setInterval(() => {
-        this.timeSpentWatching += 60;
+        this.timeSpentWatching += 10;
         this.saveWatchTime();
-        if (this.idAccount) {
-          this.saveWatchTimeAPI();
-        }
-        // Tự động cập nhật vào danh sách yêu thích/lịch sử
-        if (this.idAccount && !this.hasAutoUpdatedFavorite) {
-          this.favoriteUpdateCounter++;
-          if (this.favoriteUpdateCounter >= 1) {
-            this.autoUpdateFavorite();
-            this.hasAutoUpdatedFavorite = true;
-          }
-        }
-      }, 60000);
+      }, 10000);
       
       this.updateMeta();
-      // Fullscreen change listeners (update isFullscreen state across browsers)
       document.addEventListener(
         "fullscreenchange",
         this.handleFullscreenChange
@@ -1225,9 +1166,8 @@ export default {
         "MSFullscreenChange",
         this.handleFullscreenChange
       );
-
-      // await this.ListMovieByCate();
-      // await this.GetComment();
+      window.addEventListener('beforeunload', this.handleUnload);
+      window.addEventListener('visibilitychange', this.handleVisibilityChange);
     } catch (err) {
       console.log(err);
     } finally {
@@ -1235,6 +1175,187 @@ export default {
     }
   },
   methods: {
+    async switchApiServer(server) {
+      if (this.apiServer === server) return;
+      this.apiServer = server;
+      this.tabserver = 0;
+      this.handleUnload();
+      await this.loadMovieFromSource(server, this.slug);
+      this.playInitialEpisode();
+    },
+    playInitialEpisode() {
+      if (!this.movie.pageMovie || this.movie.pageMovie.length === 0) return;
+      
+      let targetIndex = -1;
+      if (this.page) {
+        if (this.page === "01") {
+          targetIndex = 0;
+        } else {
+          targetIndex = this.movie.pageMovie.findIndex(
+            (ep) => ep.name.replace("Tập ", "tap") === this.page
+          );
+          if (targetIndex === -1) {
+            let pageNum = this.page.replace("tap", "");
+            targetIndex = this.movie.pageMovie.findIndex(
+              (ep) => ep.name.replace("Tập ", "tap") === pageNum || 
+                      ep.name.replace("Tập ", "") === pageNum.replace("0", "")
+            );
+            if (targetIndex === -1) {
+              targetIndex = this.movie.pageMovie.findIndex((ep) => {
+                const epNumber = parseInt((ep.name.toString().match(/\d+/) || [])[0], 10);
+                return epNumber == pageNum;
+              });
+            }
+          }
+        }
+      }
+      
+      if (targetIndex === -1) targetIndex = 0;
+      
+      this.currentEpisodeIndex = targetIndex;
+      const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+      this.movie.videoUrl = this.movie.pageMovie[this.currentEpisodeIndex]?.link_embed;
+      this.setupVideo(this.movie.videoUrl);
+
+      if (epName) {
+        const normalized = epName.replace("Tập ", "tap");
+        if (this.$route.query.page !== normalized) {
+          this.$router.replace({
+            name: "MovieDetail",
+            params: { slug: this.slug },
+            query: { page: normalized },
+          });
+        }
+      }
+      
+      this.favoriteUpdateCounter = 0;
+      this.hasAutoUpdatedFavorite = false;
+      this.hasStartedPlaying = false;
+      this.timeSpentWatching = 0;
+      this.$store.commit("settimeWatch", null);
+      
+      this.$nextTick(() => {
+        this.loadWatchTime();
+        this.scrollToActiveEpisode();
+      });
+    },
+    async loadMovieFromSource(source, slug) {
+      return new Promise((resolve) => {
+        this.isLoading = true;
+        try {
+          const url = source === 1 
+            ? `https://phimapi.com/phim/${slug}` 
+            : `https://ophim1.com/phim/${slug}`;
+          
+          const response = fetch(url);
+          const result = response.json();
+
+          if (result.status === true || result.status === "success") {
+            this.movies = result.movie;
+            this.movie.page = result.movie.episode_current;
+            this.movie.idMovie = result.movie._id;
+            this.movie.title = result.movie.name;
+            this.movie.description = result.movie.content;
+
+            if (result.episodes && result.episodes.length > 0 && result.episodes[0].server_data) {
+              this.movie.pageMovie = result.episodes[0].server_data.sort(
+                (a, b) => parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
+              );
+              this.movie.servers = result.episodes;
+            } else {
+              this.movie.pageMovie = [];
+              this.movie.servers = [];
+            }
+
+            this.movie.director = result.movie.director;
+            this.movie.trailer_url = result.movie.trailer_url;
+            this.movie.name = result.movie.name;
+            this.movie.thumb_url = result.movie.thumb_url;
+            this.movie.lang = result.movie.lang;
+            this.movie.origin_name = result.movie.origin_name;
+            this.movie.year = result.movie.year;
+            this.movie.slug = result.movie.slug;
+            this.movie.vote_average = result.movie.tmdb?.vote_average;
+            this.movie.poster_url = result.movie.poster_url;
+            this.movie.quality = result.movie.quality;
+            this.movie.time = result.movie.time;
+            this.movie.episode_total = result.movie.episode_total;
+
+            if (this.movie.trailer_url != "") {
+              let tUrl = this.movie.trailer_url;
+              if (tUrl.includes("youtube.com/embed/")) {
+                this.movie.trailer_id = tUrl.split("embed/")[1].split("?")[0];
+              } else {
+                this.movie.trailer_id = tUrl.includes("?v=") 
+                  ? tUrl.split("?v=")[1].split("&")[0] 
+                  : (tUrl.includes("youtu.be/") ? tUrl.split("youtu.be/")[1].split("?")[0] : "");
+              }
+            }
+
+            this.movie.actors = result.movie.actor;
+            if (result.movie.country && result.movie.country.length > 0) {
+              this.movie.genre = result.movie.country[0];
+            }
+            if (result.movie.category && result.movie.category.length > 0) {
+              this.movie.categoris = result.movie.category[0].slug;
+            }
+            this.updateMeta();
+            this.isLoading = false;
+            resolve(true);
+          } else {
+            this.clearMovieData();
+            this.isLoading = false;
+            resolve(false);
+          }
+        } catch (err) {
+          console.error(err);
+          this.clearMovieData();
+          this.isLoading = false;
+          resolve(false);
+        }
+      });
+    },
+    clearMovieData() {
+      this.movies = {};
+      this.movie.pageMovie = [];
+      this.movie.servers = [];
+      this.movie.videoUrl = "";
+      this.currentEpisodeIndex = 0;
+      this.movie.title = this.$t("Chưa có dữ liệu");
+      this.movie.description = "";
+      this.movie.thumb_url = "";
+      this.movie.poster_url = "";
+      this.movie.director = [];
+      this.movie.actors = [];
+      this.movie.origin_name = "";
+      this.movie.lang = "";
+      this.movie.quality = "";
+      this.movie.year = "";
+    },
+    formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    },
+    handleUnload() {
+      this.saveWatchTime();
+      if (this.idAccount) {
+        this.saveWatchTimeAPI();
+        if (!this.hasAutoUpdatedFavorite) {
+          this.autoUpdateFavorite();
+          this.hasAutoUpdatedFavorite = true;
+        }
+      }
+    },
+    handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') {
+        this.handleUnload();
+      }
+    },
     saveWatchTimeAPI() {
       try {
         if (!this.movie?.idMovie) return;
@@ -2175,6 +2296,8 @@ export default {
 
     playEpisode(episode) {
       try {
+        this.handleUnload();
+
         console.log(episode);
         this.isLoading = true;
         if (
@@ -2214,6 +2337,7 @@ export default {
         );
         this.favoriteUpdateCounter = 0; // Reset bộ đếm khi đổi tập
         this.hasAutoUpdatedFavorite = false;
+        this.timeSpentWatching = 0;
 
         //this.GetComment();
         this.isLoading = false;
@@ -2225,7 +2349,10 @@ export default {
         this.isLoading = false;
       }
     },
-    switchServer(server) {
+    switchServer(server, index) {
+      this.handleUnload();
+      this.tabserver = index;
+      
       this.isLoading = true;
 
       // this.movie.pageMovie = server.server_data;
@@ -2236,19 +2363,23 @@ export default {
       
       if (
         this.movie.page == "Full" ||
-        // this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-        this.movie.page.includes("/")
+        this.movie.page?.includes("/")
       ) {
         this.movie.videoUrl =
           this.ensureAutoplay(server.server_data[server.server_data.length - 1].link_embed);
         this.movie.LinkDown =
           server.server_data[server.server_data.length - 1].link_m3u8;
       } else {
-        var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.includes(tap);
+        var tap = this.movie.page?.split("Tập ")[1]?.trim() || "";
+        const data = server.server_data.find((ep) => ep.name.includes(tap));
         if (data) {
           this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
           this.movie.LinkDown = data.link_m3u8;
+        } else if (server.server_data.length > 0) {
+          this.movie.videoUrl =
+            this.ensureAutoplay(server.server_data[0].link_embed);
+          this.movie.LinkDown =
+            server.server_data[0].link_m3u8;
         }
       }
 
@@ -2308,113 +2439,7 @@ export default {
     // Add keyboard event listener for video controls
     window.addEventListener("keydown", this.onKeyDown);
   },
-  async beforeDestroy() {
-    // Remove keyboard event listener
-    window.removeEventListener("keydown", this.onKeyDown);
-  },
-  methods: {
-    // New method to consolidate movie data loading and initialization
-    async fetchAndSetupMovie(slug, initialLoad = false) {
-      this.isLoading = true; // Show global loading indicator
-      this.isLoadingData = false; // Reset error state
-      try {
-        await this.MoveInfor1(slug); // Fetch movie details
-
-        // --- Episode Index Logic ---
-        let targetEpisodeIndex = 0; // Default to first episode
-        if (this.page) {
-          const pageNum = this.page.replace("tap", "");
-          // Try to find by exact slug match (e.g., "tap12")
-          targetEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.slug === this.page
-          );
-          // If not found, try to find by "tap" + number (e.g., "tap12" for episode name "Tập 12")
-          if (targetEpisodeIndex === -1 && this.page.startsWith("tap")) {
-            targetEpisodeIndex = this.movie.pageMovie.findIndex(
-              (ep) => ep.name.replace("Tập ", "tap") === this.page
-            );
-          }
-          // If still not found, try to find by number only (e.g., "12" for episode name "Tập 12")
-          if (targetEpisodeIndex === -1 && pageNum) {
-            targetEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-              const epNumber = parseInt((ep.name.toString().match(/\d+/) || [])[0], 10);
-              return epNumber === parseInt(pageNum, 10);
-            });
-          }
-        }
-        // Ensure targetEpisodeIndex is within bounds
-        this.currentEpisodeIndex = Math.max(0, Math.min(targetEpisodeIndex, this.movie.pageMovie.length - 1));
-
-        // --- Video URL and Title Setup ---
-        const currentEpisode = this.movie.pageMovie[this.currentEpisodeIndex];
-        if (currentEpisode) {
-          this.movie.videoUrl = this.ensureAutoplay(currentEpisode.link_embed);
-          this.movie.LinkDown = currentEpisode.link_m3u8;
-          this.movie.title = currentEpisode.filename || this.movie.name;
-          // Normalize URL in browser history
-          const normalized = currentEpisode.name.replace("Tập ", "tap").trim();
-          if (this.$route.query.page !== normalized) {
-            this.$router.replace({
-              name: "MovieDetail",
-              params: { slug: slug },
-              query: { page: normalized },
-            });
-          }
-        } else if (this.movie.trailer_id) { // Fallback to trailer if no episodes
-          this.movie.videoUrl = `https://www.youtube.com/embed/${this.movie.trailer_id}?autoplay=1`;
-          this.movie.title = `${this.movie.name} - Trailer`;
-        } else {
-          this.movie.videoUrl = ""; // No playable video
-          this.movie.title = this.movie.name;
-        }
-
-        // --- Reset states ---
-        this.favoriteUpdateCounter = 0;
-        this.hasAutoUpdatedFavorite = false;
-        this.hasStartedPlaying = false;
-        this.$store.commit("settimeWatch", null);
-        this.isIframeLoading = true; // Indicate iframe is loading for new video
-
-        // --- Defer non-critical tasks ---
-        this.$nextTick(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          this.loadWatchTime();
-          this.scrollToActiveEpisode();
-          requestIdleCallback(() => {
-            this.Tracking();
-            this.updateSEO(); // Update SEO for the movie
-            this.updateMeta(); // Update meta for the current episode
-          });
-        });
-
-        // --- Watch time interval setup (only once on initial load) ---
-        if (initialLoad && !this.saveTimeInterval) {
-          this.saveTimeInterval = setInterval(() => {
-            this.timeSpentWatching += 60;
-            this.saveWatchTime();
-            if (this.idAccount) {
-              this.saveWatchTimeAPI();
-            }
-            if (this.idAccount && !this.hasAutoUpdatedFavorite) {
-              this.favoriteUpdateCounter++;
-              if (this.favoriteUpdateCounter >= 1) { // Only update once after 1 minute
-                this.autoUpdateFavorite();
-                this.hasAutoUpdatedFavorite = true;
-              }
-            }
-          }, 60000);
-        }
-
-      } catch (err) {
-        console.error("Error loading movie data:", err);
-        this.isLoadingData = true; // Show error message
-      } finally {
-        this.isLoading = false; // Hide global loading indicator
-        this.$store.dispatch("loading/stopLoading"); // Ensure global loading is stopped
-      }
-    },
-    // Existing methods below...
-  },
+  
 };
 </script>
 
