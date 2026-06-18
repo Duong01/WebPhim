@@ -263,26 +263,7 @@
                         </v-btn>
                       </v-col>
                     </v-row>
-                  </v-sheet>
-
-                  <div class="text-center mt-4">
-                    <v-btn
-                      variant="tonal"
-                      color="grey-lighten-1"
-                      @click="toggleEpisodes"
-                      class="btnnext"
-                      size="small"
-                    >
-                      {{ showAllEpisodes ? "Thu gọn " : "Xem thêm" }}
-                      <v-icon size="18" class="mr-1">
-                        {{
-                          showAllEpisodes
-                            ? "mdi-chevron-up"
-                            : "mdi-chevron-down"
-                        }}
-                      </v-icon>
-                    </v-btn>
-                  </div>
+                    </v-sheet>  
                 </v-card-text>
               </v-card>
 
@@ -963,7 +944,6 @@ export default {
       isFullscreen: false,
 
       hasLoadedCate: false,
-      hasLoadedComment: false,
       showAllEpisodes: false,
       dialogTrailer: false,
       isIframeLoading: true,
@@ -2359,10 +2339,7 @@ export default {
       return fanStatus == 2 || fanStatus == 3;
     },
     visibleEpisodes() {
-      if (!this.movie?.pageMovie) return [];
-      return this.showAllEpisodes
-        ? this.movie.pageMovie 
-        : this.movie.pageMovie.slice(0, 48); // Chỉ hiện 48 tập đầu, còn lại dùng "Xem thêm"
+      return this.movie?.pageMovie || [];
     },
     visibleEpisodesRight() {
       // Giới hạn để panel bên phải không quá dài gây lag scroll
