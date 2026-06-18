@@ -1441,10 +1441,12 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
-              this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) =>
-                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
-              );
+              this.movie.pageMovie = result.episodes[0].server_data.sort((a, b) => {
+                const numA = parseInt(a.name?.match(/\d+/)?.[0] || 0);
+                const numB = parseInt(b.name?.match(/\d+/)?.[0] || 0);
+
+                return numA - numB;
+              });
               // this.movie.pageMovie = serverData;
               // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
@@ -1555,10 +1557,16 @@ export default {
               this.movie.idMovie = result.movie._id;
               this.movie.title = result.movie.name;
               this.movie.description = result.movie.content;
-              this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) =>
-                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
-              );
+              this.movie.pageMovie = result.episodes[0].server_data.sort((a, b) => {
+                const numA = parseInt(a.name?.match(/\d+/)?.[0] || 0);
+                const numB = parseInt(b.name?.match(/\d+/)?.[0] || 0);
+
+                return numA - numB;
+              });
+              // this.movie.pageMovie = result.episodes[0].server_data.sort(
+              //   (a, b) =>
+              //     parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
+              // );
               // this.movie.pageMovie = result.episodes[0].server_data;
               this.movie.director = result.movie.director;
               this.movie.servers = result.episodes;
@@ -2259,9 +2267,14 @@ export default {
         })
         
         if (data) {
-            this.movie.videoUrl = this.ensureAutoplay(data.link_embed)
-            this.movie.LinkDown = data.link_m3u8
-        }
+  this.movie.videoUrl = this.ensureAutoplay(data.link_embed)
+  this.movie.LinkDown = data.link_m3u8
+
+  this.currentEpisodeIndex =
+    this.movie.pageMovie.findIndex(
+      ep => ep.name === data.name
+    );
+}
       }
 
       this.GetComment();
