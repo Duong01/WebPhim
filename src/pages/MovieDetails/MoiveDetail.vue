@@ -883,26 +883,7 @@
             </v-card>
           </v-dialog>
 
-          <!-- Dialog Quảng cáo khi click button -->
-          <v-dialog v-model="adDialog" max-width="500" persistent>
-            <v-card class="bg-grey-darken-4 text-center pa-4 rounded-xl">
-              <div class="d-flex justify-space-between align-center mb-2">
-                <span class="text-caption text-grey-lighten-1">{{ $t("Quảng cáo") }}</span>
-                <v-btn variant="text" size="small" color="grey-lighten-1" :disabled="adCountdown > 0" @click="proceedAfterAd">
-                  {{ adCountdown > 0 ? $t("Đóng sau ") + adCountdown + 's' : $t("Đóng quảng cáo (X)") }}
-                </v-btn>
-              </div>
-              
-              <!-- Component Quảng Cáo -->
-              <!-- <GoogleAd ad-slot="THAY_BANG_ID_QUANG_CAO_CUA_BAN" /> -->
           
-              <div class="mt-4">
-                <v-btn color="primary" block @click="proceedAfterAd" :disabled="adCountdown > 0">
-                  {{ $t("Tiếp tục tải xuống") }}
-                </v-btn>
-              </div>
-            </v-card>
-          </v-dialog>
 
           <!-- Snackbar -->
           <v-snackbar v-model="mess" :timeout="3000" :color="color">
@@ -1027,9 +1008,6 @@ export default {
       hasStartedPlaying: false,
       isDescriptionExpanded: false,
 
-      adDialog: false,
-      adCountdown: 5,
-      adTimer: null,
       pendingAction: null,
     };
   },
@@ -1761,25 +1739,8 @@ export default {
       };
       this.showAdModal();
     },
-    showAdModal() {
-      this.adDialog = true;
-      this.adCountdown = 5;
-      this.adTimer = setInterval(() => {
-        if (this.adCountdown > 0) {
-          this.adCountdown--;
-        } else {
-          clearInterval(this.adTimer);
-        }
-      }, 1000);
-    },
-    proceedAfterAd() {
-      if (this.adCountdown > 0) return;
-      this.adDialog = false;
-      if (this.pendingAction) {
-        this.pendingAction();
-        this.pendingAction = null;
-      }
-    },
+    
+    
     onIframeLoad() {
       this.isIframeLoading = false;
     },
