@@ -913,7 +913,7 @@
               </div>
               
               <!-- Component Quảng Cáo -->
-              <GoogleAd ad-slot="THAY_BANG_ID_QUANG_CAO_CUA_BAN" />
+              <!-- <GoogleAd ad-slot="THAY_BANG_ID_QUANG_CAO_CUA_BAN" /> -->
           
               <div class="mt-4">
                 <v-btn color="primary" block @click="proceedAfterAd" :disabled="adCountdown > 0">
@@ -949,14 +949,14 @@ import {
   Tracking,
   UpdateTimeWatch,
 } from "@/model/api";
-import GoogleAd from "@/components/GoogleAd.vue";
+// import GoogleAd from "@/components/GoogleAd.vue";
 //import {  toggleFavorite } from "@/utils/favorite";
 // import Hls from "hls.js";
 import { useHead } from "@vueuse/head";
 export default {
   name: "MovieDetail",
   components: {
-    GoogleAd
+    // GoogleAd
   },
   data() {
     return {
