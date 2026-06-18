@@ -2306,10 +2306,20 @@ export default {
           server.server_data[server.server_data.length - 1].link_m3u8;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.includes(tap);
+        // const data = server.server_data.includes(tap);
+        // if (data) {
+        //   this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
+        //   this.movie.LinkDown = data.link_m3u8;
+        // }
+        const data = server.server_data.find(ep => {
+        return ep.name === this.movie.page ||
+           ep.slug === tap ||
+           ep.slug?.includes(tap)
+        })
+        
         if (data) {
-          this.movie.videoUrl = this.ensureAutoplay(data.link_embed);
-          this.movie.LinkDown = data.link_m3u8;
+            this.movie.videoUrl = this.ensureAutoplay(data.link_embed)
+            this.movie.LinkDown = data.link_m3u8
         }
       }
 
