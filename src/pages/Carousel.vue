@@ -26,8 +26,8 @@
       >
         <div class="carousel-wrapper">
           <v-img
-            :src="pathImage + item.thumb_url"
-            :lazy-src="pathImage + item.thumb_url"
+            :src="getOptimizedImage(item.thumb_url)"
+            :lazy-src="getOptimizedImage(item.thumb_url)"
             cover
             height="100%"
             class="carousel-image"
@@ -127,6 +127,15 @@ export default {
       }, (err) => {
         console.error(err);
       });
+    },
+    getOptimizedImage(imagePath) {
+      if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
+      else if(imagePath.includes("upload")) {
+        return "https://phimimg.com/" + imagePath;
+      }
+      return `${this.pathImage + encodeURIComponent(imagePath)}`;
     },
     goToDetail(slug) {
       this.$router.push({ name: "Movies", params: { slug } });

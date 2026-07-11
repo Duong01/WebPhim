@@ -273,6 +273,9 @@ export default {
 
       // }
       // else{
+      if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
         return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
       // }
     },

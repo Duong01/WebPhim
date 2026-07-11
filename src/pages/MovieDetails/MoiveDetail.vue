@@ -2224,9 +2224,12 @@ loadWatchTime() {
     },
 
     getOptimizedImage(imagePath) {
-      // if (this.link == "") {
-      //   return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      // } else {
+      if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
+      else if(imagePath.includes("upload")) {
+        return "https://phimimg.com/" + imagePath;
+      }
       return `${
         imagePath.includes("https://phimimg.com/upload")
           ? this.urlImage1 + imagePath

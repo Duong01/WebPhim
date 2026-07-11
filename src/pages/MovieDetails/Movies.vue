@@ -1250,7 +1250,14 @@ export default {
           return imagePath;
         }
         return `${this.urlImage + encodeURIComponent(imagePath)}`;
-      } else {
+      }
+      else if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
+      else if(imagePath.includes("upload")) {
+        return "https://phimimg.com/" + imagePath;
+      }
+       else {
         if(imagePath.includes("https")){
           return imagePath;
         }

@@ -319,6 +319,13 @@ export default {
       }
     },
     getOptimizedImage(imagePath) {
+      console.log(imagePath)
+      if(imagePath.includes("https://phimimg.com")) {
+        return imagePath;
+      }
+      else if(imagePath.includes("upload")) {
+        return "https://phimimg.com/" + imagePath;
+      }
       return `${
         this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;

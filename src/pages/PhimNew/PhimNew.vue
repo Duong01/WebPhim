@@ -339,9 +339,16 @@ export default {
     getOptimizedImage(imagePath) {
       // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
       if(this.link1 == 'link1'){
+        if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
         return `${this.urlImage + encodeURIComponent(imagePath)}`
       }
+      
       else{
+        if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
       return `${this.urlImage + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`
 
       }

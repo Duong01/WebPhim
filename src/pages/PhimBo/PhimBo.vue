@@ -288,6 +288,10 @@ export default {
       this.observer.observe(this.$refs.loadMoreTrigger);
     },
     getOptimizedImage(imagePath) {
+      console.log(imagePath)
+      if(imagePath.includes("https://phimimg.com/uploads")) {
+        return imagePath;
+      }
       return `${
         this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)
       }`;
