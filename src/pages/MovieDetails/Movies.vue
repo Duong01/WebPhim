@@ -1251,7 +1251,7 @@ export default {
         }
         return `${this.urlImage + encodeURIComponent(imagePath)}`;
       }
-      else if(imagePath.includes("https://phimimg.com/uploads")) {
+      else if(imagePath.includes("https://phimimg.com/upload")) {
         return imagePath;
       }
       else if(imagePath.includes("upload")) {
