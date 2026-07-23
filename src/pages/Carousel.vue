@@ -129,6 +129,9 @@ export default {
       });
     },
     getOptimizedImage(imagePath) {
+      if (!imagePath) {
+        return ""; // hoặc trả về ảnh mặc định
+      }
       if(imagePath.includes("https://phimimg.com/uploads")) {
         return imagePath;
       }

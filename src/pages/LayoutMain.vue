@@ -64,9 +64,9 @@
                   <span class="notify-label">{{movie.lang}}</span>
                 </div>
               </div>
-              <div class="genre-list">
+              <div class="genre-list" v-if="movie.category && movie.category.length">
                 <span
-                  v-for="c in movie.category.slice(0, 2)"
+                  v-for="c in movie.category.slice(0, 2) || []"
                   :key="c.id"
                   class="genre-item"
                 >
@@ -181,7 +181,8 @@
               
 
               <!-- GENRE -->
-              <div class="genre-list">
+              
+              <div class="genre-list" v-if="movie.category && movie.category.length">
                 <span
                   v-for="c in movie.category.slice(0, 2) || []"
                   :key="c.id"
