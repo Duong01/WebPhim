@@ -336,6 +336,19 @@ export default {
       }
       
     },
+    initObserver() {
+      if (!this.$refs.loadMoreTrigger) return;
+      if (this.observer) this.observer.disconnect();
+
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !this.loadingMore && !this.isLastPage && !this.loading) {
+          this.currentPage++;
+          this.ListMovie(this.path, true);
+        }
+      }, { rootMargin: "250px 0px" });
+
+      this.observer.observe(this.$refs.loadMoreTrigger);
+    },
     getOptimizedImage(imagePath) {
       // return `${this.urlImage + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
       if(this.link1 == 'link1'){
