@@ -183,7 +183,7 @@
               <!-- GENRE -->
               <div class="genre-list">
                 <span
-                  v-for="c in movie.category.slice(0, 2)"
+                  v-for="c in movie.category.slice(0, 2) || []"
                   :key="c.id"
                   class="genre-item"
                 >
