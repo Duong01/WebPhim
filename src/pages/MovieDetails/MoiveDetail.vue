@@ -163,7 +163,7 @@
     @click="startPlayer"
   >
     <img
-      :src="movie.thumb_url"
+      :src="getMovieImage(movie, 'thumb')"
       class="overlay-poster"
     />
 
@@ -523,14 +523,14 @@
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Thể loại:") }}</span>
                         <span class="info-value text-white">
-                          <template v-if="movies?.category?.length">
+                          <template v-if="getSafeArray(movies.category).length">
                             <span
-                              v-for="(cate, ind) in movies.category"
+                              v-for="(cate, ind) in getSafeArray(movies.category)"
                               :key="ind"
                               class="hover-text"
                             >
                               {{ cate.name
-                              }}<span v-if="ind < movies.category.length - 1"
+                              }}<span v-if="ind < getSafeArray(movies.category).length - 1"
                                 >,
                               </span>
                             </span>
@@ -542,9 +542,9 @@
                       <v-col cols="12" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Đạo diễn:") }}</span>
                         <span class="info-value text-white">
-                          <template v-if="movies?.director?.length">
-                            <span v-for="(d, ind) in movies.director" :key="ind" class="hover-text">
-                              {{ d }}<span v-if="ind < movies.director.length - 1">, </span>
+                          <template v-if="getSafeArray(movies.director).length">
+                            <span v-for="(d, ind) in getSafeArray(movies.director)" :key="ind" class="hover-text">
+                              {{ d }}<span v-if="ind < getSafeArray(movies.director).length - 1">, </span>
                             </span>
                           </template>
                           <span v-else>{{ $t("Đang cập nhật") }}</span>
@@ -556,12 +556,12 @@
                         <span class="info-value text-white">
                           <template v-if="movies?.actor?.length">
                             <span
-                              v-for="(actor, ind) in movies.actor"
+                              v-for="(actor, ind) in getSafeArray(movies.actor)"
                               :key="ind"
                               class="hover-text"
                             >
                               {{ actor
-                              }}<span v-if="ind < movies.actor.length - 1"
+                              }}<span v-if="ind < getSafeArray(movies.actor).length - 1"
                                 >,
                               </span>
                             </span>
@@ -879,10 +879,11 @@
                         <!-- Poster Image -->
                         <div class="suggested-poster">
                           <img
-                            :src="getOptimizedImage(suggested.poster_url)"
+                            :src="getOptimizedImage(suggested.poster_url || suggested.thumb_url)"
                             :alt="suggested.name"
                             loading="lazy"
                             class="suggested-poster-img"
+                            @error="onImageError(suggested, 'poster_url')"
                           />
                           <!-- Hover overlay -->
                           <div class="suggested-overlay">
@@ -1143,6 +1144,7 @@ export default {
         time: "",
         episode_total: "",
       },
+      fallbackImage: "https://via.placeholder.com/300x450?text=No+Image",
       movieFavorite: {
         IDAccount: "",
         IDMovies: "",
@@ -1173,6 +1175,7 @@ export default {
       favoriteUpdateCounter: 0,
       hasAutoUpdatedFavorite: false,
       isDescriptionExpanded: false,
+      moveInforFallbackTried: false,
     };
   },
   props: ["slug", "page"],
@@ -1214,34 +1217,7 @@ export default {
           }
         }
       await this.MoveInfor1(newSlug);
-      if (this.page) {
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === this.page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        var page = this.page.replace("tap", "");
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-          const epNumber = parseInt(
-            (ep.name.toString().match(/\d+/) || [])[0],
-            10
-          );
-          return epNumber === page;
-        });
-      }
+      this.currentEpisodeIndex = this.resolveEpisodeIndex(this.page);
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
       const epName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
@@ -1281,40 +1257,7 @@ export default {
     try {
       // this.$store.dispatch('loading/stopLoading')
       await this.MoveInfor1(this.slug);
-      // this.$store.dispatch('loading/stopLoading')
-      if (this.page) {
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === this.page
-          );
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        var page = this.page.replace("tap", "");
-        if (this.page == "01") {
-          this.currentEpisodeIndex = 0;
-        } else {
-          this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-            (ep) => ep.name.replace("Tập ", "tap") === page
-          );
-          if (this.currentEpisodeIndex == -1) {
-            this.currentEpisodeIndex = this.movie.pageMovie.findIndex(
-              (ep) => ep.name.replace("Tập ", "") === page.replace("0", "")
-            );
-          }
-        }
-      }
-      if (this.currentEpisodeIndex == -1) {
-        this.currentEpisodeIndex = this.movie.pageMovie.findIndex((ep) => {
-          const epNumber = parseInt(
-            (ep.name.toString().match(/\d+/) || [])[0],
-            10
-          );
-          return epNumber === page;
-        });
-      }
+      this.currentEpisodeIndex = this.resolveEpisodeIndex(this.page);
       this.movie.title =
         this.movie.pageMovie[this.currentEpisodeIndex]?.filename;
 
@@ -1624,61 +1567,73 @@ loadWatchTime() {
           slug,
           (result) => {
             if (result.status == true || result.status == "success") {
-              this.movies = result.movie;
+              const movieData = result.movie || {};
+              const episodeList = Array.isArray(result.episodes) ? result.episodes : [];
+              const serverData = Array.isArray(episodeList[0]?.server_data)
+                ? [...episodeList[0].server_data]
+                : [];
+              this.movies = {
+                ...movieData,
+                content: movieData.content || "",
+                category: Array.isArray(movieData.category) ? movieData.category : [],
+                director: Array.isArray(movieData.director) ? movieData.director : [],
+                actor: Array.isArray(movieData.actor) ? movieData.actor : [],
+                country: Array.isArray(movieData.country) ? movieData.country : [],
+              };
               this.link = "";
-              this.movie.page = result.movie.episode_current;
-              this.movie.idMovie = result.movie._id;
-              this.movie.title = result.movie.name;
-              this.movie.description = result.movie.content;
-              this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) =>
-                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
-              );
+              this.movie.page = movieData.episode_current;
+              this.movie.idMovie = movieData._id;
+              this.movie.title = movieData.name;
+              this.movie.description = movieData.content;
+              this.movie.pageMovie = serverData.sort((a, b) => {
+                const aNum = parseInt((a?.name || "").match(/\d+/)?.[0] || "0", 10);
+                const bNum = parseInt((b?.name || "").match(/\d+/)?.[0] || "0", 10);
+                return aNum - bNum;
+              });
               // this.movie.pageMovie = serverData;
               // this.movie.pageMovie = result.episodes[0].server_data;
-              this.movie.director = result.movie.director;
-              this.movie.servers = result.episodes;
-              this.movie.trailer_url = result.movie.trailer_url;
-              this.movie.name = result.movie.name;
-              this.movie.thumb_url = result.movie.thumb_url;
-              this.movie.lang = result.movie.lang;
-              this.movie.origin_name = result.movie.origin_name;
-              this.movie.year = result.movie.year;
-              this.movie.slug = result.movie.slug;
-              this.movie.vote_average = result.movie.tmdb?.vote_average;
-              this.movie.poster_url = result.movie.poster_url;
-              this.movie.quality = result.movie.quality;
-              this.movie.time = result.movie.time;
-              this.movie.episode_total = result.movie.episode_total;
+              this.movie.director = this.getSafeArray(movieData.director);
+              this.movie.servers = episodeList;
+              this.movie.trailer_url = movieData.trailer_url;
+              this.movie.name = movieData.name;
+              this.movie.thumb_url = movieData.thumb_url;
+              this.movie.lang = movieData.lang;
+              this.movie.origin_name = movieData.origin_name;
+              this.movie.year = movieData.year;
+              this.movie.slug = movieData.slug;
+              this.movie.vote_average = movieData.tmdb?.vote_average;
+              this.movie.poster_url = movieData.poster_url;
+              this.movie.quality = movieData.quality;
+              this.movie.time = movieData.time;
+              this.movie.episode_total = movieData.episode_total;
 
-              if (this.movie.trailer_url != "") {
+              if (this.movie.trailer_url != "" && this.movie.trailer_url != null) {
                 this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
               }
 
               if (
-                result.movie.status == "trailer" &&
-                result.episodes[0].server_data[0].link_embed == ""
+                movieData.status == "trailer" &&
+                Array.isArray(serverData) &&
+                serverData[0]?.link_embed == ""
               ) {
                 this.movie.videoUrl = result.movie.trailer_url;
                 // this.movie.title = result.movie.name;
                 this.isTrailer = true;
               } else {
+                const currentPage = `${this.movie.page || ""}`;
                 if (
-                  this.movie.page == "Full" ||
-                  this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                  this.movie.page.includes("/")
+                  currentPage == "Full" ||
+                  currentPage.toUpperCase().includes("HOÀN TẤT") ||
+                  currentPage.includes("/")
                 ) {
-                  this.movie.videoUrl =
-                    result.episodes[0].server_data[
-                      result.episodes[0].server_data.length - 1
-                    ].link_embed;
+                  this.movie.videoUrl = serverData[serverData.length - 1]?.link_embed || "";
                   this.currentEpisodeIndex = 0;
                   // this.movie.title = result.movie.name;
                   this.isTrailer = false;
                 } else {
-                  var tap = this.movie.page.split("Tập ")[1].trim();
-                  const data = result.episodes[0].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
+                  const tap = currentPage.split("Tập ")[1]?.trim() || "";
+                  const data = serverData.find(
+                    (ep) => ep?.slug === tap || ep?.slug?.includes(tap)
                   );
                   // this.currentEpisodeIndex = parseInt(tap,10) -1;
                   const idx = this.movie.pageMovie.findIndex(
@@ -1693,8 +1648,9 @@ loadWatchTime() {
                     // this.movie.title = data.filename;
                     this.isTrailer = false;
                   } else {
-                    const data = result.episodes[1].server_data.find(
-                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                    const fallbackData = Array.isArray(episodeList[1]?.server_data) ? episodeList[1].server_data : [];
+                    const data = fallbackData.find(
+                      (ep) => ep?.slug === tap || ep?.slug?.includes(tap)
                     );
                     if (data) {
                       this.movie.videoUrl = data.link_embed;
@@ -1707,11 +1663,11 @@ loadWatchTime() {
                   // this.isTrailer = false;
                 }
               }
-              this.movie.actors = result.movie.actor;
-              for (var i = 0; i < result.movie.country.length; i++) {
-                this.movie.genre = result.movie.country[i];
+              this.movie.actors = this.getSafeArray(movieData.actor);
+              for (var i = 0; i < this.getSafeArray(movieData.country).length; i++) {
+                this.movie.genre = movieData.country[i];
               }
-              this.movie.categoris = result.movie.category[0].slug;
+              this.movie.categoris = this.movies.category[0]?.slug || "";
               this.isLoading = false;
               this.updateMeta();
 
@@ -1730,112 +1686,142 @@ loadWatchTime() {
       });
     },
     MoveInfor1(slug) {
+      this.moveInforFallbackTried = false;
       return new Promise((resolve, reject) => {
+        const fallbackToMoveInfor = () => {
+          if (this.moveInforFallbackTried) {
+            this.isLoading = false;
+            reject(new Error("Không có dữ liệu phim hợp lệ"));
+            return;
+          }
+          this.moveInforFallbackTried = true;
+          this.MoveInfor(slug).then(resolve).catch(reject);
+        };
+
         MoveInfor1(
           slug,
           (result) => {
-            if (result.status == true || result.status == "success") {
-              this.movies = result.movie;
-              this.link = "link";
-              this.movies = result.movie;
-              this.movie.page = result.movie.episode_current;
-              this.movie.idMovie = result.movie._id;
-              this.movie.title = result.movie.name;
-              this.movie.description = result.movie.content;
-              this.movie.pageMovie = result.episodes[0].server_data.sort(
-                (a, b) =>
-                  parseInt(a.name.match(/\d+/)) - parseInt(b.name.match(/\d+/))
-              );
-              // this.movie.pageMovie = result.episodes[0].server_data;
-              this.movie.director = result.movie.director;
-              this.movie.servers = result.episodes;
-              this.movie.trailer_url = result.movie.trailer_url;
-              this.movie.name = result.movie.name;
-              this.movie.thumb_url = result.movie.thumb_url;
-              this.movie.lang = result.movie.lang;
-              this.movie.origin_name = result.movie.origin_name;
-              this.movie.year = result.movie.year;
-              this.movie.slug = result.movie.slug;
-              this.movie.vote_average = result.movie.tmdb?.vote_average;
-              this.movie.poster_url = result.movie.poster_url;
-              this.movie.quality = result.movie.quality;
-              this.movie.time = result.movie.time;
-              this.movie.episode_total = result.movie.episode_total;
+            try {
+              if (result?.status == true || result?.status == "success") {
+                const movieData = result.movie || {};
+                const episodeList = Array.isArray(result.episodes) ? result.episodes : [];
+                const serverData = Array.isArray(episodeList[0]?.server_data)
+                  ? [...episodeList[0].server_data]
+                  : [];
+                const hasMovieData = Boolean(
+                  movieData?._id || movieData?.name || movieData?.slug || serverData.length
+                );
 
-              if (this.movie.trailer_url != "") {
-                this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
-              }
-              if (
-                result.movie.status == "trailer" &&
-                result.episodes[0].server_data[0].link_embed == ""
-              ) {
-                this.movie.videoUrl = result.movie.trailer_url;
-                this.movie.title = result.movie.name;
-                this.isTrailer = true;
-              } else {
+                if (!hasMovieData) {
+                  fallbackToMoveInfor();
+                  return;
+                }
+
+                this.movies = {
+                  ...movieData,
+                  content: movieData.content || "",
+                  category: Array.isArray(movieData.category) ? movieData.category : [],
+                  director: Array.isArray(movieData.director) ? movieData.director : [],
+                  actor: Array.isArray(movieData.actor) ? movieData.actor : [],
+                  country: Array.isArray(movieData.country) ? movieData.country : [],
+                };
+                this.link = "link";
+                this.movie.page = movieData.episode_current;
+                this.movie.idMovie = movieData._id;
+                this.movie.title = movieData.name;
+                this.movie.description = movieData.content;
+                this.movie.pageMovie = serverData.sort((a, b) => {
+                  const aNum = parseInt((a?.name || "").match(/\d+/)?.[0] || "0", 10);
+                  const bNum = parseInt((b?.name || "").match(/\d+/)?.[0] || "0", 10);
+                  return aNum - bNum;
+                });
+                this.movie.director = this.getSafeArray(movieData.director);
+                this.movie.servers = episodeList;
+                this.movie.trailer_url = movieData.trailer_url;
+                this.movie.name = movieData.name;
+                this.movie.thumb_url = movieData.thumb_url;
+                this.movie.lang = movieData.lang;
+                this.movie.origin_name = movieData.origin_name;
+                this.movie.year = movieData.year;
+                this.movie.slug = movieData.slug;
+                this.movie.vote_average = movieData.tmdb?.vote_average;
+                this.movie.poster_url = movieData.poster_url;
+                this.movie.quality = movieData.quality;
+                this.movie.time = movieData.time;
+                this.movie.episode_total = movieData.episode_total;
+
+                if (this.movie.trailer_url != "" && this.movie.trailer_url != null) {
+                  this.movie.trailer_id = this.movie.trailer_url.split("?v=")[1];
+                }
                 if (
-                  this.movie.page == "Full" ||
-                  this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                  this.movie.page.includes("/")
+                  movieData.status == "trailer" &&
+                  Array.isArray(serverData) &&
+                  serverData[0]?.link_embed == ""
                 ) {
-                  this.movie.videoUrl =
-                    result.episodes[0].server_data[
-                      result.episodes[0].server_data.length - 1
-                    ].link_embed;
-                  // this.currentEpisodeIndex = result.episodes[0].server_data.length-1
-                  this.currentEpisodeIndex = 0;
+                  this.movie.videoUrl = result.movie.trailer_url;
                   this.movie.title = result.movie.name;
-                  this.isTrailer = false;
+                  this.isTrailer = true;
                 } else {
-                  var tap = this.movie.page.split("Tập ")[1].trim();
-                  const data = result.episodes[0].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
-                  );
-                  // this.currentEpisodeIndex = parseInt(tap,10)-1;
-                  const idx = this.movie.pageMovie.findIndex(
-                    (ep) => ep.name === result.movie.episode_current
-                  );
-                  if (idx !== -1) {
-                    this.currentEpisodeIndex = idx;
-                  }
-
-                  if (data) {
-                    this.movie.videoUrl = data.link_embed;
-                    this.movie.title = data.filename;
+                  const currentPage = `${this.movie.page || ""}`;
+                  if (
+                    currentPage == "Full" ||
+                    currentPage.toUpperCase().includes("HOÀN TẤT") ||
+                    currentPage.includes("/")
+                  ) {
+                    this.movie.videoUrl = serverData[serverData.length - 1]?.link_embed || "";
+                    this.currentEpisodeIndex = 0;
+                    this.movie.title = result.movie.name;
                     this.isTrailer = false;
                   } else {
-                    const data = result.episodes[1].server_data.find(
-                      (ep) => ep.slug === tap || ep.slug.includes(tap)
+                    const tap = currentPage.split("Tập ")[1]?.trim() || "";
+                    const data = serverData.find(
+                      (ep) => ep?.slug === tap || ep?.slug?.includes(tap)
                     );
+                    const idx = this.movie.pageMovie.findIndex(
+                      (ep) => ep.name === result.movie.episode_current
+                    );
+                    if (idx !== -1) {
+                      this.currentEpisodeIndex = idx;
+                    }
+
                     if (data) {
                       this.movie.videoUrl = data.link_embed;
                       this.movie.title = data.filename;
                       this.isTrailer = false;
+                    } else {
+                      const fallbackData = Array.isArray(episodeList[1]?.server_data) ? episodeList[1].server_data : [];
+                      const data = fallbackData.find(
+                        (ep) => ep?.slug === tap || ep?.slug?.includes(tap)
+                      );
+                      if (data) {
+                        this.movie.videoUrl = data.link_embed;
+                        this.movie.title = data.filename;
+                        this.isTrailer = false;
+                      }
                     }
                   }
-                  // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                  // this.isTrailer = false;
                 }
+                this.movie.actors = this.getSafeArray(movieData.actor);
+                for (var i = 0; i < this.getSafeArray(movieData.country).length; i++) {
+                  this.movie.genre = movieData.country[i];
+                }
+                this.movie.categoris = this.movies.category[0]?.slug || "";
+                this.isLoading = false;
+                this.isLoadingData = false;
+                this.updateMeta();
+                resolve(true);
+                return;
               }
-              this.movie.actors = result.movie.actor;
-              for (var i = 0; i < result.movie.country.length; i++) {
-                this.movie.genre = result.movie.country[i];
-              }
-              this.movie.categoris = result.movie.category[0].slug;
-              this.isLoading = false;
 
-              this.updateMeta();
-
-              resolve(true);
-            } else {
-              this.MoveInfor(slug).then(resolve).catch(reject);
-              // reject("error");
+              fallbackToMoveInfor();
+            } catch (err) {
+              console.error("MoveInfor1 error:", err);
+              fallbackToMoveInfor();
             }
           },
           (err) => {
             console.log(err);
-            this.MoveInfor(slug).then(resolve).catch(reject);
-            //reject(err);
+            fallbackToMoveInfor();
           }
         );
       });
@@ -1916,6 +1902,54 @@ loadWatchTime() {
     },
 
 
+    resolveEpisodeIndex(query = this.page) {
+      const episodes = Array.isArray(this.movie?.pageMovie) ? this.movie.pageMovie : [];
+      if (!episodes.length) return 0;
+
+      const rawQuery = `${query || ""}`.trim();
+      if (!rawQuery || rawQuery === "01") return 0;
+
+      const normalizedQuery = rawQuery
+        .toLowerCase()
+        .replace(/^tap/i, "")
+        .replace(/-/g, "")
+        .replace(/\s+/g, "");
+      const numericQuery = Number(normalizedQuery);
+
+      const exactIndex = episodes.findIndex((ep) => {
+        const name = `${ep?.name || ""}`.trim();
+        const normalizedName = name.replace(/^tập\s*/i, "tap").replace(/\s+/g, "").toLowerCase();
+        const variants = [
+          rawQuery,
+          rawQuery.toLowerCase(),
+          rawQuery.replace(/^tap/i, "Tập "),
+          `Tập ${normalizedQuery}`,
+          `tap${normalizedQuery}`,
+          normalizedQuery,
+          normalizedQuery.padStart(2, "0"),
+        ];
+
+        return variants.some((value) => {
+          const normalizedValue = `${value || ""}`.trim().toLowerCase();
+          return (
+            normalizedName === normalizedValue.replace(/^tap/i, "").replace(/-/g, "").replace(/\s+/g, "") ||
+            name.toLowerCase() === normalizedValue
+          );
+        });
+      });
+
+      if (exactIndex !== -1) return exactIndex;
+
+      if (!Number.isNaN(numericQuery)) {
+        const numericIndex = episodes.findIndex((ep) => {
+          const epNumber = parseInt((ep?.name?.toString().match(/\d+/) || [])[0], 10);
+          return epNumber === numericQuery;
+        });
+        if (numericIndex !== -1) return numericIndex;
+      }
+
+      return 0;
+    },
     setupJWPlayer() {
       const videoUrl =
         this.movie.pageMovie[this.currentEpisodeIndex]?.link_m3u8;
@@ -2058,6 +2092,15 @@ loadWatchTime() {
       this.onTimeUpdate();
       // show controls when user uses keys
       this.showControlsTemporarily();
+    },
+    formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
     },
     autoUpdateFavorite() {
       if (!this.idAccount || !this.movie.idMovie) return;
@@ -2223,20 +2266,26 @@ loadWatchTime() {
       }
     },
 
+    getSafeArray(value) {
+      return Array.isArray(value) ? value : [];
+    },
+    getMovieImage(movie, type = "poster") {
+      const primary = type === "thumb" ? movie?.thumb_url : movie?.poster_url;
+      const fallback = type === "thumb" ? movie?.poster_url : movie?.thumb_url;
+      return this.getOptimizedImage(primary || fallback || "");
+    },
     getOptimizedImage(imagePath) {
-      if(imagePath.includes("https://phimimg.com/uploads")) {
-        return imagePath;
+      const path = typeof imagePath === "string" ? imagePath.trim() : "";
+      if (!path) return this.fallbackImage;
+      if (/^https?:\/\//i.test(path)) return path;
+      if (path.startsWith("/")) return path;
+      if (path.includes("https://phimimg.com/uploads") || path.includes("https://phimimg.com/upload")) {
+        return path;
       }
-      else if(imagePath.includes("upload")) {
-        return "https://phimimg.com/" + imagePath;
+      if (path.includes("uploads") || path.includes("upload")) {
+        return "https://phimimg.com/" + path.replace(/^\/+/, "");
       }
-      return `${
-        imagePath.includes("https://phimimg.com/upload")
-          ? this.urlImage1 + imagePath
-          : this.urlImage1 + "https://phimimg.com/" + imagePath
-        //this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)
-      }`;
-      // }
+      return "https://phimimg.com/" + path.replace(/^\/+/, "");
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) => {
