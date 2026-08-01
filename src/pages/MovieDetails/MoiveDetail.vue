@@ -163,7 +163,7 @@
     @click="startPlayer"
   >
     <img
-      :src="getMovieImage(movie, 'thumb')"
+      :src="movie.thumb_url"
       class="overlay-poster"
     />
 
@@ -523,14 +523,14 @@
                       <v-col cols="12" md="6" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Thể loại:") }}</span>
                         <span class="info-value text-white">
-                          <template v-if="getSafeArray(movies.category).length">
+                          <template v-if="movies?.category?.length">
                             <span
-                              v-for="(cate, ind) in getSafeArray(movies.category)"
+                              v-for="(cate, ind) in movies.category"
                               :key="ind"
                               class="hover-text"
                             >
                               {{ cate.name
-                              }}<span v-if="ind < getSafeArray(movies.category).length - 1"
+                              }}<span v-if="ind < movies.category.length - 1"
                                 >,
                               </span>
                             </span>
@@ -542,9 +542,9 @@
                       <v-col cols="12" class="d-flex align-start mb-2">
                         <span class="info-label">{{ $t("Đạo diễn:") }}</span>
                         <span class="info-value text-white">
-                          <template v-if="getSafeArray(movies.director).length">
-                            <span v-for="(d, ind) in getSafeArray(movies.director)" :key="ind" class="hover-text">
-                              {{ d }}<span v-if="ind < getSafeArray(movies.director).length - 1">, </span>
+                          <template v-if="movies?.director?.length">
+                            <span v-for="(d, ind) in movies.director" :key="ind" class="hover-text">
+                              {{ d }}<span v-if="ind < movies.director.length - 1">, </span>
                             </span>
                           </template>
                           <span v-else>{{ $t("Đang cập nhật") }}</span>
@@ -556,12 +556,12 @@
                         <span class="info-value text-white">
                           <template v-if="movies?.actor?.length">
                             <span
-                              v-for="(actor, ind) in getSafeArray(movies.actor)"
+                              v-for="(actor, ind) in movies.actor"
                               :key="ind"
                               class="hover-text"
                             >
                               {{ actor
-                              }}<span v-if="ind < getSafeArray(movies.actor).length - 1"
+                              }}<span v-if="ind < movies.actor.length - 1"
                                 >,
                               </span>
                             </span>
@@ -879,11 +879,10 @@
                         <!-- Poster Image -->
                         <div class="suggested-poster">
                           <img
-                            :src="getOptimizedImage(suggested.poster_url || suggested.thumb_url)"
+                            :src="getOptimizedImage(suggested.poster_url)"
                             :alt="suggested.name"
                             loading="lazy"
                             class="suggested-poster-img"
-                            @error="onImageError(suggested, 'poster_url')"
                           />
                           <!-- Hover overlay -->
                           <div class="suggested-overlay">
@@ -1044,7 +1043,6 @@
     </div>
   </v-fade-transition>
 </template>
-
 <script>
 import {
   MoveInfor,
@@ -1196,6 +1194,7 @@ export default {
   },
   watch: {
     currentEpisodeIndex() {
+      if (!this.playerInitialized) return;
       this.$nextTick(() => {
         this.setupJWPlayer();
       });
@@ -1268,6 +1267,12 @@ export default {
 
       // Không setup video khi vào page - chỉ setup khi user click play
       this.isTrailer = false;
+
+      if (this.hasSavedWatchProgress()) {
+        this.$nextTick(() => {
+          this.startPlayer();
+        });
+      }
 
       //this.playVideo(this.movie.videoUrl);
 
@@ -1453,19 +1458,34 @@ export default {
       });
     },
     startPlayer() {
-  if (this.playerInitialized) {
-    if (this.player) {
-      this.player.play(true);
-    }
-    return;
-  }
+      if (this.playerInitialized && this.player) {
+        this.player.play(true);
+        return;
+      }
 
-  this.playerInitialized = true;
+      this.playerInitialized = true;
 
-  this.$nextTick(() => {
-    this.setupJWPlayer();
-  });
-},
+      this.$nextTick(() => {
+        this.setupJWPlayer();
+      });
+    },
+    hasSavedWatchProgress() {
+      try {
+        const savedWatch = localStorage.getItem("webphim_watchtime");
+        if (!savedWatch) return false;
+
+        const data = JSON.parse(savedWatch);
+        const currentEpName = this.movie.pageMovie[this.currentEpisodeIndex]?.name;
+        return Boolean(
+          data?.IDMovies === this.movie.idMovie &&
+            data?.episode === currentEpName &&
+            Number(data?.timeWatch) > 0
+        );
+      } catch (error) {
+        console.error("Lỗi check watch progress:", error);
+        return false;
+      }
+    },
     // Lưu thời gian xem vào localStorage (per movie+episode)
     saveWatchTime() {
       if (!this.player || !this.movie.idMovie) return;
