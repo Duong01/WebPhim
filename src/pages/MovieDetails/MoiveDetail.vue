@@ -524,10 +524,7 @@
                   </v-col>
                 </v-row>
               </v-card>
-              <!-- QUẢNG CÁO -->
-              <div class="movie-detail-ad">
-                <AdsterraBanner300x250 />
-              </div>
+
 
               <!-- TRAILER -->
               <div class="mb-4">
@@ -583,7 +580,10 @@
                   </v-col>
                 </v-row>
               </div>
-
+              <!-- QUẢNG CÁO -->
+              <div class="movie-detail-ad">
+                <AdsterraBanner300x250 />
+              </div>
               <!-- Dialog trailer -->
               <v-dialog v-model="dialogTrailer" max-width="900px" persistent>
                 <v-card class="bg-black relative">
@@ -1320,8 +1320,11 @@ export default {
   },
   methods: {
     openAd() {
-      // Enable ad execution in the app (ad scripts will run where components honor `showAds`)
-      this.$store.commit('setShowAds', true)
+      const smartlink = this.$store.state.Smartlink;
+
+      if (!smartlink) return;
+
+      window.open(smartlink, "_blank", "noopener,noreferrer");
     },
 
     saveWatchTimeAPI() {

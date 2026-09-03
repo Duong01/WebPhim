@@ -35,7 +35,7 @@
 
       <div v-if="(index + 1) % 3 === 0" class="home-native-slot">
         <LazyAd :min-height="120">
-          <AdsterraNative :enabled="true" />
+          <AdsterraNative />
         </LazyAd>
       </div>
     </template>

@@ -1,44 +1,33 @@
 <template>
-  <div ref="adWrapper" class="adsterra-banner-468"></div>
+  <AdsterraAd :code="adCode" container-class="adsterra-banner-468" />
 </template>
 
 <script>
+import AdsterraAd from "./AdsterraAd.vue";
 export default {
-  name: "AdsterraBanner468",
+  name: "AdsterraBanner468x60",
 
-  mounted() {
-    this.$nextTick(() => {
-      this.loadAd();
-    });
+  components: {
+    AdsterraAd,
   },
 
-  methods: {
-    loadAd() {
-      if (!this.$refs.adWrapper) return;
+  data() {
+    const scriptEnd = "<" + "/script>";
 
-      // 1. Tạo script chứa cấu hình atOptions
-      const scriptOptions = document.createElement("script");
-      scriptOptions.type = "text/javascript";
-      scriptOptions.text = `
-        atOptions = {
-          'key': '16366a6ccdd24c6ad446bf1d8bc0cc8f',
-          'format': 'iframe',
-          'height': 60,
-          'width': 468,
-          'params': {}
-        };
-      `;
-
-      // 2. Tạo script gọi file invoke.js
-      const scriptInvoke = document.createElement("script");
-      scriptInvoke.type = "text/javascript";
-      scriptInvoke.src =
-        "//www.highrevenueformat.com/16366a6ccdd24c6ad446bf1d8bc0cc8f/invoke.js";
-
-      // 3. Chèn cả 2 script vào wrapper của component
-      this.$refs.adWrapper.appendChild(scriptOptions);
-      this.$refs.adWrapper.appendChild(scriptInvoke);
-    },
+    return {
+      adCode: `
+        <script>
+  atOptions = {
+    'key' : '16366a6ccdd24c6ad446bf1d8bc0cc8f',
+    'format' : 'iframe',
+    'height' : 60,
+    'width' : 468,
+    'params' : {}
+  };
+${scriptEnd}
+<script src="https://www.highrevenueformat.com/16366a6ccdd24c6ad446bf1d8bc0cc8f/invoke.js">${scriptEnd}
+      `,
+    };
   },
 };
 </script>

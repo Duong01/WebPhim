@@ -40,7 +40,6 @@ export default {
 
       if (!wrapper) return;
 
-      // Browser không hỗ trợ IntersectionObserver
       if (!("IntersectionObserver" in window)) {
         this.visible = true;
         return;
@@ -50,16 +49,15 @@ export default {
         ([entry]) => {
           if (!entry?.isIntersecting) return;
 
-          console.log("[LazyAd] Mounting ad");
-
           this.visible = true;
-
-          // Chỉ load 1 lần
           this.destroyObserver();
         },
         {
           root: null,
-          rootMargin: "400px 0px",
+
+          // Load trước khi người dùng scroll tới quảng cáo
+          rootMargin: "1200px 0px",
+
           threshold: 0,
         }
       );
@@ -68,10 +66,10 @@ export default {
     },
 
     destroyObserver() {
-      if (this.observer) {
-        this.observer.disconnect();
-        this.observer = null;
-      }
+      if (!this.observer) return;
+
+      this.observer.disconnect();
+      this.observer = null;
     },
   },
 };
@@ -80,9 +78,12 @@ export default {
 <style scoped>
 .lazy-ad-wrapper {
   width: 100%;
+  min-height: 100px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   overflow: hidden;
 }
 </style>

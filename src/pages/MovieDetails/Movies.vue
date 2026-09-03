@@ -514,7 +514,7 @@
                 icon
                 class="position-absolute"
                 style="top: 8px; right: 8px"
-                @click="openAd();shareDialog = false"
+                @click="shareDialog = false"
               >
                 <v-icon icon="mdi-close" />
               </v-btn>
