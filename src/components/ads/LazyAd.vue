@@ -9,67 +9,87 @@
 
 <script>
 export default {
-  name: 'LazyAd',
+  name: "LazyAd",
+
+  props: {
+    minHeight: {
+      type: Number,
+      default: 100,
+    },
+  },
 
   data() {
     return {
       visible: false,
-      observer: null
-    }
+      observer: null,
+    };
   },
 
   mounted() {
-    this.initObserver()
+    this.initObserver();
   },
 
   beforeUnmount() {
-    if (this.observer) {
-      this.observer.disconnect()
-      this.observer = null
-    }
+    this.destroyObserver();
   },
 
   methods: {
     initObserver() {
-      if (!this.$refs.adWrapper) {
-        return
+      const wrapper = this.$refs.adWrapper;
+
+      if (!wrapper) {
+        return;
       }
 
-      this.observer =
-        new IntersectionObserver(
-          (entries) => {
-            const entry = entries[0]
+      // Browser không hỗ trợ IntersectionObserver
+      if (!("IntersectionObserver" in window)) {
+        this.visible = true;
+        return;
+      }
 
-            if (!entry.isIntersecting) {
-              return
-            }
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
 
-            this.visible = true
-
-            this.observer.disconnect()
-            this.observer = null
-          },
-          {
-            root: null,
-
-            // Load ad trước khi user tới
-            rootMargin: '400px 0px',
-
-            threshold: 0.01
+          if (!entry?.isIntersecting) {
+            return;
           }
-        )
 
-      this.observer.observe(
-        this.$refs.adWrapper
-      )
-    }
-  }
-}
+          console.log("[LazyAd] Mounting ad");
+
+          this.visible = true;
+
+          this.destroyObserver();
+        },
+        {
+          root: null,
+          rootMargin: "400px 0px",
+          threshold: 0,
+        }
+      );
+
+      this.observer.observe(wrapper);
+    },
+
+    destroyObserver() {
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
 .lazy-ad-wrapper {
   width: 100%;
-  min-height: 60px;
+  min-height: 100px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
 }
 </style>

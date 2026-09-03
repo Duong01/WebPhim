@@ -10,10 +10,10 @@
     <HeroBanner v-if="trending.length " :movie="trending" />
 
     <div class="home-ad-slot">
-      <LazyAd>
+    <LazyAd :min-height="60">
       <AdsterraBanner468x60 />
-      </LazyAd>
-    </div>
+    </LazyAd>
+  </div>
 
     <!-- MOVIE SECTIONS -->
     <template v-for="(section, index) in sections" :key="section.title">
@@ -28,27 +28,23 @@
       />
 
       <div
-        v-if="(index + 1) % 3 === 0"
-        class="home-ad-slot"
-      >
-        <LazyAd>
-        <AdsterraBanner468x60 />
-        </LazyAd>
-      </div>
+  v-if="(index + 1) % 3 === 0"
+  class="home-ad-slot"
+>
+  <LazyAd :min-height="60">
+    <AdsterraBanner468x60 />
+  </LazyAd>
+</div>
 
+<div
+  v-if="(index + 1) % 3 === 0"
+  class="home-native-slot"
+>
+  <LazyAd :min-height="120">
+    <AdsterraNative :enabled="true" />
+  </LazyAd>
+</div>
 
-      <!-- ============================ -->
-      <!-- NATIVE SAU SECTION 6         -->
-      <!-- ============================ -->
-
-      <div
-        v-if="index === 5"
-        class="home-native-slot"
-      >
-      <LazyAd>
-        <AdsterraNative />
-      </LazyAd>
-      </div>
     </template>
   </div>
 </template>
