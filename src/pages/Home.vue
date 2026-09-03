@@ -7,13 +7,13 @@
 
     <!-- HERO -->
     <!-- && $vuetify.display.smAndUp -->
-    <HeroBanner v-if="trending.length " :movie="trending" />
+    <HeroBanner v-if="trending.length" :movie="trending" />
 
     <div class="home-ad-slot">
-    <LazyAd :min-height="60">
-      <AdsterraBanner468x60 />
-    </LazyAd>
-  </div>
+      <LazyAd :min-height="60">
+        <AdsterraBanner468x60 />
+      </LazyAd>
+    </div>
 
     <!-- MOVIE SECTIONS -->
     <template v-for="(section, index) in sections" :key="section.title">
@@ -27,24 +27,17 @@
         class="lazy-section"
       />
 
-      <div
-  v-if="(index + 1) % 3 === 0"
-  class="home-ad-slot"
->
-  <LazyAd :min-height="60">
-    <AdsterraBanner468x60 />
-  </LazyAd>
-</div>
+      <div v-if="(index + 1) % 3 === 0" class="home-ad-slot">
+        <LazyAd :min-height="60">
+          <AdsterraBanner468x60 />
+        </LazyAd>
+      </div>
 
-<!-- <div
-  v-if="(index + 1) % 3 === 0"
-  class="home-native-slot"
->
-  <LazyAd :min-height="120">
-    <AdsterraNative :enabled="true" />
-  </LazyAd>
-</div> -->
-
+      <div v-if="(index + 1) % 3 === 0" class="home-native-slot">
+        <LazyAd :min-height="120">
+          <AdsterraNative :enabled="true" />
+        </LazyAd>
+      </div>
     </template>
   </div>
 </template>
@@ -54,9 +47,9 @@ import SectionWrapper from "@/pages/LayoutPageHome/SectionWrapper.vue";
 import CarouselPage from "@/pages/Carousel.vue";
 import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
-import AdsterraBanner468x60 from '@/components/ads/AdsterraBanner468x60.vue'
-// import AdsterraNative from '@/components/ads/AdsterraNative.vue'
-import LazyAd from '@/components/ads/LazyAd.vue'
+import AdsterraBanner468x60 from "@/components/ads/AdsterraBanner468x60.vue";
+import AdsterraNative from "@/components/ads/AdsterraNative.vue";
+import LazyAd from "@/components/ads/LazyAd.vue";
 import { NewUpdate } from "@/model/api";
 // import GoogleAd from "@/components/GoogleAd.vue";
 
@@ -68,15 +61,15 @@ export default {
     CategoryQuick,
     CarouselPage,
     AdsterraBanner468x60,
-    // AdsterraNative,
-    LazyAd
+    AdsterraNative,
+    LazyAd,
   },
 
   data() {
     return {
       trending: [],
       cache: null,
-      
+
       categories: [
         {
           title: this.$t("PHIM MỚI"),
@@ -141,8 +134,6 @@ export default {
       ],
 
       sections: [
-        
-
         {
           title: "Phim Đang Thịnh Hành – Xu Hướng Xem Nhiều Nhất Hiện Nay",
           type: "spotlight",
@@ -153,7 +144,7 @@ export default {
             params: { path: "phim-moi-cap-nhat-v3" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
 
         {
@@ -166,7 +157,7 @@ export default {
             params: { path: "viet-nam" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim lẻ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
@@ -178,7 +169,7 @@ export default {
             params: { path: "phim-le" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Mãn Nhãn với Phim Chiếu Rạp",
@@ -190,7 +181,7 @@ export default {
             params: { path: "phim-chieu-rap" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
 
         {
@@ -203,7 +194,7 @@ export default {
             params: { path: "hoat-hinh" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Anime Mới Cập Nhật – Thế Giới Hoạt Hình Đỉnh Cao",
@@ -215,7 +206,7 @@ export default {
             params: { path: "" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim bộ – Những Câu Chuyện Gần Gũi Và Sâu Sắc",
@@ -227,7 +218,7 @@ export default {
             params: { path: "phim-bo" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim Trung Quốc – Những Siêu Phẩm Hoa Ngữ Đáng Xem",
@@ -239,7 +230,7 @@ export default {
             params: { path: "trung-quoc" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
 
         {
@@ -252,7 +243,7 @@ export default {
             params: { path: "trung-quoc" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim bom tấn – Những Tác Phẩm Không Thể Bỏ Lỡ",
@@ -264,7 +255,7 @@ export default {
             params: { path: "hoat-hinh" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim Hàn Quốc – Những Câu Chuyện Lay Động Trái Tim",
@@ -276,7 +267,7 @@ export default {
             params: { path: "han-quoc" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Hành Động Đỉnh Cao – Kịch Tính Từng Giây",
@@ -288,7 +279,7 @@ export default {
             params: { path: "hanh-dong" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Cổ Trang Kiếm Hiệp – Vang Bóng Một Thời",
@@ -300,7 +291,7 @@ export default {
             params: { path: "co-trang" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Tình Cảm Lãng Mạn – Chạm Đến Trái Tim",
@@ -312,7 +303,7 @@ export default {
             params: { path: "tinh-cam" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Siêu Phẩm Âu Mỹ – Đẳng Cấp Hollywood",
@@ -324,7 +315,7 @@ export default {
             params: { path: "au-my" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Hài Hước Vui Nhộn – Xả Stress Cuối Tuần",
@@ -336,7 +327,7 @@ export default {
             params: { path: "hai-huoc" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Kinh Dị Ám Ảnh – Thót Tim Từng Phút",
@@ -348,7 +339,7 @@ export default {
             params: { path: "kinh-di" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "TV Shows & Truyền Hình Thực Tế",
@@ -360,7 +351,7 @@ export default {
             params: { path: "tv-shows" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Viễn Tưởng Đột Phá – Khám Phá Tương Lai",
@@ -372,7 +363,7 @@ export default {
             params: { path: "vien-tuong" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Điện Ảnh Nhật Bản – Tinh Tế & Sâu Lắng",
@@ -384,7 +375,7 @@ export default {
             params: { path: "nhat-ban" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
         {
           title: "Phim Thái Lan – Kịch Tính & Bất Ngờ",
@@ -396,20 +387,20 @@ export default {
             params: { path: "thai-lan" },
           },
           loaded: false,
-          loading: false
+          loading: false,
         },
       ],
     };
   },
   created() {
-  this.cache = new Map();
-},
-beforeUnmount() {
-  if (this.observer) {
-    this.observer.disconnect();
-    this.observer = null;
-  }
-},
+    this.cache = new Map();
+  },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+  },
   async mounted() {
     this.ListNewUpdate();
 
@@ -460,7 +451,7 @@ beforeUnmount() {
 
     async loadSection(section) {
       try {
-        await new Promise(r => requestAnimationFrame(r));
+        await new Promise((r) => requestAnimationFrame(r));
         if (this.cache.has(section.url)) {
           section.movies = this.cache.get(section.url);
           section.loaded = true;
@@ -483,59 +474,56 @@ beforeUnmount() {
       }
     },
     initLazyLoad() {
-  this.observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
 
-        const index = Number(entry.target.dataset.index);
-        const section = this.sections[index];
+            const index = Number(entry.target.dataset.index);
+            const section = this.sections[index];
 
-        if (!section) {
-          this.observer.unobserve(entry.target);
-          return;
-        }
+            if (!section) {
+              this.observer.unobserve(entry.target);
+              return;
+            }
 
-        if (section.loaded || section.loading) {
-          this.observer.unobserve(entry.target);
-          return;
-        }
+            if (section.loaded || section.loading) {
+              this.observer.unobserve(entry.target);
+              return;
+            }
 
-        section.loading = true;
+            section.loading = true;
 
-        this.loadSection(section)
-          .finally(() => {
-            section.loaded = true;
-            section.loading = false;
+            this.loadSection(section).finally(() => {
+              section.loaded = true;
+              section.loading = false;
 
-            // Ngừng theo dõi sau khi load xong
-            this.observer.unobserve(entry.target);
+              // Ngừng theo dõi sau khi load xong
+              this.observer.unobserve(entry.target);
+            });
           });
+        },
+        {
+          root: null,
+          rootMargin: "200px 0px",
+          threshold: 0.01,
+        },
+      );
+
+      this.$nextTick(() => {
+        this.sections.forEach((_, index) => {
+          const comp = this.$refs[`section${index}`];
+
+          const el = Array.isArray(comp) ? comp[0]?.$el : comp?.$el;
+
+          if (!el) return;
+
+          el.dataset.index = index;
+
+          this.observer.observe(el);
+        });
       });
     },
-    {
-      root: null,
-      rootMargin: "200px 0px",
-      threshold: 0.01,
-    }
-  );
-
-  this.$nextTick(() => {
-    this.sections.forEach((_, index) => {
-      const comp = this.$refs[`section${index}`];
-
-      const el = Array.isArray(comp)
-        ? comp[0]?.$el
-        : comp?.$el;
-
-      if (!el) return;
-
-      el.dataset.index = index;
-
-      this.observer.observe(el);
-    });
-  });
-},
   },
 };
 </script>

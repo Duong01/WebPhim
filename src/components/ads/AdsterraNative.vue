@@ -1,122 +1,63 @@
 <template>
   <div
+    ref="adContainer"
     class="adsterra-native"
   >
-    <div
-      :id="containerId"
-      class="native-container"
-    ></div>
+    <div :id="containerId"></div>
   </div>
 </template>
 
 <script>
+let adInstance = 0;
+
 export default {
-  name: 'AdsterraNative',
+  name: "AdsterraNative",
 
   data() {
     return {
-      containerId:
-        'container-21e935a6f94addc9f4495622483c0e7b',
-
-      scriptId:
-        'adsterra-native-script',
-        unwatchStore: null
-    }
+      containerId: "",
+      scriptSrc:
+        "https://pl31163701.profitableratecpmnetwork.com/21e935a6f94addc9f4495622483c0e7b/invoke.js",
+    };
   },
 
-  props: {
-    enabled: {
-      type: Boolean,
-      default: false
-    }
+  created() {
+    adInstance++;
+
+    this.containerId =
+      "adsterra-native-" + Date.now() + "-" + adInstance;
   },
 
   mounted() {
-    const globalFlag = this.$store && this.$store.state && this.$store.state.showAds
-
-    if (this.enabled || globalFlag) {
-      this.loadNativeAd()
-      return
-    }
-
-    this.unwatchStore = this.$watch(
-      () => this.$store?.state?.showAds,
-      (val) => {
-        if (val) this.loadNativeAd()
-      }
-    )
-
-    this.$watch('enabled', (val) => {
-      if (val) this.loadNativeAd()
-    })
-  },
-
-  beforeUnmount() {
-    const container =
-      document.getElementById(
-        this.containerId
-      )
-
-    if (container) {
-      container.innerHTML = ''
-    }
-    if (this.unwatchStore) {
-      try { this.unwatchStore() } catch (e) { /* ignore */ }
-      this.unwatchStore = null
-    }
+    this.$nextTick(() => {
+      this.loadAd();
+    });
   },
 
   methods: {
-    loadNativeAd() {
-      // Nếu component đã có script thì không tạo lại
-      if (
-        document.getElementById(
-          this.scriptId
-        )
-      ) {
-        return
-      }
+    loadAd() {
+      const script = document.createElement("script");
 
-      const script =
-        document.createElement('script')
+      script.async = true;
+      script.setAttribute("data-cfasync", "false");
 
-      script.id =
-        this.scriptId
+      script.src = this.scriptSrc;
 
-      script.async = true
-
-      script.setAttribute(
-        'data-cfasync',
-        'false'
-      )
-
-      script.src =
-        'https://pl31163701.profitableratecpmnetwork.com/21e935a6f94addc9f4495622483c0e7b/invoke.js'
-
-      const container =
-        document.getElementById(
-          this.containerId
-        )
-
-      if (!container) {
-        return
-      }
-
-      container.appendChild(script)
-    }
-  }
-}
+      this.$refs.adContainer.appendChild(script);
+    },
+  },
+};
 </script>
 
 <style scoped>
 .adsterra-native {
   width: 100%;
-  max-width: 100%;
-  margin: 20px auto;
-  overflow: hidden;
-}
+  min-height: 100px;
 
-.native-container {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
 }
 </style>

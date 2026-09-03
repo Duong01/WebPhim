@@ -2,8 +2,9 @@
   <div
     ref="adWrapper"
     class="lazy-ad-wrapper"
+    :style="{ minHeight: `${minHeight}px` }"
   >
-    <slot v-if="visible" />
+    <slot v-if="visible"></slot>
   </div>
 </template>
 
@@ -37,9 +38,7 @@ export default {
     initObserver() {
       const wrapper = this.$refs.adWrapper;
 
-      if (!wrapper) {
-        return;
-      }
+      if (!wrapper) return;
 
       // Browser không hỗ trợ IntersectionObserver
       if (!("IntersectionObserver" in window)) {
@@ -48,17 +47,14 @@ export default {
       }
 
       this.observer = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-
-          if (!entry?.isIntersecting) {
-            return;
-          }
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
 
           console.log("[LazyAd] Mounting ad");
 
           this.visible = true;
 
+          // Chỉ load 1 lần
           this.destroyObserver();
         },
         {
@@ -84,12 +80,9 @@ export default {
 <style scoped>
 .lazy-ad-wrapper {
   width: 100%;
-  min-height: 100px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   overflow: hidden;
 }
 </style>
