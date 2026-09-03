@@ -23,8 +23,43 @@ export default {
     }
   },
 
+  props: {
+    enabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  data() {
+    return {
+      containerId:
+        'container-21e935a6f94addc9f4495622483c0e7b',
+
+      scriptId:
+        'adsterra-native-script',
+
+      unwatchStore: null
+    }
+  },
+
   mounted() {
-    this.loadNativeAd()
+    const globalFlag = this.$store && this.$store.state && this.$store.state.showAds
+
+    if (this.enabled || globalFlag) {
+      this.loadNativeAd()
+      return
+    }
+
+    this.unwatchStore = this.$watch(
+      () => this.$store?.state?.showAds,
+      (val) => {
+        if (val) this.loadNativeAd()
+      }
+    )
+
+    this.$watch('enabled', (val) => {
+      if (val) this.loadNativeAd()
+    })
   },
 
   beforeUnmount() {
@@ -35,6 +70,10 @@ export default {
 
     if (container) {
       container.innerHTML = ''
+    }
+    if (this.unwatchStore) {
+      try { this.unwatchStore() } catch (e) { /* ignore */ }
+      this.unwatchStore = null
     }
   },
 

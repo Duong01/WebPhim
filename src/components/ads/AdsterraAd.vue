@@ -12,7 +12,6 @@ export default {
   name: 'AdsterraAd',
 
   props: {
-
     code: {
       type: String,
       required: true
@@ -21,22 +20,51 @@ export default {
     containerClass: {
       type: String,
       default: ''
-    }
+    },
 
+    // allow explicit enabling of ad execution per-instance
+    enabled: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {
     return {
       createdScripts: [],
-      initialized: false
+      initialized: false,
+      unwatchStore: null
     }
   },
 
   mounted() {
-    this.executeAdCode()
+    // execute immediately only when explicitly enabled or global flag is set
+    const globalFlag = this.$store && this.$store.state && this.$store.state.showAds
+
+    if (this.enabled || globalFlag) {
+      this.executeAdCode()
+      return
+    }
+
+    // otherwise wait for the global flag or prop to change
+    this.unwatchStore = this.$watch(
+      () => this.$store?.state?.showAds,
+      (val) => {
+        if (val) this.executeAdCode()
+      }
+    )
+
+    this.$watch('enabled', (val) => {
+      if (val) this.executeAdCode()
+    })
   },
 
   beforeUnmount() {
+    if (this.unwatchStore) {
+      try { this.unwatchStore() } catch (e) { /* ignore */ }
+      this.unwatchStore = null
+    }
+
     this.destroyAd()
   },
 

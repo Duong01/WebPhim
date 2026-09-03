@@ -36,6 +36,10 @@ const mutations =
     setCanInstall(state, value) {
         state.canInstall = value
     }
+    ,
+    setShowAds(state, value) {
+        state.showAds = !!value
+    }
    
 }
 export default mutations

@@ -1320,11 +1320,8 @@ export default {
   },
   methods: {
     openAd() {
-      const smartlink = this.$store.state.Smartlink;
-
-      if (!smartlink) return;
-
-      window.open(smartlink, "_blank", "noopener,noreferrer");
+      // Enable ad execution in the app (ad scripts will run where components honor `showAds`)
+      this.$store.commit('setShowAds', true)
     },
 
     saveWatchTimeAPI() {

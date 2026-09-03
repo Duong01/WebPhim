@@ -27,6 +27,8 @@ export default function state() {
       Avatar: "",
       timeWatch:"",
       lastActive: Date.now(),
+      // control whether third-party ads should be executed
+      showAds: false,
       Smartlink: "https://www.profitableratecpmnetwork.com/r7eg9k7dw?key=7759f605a7e3094e9317109de5ae1590"
       
   
