@@ -19,7 +19,8 @@ export default {
         'container-21e935a6f94addc9f4495622483c0e7b',
 
       scriptId:
-        'adsterra-native-script'
+        'adsterra-native-script',
+        unwatchStore: null
     }
   },
 
@@ -27,18 +28,6 @@ export default {
     enabled: {
       type: Boolean,
       default: false
-    }
-  },
-
-  data() {
-    return {
-      containerId:
-        'container-21e935a6f94addc9f4495622483c0e7b',
-
-      scriptId:
-        'adsterra-native-script',
-
-      unwatchStore: null
     }
   },
 
