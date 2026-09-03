@@ -9,10 +9,11 @@
     <!-- && $vuetify.display.smAndUp -->
     <HeroBanner v-if="trending.length " :movie="trending" />
 
-    <!-- Quảng cáo dưới phần Banner chính -->
-    <!-- <v-container class="py-2">
-      <GoogleAd ad-slot="ca-pub-5101049500206214" />
-    </v-container> -->
+    <div class="home-ad-slot">
+      <LazyAd>
+      <AdsterraBanner468x60 />
+      </LazyAd>
+    </div>
 
     <!-- MOVIE SECTIONS -->
     <template v-for="(section, index) in sections" :key="section.title">
@@ -26,10 +27,28 @@
         class="lazy-section"
       />
 
-      <!-- Quảng cáo xen kẽ sau mỗi 3 danh mục phim -->
-      <!-- <v-container class="py-2" v-if="(index + 1) % 3 === 0">
-        <GoogleAd ad-slot="1366382121" />
-      </v-container> -->
+      <div
+        v-if="(index + 1) % 3 === 0"
+        class="home-ad-slot"
+      >
+        <LazyAd>
+        <AdsterraBanner468x60 />
+        </LazyAd>
+      </div>
+
+
+      <!-- ============================ -->
+      <!-- NATIVE SAU SECTION 6         -->
+      <!-- ============================ -->
+
+      <div
+        v-if="index === 5"
+        class="home-native-slot"
+      >
+      <LazyAd>
+        <AdsterraNative />
+      </LazyAd>
+      </div>
     </template>
   </div>
 </template>
@@ -39,7 +58,9 @@ import SectionWrapper from "@/pages/LayoutPageHome/SectionWrapper.vue";
 import CarouselPage from "@/pages/Carousel.vue";
 import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
-
+import AdsterraBanner468x60 from '@/components/ads/AdsterraBanner468x60.vue'
+import AdsterraNative from '@/components/ads/AdsterraNative.vue'
+import LazyAd from '@/components/ads/LazyAd.vue'
 import { NewUpdate } from "@/model/api";
 // import GoogleAd from "@/components/GoogleAd.vue";
 
@@ -50,7 +71,9 @@ export default {
     HeroBanner,
     CategoryQuick,
     CarouselPage,
-    // GoogleAd,
+    AdsterraBanner468x60,
+    AdsterraNative,
+    LazyAd
   },
 
   data() {
@@ -525,5 +548,39 @@ beforeUnmount() {
 .home-page {
   background: #0f0f0f;
   min-height: 100vh;
+}
+.home-ad-slot {
+  width: 100%;
+  min-height: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 18px auto;
+
+  overflow: hidden;
+}
+
+.home-native-slot {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  margin: 24px auto;
+
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .home-ad-slot {
+    min-height: 0;
+    margin: 12px auto;
+  }
+
+  .home-native-slot {
+    margin: 16px auto;
+  }
 }
 </style>

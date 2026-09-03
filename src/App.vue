@@ -1,6 +1,7 @@
 <template>
   <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
+      <AdsterraGlobal />
       <v-main>
         <!-- Sử dụng KeepAlive với max="15" để cache danh sách, load mượt không giật lag -->
         <router-view v-slot="{ Component  }">
@@ -31,10 +32,11 @@
 <script>
 import { mapState } from "vuex";
 import Chatbot from "@/components/Chatbot.vue";
+import AdsterraGlobal from '@/components/ads/AdsterraGlobal.vue'
 
 export default {
   name: 'App',
-  components: { Chatbot },
+  components: { Chatbot,AdsterraGlobal },
   data(){
     return{
       theme: localStorage.getItem('theme') || 'dark',

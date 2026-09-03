@@ -1,11 +1,5 @@
 <template>
   <v-container class="search-page" fluid>
-    <!-- <v-row justify="center" class="mb-6">
-      <v-col cols="12">
-        <h2 class="text-title">{{ $t("Danh sách phim:") }} Phim Bộ Hay Nhất - Bộ Sưu Tập Đỉnh Cao</h2>
-        <v-divider class="my-4" />
-      </v-col>
-    </v-row> -->
 
     <FilterMovie @filter-changed="onFilterChanged" />
     <v-row class="mb-6" align="center">
@@ -19,116 +13,10 @@
     </v-row>
 
     <v-row justify="center">
-      <!-- <v-col cols="12" class="text-center" v-if="loading">
-        <v-progress-circular indeterminate color="primary" size="50" />
-      </v-col> -->
-
       <v-col cols="12">
-        <!-- <v-alert
-          v-if="movies.length === 0 && MessageErr == ''"
-          class="text-center"
-        >
-          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
-            $route.query.keyword
-          }}</strong
-          >".
-          <br />
-          <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">{{
-              $t("Về trang chủ")
-            }}</v-btn>
-          </router-link>
-        </v-alert>
-
-        <v-alert
-          v-else-if="movies.length === 0 && MessageErr != ''"
-          class="text-center"
-        >
-          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
-            MessageErr
-          }}</strong
-          >".
-        </v-alert> -->
+    
         <layout-main  :movies="movies" :loading="loading" />
 
-        <!-- <v-row v-else class="movie-grid">
-          <v-col
-            v-for="movie in movies"
-            :key="movie.slug"
-            cols="6"
-            sm="4"
-            md="3"
-            lg="2"
-          >
-            <router-link
-              :to="{ name: 'Movies', params: { slug: movie.slug } }"
-              class="movie-link"
-            >
-              <v-card class="movie-card">
-                <div class="poster-wrapper">
-                  <v-img
-                    :src="getOptimizedImage(movie.poster_url)"
-                    height="300"
-                    cover
-                  >
-                    <template #placeholder>
-                      <div
-                        class="d-flex align-center justify-center fill-height"
-                      >
-                        <v-progress-circular indeterminate />
-                      </div>
-                    </template>
-                  </v-img>
-
-                  <div class="gradient-overlay"></div>
-
-                  <div class="hover-overlay">
-                    <v-icon size="50">mdi-play-circle</v-icon>
-                  </div>
-
-                  <div class="top-badges">
-                    <span class="badge quality">{{ movie.quality }}</span>
-                    <span class="badge lang">{{ movie.lang }}</span>
-                  </div>
-
-                  <div class="episode-badge">
-                    {{ movie.episode_current }}
-                  </div>
-
-                  <div class="rating">
-                    ⭐ {{ Number(movie.tmdb.vote_average || 0).toFixed(1) }}
-                  </div>
-                </div>
-
-                <v-card-text class="movie-info">
-                  <div class="movie-title">
-                    {{ movie.name }}
-                  </div>
-
-                  <div class="movie-sub">
-                    {{ movie.origin_name }}
-                  </div>
-
-                  <div class="meta-row">
-                    <span>{{ movie.year }}</span>
-                    <span>•</span>
-                    <span>{{ movie.time }}</span>
-                  </div>
-
-                  <div class="genre-list">
-                    <span
-                      v-for="c in movie.category.slice(0, 2)"
-                      :key="c.id"
-                      class="genre-item"
-                    >
-                      {{ c.name }}
-                    </span>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </router-link>
-          </v-col>
-        </v-row> -->
         <div
           ref="loadMoreTrigger"
           v-show="movies.length > 0 && !isLastPage"

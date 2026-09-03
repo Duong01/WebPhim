@@ -26,7 +26,8 @@ export default function state() {
       image: "",
       Avatar: "",
       timeWatch:"",
-      lastActive: Date.now()
+      lastActive: Date.now(),
+      Smartlink: "https://www.profitableratecpmnetwork.com/r7eg9k7dw?key=7759f605a7e3094e9317109de5ae1590"
       
   
     }
