@@ -33,11 +33,11 @@
         </LazyAd>
       </div>
 
-      <div v-if="(index + 1) % 3 === 0" class="home-native-slot">
+      <!-- <div v-if="(index + 1) % 3 === 0" class="home-native-slot">
         <LazyAd :min-height="120">
           <AdsterraNative />
         </LazyAd>
-      </div>
+      </div> -->
     </template>
   </div>
 </template>
@@ -48,7 +48,7 @@ import CarouselPage from "@/pages/Carousel.vue";
 import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
 import AdsterraBanner468x60 from "@/components/ads/AdsterraBanner468x60.vue";
-import AdsterraNative from "@/components/ads/AdsterraNative.vue";
+// import AdsterraNative from "@/components/ads/AdsterraNative.vue";
 import LazyAd from "@/components/ads/LazyAd.vue";
 import { NewUpdate } from "@/model/api";
 // import GoogleAd from "@/components/GoogleAd.vue";
@@ -61,7 +61,7 @@ export default {
     CategoryQuick,
     CarouselPage,
     AdsterraBanner468x60,
-    AdsterraNative,
+    // AdsterraNative,
     LazyAd,
   },
 
