@@ -802,4 +802,32 @@ export default {
   justify-content: center;
   align-items: center;
 }
+.home-ad-slot {
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 18px auto;
+
+  overflow: hidden;
+}
+@media (max-width: 600px) {
+  .home-ad-slot {
+    width: 100%;
+    max-width: 100vw;
+
+    min-height: 50px;
+
+    margin: 12px 0;
+
+    padding: 0 4px;
+
+    box-sizing: border-box;
+  }
+}
 </style>
