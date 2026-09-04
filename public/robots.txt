@@ -3,16 +3,29 @@ User-agent: *
 # Cho phép crawl nội dung chính
 
 Allow: /
-Allow: /phim/
+Allow: /home
+Allow: /movie/
+Allow: /movies/
 Allow: /the-loai/
 Allow: /quoc-gia/
+Allow: /gioi-thieu
+Allow: /hoat-hinh
+Allow: /phim-bo
+Allow: /phim-le
+Allow: /phim-chieu-rap
+Allow: /tv-shows
 
 # Chặn các API và dữ liệu nhạy cảm
 
 Disallow: /api/
-Disallow: /AccountApi/
-Disallow: /*?*
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /forgot-password
+Disallow: /favorite
 Disallow: /search
+Disallow: /chatbot
+Disallow: /*?*
 
 # Sitemap
 

@@ -776,27 +776,44 @@ export default {
     },
 
     updateSEO() {
+      const movieTitle = this.movie.title || 'Phim mới';
+      const movieImage = this.movie.thumb_url || this.movie.poster_url || 'https://zcines.com/og-image.jpg';
+      const shortDescription = (this.movie.description || `Xem phim ${movieTitle} Vietsub FullHD chất lượng cao, cập nhật nhanh, xem online miễn phí tại ZCines.`)
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 160);
+
       useHead({
-        title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
+        title: `${movieTitle} Vietsub FullHD - Xem Phim ${movieTitle} Mới Nhất | ZCines`,
         meta: [
-          { name: "description", content: this.movie.description || `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.` },
-          { property: "og:title", content: this.movie.title },
-          { property: "og:description", content: this.movie.description },
-          { property: "og:image", content: this.movie.thumb_url || this.movie.poster_url },
-          { property: "og:url", content: window.location.href },
-          { property: "og:type", content: "video.movie" },
+          { name: 'description', content: shortDescription },
+          { property: 'og:title', content: `${movieTitle} Vietsub FullHD - Xem phim ${movieTitle} online` },
+          { property: 'og:description', content: shortDescription },
+          { property: 'og:image', content: movieImage },
+          { property: 'og:url', content: window.location.href.split('?')[0] },
+          { property: 'og:type', content: 'video.movie' },
+          { property: 'og:site_name', content: 'ZCines' },
+          { property: 'og:locale', content: 'vi_VN' },
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:title', content: `${movieTitle} Vietsub FullHD | ZCines` },
+          { name: 'twitter:description', content: shortDescription },
+          { name: 'twitter:image', content: movieImage },
         ],
-        link: [{ rel: "canonical", href: window.location.href }],
+        link: [{ rel: 'canonical', href: window.location.href.split('?')[0] }],
         script: [
           {
-            type: "application/ld+json",
+            type: 'application/ld+json',
             children: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Movie",
-              "name": this.movie.title,
-              "image": this.movie.thumb_url || this.movie.poster_url,
-              "description": this.movie.description,
-              "dateCreated": this.movie.year || new Date().getFullYear().toString()
+              '@context': 'https://schema.org',
+              '@type': 'Movie',
+              name: movieTitle,
+              image: movieImage,
+              description: shortDescription,
+              url: window.location.href.split('?')[0],
+              inLanguage: this.movie.lang || 'vi',
+              datePublished: this.movie.year ? `${this.movie.year}-01-01` : undefined,
+              genre: this.movie.category?.map((item) => item.name || item).filter(Boolean) || [],
+              keywords: [movieTitle, 'xem phim online', 'phim vietsub', 'ZCines'],
             }),
           },
         ],

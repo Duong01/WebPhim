@@ -255,10 +255,17 @@ router.beforeEach((to, from, next) => {
 ========================= */
 router.afterEach((to) => {
   requestAnimationFrame(() => {
-    const defaultTitle = "Web Phim Online";
-    const defaultDesc = "Xem phim miễn phí";
+    const defaultTitle = "ZCines - Xem phim online Vietsub FullHD";
+    const defaultDesc =
+      "Xem phim online miễn phí Vietsub FullHD, phim bộ, phim lẻ, anime, hoạt hình, phim chiếu rạp mới nhất tại ZCines.";
+    const routeTitle = to.meta.title || defaultTitle;
+    const routeDesc = to.meta.description || defaultDesc;
+    const canonicalPath = to.matched.length
+      ? to.fullPath.split("?")[0].replace(/\/+$/, "") || "/"
+      : "/";
+    const canonicalUrl = `${window.location.origin}${canonicalPath}`;
 
-    document.title = to.meta.title || defaultTitle;
+    document.title = routeTitle;
 
     const setMeta = (attr, key, content) => {
       if (!content) return;
@@ -275,13 +282,32 @@ router.afterEach((to) => {
       el.setAttribute("content", content);
     };
 
-    const url = window.location.origin + to.fullPath;
+    const setCanonical = (href) => {
+      let el = document.querySelector('link[rel="canonical"]');
+      if (!el) {
+        el = document.createElement("link");
+        el.setAttribute("rel", "canonical");
+        document.head.appendChild(el);
+      }
+      el.setAttribute("href", href);
+    };
 
-    setMeta("name", "description", to.meta.description || defaultDesc);
-    setMeta("property", "og:title", document.title);
-    setMeta("property", "og:description", to.meta.description || defaultDesc);
-    setMeta("property", "og:url", url);
+    setMeta("name", "description", routeDesc);
     setMeta("name", "robots", to.meta.robots || "index, follow");
+    setMeta("name", "keywords", to.meta.keywords || "xem phim online, phim vietsub, phim hay, phim mới, zcines");
+    setMeta("property", "og:title", routeTitle);
+    setMeta("property", "og:description", routeDesc);
+    setMeta("property", "og:url", canonicalUrl);
+    setMeta("property", "og:site_name", "ZCines");
+    setMeta("property", "og:type", to.meta.ogType || "website");
+    setMeta("property", "og:locale", "vi_VN");
+    setMeta("property", "og:image", to.meta.ogImage || "https://zcines.com/og-image.jpg");
+    setMeta("name", "twitter:card", "summary_large_image");
+    setMeta("name", "twitter:title", routeTitle);
+    setMeta("name", "twitter:description", routeDesc);
+    setMeta("name", "twitter:image", to.meta.ogImage || "https://zcines.com/og-image.jpg");
+
+    setCanonical(canonicalUrl);
   });
 });
 

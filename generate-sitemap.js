@@ -1,4 +1,3 @@
-
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
@@ -147,80 +146,38 @@ async function fetchAllMovies(maxPages = 30) {
 }
 
 async function generate() {
-  console.log("Starting sitemap generation with episodes...");
-  
-  // Lấy danh sách phim mới cập nhật (mặc định lấy 30 trang đầu để tối ưu tốc độ và dung lượng file)
-  const moviesList = await fetchAllMovies(30);
-  console.log(`Found ${moviesList.length} movies. Fetching episodes for each...`);
+  console.log("Starting sitemap generation...");
+
+  const moviesList = await fetchAllMovies(20);
+  console.log(`Found ${moviesList.length} movies.`);
 
   const sitemapEntries = [];
   const now = new Date().toISOString();
 
-  // 1. URL tĩnh
   STATIC_URLS.forEach((url) => {
     sitemapEntries.push({
       loc: `${BASE_URL}${url}`,
       lastmod: now,
       changefreq: "daily",
-      priority: "0.8"
+      priority: "0.8",
     });
   });
 
-  // 2. Duyệt qua từng phim để lấy tập phim
-  const batchSize = 10; // Xử lý 10 phim cùng lúc để tăng tốc
-  for (let i = 0; i < moviesList.length; i += batchSize) {
-    const batch = moviesList.slice(i, i + batchSize);
-    
-    await Promise.all(batch.map(async (movie) => {
-      if (!movie.slug) return;
-      
-      const lastmod = movie.modified?.time || movie.updatedAt || now;
+  for (const movie of moviesList) {
+    if (!movie.slug) continue;
 
-      // Thêm URL trang thông tin phim
-      sitemapEntries.push({
-        loc: `${BASE_URL}/movies/${movie.slug}`,
-        lastmod,
-        changefreq: "daily",
-        priority: "0.9"
-      });
-
-      // Lấy chi tiết để lấy danh sách tập
-      const detail = await fetchMovieDetail(movie.slug);
-      if (detail && detail.episodes) {
-        detail.episodes.forEach(server => {
-          if (server.server_data) {
-            server.server_data.forEach(ep => {
-              // Chuẩn hóa định dạng tập phim: Nếu là số thì thêm tiền tố "tap" (ví dụ: 12 -> tap12)
-              // Điều này giúp khớp với logic normalize trong router/index.js
-              let episodeQuery = ep.slug;
-              if (episodeQuery && !episodeQuery.startsWith("tap")) {
-                const digits = episodeQuery.match(/\d+/);
-                if (digits) {
-                  episodeQuery = "tap" + digits[0];
-                }
-              }
-
-              sitemapEntries.push({
-                loc: `${BASE_URL}/movie/${movie.slug}?page=${episodeQuery}`,
-                lastmod,
-                changefreq: "weekly",
-                priority: "0.7"
-              });
-            });
-          }
-        });
-      }
-    }));
-    
-    console.log(`Processed ${Math.min(i + batchSize, moviesList.length)}/${moviesList.length} movies...`);
-    // Nghỉ một chút để tránh bị API chặn
-    await new Promise(r => setTimeout(r, 100));
+    const lastmod = movie.modified?.time || movie.updatedAt || now;
+    sitemapEntries.push({
+      loc: `${BASE_URL}/movies/${movie.slug}`,
+      lastmod,
+      changefreq: "daily",
+      priority: "0.9",
+    });
   }
 
-  // 3. Tạo nội dung XML
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemapEntries.map(entry => `
+${sitemapEntries.map((entry) => `
   <url>
     <loc>${entry.loc}</loc>
     <lastmod>${entry.lastmod}</lastmod>
@@ -229,10 +186,7 @@ ${sitemapEntries.map(entry => `
   </url>`).join("")}
 </urlset>`;
 
-  const publicDir = path.join(
-    __dirname,
-    "public"
-  );
+  const publicDir = path.join(__dirname, "public");
 
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir);
