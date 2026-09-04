@@ -1,260 +1,67 @@
 <template>
   <div
     ref="adContainer"
-    class="adsterra-ad"
     :class="containerClass"
   ></div>
 </template>
 
 <script>
 export default {
-
-  name: 'AdsterraAd',
+  name: "AdsterraAd",
 
   props: {
     code: {
       type: String,
-      required: true
+      required: true,
     },
 
     containerClass: {
       type: String,
-      default: ''
+      default: "",
     },
-
-    // allow explicit enabling of ad execution per-instance
-    enabled: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  data() {
-    return {
-      createdScripts: [],
-      initialized: false,
-      unwatchStore: null
-    }
   },
 
   mounted() {
-    // execute immediately only when explicitly enabled or global flag is set
-    const globalFlag = this.$store && this.$store.state && this.$store.state.showAds
-
-    if (this.enabled || globalFlag) {
-      this.executeAdCode()
-      return
-    }
-
-    // otherwise wait for the global flag or prop to change
-    this.unwatchStore = this.$watch(
-      () => this.$store?.state?.showAds,
-      (val) => {
-        if (val) this.executeAdCode()
-      }
-    )
-
-    this.$watch('enabled', (val) => {
-      if (val) this.executeAdCode()
-    })
+    this.renderAd();
   },
 
   beforeUnmount() {
-    if (this.unwatchStore) {
-      try { this.unwatchStore() } catch (e) { /* ignore */ }
-      this.unwatchStore = null
+    if (this.$refs.adContainer) {
+      this.$refs.adContainer.innerHTML = "";
     }
-
-    this.destroyAd()
   },
 
   methods: {
+    renderAd() {
+      const container = this.$refs.adContainer;
 
-    async executeAdCode() {
+      if (!container) return;
 
-      if (
-        this.initialized ||
-        !this.$refs.adContainer ||
-        !this.code
-      ) {
-        return
-      }
+      // Xóa nội dung cũ
+      container.innerHTML = "";
 
-      this.initialized = true
+      // Parse HTML
+      const temp = document.createElement("div");
+      temp.innerHTML = this.code;
 
-      try {
+      const scripts = temp.querySelectorAll("script");
 
-        const temp =
-          document.createElement('div')
+      scripts.forEach((oldScript) => {
+        const script = document.createElement("script");
 
-        temp.innerHTML =
-          this.code
+        // Copy attributes
+        Array.from(oldScript.attributes).forEach((attr) => {
+          script.setAttribute(attr.name, attr.value);
+        });
 
-        const nodes =
-          Array.from(
-            temp.childNodes
-          )
-
-        for (const node of nodes) {
-
-          if (
-            node.nodeType ===
-            Node.TEXT_NODE
-          ) {
-
-            const text =
-              node.textContent?.trim()
-
-            if (text) {
-
-              this.$refs.adContainer
-                .appendChild(
-                  document.createTextNode(
-                    text
-                  )
-                )
-
-            }
-
-            continue
-          }
-
-          if (
-            node.nodeName.toLowerCase() ===
-            'script'
-          ) {
-
-            await this.executeScript(
-              node
-            )
-
-            continue
-          }
-
-          this.$refs.adContainer
-            .appendChild(
-              node.cloneNode(true)
-            )
+        // Copy inline JS
+        if (oldScript.textContent) {
+          script.textContent = oldScript.textContent;
         }
 
-      } catch (error) {
-
-        console.error(
-          'Adsterra error:',
-          error
-        )
-
-      }
+        container.appendChild(script);
+      });
     },
-
-
-    executeScript(originalScript) {
-
-      return new Promise(
-        resolve => {
-
-          const script =
-            document.createElement(
-              'script'
-            )
-
-          Array.from(
-            originalScript.attributes
-          ).forEach(attr => {
-
-            script.setAttribute(
-              attr.name,
-              attr.value
-            )
-
-          })
-
-          const src =
-            originalScript.getAttribute(
-              'src'
-            )
-
-          if (src) {
-
-            script.onload = () => {
-              resolve()
-            }
-
-            script.onerror = () => {
-
-              console.error(
-                'Adsterra script failed:',
-                src
-              )
-
-              resolve()
-            }
-
-            script.src = src
-
-          } else {
-
-            script.textContent =
-              originalScript
-                .textContent || ''
-
-            resolve()
-          }
-
-          this.$refs.adContainer
-            .appendChild(script)
-
-          this.createdScripts.push(
-            script
-          )
-        }
-      )
-    },
-
-
-    destroyAd() {
-
-      this.createdScripts.forEach(
-        script => {
-
-          try {
-            script.remove()
-          } catch (e) {
-            // ignore
-          }
-
-        }
-      )
-
-      this.createdScripts = []
-
-      if (
-        this.$refs.adContainer
-      ) {
-
-        this.$refs.adContainer
-          .innerHTML = ''
-
-      }
-
-      this.initialized = false
-    }
-  }
-}
+  },
+};
 </script>
-
-<style scoped>
-.adsterra-ad {
-  width: 100%;
-
-  display: flex;
-
-  justify-content: center;
-
-  align-items: center;
-
-  overflow: hidden;
-
-  margin: 16px auto;
-}
-</style>

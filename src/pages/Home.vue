@@ -532,9 +532,18 @@ export default {
 .home-page {
   background: #0f0f0f;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
+/* =========================
+   BANNER 468x60
+   ========================= */
+
 .home-ad-slot {
   width: 100%;
+  max-width: 100%;
+
   min-height: 60px;
 
   display: flex;
@@ -546,25 +555,65 @@ export default {
   overflow: hidden;
 }
 
+.banner-slot {
+  max-width: 100vw;
+}
+
+/* =========================
+   NATIVE
+   ========================= */
+
 .home-native-slot {
   width: 100%;
+  max-width: 100vw;
 
   display: flex;
   justify-content: center;
+  align-items: center;
 
   margin: 24px auto;
 
+  /*
+   * Rất quan trọng đối với Native Ad.
+   */
   overflow: hidden;
+
+  box-sizing: border-box;
 }
+
+/* =========================
+   MOBILE
+   ========================= */
 
 @media (max-width: 600px) {
   .home-ad-slot {
-    min-height: 0;
-    margin: 12px auto;
+    width: 100%;
+    max-width: 100vw;
+
+    min-height: 50px;
+
+    margin: 12px 0;
+
+    padding: 0 4px;
+
+    box-sizing: border-box;
   }
 
   .home-native-slot {
-    margin: 16px auto;
+    width: 100%;
+    max-width: 100vw;
+
+    margin: 16px 0;
+
+    padding: 0 4px;
+
+    box-sizing: border-box;
+
+    /*
+     * Không cho nội dung Native đẩy body sang ngang.
+     */
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 }
 </style>

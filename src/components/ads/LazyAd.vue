@@ -4,7 +4,7 @@
     class="lazy-ad-wrapper"
     :style="{ minHeight: `${minHeight}px` }"
   >
-    <slot v-if="visible"></slot>
+    <slot v-if="visible" />
   </div>
 </template>
 
@@ -27,7 +27,9 @@ export default {
   },
 
   mounted() {
-    this.initObserver();
+    this.$nextTick(() => {
+      this.initObserver();
+    });
   },
 
   beforeUnmount() {
@@ -38,26 +40,37 @@ export default {
     initObserver() {
       const wrapper = this.$refs.adWrapper;
 
-      if (!wrapper) return;
+      if (!wrapper) {
+        console.warn("[LazyAd] wrapper not found");
+        return;
+      }
 
-      if (!("IntersectionObserver" in window)) {
+      // Browser không hỗ trợ IntersectionObserver
+      if (!window.IntersectionObserver) {
+        console.log("[LazyAd] IntersectionObserver not supported");
         this.visible = true;
         return;
       }
 
       this.observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting) return;
+        (entries) => {
+          const entry = entries[0];
+
+          if (!entry) return;
+
+          console.log("[LazyAd]", {
+            isIntersecting: entry.isIntersecting,
+            ratio: entry.intersectionRatio,
+          });
+
+          if (!entry.isIntersecting) return;
 
           this.visible = true;
           this.destroyObserver();
         },
         {
           root: null,
-
-          // Load trước khi người dùng scroll tới quảng cáo
           rootMargin: "1200px 0px",
-
           threshold: 0,
         }
       );
@@ -66,10 +79,10 @@ export default {
     },
 
     destroyObserver() {
-      if (!this.observer) return;
-
-      this.observer.disconnect();
-      this.observer = null;
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
     },
   },
 };

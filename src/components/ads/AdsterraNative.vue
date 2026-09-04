@@ -36,10 +36,26 @@ export default {
 <style scoped>
 .adsterra-native {
   width: 100%;
-  min-height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 100%;
   overflow: hidden;
+  box-sizing: border-box;
 }
+
+.native-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.native-container :deep(*) {
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.native-container :deep(img),
+.native-container :deep(iframe) {
+  max-width: 100% !important;
+}
+
 </style>
