@@ -20,7 +20,7 @@
           <router-link
             v-for="(tag, index) in tags"
             :key="index"
-            :to="tag.link"
+            :to="{ name: 'SearchMovie', query: { keyword: tag.keyword } }"
             custom
             v-slot="{ navigate }"
           >
@@ -296,71 +296,27 @@ export default {
       deferredPrompt: null,
       showIOSPopup: false,
       tags: [
-  {
-    label: "Xem phim online",
-    link: "/"
-  },
-  {
-    label: "Phim Vietsub",
-    link: "/the-loai/phim-vietsub"
-  },
-  {
-    label: "Phim Thuyết Minh",
-    link: "/the-loai/phim-thuyet-minh"
-  },
-  {
-    label: "Phim Lồng Tiếng",
-    link: "/the-loai/phim-long-tieng"
-  },
-  {
-    label: "Phim Bộ Hay",
-    link: "/the-loai/phim-bo"
-  },
-  {
-    label: "Phim Lẻ Mới",
-    link: "/the-loai/phim-le"
-  },
-  {
-    label: "Anime Hay",
-    link: "/the-loai/hoat-hinh"
-  },
-  {
-    label: "Phim Hàn Quốc",
-    link: "/quoc-gia/han-quoc"
-  },
-  {
-    label: "Phim Trung Quốc",
-    link: "/quoc-gia/trung-quoc"
-  },
-  {
-    label: "Phim Nhật Bản",
-    link: "/quoc-gia/nhat-ban"
-  },
-  {
-    label: "Phim Âu Mỹ",
-    link: "/quoc-gia/au-my"
-  },
-  {
-    label: "Phim Chiếu Rạp",
-    link: "/the-loai/phim-moi"
-  },
-  {
-    label: "Phim Hành Động",
-    link: "/the-loai/hanh-dong"
-  },
-  {
-    label: "Phim Tình Cảm",
-    link: "/the-loai/tinh-cam"
-  },
-  {
-    label: "Phim Kinh Dị",
-    link: "/the-loai/kinh-di"
-  },
-  {
-    label: "Phim Viễn Tưởng",
-    link: "/the-loai/vien-tuong"
-  }
-],
+        { label: "Xem phim online", keyword: "xem phim online" },
+        { label: "Phim Vietsub", keyword: "phim vietsub" },
+        { label: "Phim Thuyết Minh", keyword: "phim thuyet minh" },
+        { label: "Phim Lồng Tiếng", keyword: "phim long tieng" },
+        { label: "Phim Bộ Hay", keyword: "phim bộ hay" },
+        { label: "Phim Lẻ Mới", keyword: "phim le moi" },
+        { label: "Anime Hay", keyword: "anime hay" },
+        { label: "Phim Hàn Quốc", keyword: "phim hàn quốc" },
+        { label: "Phim Trung Quốc", keyword: "phim trung quốc" },
+        { label: "Phim Nhật Bản", keyword: "phim nhật bản" },
+        { label: "Phim Âu Mỹ", keyword: "phim au my" },
+        { label: "Phim Chiếu Rạp", keyword: "phim chieu rap" },
+        { label: "Phim Hành Động", keyword: "phim hanh dong" },
+        { label: "Phim Tình Cảm", keyword: "phim tinh cam" },
+        { label: "Phim Kinh Dị", keyword: "phim kinh di" },
+        { label: "Phim Viễn Tưởng", keyword: "phim vien tuong" },
+        { label: "One Piece", keyword: "one piece" },
+        { label: "Naruto", keyword: "naruto" },
+        { label: "Doraemon", keyword: "doraemon" },
+        { label: "Phim mới 2026", keyword: "phim mới 2026" },
+      ],
       genres: [
         { lable: this.$t("Chính kịch"), link: "chinh-kich" },
         { lable: this.$t("Cổ Trang"), link: "co-trang" },
