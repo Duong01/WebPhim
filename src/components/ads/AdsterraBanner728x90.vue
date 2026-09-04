@@ -5,11 +5,21 @@
   />
 </template>
 
-<script setup>
-import AdsterraAd from './AdsterraAd.vue'
+<script>
+import AdsterraAd from "./AdsterraAd.vue";
+export default {
+  name: "AdsterraBanner300x250",
 
-const adCode = `
-  <script>
+  components: {
+    AdsterraAd,
+  },
+
+  data() {
+    const scriptEnd = "<" + "/script>";
+
+    return {
+      adCode: `
+        <script>
   atOptions = {
     'key' : '04fa69f27d07ff80834374e9b9d8d90b',
     'format' : 'iframe',
@@ -17,9 +27,12 @@ const adCode = `
     'width' : 728,
     'params' : {}
   };
-<\/script>
-<script src="https://www.highrevenueformat.com/04fa69f27d07ff80834374e9b9d8d90b/invoke.js"><\/script>
-`
+${scriptEnd}
+<script src="https://www.highrevenueformat.com/04fa69f27d07ff80834374e9b9d8d90b/invoke.js">${scriptEnd}
+      `,
+    };
+  },
+};
 </script>
 
 <style scoped>

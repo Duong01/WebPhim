@@ -10,8 +10,8 @@
     <HeroBanner v-if="trending.length" :movie="trending" />
 
     <div class="home-ad-slot">
-      <LazyAd :min-height="60">
-        <AdsterraBanner468x60 />
+      <LazyAd :min-height="90">
+        <AdsterraResponsiveBanner />
       </LazyAd>
     </div>
 
@@ -28,8 +28,8 @@
       />
 
       <div v-if="(index + 1) % 3 === 0" class="home-ad-slot">
-        <LazyAd :min-height="60">
-          <AdsterraBanner468x60 />
+        <LazyAd :min-height="90">
+          <AdsterraResponsiveBanner />
         </LazyAd>
       </div>
 
@@ -47,7 +47,7 @@ import SectionWrapper from "@/pages/LayoutPageHome/SectionWrapper.vue";
 import CarouselPage from "@/pages/Carousel.vue";
 import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
-import AdsterraBanner468x60 from "@/components/ads/AdsterraBanner468x60.vue";
+import AdsterraResponsiveBanner from "@/components/ads/AdsterraResponsiveBanner.vue";
 // import AdsterraNative from "@/components/ads/AdsterraNative.vue";
 import LazyAd from "@/components/ads/LazyAd.vue";
 import { NewUpdate } from "@/model/api";
@@ -60,7 +60,7 @@ export default {
     HeroBanner,
     CategoryQuick,
     CarouselPage,
-    AdsterraBanner468x60,
+    AdsterraResponsiveBanner,
     // AdsterraNative,
     LazyAd,
   },

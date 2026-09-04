@@ -95,11 +95,11 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col v-if="index === 5" cols="12" class="native-ad-col">
-          <div class="native-ad-wrapper">
-            <AdsterraNative />
-          </div>
-        </v-col>
+        <div v-if="(index + 1) % 4 === 0" class="home-ad-slot">
+          <LazyAd :min-height="90">
+            <AdsterraResponsiveBanner />
+          </LazyAd>
+        </div>
       </template>
     </v-row>
 
@@ -209,12 +209,13 @@
             </v-card>
           </router-link>
         </v-col>
-        <!-- QUẢNG CÁO SAU PHIM THỨ 6 -->
-        <v-col v-if="index === 5" cols="12" class="native-ad-col">
-          <div class="native-ad-wrapper">
-            <AdsterraNative />
-          </div>
-        </v-col>
+        <!-- QUẢNG CÁO -->
+        
+        <div v-if="(index + 1) % 4 === 0" class="home-ad-slot">
+        <LazyAd :min-height="90">
+          <AdsterraResponsiveBanner />
+        </LazyAd>
+      </div>
       </template>
     </v-row>
     <div
@@ -229,7 +230,8 @@
 
 <script>
 import { urlImage1, PostMoviesFavorite, CheckSession } from "@/model/api";
-import AdsterraNative from "@/components/ads/AdsterraNative.vue";
+import AdsterraResponsiveBanner from "@/components/ads/AdsterraResponsiveBanner.vue";
+import LazyAd from "@/components/ads/LazyAd.vue";
 
 export default {
   name: "PhimBo",
@@ -256,7 +258,8 @@ export default {
     };
   },
   components: {
-    AdsterraNative,
+    AdsterraResponsiveBanner,
+    LazyAd,
   },
   methods: {
     gomovie(movie) {

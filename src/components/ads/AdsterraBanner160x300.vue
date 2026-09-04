@@ -6,21 +6,18 @@
 </template>
 
 <script>
-import AdsterraAd
-  from './AdsterraAd.vue'
-
+import AdsterraAd from "./AdsterraAd.vue";
 export default {
-
-  name: 'AdsterraBanner468',
+  name: "AdsterraBanner160x300",
 
   components: {
-    AdsterraAd
+    AdsterraAd,
   },
 
   data() {
+    const scriptEnd = "<" + "/script>";
 
     return {
-
       adCode: `
         <script>
   atOptions = {
@@ -30,12 +27,12 @@ export default {
     'width' : 160,
     'params' : {}
   };
-<\/script>
-<script src="https://www.highrevenueformat.com/15a60e3ce2367fc679a0f7db56817e9c/invoke.js"><\/script>
-      `
-    }
-  }
-}
+${scriptEnd}
+<script src="https://www.highrevenueformat.com/15a60e3ce2367fc679a0f7db56817e9c/invoke.js">${scriptEnd}
+      `,
+    };
+  },
+};
 </script>
 
 <style scoped>
