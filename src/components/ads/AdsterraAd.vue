@@ -22,6 +22,14 @@ export default {
   },
 
   mounted() {
+    if (this.isAdsBlocked()) return;
+
+    try {
+      localStorage.setItem("webphim_ads_blocked", "true");
+    } catch (err) {
+      // Ignore storage issues in private mode / restricted browsers.
+    }
+
     this.renderAd();
   },
 
@@ -32,10 +40,18 @@ export default {
   },
 
   methods: {
+    isAdsBlocked() {
+      try {
+        return localStorage.getItem("webphim_ads_blocked") === "true";
+      } catch (err) {
+        return true;
+      }
+    },
+
     renderAd() {
       const container = this.$refs.adContainer;
 
-      if (!container) return;
+      if (!container || this.isAdsBlocked()) return;
 
       // Xóa nội dung cũ
       container.innerHTML = "";

@@ -736,7 +736,8 @@ export default {
     openAd() {
       const smartlink = this.$store.state.Smartlink;
 
-      if (!smartlink) return;
+      // Chặn tự động mở popup quảng cáo bên thứ ba.
+      if (!smartlink || this.$store.state.showAds !== true) return;
 
       window.open(smartlink, "_blank", "noopener,noreferrer");
     },

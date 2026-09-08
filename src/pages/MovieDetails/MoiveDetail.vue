@@ -1322,7 +1322,8 @@ export default {
     openAd() {
       const smartlink = this.$store.state.Smartlink;
 
-      if (!smartlink) return;
+      // Chặn tự động mở popup quảng cáo bên thứ ba.
+      if (!smartlink || this.$store.state.showAds !== true) return;
 
       window.open(smartlink, "_blank", "noopener,noreferrer");
     },
@@ -3233,16 +3234,28 @@ export default {
   }
 
   .suggested-title {
-    font-size: clamp(12px, 3vw, 16px);
-    -webkit-line-clamp: 2;
+    font-size: 11px;
+    -webkit-line-clamp: 1;
+    line-height: 1.2;
   }
 
   .suggested-meta {
-    font-size: 10px;
+    font-size: 9px;
+    gap: 4px;
+  }
+
+  .suggested-episode,
+  .suggested-lang {
+    padding: 1px 6px;
+    font-size: 8px;
   }
 
   .suggested-category {
-    font-size: 9px;
+    font-size: 8px;
+  }
+
+  .suggested-poster {
+    padding-bottom: 140%;
   }
 }
 
@@ -3528,12 +3541,8 @@ a {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
-.nav-btn.left {
-  margin-right: 8px;
-}
-
-.nav-btn.right {
-  margin-left: 8px;
+.nav-btn:active {
+  transform: scale(0.95);
 }
 
 .trailer-thumb {
@@ -4071,36 +4080,6 @@ a {
   width: 100%;
   position: relative;
   background: #000;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-#jwplayer-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-}
-
-/* JWPlayer modern */
-.jwplayer {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-}
-
-.jw-controlbar {
-  backdrop-filter: blur(20px);
-}
-
-.jw-icon {
-  transition: all 0.2s ease;
-}
-
-.jw-icon:hover {
-  transform: scale(1.1);
-}
-.video-wrapper {
-  width: 100%;
-  position: relative;
-  background: #000;
   border-radius: 18px;
   overflow: hidden;
 }
@@ -4122,51 +4101,6 @@ a {
   transform: scale(1.1);
 } /* loading */
 /* .video-loading-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 20;
-}  */
-/* mobile */
-@media (max-width: 768px) {
-  .video-wrapper {
-    border-radius: 0;
-  }
-  .jwplayer {
-    border-radius: 0 !important;
-  }
-}
-/* PLAYER */
-
-.modern-player {
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  background: #000;
-
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
-
-  transition: 0.3s;
-}
-
-.modern-player:hover {
-  transform: translateY(-2px);
-}
-
-/* JWPLAYER */
-
-.modern-player .jwplayer {
-  border-radius: 22px !important;
-  overflow: hidden !important;
-}
-
-/* VIDEO LOADING */
-/* 
-.video-loading-overlay {
   position: absolute;
   inset: 0;
 
@@ -4293,8 +4227,6 @@ a {
 .modern-player {
   position: relative;
   overflow: hidden;
-
-  transform: translateZ(0);
 }
 
 .pause-play-btn {
@@ -4328,12 +4260,6 @@ a {
     opacity: 1;
   }
 }
-.pause-play-btn:hover {
-  transform: scale(1.08);
-
-  background: rgba(255, 255, 255, 0.22);
-}
-
 .pause-play-btn:hover {
   transform: scale(1.08);
 

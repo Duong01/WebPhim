@@ -9,11 +9,11 @@
     <!-- && $vuetify.display.smAndUp -->
     <HeroBanner v-if="trending.length" :movie="trending" />
 
-    <div class="home-ad-slot">
+    <!-- <div class="home-ad-slot">
       <LazyAd :min-height="90">
         <AdsterraResponsiveBanner />
       </LazyAd>
-    </div>
+    </div> -->
 
     <!-- MOVIE SECTIONS -->
     <template v-for="(section, index) in sections" :key="section.title">
@@ -27,11 +27,11 @@
         class="lazy-section"
       />
 
-      <div v-if="(index + 1) % 3 === 0" class="home-ad-slot">
+      <!-- <div v-if="(index + 1) % 3 === 0" class="home-ad-slot">
         <LazyAd :min-height="90">
           <AdsterraResponsiveBanner />
         </LazyAd>
-      </div>
+      </div> -->
 
       <!-- <div v-if="(index + 1) % 3 === 0" class="home-native-slot">
         <LazyAd :min-height="120">
@@ -47,9 +47,9 @@ import SectionWrapper from "@/pages/LayoutPageHome/SectionWrapper.vue";
 import CarouselPage from "@/pages/Carousel.vue";
 import HeroBanner from "@/pages/LayoutPageHome/HeroBanner.vue";
 import CategoryQuick from "@/pages/LayoutPageHome/CategoryQuick.vue";
-import AdsterraResponsiveBanner from "@/components/ads/AdsterraResponsiveBanner.vue";
+// import AdsterraResponsiveBanner from "@/components/ads/AdsterraResponsiveBanner.vue";
 // import AdsterraNative from "@/components/ads/AdsterraNative.vue";
-import LazyAd from "@/components/ads/LazyAd.vue";
+// import LazyAd from "@/components/ads/LazyAd.vue";
 import { NewUpdate } from "@/model/api";
 // import GoogleAd from "@/components/GoogleAd.vue";
 
@@ -60,9 +60,9 @@ export default {
     HeroBanner,
     CategoryQuick,
     CarouselPage,
-    AdsterraResponsiveBanner,
+    // AdsterraResponsiveBanner,
     // AdsterraNative,
-    LazyAd,
+    // LazyAd,
   },
 
   data() {
