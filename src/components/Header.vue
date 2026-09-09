@@ -607,23 +607,6 @@ export default {
       movieSuggestions: JSON.parse(localStorage.getItem("HisSearch"))
         ? JSON.parse(localStorage.getItem("HisSearch"))
         : [],
-      popularSearchTerms: [
-        "phim vietsub",
-        "phim bộ hot",
-        "phim hành động",
-        "phim tâm lý",
-        "phim kinh dị",
-        "anime hay",
-        "phim hàn quốc",
-        "phim trung quốc",
-        "phim chiếu rạp",
-        "phim mới",
-        "xem phim online",
-        "one piece",
-        "naruto",
-        "doraemon",
-        "phim hay 2026",
-      ],
       menuVisible: false,
       genres: [],
       countries: [],
@@ -687,15 +670,11 @@ export default {
     openSearchHistory() {
       this.menuVisible = true;
 
+      // Load lịch sử
       const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-      const popularTerms = this.popularSearchTerms.map((term) => ({ name: term }));
 
-      const merged = [...history, ...popularTerms].filter(
-        (item, index, self) =>
-          index === self.findIndex((entry) => (entry?.name || entry) === (item?.name || item))
-      );
-
-      this.movieSuggestions = merged.slice(0, 8);
+      // Gán vào gợi ý
+      this.movieSuggestions = history;
     },
     changeTheme() {
       const newTheme = this.currentTheme() === "dark" ? "light" : "dark";
@@ -821,35 +800,19 @@ export default {
     onInput(value) {
       if (!value || typeof value !== "string" || value.trim().length < 2) {
         const history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-        const popularTerms = this.popularSearchTerms.map((term) => ({ name: term }));
 
+        // Nếu người dùng chưa nhập gì → hiển thị lịch sử trong movieSuggestions
         if (!this.searchQuery) {
-          this.movieSuggestions = [...history, ...popularTerms].filter(
-            (item, index, self) =>
-              index ===
-              self.findIndex((entry) => (entry?.name || entry) === (item?.name || item))
-          ).slice(0, 8);
-          this.menuVisible = this.movieSuggestions.length > 0;
+          this.movieSuggestions = history.map((h) => ({ name: h }));
         }
+        // this.movieSuggestions = [];
+        this.menuVisible = false;
         return;
       } else {
         this.openSearchHistory();
       }
 
       this.fetchMovieSuggestions(value.trim());
-    },
-    selectSuggestion(item) {
-      const selected = item?.name || item;
-      if (!selected) return;
-
-      this.searchQuery = selected;
-      let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
-      history = history.filter((h) => (h?.name || h) !== selected);
-      history.unshift({ name: selected });
-      history = history.slice(0, 5);
-      localStorage.setItem("HisSearch", JSON.stringify(history));
-      this.menuVisible = false;
-      this.searchMovie();
     },
     fetchMovieSuggestions(keyword) {
       try {
@@ -883,6 +846,16 @@ export default {
       } catch (err) {
         console.error("Lỗi ngoài ý muốn:", err);
       }
+    },
+    selectSuggestion(item) {
+      this.searchQuery = item.name;
+      let history = JSON.parse(localStorage.getItem("HisSearch") || "[]");
+      history = history.filter((h) => h.name !== item.name);
+      history.unshift({ name: item.name });
+      history = history.slice(0, 5);
+      localStorage.setItem("HisSearch", JSON.stringify(history));
+      this.menuVisible = false;
+      this.searchMovie();
     },
   },
   created() {
