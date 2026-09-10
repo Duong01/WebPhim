@@ -67,7 +67,7 @@
                       class="poster-img"
                       aspect-ratio="2/3"
                       cover
-                      @click="openAd($event);showPreview = true"
+                      @click="openAd();showPreview = true"
                       @error="onImageError(movie, 'poster_url')"
                     >
                       <template #placeholder>
@@ -167,7 +167,7 @@
                     class="text-body-1 text-grey-lighten-1 content-desc" 
                     :class="{ 'content-collapsed': isLongDescription && !isDescriptionExpanded }"
                     v-html="movies.content"></div>
-                   <v-btn v-if="isLongDescription" variant="text" size="small" @click="(event) => { openAd(event); isDescriptionExpanded = !isDescriptionExpanded }" class="mt-1 pa-0 text-primary font-weight-bold text-none">
+                   <v-btn v-if="isLongDescription" variant="text" size="small" @click="openAd(); isDescriptionExpanded = !isDescriptionExpanded" class="mt-1 pa-0 text-primary font-weight-bold text-none">
                     {{ isDescriptionExpanded ? $t('Thu gọn') : $t('Xem thêm') }}
                     <v-icon end size="small">{{ isDescriptionExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                   </v-btn>
@@ -270,7 +270,7 @@
                                   color="grey-darken-4"
                                   variant="elevated"
                                   class="episode-btn modern-ep-btn"
-                                  @click="(event) => { openAd(event); goToWatch(ep) }"
+                                  @click="goToWatch(ep)"
                                 >
                                   {{ formatEpisodeName(ep.name) }}
                                 </v-btn>
@@ -733,12 +733,10 @@ export default {
   },
   methods: {
 
-    openAd(event) {
+    openAd() {
       const smartlink = this.$store.state.Smartlink;
 
       if (!smartlink) return;
-      if (!event || !event.isTrusted) return;
-
       window.open(smartlink, "_blank", "noopener,noreferrer");
     },
 
@@ -1365,6 +1363,7 @@ export default {
       });
     },
     shareMovie() {
+      this.openAd();
       this.shareDialog = true;
     },
 

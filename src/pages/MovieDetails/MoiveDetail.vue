@@ -1323,7 +1323,7 @@ export default {
       const smartlink = this.$store.state.Smartlink;
 
       // Chặn tự động mở popup quảng cáo bên thứ ba.
-      if (!smartlink || this.$store.state.showAds !== true) return;
+      if (!smartlink) return;
 
       window.open(smartlink, "_blank", "noopener,noreferrer");
     },
