@@ -2,26 +2,26 @@
   <v-container class="py-10" style="min-height: 80vh;">
     <v-row justify="center">
       <v-col cols="12" md="10" lg="8">
-        <v-card class="pa-8 bg-grey-darken-4 text-white" rounded="xl" elevation="10">
+        <v-card class="pa-8 about-card text-white" rounded="xl" elevation="10">
           <div class="text-center mb-8">
-            <v-icon size="64" color="primary" class="mb-4">mdi-movie-open-play</v-icon>
-            <h1 class="text-h3 font-weight-bold mb-2">{{$t('Giới thiệu về')}} <span style="background: linear-gradient(45deg, #ff8c00, #ffb200); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Zcines</span></h1>
+            <v-icon size="64" color="#ffb700" class="mb-4 hero-icon">mdi-movie-open-play</v-icon>
+            <h1 class="text-h3 font-weight-bold mb-2">{{$t('Giới thiệu về')}} <span class="brand-gradient">Zcines</span></h1>
             <p class="text-subtitle-1 text-grey-lighten-1">{{$t('Nền tảng xem phim trực tuyến hàng đầu dành cho người yêu điện ảnh.')}}</p>
           </div>
           
           <v-divider class="mb-8" color="grey-darken-2"></v-divider>
 
           <div class="text-body-1" style="line-height: 1.8;">
-            <h2 class="text-h5 font-weight-bold text-primary mb-4">{{$t('Sứ mệnh của chúng tôi')}}</h2>
+            <h2 class="text-h5 font-weight-bold section-heading mb-4">{{$t('Sứ mệnh của chúng tôi')}}</h2>
             <p class="mb-6 text-grey-lighten-2">
               <strong>Zcines</strong> {{$t('ra đời với mong muốn mang đến cho khán giả một không gian giải trí đỉnh cao, nơi bạn có thể thưởng thức những tác phẩm điện ảnh xuất sắc nhất từ khắp nơi trên thế giới. Chúng tôi không ngừng nỗ lực cập nhật các bộ phim bom tấn, phim truyền hình đặc sắc với chất lượng hình ảnh sắc nét và âm thanh sống động nhất.')}}
             </p>
 
-            <h2 class="text-h5 font-weight-bold text-primary mb-4 mt-8">{{$t('Điểm nổi bật của Zcines')}} </h2>
+            <h2 class="text-h5 font-weight-bold section-heading mb-4 mt-8">{{$t('Điểm nổi bật của Zcines')}} </h2>
             <v-list bg-color="transparent" class="mb-6">
               <v-list-item class="px-0">
                 <template v-slot:prepend>
-                  <v-icon color="success" class="mr-3">mdi-check-circle</v-icon>
+                  <v-icon color="#ffb700" class="mr-3">mdi-check-circle</v-icon>
                 </template>
                 <v-list-item-title class="text-white font-weight-medium">{{$t('Kho phim khổng lồ')}}</v-list-item-title>
                 <v-list-item-subtitle class="text-grey-lighten-1 mt-1">{{$t('Hàng ngàn bộ phim đa dạng thể loại từ hành động, tình cảm, hài hước đến kinh dị, viễn tưởng.')}}</v-list-item-subtitle>
@@ -46,7 +46,7 @@
 
             <v-divider class="my-8" color="grey-darken-2"></v-divider>
 
-            <h2 class="text-h5 font-weight-bold text-primary mb-4">{{$t('Liên hệ & Hỗ trợ')}}</h2>
+            <h2 class="text-h5 font-weight-bold section-heading mb-4">{{$t('Liên hệ & Hỗ trợ')}}</h2>
             <p class="text-grey-lighten-2">
               {{t('Nếu bạn có bất kỳ góp ý, khiếu nại bản quyền hoặc cần hỗ trợ kĩ thuật, đừng ngần ngại liên hệ qua các kênh mạng xã hội hoặc qua Email của chúng tôi.')}}
               {{$t('Zcines luôn luôn lắng nghe mọi ý kiến để cải thiện và mang lại trải nghiệm tuyệt vời nhất cho bạn.')}}
@@ -62,7 +62,7 @@
           </div>
           
           <div class="text-center mt-10">
-            <v-btn color="primary" size="large" rounded="pill" to="/home" prepend-icon="mdi-play-circle" elevation="4">
+            <v-btn class="about-cta" size="large" rounded="pill" to="/home" prepend-icon="mdi-play-circle" elevation="4">
               {{$t('Khám phá phim ngay')}}
             </v-btn>
           </div>
@@ -77,3 +77,55 @@ export default {
   name: "AboutPage"
 }
 </script>
+
+<style scoped>
+.about-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 24px !important;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 44px rgba(255, 140, 0, 0.06) !important;
+}
+
+.hero-icon {
+  filter: drop-shadow(0 0 18px rgba(255, 183, 0, 0.45));
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-heading {
+  color: #ffb700;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.section-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 46px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  box-shadow: 0 0 12px rgba(255, 140, 0, 0.5);
+}
+
+.about-cta {
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.35);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.about-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 140, 0, 0.5);
+}
+</style>

@@ -150,8 +150,9 @@ export default {
 <style scoped>
 .custom-carousel {
   position: relative;
-  background-color: #0f0f0f;
+  background-color: #07070c;
   overflow: hidden;
+  border-radius: 0 0 24px 24px;
 }
 
 .carousel-wrapper {
@@ -188,9 +189,9 @@ export default {
 .carousel-overlay {
   position: absolute;
   inset: 0;
-  background: 
-    linear-gradient(to right, rgba(15, 15, 15, 1) 0%, rgba(15, 15, 15, 0.7) 40%, transparent 100%),
-    linear-gradient(to top, rgba(15, 15, 15, 1) 0%, transparent 40%);
+  background:
+    linear-gradient(to right, rgba(7, 7, 12, 0.98) 0%, rgba(7, 7, 12, 0.72) 40%, transparent 100%),
+    linear-gradient(to top, rgba(7, 7, 12, 1) 0%, transparent 45%);
   z-index: 2;
 }
 
@@ -204,7 +205,7 @@ export default {
   align-items: flex-start;
   gap: 20px;
   min-height: 220px;
-  animation: slideUpContent 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideUpContent 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   max-width: 800px;
 }
 
@@ -244,7 +245,7 @@ export default {
   color: white;
   margin: 0;
   line-height: 1.1;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: left;
@@ -254,9 +255,9 @@ export default {
 
 .carousel-origin {
   font-size: clamp(14px, 2vw, 18px);
-  color: #e0e0e0;
+  color: #d8dae2;
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.92;
   line-height: 1.4;
   font-weight: 500;
   text-align: left;
@@ -268,7 +269,7 @@ export default {
   gap: 8px;
   flex-wrap: wrap;
   font-size: clamp(11px, 1.5vw, 14px);
-  color: #b0b0b0;
+  color: #a4a7b4;
   justify-content: flex-start;
   width: 100%;
 }
@@ -295,18 +296,20 @@ export default {
 .genre-tag {
   display: inline-block;
   padding: 4px 14px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #fff;
-  border-radius: 4px;
+  border-radius: 999px;
   font-size: clamp(10px, 1.2vw, 12px);
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.3s var(--zc-ease);
   backdrop-filter: blur(8px);
 }
 
 .genre-tag:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 183, 0, 0.18);
+  border-color: rgba(255, 183, 0, 0.5);
+  color: #ffb700;
   transform: translateY(-2px);
 }
 
@@ -323,8 +326,8 @@ export default {
   font-size: 15px !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
-  border-radius: 8px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s var(--zc-ease) !important;
   animation: fadeInUp 0.6s ease-out 0.2s backwards;
   display: flex;
   align-items: center;
@@ -332,27 +335,27 @@ export default {
 }
 
 .primary-btn {
-  background: linear-gradient(45deg, #ffb700, #ff8c00) !important;
-  color: #000 !important;
-  box-shadow: 0 6px 20px rgba(255, 136, 0, 0.3) !important;
+  background: var(--zc-grad) !important;
+  color: #0a0a12 !important;
+  box-shadow: 0 8px 26px rgba(255, 140, 0, 0.4) !important;
   border: none !important;
 }
 
 .primary-btn:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(255, 136, 0, 0.5) !important;
-  background: linear-gradient(45deg, #ffc833, #ffa022) !important;
+  box-shadow: 0 14px 36px rgba(255, 140, 0, 0.55) !important;
+  filter: brightness(1.08);
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
   backdrop-filter: blur(10px);
   color: white !important;
 }
 
 .secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
   transform: translateY(-4px);
   border-color: #fff !important;
 }
@@ -389,54 +392,53 @@ export default {
     padding: 30px 40px;
     min-height: 180px;
   }
-  
+
   .carousel-title {
     font-size: 32px;
   }
-  
+
   .carousel-origin {
     font-size: 14px;
   }
 }
 
 @media (max-width: 768px) {
-  
   .responsive-carousel {
     height: 400px !important;
   }
-  
+
   .carousel-content {
     padding: 20px;
     min-height: 140px;
     gap: 16px;
   }
-  
+
   .carousel-title {
     font-size: 24px;
   }
-  
+
   .carousel-origin {
     font-size: 12px;
   }
-  
+
   .carousel-meta {
     font-size: 12px;
     gap: 6px;
   }
-  
+
   .meta-item {
     padding: 3px 6px;
   }
-  
+
   .carousel-genres {
     gap: 6px;
   }
-  
+
   .genre-tag {
     padding: 4px 10px;
     font-size: 10px;
   }
-  
+
   .carousel-btn {
     padding: 10px 24px !important;
     font-size: 12px !important;
@@ -445,24 +447,24 @@ export default {
 
 @media (max-width: 480px) {
   .custom-carousel {
-    border-radius: 6px;
+    border-radius: 0 0 16px 16px;
   }
-  
+
   .responsive-carousel {
     height: 320px !important;
   }
-  
+
   .carousel-content {
     padding: 16px;
     min-height: 120px;
     gap: 12px;
   }
-  
+
   .carousel-title {
     font-size: 18px;
     letter-spacing: 0.5px;
   }
-  
+
   .carousel-origin {
     font-size: 11px;
     max-height: 32px;
@@ -472,25 +474,25 @@ export default {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
-  
+
   .carousel-meta {
     font-size: 11px;
     gap: 4px;
   }
-  
+
   .meta-item {
     padding: 2px 4px;
   }
-  
+
   .carousel-genres {
     gap: 4px;
   }
-  
+
   .genre-tag {
     padding: 3px 8px;
     font-size: 9px;
   }
-  
+
   .carousel-btn {
     flex: 1;
     padding: 10px !important;
@@ -500,10 +502,9 @@ export default {
     width: 100%;
     display: flex;
   }
-  
+
   .v-carousel__controls {
     bottom: 10px !important;
   }
 }
-
 </style>

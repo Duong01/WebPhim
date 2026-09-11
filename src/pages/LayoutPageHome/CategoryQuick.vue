@@ -85,28 +85,27 @@ methods:{
   align-items: center;
   justify-content: space-between;
   padding: clamp(12px, 2vw, 20px) clamp(14px, 2.5vw, 24px);
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   min-height: clamp(80px, 10vw, 110px);
-  min-width: clamp(150px, 22vw, 240px); /* Tự động nhỏ lại trên mobile */
-  flex: 1 0 auto; /* Không cho rớt dòng */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  background: rgba(255,255,255,.04);
+  min-width: clamp(150px, 22vw, 240px);
+  flex: 1 0 auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition:
-    transform .4s cubic-bezier(.22,1,.36,1),
-    box-shadow .4s ease;
+    transform 0.4s var(--zc-ease),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
 }
 
 .ad-banner-card:hover {
-   transform: translateY(-8px);
-  box-shadow:
-    0 20px 40px rgba(0,0,0,.6);
+  transform: translateY(-8px);
+  border-color: rgba(255, 183, 0, 0.35);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.6), 0 0 26px rgba(255, 140, 0, 0.14);
 }
 
 .ad-banner-card:active {
@@ -118,6 +117,7 @@ methods:{
   inset: 0;
   background-size: 300% 300%;
   animation: gradientShift 8s ease infinite;
+  opacity: 0.85;
   z-index: 0;
 }
 
@@ -127,24 +127,25 @@ methods:{
   100% { background-position: 0% 50%; }
 }
 
+/* Amber/orange family gradients to match the cinema theme */
 .ad-banner-0 .ad-banner-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background: linear-gradient(135deg, #ffb700 0%, #ff7a18 50%, #ff4d00 100%);
 }
 
 .ad-banner-1 .ad-banner-bg {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #ff512f 0%, #dd2476 50%, #ff512f 100%);
 }
 
 .ad-banner-2 .ad-banner-bg {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #4facfe 100%);
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 50%, #f7971e 100%);
 }
 
 .ad-banner-3 .ad-banner-bg {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 50%, #fa709a 100%);
+  background: linear-gradient(135deg, #e65c00 0%, #f9d423 50%, #e65c00 100%);
 }
 
 .ad-banner-4 .ad-banner-bg {
-  background: linear-gradient(135deg, #30cfd0 0%, #330867 50%, #30cfd0 100%);
+  background: linear-gradient(135deg, #b44d12 0%, #f2681f 50%, #b44d12 100%);
 }
 
 .ad-banner-content {
@@ -161,7 +162,7 @@ methods:{
 .ad-banner-icon {
   flex-shrink: 0;
   font-size: clamp(28px, 4vw, 40px) !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   animation: float 3s ease-in-out infinite;
 }
 
@@ -173,7 +174,7 @@ methods:{
 .ad-banner-text {
   color: #fff;
   flex: 1;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .ad-banner-title {
@@ -195,9 +196,9 @@ methods:{
 .ad-banner-arrow {
   flex-shrink: 0;
   font-size: clamp(20px, 3vw, 28px) !important;
-  opacity: 0.8;
-  transition: transform 0.3s ease;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0.85;
+  transition: transform 0.3s var(--zc-ease);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .ad-banner-card:hover .ad-banner-arrow {
@@ -205,39 +206,26 @@ methods:{
   opacity: 1;
 }
 
-/* Ẩn mũi tên trên mobile nếu không đủ chỗ */
+/* Hide arrow on mobile */
 @media (max-width: 600px) {
   .ad-banner-arrow {
     display: none;
   }
 }
+
 .trending-track,
 .ad-banner-container {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* iOS mượt hơn */
+  -webkit-overflow-scrolling: touch;
 }
+
 .movie-card,
 .trending-card,
 .ad-banner-card {
   will-change: transform;
   transform: translateZ(0);
 }
-.page-enter {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 40%),
-    radial-gradient(circle at 85% 0%, rgba(255,255,255,0.04), transparent 40%),
-    linear-gradient(to bottom, #111 0%, #0a0a0a 40%, #000 100%);
-}
-.movie-list:hover .movie-card {
-  /* opacity: .45; */
-  transform: scale(.96);
-}
 
-.movie-list .movie-card:hover {
-  opacity: 1 !important;
-  transform: translateY(-12px) scale(1.1);
-}
 @keyframes fadeUpModern {
   from {
     opacity: 0;
@@ -248,5 +236,4 @@ methods:{
     transform: translateY(0);
   }
 }
-
 </style>

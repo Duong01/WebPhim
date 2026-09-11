@@ -10,7 +10,8 @@
             </keep-alive>
             <template #fallback>
               <div class="page-loading">
-                Loading...
+                <div class="page-loading__spinner"></div>
+                <span class="page-loading__text">ZCines</span>
               </div>
             </template>
           </Suspense>
@@ -20,7 +21,7 @@
         {{ errorMessage }}
       </v-snackbar>
       </v-main>
-      
+
 
       <!-- Chatbot Component -->
       <!-- <Chatbot /> -->
@@ -40,13 +41,13 @@ export default {
       theme: localStorage.getItem('theme') || 'dark',
       showError: false,
       errorMessage: '',
-      
+
     }
   },
   computed: {
     ...mapState("loading", ["isLoading"]),
   },
-  
+
    provide() {
     return {
       currentTheme: () => this.theme,
@@ -59,35 +60,26 @@ export default {
       }
     },
   mounted() {
-  
+
 },
 beforeUnmount() {
-  
-  
+
+
 },
   methods: {
     setTheme(newTheme) {
       this.theme = newTheme
     },
-    
-
-  
-
-  
-    
   }
 }
 </script>
 
 <style>
 #app {
-  
-  font-family: "Roboto", sans-serif !important;
-  font-weight: bold;
+  font-family: 'Be Vietnam Pro', "Roboto", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
- 
+  text-align: left;
 }
 #dify-chatbot-bubble-button {
   display: none !important;
@@ -122,6 +114,41 @@ beforeUnmount() {
 }
 html {
   scroll-behavior: smooth;
+}
+
+/* ===== Suspense fallback loading ===== */
+.page-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: #07070c;
+}
+.page-loading__spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.08);
+  border-top-color: #ffb700;
+  border-right-color: #ff5e00;
+  animation: spin 0.9s linear infinite;
+}
+.page-loading__text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pageLoadingPulse 1.4s ease-in-out infinite;
+}
+@keyframes pageLoadingPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
 }
 
 </style>

@@ -2,7 +2,7 @@
   <v-container fluid>
     <!-- 🧭 Thanh bộ lọc tìm kiếm -->
     <div class="d-flex justify-start mb-6">
-      <el-button type="primary" size="large" @click="showFilter = !showFilter">
+      <el-button type="primary" size="large" class="filter-toggle-btn" @click="showFilter = !showFilter">
         <v-icon left size="20" class="mr-1">
           mdi-filter-menu
         </v-icon>
@@ -10,7 +10,7 @@
       </el-button>
     </div>
     <v-expand-transition>
-      <div v-if="showFilter">
+      <div v-if="showFilter" class="filter-panel">
         <v-row justify="center" align="center">
           <!-- 🎞 Thể loại -->
           <v-col cols="12" sm="6" md="2" class="p-1">
@@ -99,8 +99,7 @@
           <!-- 🧭 Nút Lọc -->
           <v-col cols="12"  class="p-0">
             <v-btn
-              color="success"
-              class="filter-btn"
+              class="filter-apply-btn"
               size="large"
               @click="applyFilters"
             >
@@ -113,7 +112,7 @@
         </v-row>
       </div>
     </v-expand-transition>
-    <v-divider class="my-4" />
+    <v-divider class="my-4 filter-divider" />
   </v-container>
 </template>
 
@@ -202,4 +201,53 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.filter-toggle-btn {
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(255, 140, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
+.filter-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 140, 0, 0.45);
+}
+
+.filter-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  padding: 18px 16px 8px;
+  backdrop-filter: blur(10px);
+}
+
+.filter-panel :deep(.v-field) {
+  border-radius: 12px;
+  transition: box-shadow 0.25s ease;
+}
+
+.filter-panel :deep(.v-field--focused) {
+  box-shadow: 0 0 0 2px rgba(255, 183, 0, 0.22);
+}
+
+.filter-apply-btn {
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(255, 140, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
+.filter-apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 140, 0, 0.45);
+}
+
+.filter-divider {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+</style>

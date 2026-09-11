@@ -370,8 +370,11 @@ export default {
 <style scoped>
 .footer-container {
   position: relative;
+  background: linear-gradient(180deg, #0a0a12 0%, #060609 100%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Animated gradient top border */
 .footer-container::before {
   content: "";
   position: absolute;
@@ -381,20 +384,29 @@ export default {
   height: 3px;
   background: linear-gradient(
     90deg,
-    #3d4d52,
-    #93abc7,
-    #312f30,
-    #ceb392,
-    #6b6659
+    transparent,
+    #ffb700,
+    #ff5e00,
+    #ffb700,
+    transparent
   );
+  background-size: 200% 100%;
+  animation: footerGradient 8s ease infinite;
   z-index: 10;
 }
 
+@keyframes footerGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .logo-gradient {
-  background: linear-gradient(45deg, #ff8c00, #ffb200);
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+  filter: drop-shadow(0 4px 12px rgba(255, 140, 0, 0.35));
 }
 
 .footer-links li {
@@ -403,27 +415,32 @@ export default {
 
 .footer-link {
   text-decoration: none;
-  color: inherit;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  color: #a4a7b4;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
   display: inline-flex;
   align-items: center;
 }
 
 .footer-link:hover {
-  color: #ffb200;
-  text-shadow: 0 0 8px rgba(255, 178, 0, 0.4);
+  color: #ffb700;
+  text-shadow: 0 0 10px rgba(255, 183, 0, 0.45);
 }
 
 .footer-link .v-icon {
-  transition: transform 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.6;
 }
 
 .footer-link:hover .v-icon {
   transform: translateX(4px);
+  opacity: 1;
+  color: #ffb700;
 }
 
 .footer-heading {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
   position: relative;
   display: inline-block;
 }
@@ -435,41 +452,46 @@ export default {
   bottom: -6px;
   height: 2px;
   width: 40px;
-  background: linear-gradient(90deg, #ff8c00, #ff007f);
+  background: linear-gradient(90deg, #ffb700, #ff5e00);
   border-radius: 2px;
+  box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
 }
 
 .tag-chip {
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
 }
 
 .tag-chip:hover {
-  background: linear-gradient(45deg, #ff8c00, #ff007f) !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
   border-color: transparent !important;
-  color: #fff !important;
+  color: #0a0a12 !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 0, 127, 0.3);
+  box-shadow: 0 6px 14px rgba(255, 140, 0, 0.35);
 }
 
 .social-btn {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .social-btn:hover {
-  transform: translateY(-4px) scale(1.1);
-  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
 .app-btn {
   text-transform: none !important;
   letter-spacing: normal !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  transition: all 0.3s ease;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-radius: 14px !important;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .app-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 183, 0, 0.1) !important;
+  border-color: rgba(255, 183, 0, 0.5) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.2);
 }
 </style>

@@ -28,18 +28,13 @@ width:160px;
 
 height:240px;
 
-background:linear-gradient(
-90deg,
-#1a1a1a 25%,
-#2a2a2a 37%,
-#1a1a1a 63%
-);
+background:linear-gradient(110deg, #16161f 25%, #23232f 37%, #16161f 63%);
 
 background-size:400% 100%;
 
 animation:skeleton 1.4s infinite;
 
-border-radius:6px;
+border-radius:12px;
 
 }
 
@@ -54,5 +49,4 @@ background-position:-100% 0
 }
 
 }
-
 </style>

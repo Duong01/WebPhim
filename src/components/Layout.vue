@@ -4,15 +4,6 @@
     <header class="fixed-header">
       <header-component />
     </header>
-    <!-- <transition name="progress-fade">
-      <v-progress-linear
-        v-if="$store.getters['loading/isLoading']"
-        color="blue-darken-3"
-        indeterminate
-        height="3"
-        class="global-progress"
-      />
-    </transition> -->
 
     <div class="main">
   <div class="content">
@@ -36,7 +27,6 @@
 
   </div>
 </div>
-    <hr/>
     <!-- Footer (Chân trang) -->
     <footer>
       <footer-component />
@@ -76,8 +66,7 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: rgb(2, 2, 2);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  background: transparent;
 }
 
 .main {
@@ -86,8 +75,9 @@ export default {
 }
 
 .content {
- width: 90%;
-  overflow-x: hidden;
+ width: 92%;
+ max-width: 1560px;
+ overflow-x: hidden;
 }
 
 /* mobile */
@@ -97,43 +87,9 @@ export default {
   }
 }
 
-/* Ghim thanh loading ngay dưới Header */
-.global-progress {
-  position: fixed;
-  top: 64px;
-  left: 0;
-  z-index: 1001;
-  width: 100%;
-}
-
-
-.progress-fade-enter-active,
-.progress-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.progress-fade-enter-from,
-.progress-fade-leave-to {
-  opacity: 0;
-}
 .page-component {
   will-change: opacity;
   backface-visibility: hidden;
   transform: translateZ(0);
-}
-
-/* enter */
-.fade-page-enter-active {
-  transition: opacity .12s linear;
-}
-
-/* leave */
-.fade-page-leave-active {
-  transition: opacity .08s linear;
-}
-
-/* states */
-.fade-page-enter-from,
-.fade-page-leave-to {
-  opacity: 0;
 }
 </style>

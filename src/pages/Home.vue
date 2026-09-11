@@ -530,7 +530,7 @@ export default {
 
 <style scoped>
 .home-page {
-  background: #0f0f0f;
+  background: transparent;
   min-height: 100vh;
   width: 100%;
   max-width: 100%;

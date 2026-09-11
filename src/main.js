@@ -26,6 +26,9 @@ import vue3GoogleLogin from 'vue3-google-login'
 /* Polyfills */
 import 'intersection-observer'
 
+/* Global design system */
+import '@/assets/main.css'
+
 /* ResizeObserver */
 if (!window.ResizeObserver) {
   import('resize-observer-polyfill').then(({ default: ResizeObserver }) => {

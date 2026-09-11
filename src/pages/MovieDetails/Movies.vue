@@ -639,6 +639,9 @@ export default {
       movies: [],
       movie: {
         title: "",
+        actor: [],
+        country: [],
+        tmdb: {},
         valueRate: 4.5,
         description: "",
         videoUrl: "",
@@ -777,19 +780,40 @@ export default {
     updateSEO() {
       const movieTitle = this.movie.title || 'Phim mới';
       const movieImage = this.movie.thumb_url || this.movie.poster_url || 'https://zcines.com/og-image.jpg';
+      const movieUrl = window.location.href.split('?')[0];
       const shortDescription = (this.movie.description || `Xem phim ${movieTitle} Vietsub FullHD chất lượng cao, cập nhật nhanh, xem online miễn phí tại ZCines.`)
         .replace(/\s+/g, ' ')
         .trim()
         .slice(0, 160);
 
+      const genres = (this.movie.category || []).map((item) => item.name || item).filter(Boolean);
+      const countries = (this.movie.country || []).map((item) => item.name || item).filter(Boolean);
+      const actors = (this.movie.actor || []).filter(Boolean);
+      const directors = (this.movie.director || []).filter(Boolean);
+      const rating = Number(this.movie.tmdb?.vote_average) || 0;
+      const votes = Number(this.movie.tmdb?.vote_count) || 0;
+
       useHead({
         title: `${movieTitle} Vietsub FullHD - Xem Phim ${movieTitle} Mới Nhất | ZCines`,
         meta: [
           { name: 'description', content: shortDescription },
+          {
+            name: 'keywords',
+            content: [
+              `xem phim ${movieTitle}`,
+              `${movieTitle} vietsub`,
+              `${movieTitle} full hd`,
+              `${movieTitle} thuyết minh`,
+              ...genres,
+              ...countries,
+              'xem phim online miễn phí',
+              'zcines',
+            ].filter(Boolean).join(', '),
+          },
           { property: 'og:title', content: `${movieTitle} Vietsub FullHD - Xem phim ${movieTitle} online` },
           { property: 'og:description', content: shortDescription },
           { property: 'og:image', content: movieImage },
-          { property: 'og:url', content: window.location.href.split('?')[0] },
+          { property: 'og:url', content: movieUrl },
           { property: 'og:type', content: 'video.movie' },
           { property: 'og:site_name', content: 'ZCines' },
           { property: 'og:locale', content: 'vi_VN' },
@@ -798,7 +822,7 @@ export default {
           { name: 'twitter:description', content: shortDescription },
           { name: 'twitter:image', content: movieImage },
         ],
-        link: [{ rel: 'canonical', href: window.location.href.split('?')[0] }],
+        link: [{ rel: 'canonical', href: movieUrl }],
         script: [
           {
             type: 'application/ld+json',
@@ -806,13 +830,47 @@ export default {
               '@context': 'https://schema.org',
               '@type': 'Movie',
               name: movieTitle,
+              alternateName: this.movie.origin_name || undefined,
               image: movieImage,
               description: shortDescription,
-              url: window.location.href.split('?')[0],
+              url: movieUrl,
               inLanguage: this.movie.lang || 'vi',
               datePublished: this.movie.year ? `${this.movie.year}-01-01` : undefined,
-              genre: this.movie.category?.map((item) => item.name || item).filter(Boolean) || [],
-              keywords: [movieTitle, 'xem phim online', 'phim vietsub', 'ZCines'],
+              genre: genres.length ? genres : undefined,
+              keywords: [movieTitle, ...genres, ...countries, 'xem phim online', 'phim vietsub', 'ZCines'].filter(Boolean).join(', '),
+              actor: actors.length ? actors.map((a) => ({ '@type': 'Person', name: a })) : undefined,
+              director: directors.length ? directors.map((d) => ({ '@type': 'Person', name: d })) : undefined,
+              countryOfOrigin: countries.length ? countries.map((c) => ({ '@type': 'Country', name: c })) : undefined,
+              aggregateRating:
+                rating > 0 && votes > 0
+                  ? {
+                      '@type': 'AggregateRating',
+                      ratingValue: rating.toFixed(1),
+                      bestRating: '10',
+                      worstRating: '0',
+                      ratingCount: votes,
+                    }
+                  : undefined,
+              trailer: this.movie.trailer_id
+                ? {
+                    '@type': 'VideoObject',
+                    name: `Trailer ${movieTitle}`,
+                    embedUrl: `https://www.youtube.com/embed/${this.movie.trailer_id}`,
+                    thumbnailUrl: movieImage,
+                  }
+                : undefined,
+            }),
+          },
+          {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://zcines.com/home' },
+                { '@type': 'ListItem', position: 2, name: 'Phim mới', item: 'https://zcines.com/danh-sach/phim-moi-cap-nhat-v2' },
+                { '@type': 'ListItem', position: 3, name: movieTitle, item: movieUrl },
+              ],
             }),
           },
         ],
@@ -947,6 +1005,10 @@ export default {
                 }
               }
               this.movie.actors = this.getSafeArray(movieData.actor);
+              this.movie.actor = this.getSafeArray(movieData.actor);
+              this.movie.director = this.getSafeArray(movieData.director);
+              this.movie.country = this.getSafeArray(movieData.country);
+              this.movie.tmdb = movieData.tmdb || {};
               for (var i = 0; i < this.getSafeArray(movieData.country).length; i++) {
                 this.movie.genre = movieData.country[i];
               }
@@ -1087,6 +1149,10 @@ export default {
                   }
                 }
                 this.movie.actors = this.getSafeArray(movieData.actor);
+                this.movie.actor = this.getSafeArray(movieData.actor);
+                this.movie.director = this.getSafeArray(movieData.director);
+                this.movie.country = this.getSafeArray(movieData.country);
+                this.movie.tmdb = movieData.tmdb || {};
                 for (var i = 0; i < this.getSafeArray(movieData.country).length; i++) {
                   this.movie.genre = movieData.country[i];
                 }
@@ -1440,11 +1506,11 @@ export default {
   position: relative;
   width: 100%;
   height: clamp(320px, 80vh, 600px);
-  border-radius: 12px;
+  border-radius: 0 0 24px 24px;
   overflow: hidden;
   margin-bottom: 40px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  background: #111;
+  background: #0c0c14;
 }
 
 .banner-placeholder {
@@ -1673,7 +1739,7 @@ export default {
 }
 
 .movie-info-grid strong {
-  color: orange;
+  color: #ffb700;
 }
 
 .category-nowrap {
@@ -1770,7 +1836,7 @@ export default {
 .banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgb(58, 57, 57) 30%, transparent 80%);
+  background: linear-gradient(to top, rgba(7, 7, 12, 0.95) 30%, transparent 80%);
 }
 
 .banner-content {
@@ -1822,7 +1888,6 @@ export default {
   opacity: 0.8;
 }
 .episode-btn {
-  border-radius: 8px;
   border-radius: 10px;
   font-weight: 600;
   transition: all .25s ease;
@@ -1830,8 +1895,9 @@ export default {
   box-shadow: 0 8px 20px rgba(0,0,0,.4);
 }
 .episode-btn.v-btn--active {
-  background: linear-gradient(45deg,#ffb700,#ff8c00) !important;
-  color: black !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  box-shadow: 0 4px 14px rgba(255, 140, 0, 0.4);
 }
 
 .divider {
@@ -1869,9 +1935,9 @@ export default {
 }
 
 .action-btn:hover {
-  color: #ffd76b !important;
+  color: #ffb700 !important;
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 215, 107, 0.3);
+  box-shadow: 0 8px 20px rgba(255, 183, 0, 0.3);
 }
 
 .action-btn:active {
@@ -1904,8 +1970,8 @@ export default {
 }
 
 .watch-now {
-  background: linear-gradient(45deg,#ffd76b,#ffb700) !important;
-  color: black !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
   font-weight: 800;
   font-size: 18px;
   border-radius: 999px;
@@ -1914,7 +1980,7 @@ export default {
 }
 .tab.active {
   font-weight: 700;
-  border-bottom: 2px solid #ffd76b;
+  border-bottom: 2px solid #ffb700;
 }
 .section-tabs {
   margin-top: 35px;
@@ -1925,8 +1991,8 @@ export default {
 }
 .section-tabs .active {
   font-weight: bold;
-  color: #ffd76b;
-  border-bottom: 2px solid #ffd76b;
+  color: #ffb700;
+  border-bottom: 2px solid #ffb700;
 }
 .icon-ele {
   margin: 0 10px;
@@ -1978,7 +2044,8 @@ export default {
 
 .watch-now:hover {
   transform: translateY(-4px);
-  box-shadow: 0 15px 35px rgba(255,180,0,.5);
+  box-shadow: 0 15px 35px rgba(255,140,0,.5);
+  filter: brightness(1.06);
 }
 
 .watch-now:active {
@@ -2006,12 +2073,14 @@ export default {
 .poster-wrapper {
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,.7);
-  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 20px 50px rgba(0,0,0,.7), 0 0 30px rgba(255,140,0,.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
 }
 
 .poster-wrapper:hover {
   transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 26px 60px rgba(0,0,0,.75), 0 0 34px rgba(255,140,0,.18);
 }
 .v-tabs {
   border-bottom: 1px solid rgba(255,255,255,.08);
@@ -2023,13 +2092,18 @@ export default {
 }
 
 .v-tab.v-tab--selected {
-  color: #ffd76b !important;
+  color: #ffb700 !important;
 }
 .suggest-card {
-  background: #141414;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
   overflow: hidden;
-  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), border-color .35s ease, box-shadow .35s ease;
+}
+
+.suggest-card:hover {
+  border-color: rgba(255, 183, 0, 0.3);
 }
 
 .suggest-card:hover {
@@ -2063,14 +2137,15 @@ export default {
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 .play-btn-glow {
-  background: linear-gradient(45deg, #ffd76b, #ffb700) !important;
-  color: black !important;
-  box-shadow: 0 6px 20px rgba(255, 183, 0, 0.4) !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4) !important;
   transition: all 0.3s ease;
 }
 .play-btn-glow:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 25px rgba(255, 183, 0, 0.6) !important;
+  box-shadow: 0 10px 28px rgba(255, 140, 0, 0.6) !important;
+  filter: brightness(1.06);
 }
 .modern-ep-btn {
   border-radius: 8px !important;
@@ -2078,8 +2153,8 @@ export default {
   transition: all 0.25s ease;
 }
 .modern-ep-btn:hover {
-  background: #f8b230 !important;
-  color: black !important;
+  background: rgba(255, 183, 0, 0.16) !important;
+  color: #ffb700 !important;
   transform: translateY(-3px);
 }
 .suggest-card-inner {

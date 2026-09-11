@@ -873,12 +873,14 @@ export default {
 .view-all {
   font-size: 16px;
   font-weight: 600;
-  color: #ffcc00;
+  color: #ffb700;
   text-decoration: none;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
 }
 .view-all:hover {
   text-decoration: underline;
-  color: #ff9900;
+  color: #ffcc4d;
+  text-shadow: 0 0 14px rgba(255, 183, 0, 0.45);
 }
 
 .movie-title {
@@ -932,8 +934,8 @@ a {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .v-card:hover {
-  transform: scale(0.85);
-  box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6), 0 0 22px rgba(255, 140, 0, 0.12);
 }
 .movie-info {
   font-size: 13px;
@@ -988,7 +990,8 @@ a {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: #141414;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   transition:
     transform .45s cubic-bezier(.22,1,.36,1),
     box-shadow .45s ease,
@@ -1011,10 +1014,10 @@ a {
   transition: transform 0.35s ease;
 }
 .movie-card:hover {
-  transform: translateY(-12px) scale(0.85);
+  transform: translateY(-10px) scale(1.04);
   box-shadow:
     0 30px 60px rgba(0,0,0,0.8),
-    0 0 40px rgba(255,255,255,0.05);
+    0 0 34px rgba(255, 140, 0, 0.14);
   z-index: 20;
 }
 
@@ -1131,7 +1134,8 @@ a {
 .badge-top-right {
   top: 6px;
   right: 6px;
-  background-color: rgb(204, 35, 35) !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
 }
 
 .badge-bottom-left {
@@ -1188,7 +1192,8 @@ a {
   width: 260px;
   border-radius: 18px;
   overflow: hidden;
-  background: #141414;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   transition:
     transform .4s cubic-bezier(.22,1,.36,1),
     box-shadow .4s ease;
@@ -1197,7 +1202,9 @@ a {
 .trending-card:hover {
   transform: translateY(-10px) scale(1.06);
   box-shadow:
-    0 20px 50px rgba(0,0,0,0.8);
+    0 20px 50px rgba(0,0,0,0.8),
+    0 0 26px rgba(255, 140, 0, 0.14);
+  border-color: rgba(255, 183, 0, 0.3);
 }
 /* POSTER */
 .trending-poster {
@@ -1212,8 +1219,9 @@ a {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(0, 0, 0, 0.75);
-  color: #ffcc00;
+  background: rgba(10, 10, 18, 0.75);
+  backdrop-filter: blur(6px);
+  color: #ffcc4d;
   margin: 2px 0;
   font-size: 12px;
   border-radius: 999px;
@@ -1346,23 +1354,23 @@ a {
 }
 
 .ad-banner-0 .ad-banner-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background: linear-gradient(135deg, #ffb700 0%, #ff7a18 50%, #ff4d00 100%);
 }
 
 .ad-banner-1 .ad-banner-bg {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #ff512f 0%, #dd2476 50%, #ff512f 100%);
 }
 
 .ad-banner-2 .ad-banner-bg {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #4facfe 100%);
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 50%, #f7971e 100%);
 }
 
 .ad-banner-3 .ad-banner-bg {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 50%, #fa709a 100%);
+  background: linear-gradient(135deg, #e65c00 0%, #f9d423 50%, #e65c00 100%);
 }
 
 .ad-banner-4 .ad-banner-bg {
-  background: linear-gradient(135deg, #30cfd0 0%, #330867 50%, #30cfd0 100%);
+  background: linear-gradient(135deg, #b44d12 0%, #f2681f 50%, #b44d12 100%);
 }
 
 .ad-banner-content {
@@ -1539,19 +1547,15 @@ a {
 }
 .page-enter {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 40%),
-    radial-gradient(circle at 85% 0%, rgba(255,255,255,0.04), transparent 40%),
-    linear-gradient(to bottom, #111 0%, #0a0a0a 40%, #000 100%);
+  background: transparent;
 }
 .movie-list:hover .movie-card {
-  /* opacity: .45; */
-  transform: scale(.96);
+  transform: scale(0.98);
 }
 
 .movie-list .movie-card:hover {
   opacity: 1 !important;
-  transform: translateY(-12px) scale(1.1);
+  transform: translateY(-10px) scale(1.05);
 }
 @keyframes fadeUpModern {
   from {
@@ -1573,7 +1577,8 @@ a {
   position: relative;
   overflow: hidden;
   border-radius: 16px;
-  background: #141414;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   transition: transform .4s cubic-bezier(.22,1,.36,1);
 }
 
@@ -1653,8 +1658,8 @@ a {
 }
 
 .action-btn.primary {
-  background: #e50914 !important;
-  color: white !important;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
 }
 
 /* META */

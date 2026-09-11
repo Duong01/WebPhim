@@ -1057,9 +1057,15 @@ export default {
       watchInterval: null,
       items: [
         {
-          title: "Home",
+          title: "Trang chủ",
           disabled: false,
           href: "/home",
+        },
+
+        {
+          title: "Phim mới",
+          disabled: false,
+          href: "/danh-sach/phim-moi-cap-nhat-v2",
         },
 
         {
@@ -1388,39 +1394,42 @@ export default {
     },
 
     updateMeta() {
+      const epTitle = `${this.movie.title || this.movie.name} Tập ${this.movie.page}`;
+      const epDesc = `Xem ${this.movie.title} tập ${
+        this.movie.page
+      } vietsub, chất lượng cao cực mượt. ${
+        this.movie.description
+          ? this.movie.description.substring(0, 100) + "..."
+          : ""
+      }`;
+      const epUrl = window.location.href;
+      const epImage = this.movie.thumb_url;
+
       useHead({
-        title: `${this.movie.title || this.movie.name} Tập ${
-          this.movie.page
-        } Vietsub HD`,
+        title: `${epTitle} Vietsub HD`,
         meta: [
           {
             name: "description",
-            content: `Xem ${this.movie.title} tập ${
-              this.movie.page
-            } vietsub, chất lượng cao cực mượt. ${
-              this.movie.description
-                ? this.movie.description.substring(0, 100) + "..."
-                : ""
-            }`,
+            content: epDesc,
           },
-          { property: "og:title", content: this.movie.title },
-          { property: "og:description", content: this.movie.description },
-          { property: "og:image", content: this.movie.thumb_url },
-          { property: "og:url", content: window.location.href },
+          { property: "og:title", content: epTitle },
+          { property: "og:description", content: epDesc },
+          { property: "og:image", content: epImage },
+          { property: "og:url", content: epUrl },
           { property: "og:type", content: "video.episode" },
         ],
-        link: [{ rel: "canonical", href: window.location.href }],
+        link: [{ rel: "canonical", href: epUrl }],
         script: [
           {
             type: "application/ld+json",
             children: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "VideoObject",
-              name: `${this.movie.title} Tập ${this.movie.page}`,
-              description: this.movie.description,
-              thumbnailUrl: this.movie.thumb_url,
+              name: epTitle,
+              description: epDesc,
+              thumbnailUrl: epImage,
               uploadDate: new Date().toISOString(),
-              embedUrl: window.location.href,
+              embedUrl: epUrl,
             }),
           },
         ],
@@ -1692,6 +1701,7 @@ export default {
               this.movie.categoris = this.movies.category[0]?.slug || "";
               this.isLoading = false;
               this.updateMeta();
+              this.updateSEO();
 
               resolve(true);
             } else {
@@ -1861,6 +1871,7 @@ export default {
                 this.isLoading = false;
                 this.isLoadingData = false;
                 this.updateMeta();
+                this.updateSEO();
                 resolve(true);
                 return;
               }
@@ -1917,37 +1928,113 @@ export default {
     // },
 
     updateSEO() {
+      const movieTitle = this.movie.title || this.movie.name;
+      const movieDesc =
+        this.movie.description ||
+        `Xem phim ${movieTitle} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.`;
+      const movieUrl = window.location.href.split("?")[0];
+      const movieImage = this.movie.thumb_url || this.movie.poster_url;
+      const rating = Number(this.movies?.tmdb?.vote_average) || 0;
+      const votes = Number(this.movies?.tmdb?.vote_count) || 0;
+      const actors = (this.movies?.actor || []).filter(Boolean);
+      const directors = (this.movies?.director || []).filter(Boolean);
+      const genres = (this.movies?.category || [])
+        .map((c) => (typeof c === "string" ? c : c?.name))
+        .filter(Boolean);
+      const countries = (this.movies?.country || [])
+        .map((c) => (typeof c === "string" ? c : c?.name))
+        .filter(Boolean);
+
+      const movieSchema = {
+        "@context": "https://schema.org",
+        "@type": "Movie",
+        name: movieTitle,
+        alternateName: this.movie.name !== movieTitle ? this.movie.name : undefined,
+        url: movieUrl,
+        image: movieImage,
+        description: movieDesc,
+        inLanguage: "vi",
+        dateCreated: this.movie.year || new Date().getFullYear().toString(),
+        genre: genres.length ? genres : undefined,
+        keywords: [...genres, ...countries, "xem phim", "vietsub", "zcines"]
+          .filter(Boolean)
+          .join(", "),
+        actor: actors.length
+          ? actors.map((a) => ({ "@type": "Person", name: a }))
+          : undefined,
+        director: directors.length
+          ? directors.map((d) => ({ "@type": "Person", name: d }))
+          : undefined,
+        countryOfOrigin: countries.length
+          ? countries.map((c) => ({ "@type": "Country", name: c }))
+          : undefined,
+        aggregateRating:
+          rating > 0 && votes > 0
+            ? {
+                "@type": "AggregateRating",
+                ratingValue: rating.toFixed(1),
+                bestRating: "10",
+                worstRating: "0",
+                ratingCount: votes,
+              }
+            : undefined,
+        trailer: this.movie.trailer_id
+          ? {
+              "@type": "VideoObject",
+              name: `Trailer ${movieTitle}`,
+              embedUrl: `https://www.youtube.com/embed/${this.movie.trailer_id}`,
+              thumbnailUrl: movieImage,
+            }
+          : undefined,
+      };
+
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Trang chủ", item: "https://zcines.com/home" },
+          { "@type": "ListItem", position: 2, name: "Phim mới", item: "https://zcines.com/danh-sach/phim-moi-cap-nhat-v2" },
+          { "@type": "ListItem", position: 3, name: movieTitle, item: movieUrl },
+        ],
+      };
+
       useHead({
-        title: `${this.movie.title} Vietsub FullHD - Xem Phim ${this.movie.title} Mới Nhất | ZCines`,
+        title: `${movieTitle} Vietsub FullHD - Xem Phim ${movieTitle} Mới Nhất | ZCines`,
         meta: [
           {
             name: "description",
-            content:
-              this.movie.description ||
-              `Xem phim ${this.movie.title} Vietsub FullHD chất lượng cao. Cập nhật tập mới nhất nhanh chóng, xem online miễn phí tại ZCines.`,
+            content: movieDesc,
           },
-          { property: "og:title", content: this.movie.title },
-          { property: "og:description", content: this.movie.description },
           {
-            property: "og:image",
-            content: this.movie.thumb_url || this.movie.poster_url,
+            name: "keywords",
+            content: [
+              `xem phim ${movieTitle}`,
+              `${movieTitle} vietsub`,
+              `${movieTitle} full hd`,
+              `${movieTitle} thuyết minh`,
+              ...genres,
+              ...countries,
+              "xem phim online miễn phí",
+              "zcines",
+            ]
+              .filter(Boolean)
+              .join(", "),
           },
-          { property: "og:url", content: window.location.href },
+          { property: "og:title", content: movieTitle },
+          { property: "og:description", content: movieDesc },
+          { property: "og:image", content: movieImage },
+          { property: "og:url", content: movieUrl },
           { property: "og:type", content: "video.movie" },
         ],
-        link: [{ rel: "canonical", href: window.location.href }],
+        link: [{ rel: "canonical", href: movieUrl }],
         script: [
           {
             type: "application/ld+json",
-            children: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Movie",
-              name: this.movie.title,
-              image: this.movie.thumb_url || this.movie.poster_url,
-              description: this.movie.description,
-              dateCreated:
-                this.movie.year || new Date().getFullYear().toString(),
-            }),
+            children: JSON.stringify(movieSchema),
+          },
+          {
+            type: "application/ld+json",
+            children: JSON.stringify(breadcrumbSchema),
           },
         ],
       });
@@ -2779,9 +2866,9 @@ export default {
   border-radius: 12px;
   background: linear-gradient(
     135deg,
-    rgba(255, 200, 0, 0.15),
-    rgba(255, 61, 0, 0.1),
-    rgba(0, 229, 255, 0.15)
+    rgba(255, 183, 0, 0.2),
+    rgba(255, 94, 0, 0.14),
+    rgba(255, 122, 24, 0.16)
   );
   filter: blur(8px);
   opacity: 0;
@@ -2795,10 +2882,10 @@ export default {
 
 /* Toolbar hiện đại phía dưới video */
 .modern-toolbar {
-  background: rgba(30, 30, 30, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: rgba(18, 18, 28, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 .server-tabs-wrapper::-webkit-scrollbar,
@@ -2867,10 +2954,10 @@ export default {
 }
 
 .modern-nav .nav-episode-btn:hover:not(:disabled) {
-  background-color: #333 !important;
+  background-color: rgba(255, 183, 0, 0.14) !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
-  color: #f8b230 !important;
+  color: #ffb700 !important;
 }
 
 .modern-nav .nav-episode-btn:disabled {
@@ -2909,6 +2996,21 @@ export default {
 .episode-panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Glass surface overrides for template v-cards */
+.movie-info-card,
+.modern-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 18px !important;
+  backdrop-filter: blur(10px);
+}
+
+.episode-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)) !important;
+  border-radius: 18px !important;
+  backdrop-filter: blur(10px);
 }
 
 .episode-list {
@@ -2968,7 +3070,7 @@ export default {
 }
 
 .suggested-item:hover {
-  background-color: #2e2e2e;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ===== SUGGESTED MOVIES SCROLL LAYOUT ===== */
@@ -3024,8 +3126,9 @@ export default {
 }
 
 .suggested-card-wrapper {
-  background: #2e2e2e;
-  border-radius: 12px;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -3035,7 +3138,8 @@ export default {
 }
 
 .suggested-movie-card:hover .suggested-card-wrapper {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 183, 0, 0.3);
 }
 
 .suggested-poster {
@@ -3043,7 +3147,7 @@ export default {
   width: 100%;
   padding-bottom: 150%;
   overflow: hidden;
-  background: #1e1e1e;
+  background: #12121c;
 }
 
 .suggested-poster-img {
@@ -3101,21 +3205,27 @@ export default {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   word-break: break-word;
+  transition: color 0.25s ease;
+}
+
+.suggested-movie-card:hover .suggested-title {
+  color: #ffb700;
 }
 
 .suggested-meta {
   display: flex;
   gap: 8px;
   font-size: clamp(10px, 3vw, 13px);
-  color: #ffd600;
+  color: #ffcc4d;
   font-weight: 500;
   flex-wrap: wrap;
 }
 
 .suggested-episode {
-  background: rgba(255, 214, 0, 0.2);
+  background: rgba(255, 183, 0, 0.18);
+  color: #ffcc4d;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .suggested-lang {
@@ -3142,8 +3252,9 @@ export default {
   min-width: 40px;
   max-width: 40px;
   border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 10, 18, 0.75);
+  backdrop-filter: blur(8px);
   color: white;
   cursor: pointer;
   display: flex;
@@ -3155,8 +3266,10 @@ export default {
 }
 
 .suggested-nav-btn:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  color: #0a0a12;
   transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(255, 140, 0, 0.45);
 }
 
 .suggested-nav-btn:active {
@@ -3383,10 +3496,11 @@ a {
   transition: all 0.3s;
 }
 .custom-tabs .v-tab.active-tab {
-  color: #000;
-  background-color: #f8b230;
+  color: #0a0a12;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
   border-radius: 10px;
   font-weight: bold;
+  box-shadow: 0 4px 14px rgba(255, 140, 0, 0.4);
 }
 
 .movie-info p {
@@ -3439,8 +3553,9 @@ a {
 .movie-card {
   flex: 0 0 auto;
   width: 200px;
-  background-color: #2e2e2e;
-  border-radius: 12px;
+  background: linear-gradient(160deg, #191926, #12121c);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
   overflow: hidden;
   scroll-snap-align: start;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -3448,7 +3563,8 @@ a {
 
 .movie-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 183, 0, 0.3);
 }
 
 .card-inner {
@@ -3503,8 +3619,8 @@ a {
 
 .episode-chip {
   display: inline-block;
-  background-color: #ffd600;
-  color: black;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  color: #0a0a12;
   padding: 2px 8px;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -3593,7 +3709,7 @@ a {
 
 .trailer-thumb:hover .trailer-overlay {
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid yellow;
+  border: 1px solid rgba(255, 183, 0, 0.7);
 }
 
 .trailer-thumb:hover .trailer-play {
@@ -3655,7 +3771,11 @@ a {
 }
 .btnnext {
   border-radius: 10px;
-  color: #757575;
+  color: #a4a7b4;
+  transition: color 0.25s ease;
+}
+.btnnext:hover {
+  color: #ffb700;
 }
 .watch-page {
   margin: 0 !important;
@@ -3710,11 +3830,12 @@ a {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .episode-item-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 183, 0, 0.14) !important;
+  color: #ffb700;
   transform: translateY(-2px);
 }
 .episode-item-active {
-  box-shadow: 0 4px 15px rgba(var(--v-theme-primary), 0.4) !important;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4) !important;
   transform: scale(1.02);
 }
 .controls {
@@ -3919,7 +4040,7 @@ a {
 }
 .control-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(248, 178, 48, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 183, 0, 0.35);
 }
 .control-btn .v-icon {
   color: #fff;
@@ -3956,13 +4077,13 @@ a {
 .progress-filled {
   position: absolute;
   height: 100%;
-  background: linear-gradient(90deg, #f8b230, #ff6a00);
+  background: linear-gradient(90deg, #ffb700, #ff5e00);
   width: 0%;
   border-radius: 8px;
   transition: width 0.1s linear;
   will-change: width;
   pointer-events: none;
-  box-shadow: 0 0 8px rgba(248, 178, 48, 0.5);
+  box-shadow: 0 0 8px rgba(255, 183, 0, 0.5);
 }
 .progress-hover-time {
   position: absolute;
@@ -4030,7 +4151,7 @@ a {
 }
 
 .movie-info-grid strong {
-  color: orange;
+  color: #ffb700;
 }
 
 .category-nowrap {
@@ -4049,7 +4170,7 @@ a {
 }
 .info-label {
   min-width: 90px;
-  color: orange;
+  color: #ffb700;
   font-weight: 600;
 }
 .info-value {
@@ -4061,7 +4182,7 @@ a {
   cursor: pointer;
 }
 .hover-text:hover {
-  color: #f8b230;
+  color: #ffb700;
 }
 .avatar-with-crown {
   position: relative;
@@ -4301,7 +4422,7 @@ a {
 }
 
 .modern-player .jw-progress {
-  background: linear-gradient(90deg, #ff004c, #ff5500) !important;
+  background: linear-gradient(90deg, #ffb700, #ff5e00) !important;
 }
 
 /* CONTROL BAR */

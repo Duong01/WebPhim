@@ -186,7 +186,7 @@ export default {
 .movie-card {
   width: 300px;
   flex: 0 0 auto;
-  transition: 0.3s;
+  transition: transform 0.35s var(--zc-ease);
 }
 .movie-card:hover {
   transform: translateY(-6px);
@@ -198,10 +198,16 @@ export default {
 }
 
 .thumb {
-  border-radius: 12px;
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.35s ease;
 }
 
-/* POSTER (nhỏ góc trái giống ảnh) */
+.movie-card:hover .thumb {
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 22px rgba(255, 140, 0, 0.15);
+}
+
+/* POSTER (small, bottom-left) */
 .poster {
   position: absolute;
   bottom: -30px;
@@ -210,9 +216,9 @@ export default {
   width: 70px;
   height: 100px;
 
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-  border: 2px solid #111;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
 /* INFO */
@@ -225,11 +231,16 @@ export default {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.3;
+  transition: color 0.25s ease;
+}
+
+.movie-card:hover .name {
+  color: #ffb700;
 }
 
 .origin {
   font-size: 13px;
-  opacity: 0.7;
+  color: var(--zc-text-dim);
   margin-top: 2px;
 }
 
@@ -242,37 +253,43 @@ export default {
 }
 
 .tag {
-  background: red;
-  color: white;
+  background: var(--zc-grad);
+  color: #0a0a12;
   font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
 }
 
 .year {
-  color: #ff3d00;
+  color: #ffb700;
+  font-weight: 600;
 }
 
 .time {
-  opacity: 0.8;
+  color: var(--zc-text-dim);
 }
 
 /* ARROWS */
 .arrow {
   position: absolute;
-
   top: 40%;
-
   width: 50px;
   height: 50px;
-
-  background: rgba(0, 0, 0, 0.75);
-
+  background: rgba(10, 10, 18, 0.8);
   color: white;
-
   border-radius: 50%;
-
   z-index: 30;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s var(--zc-ease);
+}
+
+.arrow:hover {
+  background: var(--zc-grad);
+  color: #0a0a12;
+  box-shadow: 0 8px 22px rgba(255, 140, 0, 0.45);
+  transform: scale(1.06);
 }
 
 .arrow-left {
@@ -286,8 +303,15 @@ export default {
 /* SKELETON */
 .skeleton {
   height: 180px;
-  border-radius: 12px;
-  background: #222;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #16161f 25%, #23232f 37%, #16161f 63%);
+  background-size: 200% 100%;
+  animation: skeleton 1.2s infinite;
+}
+
+@keyframes skeleton {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 /* MOBILE */
@@ -315,11 +339,11 @@ export default {
   color: inherit;
 }
 .movie-row {
-  position: relative; /* thêm dòng này */
+  position: relative;
 }
 
 .row-wrapper {
-    position: relative;
+  position: relative;
   overflow: visible;
 }
 </style>

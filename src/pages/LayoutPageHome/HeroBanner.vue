@@ -136,10 +136,12 @@ export default {
 /* ===== TITLE ===== */
 
 .category-title{
- font-size: clamp(12px, 3.2vw, 18px);
+ font-size: clamp(13px, 3.2vw, 19px);
 font-weight:800;
 letter-spacing:.6px;
 margin-bottom:8px;
+color: #ffb700;
+text-shadow: 0 0 18px rgba(255, 183, 0, 0.35);
 }
 
 
@@ -157,7 +159,7 @@ gap:14px;
 
 }
 
-/* animation khi load */
+/* load animation */
 
 .trending-track{
 animation:fadeUp .6s ease forwards;
@@ -188,7 +190,9 @@ border-radius:16px;
 
 overflow:hidden;
 
-background:#141414;
+background: linear-gradient(160deg, var(--zc-surface), var(--zc-bg-2));
+
+border: 1px solid var(--zc-border);
 
 cursor:pointer;
 
@@ -197,19 +201,23 @@ transform:translateZ(0);
 will-change:transform;
 
 transition:
-transform .45s cubic-bezier(.22,1,.36,1),
-box-shadow .45s ease;
+transform .45s var(--zc-ease),
+box-shadow .45s ease,
+border-color .45s ease;
 
 }
 
-/* hover animation */
+/* hover */
 
 .trending-card:hover{
 
-transform:translateY(-10px) scale(1.06);
+transform:translateY(-10px) scale(1.05);
 
 box-shadow:
-0 20px 60px rgba(0,0,0,.8);
+0 20px 60px rgba(0,0,0,.8),
+0 0 26px rgba(255,140,0,.14);
+
+border-color: rgba(255, 183, 0, 0.35);
 
 z-index:5;
 
@@ -228,12 +236,12 @@ overflow:hidden;
 
 }
 
-/* zoom image nhẹ */
+/* gentle image zoom */
 
 .trending-poster img,
 .trending-poster .v-image__image{
 
-transition:transform .6s cubic-bezier(.22,1,.36,1);
+transition:transform .6s var(--zc-ease);
 
 }
 
@@ -258,15 +266,17 @@ padding:3px 10px;
 
 font-size:12px;
 
-font-weight:600;
+font-weight:700;
 
 border-radius:999px;
 
-background:rgba(0,0,0,.7);
+background:rgba(0,0,0,.72);
 
 backdrop-filter:blur(8px);
 
-color:#ffcc00;
+color:#ffcc4d;
+
+border: 1px solid rgba(255, 255, 255, 0.12);
 
 }
 
@@ -286,9 +296,9 @@ font-weight:900;
 
 line-height:1;
 
-text-shadow:2px 2px 10px rgba(0,0,0,.7);
+text-shadow:2px 2px 12px rgba(0,0,0,.75);
 
-transition:transform .4s cubic-bezier(.22,1,.36,1);
+transition:transform .4s var(--zc-ease);
 
 }
 
@@ -346,13 +356,19 @@ display:-webkit-box;
 
 -webkit-box-orient:vertical;
 
+transition: color .25s ease;
+
+}
+
+.trending-card:hover .trending-title{
+  color: #ffb700;
 }
 
 .trending-original{
 
 font-size:12px;
 
-color:#aaa;
+color:var(--zc-text-dim);
 
 margin-top:2px;
 

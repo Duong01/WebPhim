@@ -281,7 +281,6 @@ export default {
 
 .row-wrapper {
   position: relative;
-
   overflow: visible;
 }
 
@@ -289,15 +288,10 @@ export default {
 
 .movie-scroll {
   display: flex;
-
   gap: 18px;
-
   overflow-x: auto;
-
   padding: 10px 20px;
-
   scroll-behavior: smooth;
-
   scrollbar-width: none;
 }
 
@@ -309,18 +303,15 @@ export default {
 
 .movie-card {
   flex: 0 0 auto;
-
   width: 260px;
   position: relative;
 }
 
 .card-inner {
   position: relative;
-  border-radius: 12px;
-
+  border-radius: 14px;
   overflow: visible;
-
-  transition: 0.35s;
+  transition: transform 0.4s var(--zc-ease);
 }
 
 .movie-card:hover {
@@ -328,156 +319,139 @@ export default {
 }
 
 .movie-card:hover .card-inner {
-  transform: scale(1.15) translateY(-10px);
+  transform: scale(1.12) translateY(-10px);
 }
 
 /* POSTER */
 
 .poster {
-  border-radius: 12px;
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.65);
+  transition: box-shadow 0.35s ease;
+}
 
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+.movie-card:hover .poster {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 140, 0, 0.18);
 }
 
 /* HOVER */
 
 .hover-overlay {
   position: absolute;
-
   inset: 0;
-
   display: flex;
-
   align-items: flex-end;
-
   padding: 12px;
-
-  border-radius: 12px;
-
+  border-radius: 14px;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.95),
-    rgba(0, 0, 0, 0.5),
+    rgba(5, 5, 10, 0.95),
+    rgba(5, 5, 10, 0.5),
     transparent
   );
-
   opacity: 0;
-
-  transition: 0.3s;
+  transition: opacity 0.3s ease;
 }
 
 .movie-card:hover .hover-overlay {
   opacity: 1;
 }
 
-/* TEXT */
-
-.title {
-  font-size: 15px;
-
-  font-weight: 600;
-}
-
-.meta {
-  font-size: 12px;
-
-  opacity: 0.8;
-}
-
-.genres {
-  font-size: 11px;
-
-  opacity: 0.7;
-}
-
 /* ACTION */
 
 .actions {
   display: flex;
-
   gap: 6px;
-
   margin-top: 6px;
 }
 
 .actions button {
-  width: 32px;
-  height: 32px;
-
+  width: 34px;
+  height: 34px;
   background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  transition: all 0.25s var(--zc-ease);
+}
 
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.actions button:hover {
+  background: rgba(255, 183, 0, 0.25);
+  border-color: rgba(255, 183, 0, 0.6);
+  transform: scale(1.08);
 }
 
 /* BADGES */
 
 .badges {
   position: absolute;
-
   top: 8px;
   left: 8px;
-
   display: flex;
-
   gap: 6px;
+  z-index: 2;
 }
 
 .badge {
   font-size: 11px;
-
-  padding: 3px 6px;
-
+  padding: 3px 7px;
   border-radius: 6px;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
 }
 
 .quality {
-  background: #ff3d00;
-  color: white;
+  background: var(--zc-grad);
+  color: #0a0a12;
+  box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4);
 }
 
 .lang {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.72);
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* EPISODE */
 
 .episode {
   position: absolute;
-
   bottom: 8px;
   right: 8px;
-
   font-size: 12px;
-
-  background: rgba(0, 0, 0, 0.6);
-
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
   padding: 4px 8px;
-
   border-radius: 6px;
-
+  color: #ffcc4d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 4px;
+  z-index: 2;
 }
 
 /* ARROWS */
 
 .arrow {
   position: absolute;
-
   top: 40%;
-
   width: 50px;
   height: 50px;
-
-  background: rgba(0, 0, 0, 0.75);
-
+  background: rgba(10, 10, 18, 0.8);
   color: white;
-
   border-radius: 50%;
-
   z-index: 30;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s var(--zc-ease);
+}
+
+.arrow:hover {
+  background: var(--zc-grad);
+  color: #0a0a12;
+  box-shadow: 0 8px 22px rgba(255, 140, 0, 0.45);
+  transform: scale(1.06);
 }
 
 .arrow-left {
@@ -499,36 +473,35 @@ export default {
     display: none;
   }
 }
+
 .movie-title {
   font-size: 14px;
-
   font-weight: 600;
-
   margin-top: 6px;
-
   line-height: 1.3;
-
   display: -webkit-box;
-
   -webkit-line-clamp: 2;
-
   -webkit-box-orient: vertical;
-
   overflow: hidden;
+  transition: color 0.25s ease;
+}
+
+.movie-card:hover .movie-title {
+  color: #ffb700;
 }
 
 .movie-meta {
   font-size: 12px;
-
   opacity: 0.75;
-
   margin-top: 2px;
 }
+
 @media (max-width: 768px) {
   .hover-overlay {
     display: none;
   }
 }
+
 .movie-link {
   text-decoration: none;
   color: inherit;

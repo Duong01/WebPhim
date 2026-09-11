@@ -21,6 +21,7 @@
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn
           text
+          class="bottom-nav-btn"
           :to="{ path: '/home' }"
           :class="{ 'bottom-nav-active': $route.path === '/home' }"
         >
@@ -47,6 +48,7 @@
           <template #activator="{ props }">
             <v-btn
               text
+              class="bottom-nav-btn"
               v-bind="props"
               @click="getTheLoai"
               :loading="loadingTheLoai"
@@ -57,14 +59,14 @@
               <v-icon right>mdi-menu-down</v-icon>
             </v-btn>
           </template>
-          <v-list style="background-color: #1e1e1e">
+          <v-list style="background-color: transparent" class="menu-glass">
             <v-sheet
               class="pa-4"
               style="
-                max-width: 600px;
-                background-color: #1e1e1e;
+                max-width: 640px;
+                background-color: transparent;
                 color: white;
-                border-radius: 8px;
+                border-radius: 16px;
               "
             >
               <v-row dense>
@@ -77,7 +79,7 @@
                 >
                   <RouterLink
                     :to="{ name: 'TheLoai', params: { path: genre.slug } }"
-                    class="d-block text-white text-body-2 mb-2"
+                    class="menu-link d-block text-white text-body-2 mb-2"
                     style="text-decoration: none"
                   >
                   <v-icon size="16" class="mr-1">mdi-filmstrip</v-icon>
@@ -94,6 +96,7 @@
           <template #activator="{ props }">
             <v-btn
               text
+              class="bottom-nav-btn"
               v-bind="props"
               @click="getQuocGia"
               :loading="loadingQuocGia"
@@ -104,14 +107,14 @@
               <v-icon right>mdi-menu-down</v-icon>
             </v-btn>
           </template>
-          <v-list style="background-color: #1e1e1e">
+          <v-list style="background-color: transparent" class="menu-glass">
             <v-sheet
               class="pa-4"
               style="
-                max-width: 600px;
-                background-color: #1e1e1e;
+                max-width: 640px;
+                background-color: transparent;
                 color: white;
-                border-radius: 8px;
+                border-radius: 16px;
               "
             >
               <v-row dense>
@@ -124,7 +127,7 @@
                 >
                   <RouterLink
                     :to="{ name: 'QuocGia', params: { path: country.slug } }"
-                    class="d-block text-white text-body-2 mb-2"
+                    class="menu-link d-block text-white text-body-2 mb-2"
                     style="text-decoration: none"
                   >
                     {{ country.name }}
@@ -138,6 +141,7 @@
          
         <v-btn
           text
+          class="bottom-nav-btn"
           :to="{ path: '/phim-chieu-rap' }"
           :class="{ 'bottom-nav-active': $route.path === '/phim-chieu-rap' }"
         >
@@ -147,6 +151,7 @@
         </v-btn>
         <v-btn
           text
+          class="bottom-nav-btn"
           :to="{ path: '/movie-schedule' }"
           :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
         >
@@ -192,33 +197,42 @@
         
         <v-list
           v-if="movieSuggestions.length > 0"
+          class="menu-glass"
           style="
             min-width: 100%;
-            max-height: 250px;
+            max-height: 280px;
             overflow-y: auto;
-            background-color: #1e1e1e;
+            background-color: transparent;
             color: white;
-            border-radius: 8px;
+            border-radius: 14px;
           "
         >
           <v-list-item
             v-for="(item, index) in movieSuggestions"
             :key="index"
+            class="suggestion-item"
             @click="selectSuggestion(item)"
           >
+            <template #prepend>
+              <v-icon size="18" color="rgba(255,255,255,.45)">mdi-history</v-icon>
+            </template>
             <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
         </v-list>
         <v-list
           v-else
+          class="menu-glass"
           style="
             min-width: 100%;
-            background-color: #1e1e1e;
+            background-color: transparent;
             color: white;
-            border-radius: 8px;
+            border-radius: 14px;
           "
         >
           <v-list-item>
+            <template #prepend>
+              <v-icon size="18" color="rgba(255,255,255,.45)">mdi-magnify</v-icon>
+            </template>
             <v-list-item-title>{{
               $t("Không tìm thấy kết quả")
             }}</v-list-item-title>
@@ -229,6 +243,7 @@
       <!-- Theme -->
       <v-btn
         icon
+        class="bottom-nav-btn"
         title="Theme"
         @click="changeTheme"
         v-show="$vuetify.display.mdAndUp"
@@ -238,7 +253,7 @@
       <!-- Ngôn ngữ -->
       <v-menu offset-y v-if="$vuetify.display.mdAndUp">
         <template #activator="{ props }">
-          <v-btn icon v-bind="props" :title="$t('Ngôn ngữ')">
+          <v-btn class="bottom-nav-btn" icon v-bind="props" :title="$t('Ngôn ngữ')">
             <v-icon>mdi-translate</v-icon>
           </v-btn>
         </template>
@@ -256,7 +271,7 @@
       <!-- Tài khoản -->
       <v-menu offset-y v-if="!isLogin">
         <template #activator="{ props }">
-          <v-btn icon v-bind="props" :title="$t('Tài khoản')">
+          <v-btn class="bottom-nav-btn" icon v-bind="props" :title="$t('Tài khoản')">
             <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
               <v-icon v-else>mdi-account-circle</v-icon> {{ account }}
           </v-btn>
@@ -331,6 +346,7 @@
       >
     
       <v-btn 
+        class="bottom-nav-btn"
         :to="{ path: '/home' }"
         :class="{ 'bottom-nav-active': $route.path === '/home' }"
       >
@@ -338,13 +354,14 @@
         <span>{{ $t("Trang chủ") }}</span>
       </v-btn>
       <v-btn 
+      class="bottom-nav-btn"
         :to="{ path: '/phim-bo' }"
         :class="{ 'bottom-nav-active': $route.path === '/phim-bo' }">
         <v-icon size="22">mdi-movie</v-icon>
         <span>{{ $t("Phim Bộ") }}</span>
       </v-btn>
       <v-btn
-          
+          class="bottom-nav-btn"
           :to="{ path: '/phim-le' }"
           :class="{ 'bottom-nav-active': $route.path === '/phim-le' }"
         >
@@ -352,6 +369,7 @@
           <span>{{ $t("Phim Lẻ") }}</span>
       </v-btn>
       <v-btn
+      class="bottom-nav-btn"
       :to="{ path: '/hoat-hinh' }"
       :class="{ 'bottom-nav-active': $route.path === '/hoat-hinh' }"
       v-show="$vuetify.display.mdAndUp"
@@ -362,14 +380,16 @@
 
       
       <v-btn
+      class="bottom-nav-btn"
           :to="{ path: '/movie-schedule' }"
           :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
           v-show="$vuetify.display.mdAndDown"
         >
-        <v-icon start size="22">mdi-calendar</v-icon>
+        <v-icon size="22">mdi-calendar</v-icon>
           <span>{{ $t("Lịch chiếu") }}</span>
         </v-btn>
         <v-btn 
+        class="bottom-nav-btn"
         :to="{ path: '/favorite' }"
           :class="{ 'bottom-nav-active': $route.path === '/favorite' }"
       >
@@ -866,16 +886,72 @@ export default {
 </script>
 
 <style scoped>
+/* =========================
+   NAVBAR — glass cinema
+========================= */
 .main-navbar {
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(7, 7, 12, 0.92), rgba(7, 7, 12, 0.78)) !important;
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
   top: 0;
   z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
+/* Viền gradient mảnh dưới navbar */
+.main-navbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 183, 0, 0.55), rgba(255, 94, 0, 0.55), transparent);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* =========================
+   MENU DROPDOWN — glass
+========================= */
+.menu-glass {
+  background: rgba(14, 14, 22, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.menu-link {
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.menu-link:hover {
+  background: linear-gradient(135deg, rgba(255, 183, 0, 0.16), rgba(255, 94, 0, 0.16));
+  color: #ffb700 !important;
+  transform: translateX(3px);
+}
+
+.suggestion-item {
+  border-radius: 10px;
+  margin: 2px 6px;
+  transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* =========================
+   SEARCH
+========================= */
 .search-wrapper {
-  flex: 1;                /* 🔥 cho phép giãn */
-  max-width: 420px;       /* desktop */
+  flex: 1;
+  max-width: 420px;
   min-width: 200px;
 }
 
@@ -888,6 +964,19 @@ export default {
 .search-input {
   width: 100%;
 }
+
+.search-input :deep(.v-field) {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.search-input :deep(.v-field--focused) {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 183, 0, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 183, 0, 0.15);
+}
+
 .text-green {
   color: #00e165 !important;
 }
@@ -895,6 +984,10 @@ export default {
 .v-spacer {
   flex-grow: 0 !important;
 }
+
+/* =========================
+   ACCOUNT
+========================= */
 .account-btn {
   display: flex;
   align-items: center;
@@ -914,28 +1007,22 @@ export default {
 .account-menu-name {
   font-weight: 600;
 }
-/* =========================
-   WRAPPER CENTER
-========================= */
 
-.bottom-navbar-wrapper {
-  position: fixed;
-  bottom: 14px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: 100%;
-  display: flex;
+.avatar-with-crown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+}
 
-  z-index: 1005;
-
-  pointer-events: none;
+.crown-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
 }
 
 /* =========================
-   NAVBAR
+   BOTTOM NAVBAR — floating dock
 ========================= */
 
 .bottom-navbar {
@@ -943,34 +1030,31 @@ export default {
 
   width: min(780px, calc(100vw - 24px)) !important;
 
-  border-radius: 24px !important;
+  border-radius: 26px !important;
 
-  background: rgba(20, 20, 20, 0.72) !important;
+  background: rgba(12, 12, 20, 0.78) !important;
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
 
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 
   box-shadow:
-    0 8px 32px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.05);
+    0 14px 44px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 
   padding: 8px;
 
   overflow: hidden;
-margin: 0 auto;
-  transition:
-    transform .45s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity .35s ease;
+  margin: 0 auto;
 
   will-change: transform;
   position: fixed;
-  bottom: 0;
+  bottom: 10px;
   left: 0;
   right: 0;
   z-index: 1005;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
 }
 
 /* Content */
@@ -986,12 +1070,16 @@ margin: 0 auto;
 /* Hidden */
 
 .bottom-navbar--hidden {
-  transform: translateY(140%);
+  transform: translateY(160%);
   opacity: 0;
   pointer-events: none;
 }
 
 /* BUTTON */
+
+/* =========================
+   BOTTOM NAV BUTTON
+========================= */
 
 .bottom-nav-btn {
   position: relative;
@@ -1001,105 +1089,81 @@ margin: 0 auto;
   overflow: hidden;
 
   transition:
-    all .28s cubic-bezier(0.22, 1, 0.36, 1);
+    all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 
-  color: rgba(255,255,255,0.72) !important;
+  color: rgba(255, 255, 255, 0.72) !important;
 
   font-weight: 500;
-
   letter-spacing: 0.2px;
 
-  min-width: unset !important;
+  min-width: 0 !important;
+
+  /* Quan trọng */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 3px !important;
+
+  padding: 6px 10px !important;
 }
 
-/* Hover desktop */
+/* Vuetify thường đặt content bên trong button */
+.bottom-nav-btn :deep(.v-btn__content) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
 
-.bottom-nav-btn:hover {
-  transform: translateY(-2px);
+  gap: 3px !important;
 
-  background: rgba(255,255,255,0.06);
-
-  color: white !important;
-}
-
-/* ACTIVE */
-
-.bottom-nav-active {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(0, 229, 255, 0.18),
-      rgba(98, 0, 255, 0.22)
-    ) !important;
-
-  color: #ffffff !important;
-
-  box-shadow:
-    0 4px 18px rgba(0,229,255,0.18);
-
-  transform: translateY(-4px) scale(1.02);
-}
-
-/* Thanh sáng phía trên */
-
-.bottom-nav-active::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 32px;
-  height: 4px;
-
-  border-radius: 20px;
-
-
-  background: linear-gradient(
-    90deg,
-    #00e5ff,
-    #7c4dff
-  );
-
-  box-shadow:
-    0 0 12px rgba(0,229,255,0.9);
+  width: 100%;
+  height: 100%;
 }
 
 /* ICON */
+.bottom-nav-btn :deep(.v-icon) {
+  flex: 0 0 auto !important;
 
-.bottom-nav-btn .v-icon {
+  margin: 0 !important;
+
+  width: 22px;
+  height: 22px;
+
   transition:
-    transform .3s ease,
-    color .3s ease;
-
-  margin-bottom: 2px;
-}
-
-/* ACTIVE ICON */
-
-.bottom-nav-active .v-icon {
-  transform: scale(1.18) translateY(-1px);
-
-  color: rgb(88, 151, 247) !important;
-
-  filter: drop-shadow(0 0 8px rgba(0,229,255,0.65));
+    transform 0.3s ease,
+    color 0.3s ease;
 }
 
 /* TEXT */
+.bottom-nav-btn :deep(span) {
+  display: block !important;
 
-.bottom-nav-btn span {
+  margin: 0 !important;
+
   font-size: 11px;
+  line-height: 14px;
+
   font-weight: 600;
 
-  transition: all .25s ease;
+  white-space: nowrap;
 
   text-transform: none;
+
+  transition: all 0.25s ease;
 }
 
-/* ACTIVE TEXT */
+/* ACTIVE */
+.bottom-nav-active .v-icon {
+  transform: scale(1.18) translateY(-1px);
+
+  color: #ffb700 !important;
+
+  filter: drop-shadow(
+    0 0 8px rgba(255, 183, 0, 0.65)
+  );
+}
 
 .bottom-nav-active span {
   color: white;
@@ -1107,75 +1171,44 @@ margin: 0 auto;
   letter-spacing: 0.3px;
 }
 
-/* Ripple đẹp hơn */
-
-.bottom-nav-btn::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  background: radial-gradient(
-    circle,
-    rgba(255,255,255,0.16),
-    transparent 70%
-  );
-
-  opacity: 0;
-
-  transition: opacity .3s ease;
-}
-
-.bottom-nav-btn:active::after {
-  opacity: 1;
-}
-
 /* MOBILE */
-
 @media (max-width: 600px) {
   .bottom-navbar {
-    width: calc(100% - 14px);
+    width: calc(100% - 14px) !important;
 
     bottom: 8px;
 
-    border-radius: 20px !important;
+    border-radius: 22px !important;
 
-    padding: 6px;
+    padding: 5px !important;
+  }
+
+  .bottom-navbar .v-bottom-navigation__content {
+    gap: 2px !important;
   }
 
   .bottom-nav-btn {
     border-radius: 16px !important;
+
+    padding: 5px 4px !important;
+
+    gap: 2px !important;
   }
 
-  .bottom-nav-btn span {
+  .bottom-nav-btn :deep(.v-btn__content) {
+    gap: 2px !important;
+  }
+
+  .bottom-nav-btn :deep(span) {
     font-size: 10px;
+
+    line-height: 13px;
+  }
+
+  .bottom-nav-btn :deep(.v-icon) {
+    width: 22px;
+    height: 22px;
   }
 }
-.main-navbar {
-  backdrop-filter: blur(10px);
-  background: rgba(18, 18, 18, 0.9);
-}
 
-
-.text-green {
-  color: #4caf50 !important;
-}
-
-.account-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.avatar-with-crown {
-  position: relative;
-  display: inline-flex; /* Đảm bảo vương miện được định vị tương đối với avatar */
-  align-items: center;
-  justify-content: center;
-}
-
-.crown-icon {
-  position: absolute;
-  top: -5px; /* Điều chỉnh vị trí theo ý muốn */
-  right: -5px; /* Điều chỉnh vị trí theo ý muốn */
-}
 </style>

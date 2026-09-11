@@ -384,8 +384,7 @@ export default {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-  color: #fff;
+  color: var(--zc-text);
 }
 .v-container {
   width: 100%;
@@ -400,7 +399,7 @@ export default {
 
 .stats-bar {
   font-size: 1rem;
-  color: #aaa;
+  color: var(--zc-text-dim);
 }
 
 .movie-link {
@@ -413,11 +412,11 @@ export default {
 }
 
 .movie-card {
-  border-radius: 12px;
+  border-radius: var(--zc-radius);
   overflow: hidden;
-  background: #1a1c23;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.3s ease;
+  background: linear-gradient(160deg, var(--zc-surface), var(--zc-bg-2));
+  border: 1px solid var(--zc-border);
+  transition: transform 0.35s var(--zc-ease), box-shadow 0.35s ease, border-color 0.35s ease;
   position: relative;
   height: 100%;
   display: flex;
@@ -437,24 +436,24 @@ export default {
 }
 
 .movie-card:hover {
-  transform: translateY(-6px) scale(1.03);
+  transform: translateY(-6px) scale(1.02);
   z-index: 2;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 183, 0, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 140, 0, 0.12);
 }
 
 .poster-wrapper {
   position: relative;
   overflow: hidden;
-  /* aspect-ratio: 2 / 3; */
-  background-color: #111;
+  background-color: var(--zc-bg-2);
 }
 
-/* Tối ưu phóng to ảnh mượt mà khi hover */
+/* Smooth image zoom on hover */
 :deep(.v-img__img) {
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.55s var(--zc-ease);
 }
 .movie-card:hover :deep(.v-img__img) {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .gradient-overlay {
@@ -462,8 +461,8 @@ export default {
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(20, 21, 28, 1) 0%,
-    rgba(20, 21, 28, 0.2) 50%,
+    rgba(10, 10, 16, 0.9) 0%,
+    rgba(10, 10, 16, 0.15) 50%,
     transparent 100%
   );
   pointer-events: none;
@@ -475,7 +474,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(5, 5, 10, 0.55);
+  backdrop-filter: blur(2px);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -486,13 +486,14 @@ export default {
 
 .hover-overlay .v-icon {
   transform: scale(0.8);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.3s var(--zc-ease);
   color: #fff;
+  filter: drop-shadow(0 0 12px rgba(255, 183, 0, 0.6));
 }
 
 .movie-card:hover .hover-overlay .v-icon {
   transform: scale(1);
-  color: #ff9800;
+  color: #ffb700;
 }
 
 .top-badges {
@@ -508,18 +509,18 @@ export default {
   font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
 }
 
 .badge.quality {
-  color: #ffeb3b;
-  border: 1px solid rgba(255, 235, 59, 0.3);
+  color: #ffb700;
+  border: 1px solid rgba(255, 183, 0, 0.35);
 }
 
 .badge.lang {
-  color: #64b5f6;
+  color: #8ec5ff;
   border: 1px solid rgba(100, 181, 246, 0.3);
 }
 
@@ -527,14 +528,14 @@ export default {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #e53935;
-  color: white;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  color: #0a0a12;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   z-index: 3;
-  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.4);
+  box-shadow: 0 2px 10px rgba(255, 140, 0, 0.45);
 }
 
 .rating {
@@ -542,7 +543,7 @@ export default {
   bottom: 8px;
   right: 8px;
   background: rgba(0, 0, 0, 0.75);
-  color: #ffeb3b;
+  color: #ffcc4d;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
@@ -561,20 +562,21 @@ export default {
 .movie-title {
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--zc-text);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  transition: color 0.25s ease;
 }
 
 .movie-card:hover .movie-title {
-  color: #ff9800;
+  color: #ffb700;
 }
 
 .movie-sub {
   font-size: 12px;
-  color: #aaa;
+  color: var(--zc-text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -583,7 +585,7 @@ export default {
 
 .meta-row {
   font-size: 12px;
-  color: #bbb;
+  color: var(--zc-text-dim);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -602,14 +604,15 @@ export default {
   font-weight: 500;
   padding: 3px 8px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ddd;
-  transition: background 0.2s;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--zc-text-dim);
+  transition: background 0.2s, color 0.2s;
 }
 
 .genre-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgba(255, 183, 0, 0.15);
+  color: #ffb700;
 }
 
 .load-more-trigger {
@@ -621,7 +624,7 @@ export default {
   margin-top: 20px;
 }
 
-/* Responsive Design cho Mobile */
+/* Mobile */
 @media (max-width: 600px) {
   .movie-grid {
     row-gap: 16px;
@@ -639,26 +642,26 @@ export default {
     padding: 2px 6px;
   }
 }
-/* ===== LIST BACKGROUND ===== */
+/* ===== LIST VARIANT (mobile) ===== */
 .movie-list {
-  background: #0f0f0f;
+  background: transparent;
 }
 
-/* ===== CARD ITEM ===== */
 .movie-item {
-  background: #1a1a1a;
-  border-radius: 14px;
+  background: linear-gradient(160deg, var(--zc-surface), var(--zc-bg-2));
+  border: 1px solid var(--zc-border);
+  border-radius: var(--zc-radius);
   overflow: hidden;
   padding: 10px;
-  transition: 0.25s;
+  transition: transform 0.3s var(--zc-ease), background 0.3s ease, border-color 0.3s ease;
 }
 
 .movie-item:hover {
-  transform: scale(1.01);
-  background: #202020;
+  transform: translateY(-3px);
+  border-color: rgba(255, 183, 0, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
 }
 
-/* ===== POSTER ===== */
 .poster-wrapper {
   position: relative;
   border-radius: 10px;
@@ -670,14 +673,15 @@ export default {
   cursor: pointer;
 }
 
-/* TAG "TẬP MỚI" */
+/* TAG quality */
 .tag-new-comp {
   position: absolute;
   top: 6px;
   left: 6px;
-  background: #ff3d00;
-  color: white;
+  background: linear-gradient(135deg, #ffb700, #ff5e00);
+  color: #0a0a12;
   font-size: 10px;
+  font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -685,48 +689,42 @@ export default {
   position: absolute;
   top: 6px;
   left: 6px;
-  background: #ce9e1b;
-  color: white;
+  background: rgba(255, 183, 0, 0.85);
+  color: #0a0a12;
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 4px;
 }
 
-/* ===== CONTENT ===== */
 .content-col {
   padding: 10px;
 }
 
-/* TITLE */
 .movie-title {
   font-size: 15px;
   font-weight: 700;
-  color: #fff;
+  color: var(--zc-text);
 }
 
-/* EPISODE */
 .episode-text {
   font-size: 12px;
-  color: #aaa;
+  color: var(--zc-text-dim);
 }
 
-/* PROGRESS */
 .progress-bar {
   margin: 6px 0;
 }
 
-/* NEXT EP */
 .next-ep {
   font-size: 12px;
-  color: #ccc;
+  color: var(--zc-text-dim);
 }
 
 .highlight {
-  color: #ff5252;
+  color: #ffb700;
   font-weight: 600;
 }
 
-/* STATUS ROW */
 .status {
   display: flex;
   justify-content: space-between;
@@ -736,15 +734,13 @@ export default {
 
 .time {
   font-size: 11px;
-  color: #888;
+  color: var(--zc-text-faint);
 }
 
-/* SWITCH */
 .notify {
   transform: scale(0.8);
 }
 
-/* ACTIONS */
 .actions {
   display: flex;
   justify-content: space-between;
@@ -759,11 +755,16 @@ export default {
 }
 
 .btn-watch {
-  background: linear-gradient(45deg, #ffd76b, #ffb700) !important;
-  color: black !important;
+  background: var(--zc-grad) !important;
+  color: #0a0a12 !important;
   flex: 1;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  transition: transform 0.25s var(--zc-ease), box-shadow 0.25s ease;
+}
+.btn-watch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
 }
 .notify-wrap {
   display: flex;
@@ -771,13 +772,11 @@ export default {
   gap: 6px;
 }
 
-/* TEXT */
 .notify-label {
   font-size: 12px;
-  color: #ccc;
+  color: var(--zc-text-dim);
 }
 
-/* SWITCH */
 .notify-switch {
   margin: 0;
   transform: scale(0.8);

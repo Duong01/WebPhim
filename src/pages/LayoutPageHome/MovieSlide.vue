@@ -340,8 +340,9 @@ export default {
 .hero {
   position: relative;
   height: 520px;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
+  box-shadow: var(--zc-shadow-lg);
 }
 
 /* BACKGROUND */
@@ -353,7 +354,7 @@ export default {
   background-size: cover;
   background-position: center;
 
-  filter: brightness(0.7);
+  filter: brightness(0.72);
 
   width: 100%;
   height: 100%;
@@ -370,9 +371,9 @@ export default {
 
   background: linear-gradient(
     90deg,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.8) 30%,
-    rgba(0, 0, 0, 0.2) 60%,
+    rgba(7, 7, 12, 0.96) 0%,
+    rgba(7, 7, 12, 0.82) 30%,
+    rgba(7, 7, 12, 0.25) 60%,
     transparent 100%
   );
 }
@@ -401,9 +402,12 @@ export default {
 }
 
 .title {
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 34px);
   font-weight: 800;
+  font-family: "Montserrat", sans-serif;
   color: white;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
+  line-height: 1.2;
 }
 
 .meta {
@@ -411,17 +415,20 @@ export default {
 }
 
 .badge {
-  background: #222;
-  padding: 6px 10px;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 8px;
   margin-right: 6px;
   font-size: 13px;
+  font-weight: 600;
 }
 
 .desc {
-  color: #bbb;
+  color: #c9cbd4;
   margin-top: 10px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* BUTTONS */
@@ -435,36 +442,58 @@ export default {
 }
 
 .btn-play {
-  background: #ff0000;
-  color: white;
-
+  background: var(--zc-grad);
+  color: #0a0a12;
 
   border: none;
 
-  border-radius: 30px;
+  border-radius: 999px;
 
-  font-weight: 700;
+  font-weight: 800;
 
   cursor: pointer;
+
+  padding: 12px 34px;
+
+  box-shadow: 0 8px 26px rgba(255, 140, 0, 0.4);
+
+  transition: transform 0.3s var(--zc-ease), box-shadow 0.3s ease;
 }
+
+.btn-play:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(255, 140, 0, 0.55);
+}
+
 .icon-group {
   display: flex;
   gap: 12px;
   justify-content: center;
 }
+
 .btn-icon {
   width: 42px;
   height: 42px;
 
   border-radius: 50%;
 
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
+
+  backdrop-filter: blur(8px);
 
   color: white;
 
   cursor: pointer;
+
+  transition: all 0.3s var(--zc-ease);
+}
+
+.btn-icon:hover {
+  background: rgba(255, 183, 0, 0.2);
+  border-color: rgba(255, 183, 0, 0.6);
+  transform: translateY(-2px) scale(1.05);
 }
 
 /* THUMBNAILS */
@@ -494,15 +523,16 @@ export default {
   width: 60px;
   height: 90px;
 
-  border-radius: 8px;
+  border-radius: 10px;
 
   overflow: hidden;
 
   cursor: pointer;
 
-  opacity: 0.7;
+  opacity: 0.6;
   scroll-snap-align: start;
-  transition: 0.3s;
+  transition: all 0.3s var(--zc-ease);
+  border: 2px solid transparent;
 }
 
 .thumb img {
@@ -511,16 +541,22 @@ export default {
   object-fit: cover;
 }
 
+.thumb:hover {
+  opacity: 0.9;
+}
+
 .thumb.active {
-  border: 2px solid red;
+  border: 2px solid #ffb700;
   opacity: 1;
   transform: scale(1.1);
+  box-shadow: 0 0 16px rgba(255, 183, 0, 0.5);
 }
+
 .hero-skeleton {
   position: absolute;
   inset: 0;
 
-  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 37%, #1a1a1a 63%);
+  background: linear-gradient(110deg, #16161f 25%, #23232f 37%, #16161f 63%);
 
   background-size: 400% 100%;
 
@@ -535,6 +571,7 @@ export default {
     background-position: -100% 0;
   }
 }
+
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -544,7 +581,7 @@ export default {
 
   object-fit: cover;
 
-  filter: brightness(0.7);
+  filter: brightness(0.72);
 
   transition: opacity 0.8s ease;
 }
@@ -556,5 +593,22 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .hero {
+    height: 420px;
+    border-radius: 16px;
+  }
+
+  .hero-content {
+    padding: 24px;
+  }
+
+  .thumbs {
+    right: 12px;
+    bottom: 12px;
+  }
 }
 </style>

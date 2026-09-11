@@ -141,12 +141,12 @@ cursor:pointer;
 
 min-width:210px;
 
-transition:transform .25s;
+transition:transform .3s var(--zc-ease);
 
 }
 
 .trending-item:hover{
-transform:scale(1.1);
+transform:scale(1.08);
 z-index:10;
 }
 
@@ -157,21 +157,29 @@ font-weight:900;
 
 color:transparent;
 
--webkit-text-stroke:3px #fff;
+-webkit-text-stroke:3px rgba(255,255,255,.85);
 
 line-height:1;
 
 opacity:.9;
 
+transition: -webkit-text-stroke-color .3s ease;
+
+}
+
+.trending-item:hover .rank{
+  -webkit-text-stroke-color: #ffb700;
 }
 
 .poster{
 
 width:130px;
 
-border-radius:6px;
+border-radius:10px;
 
 overflow:hidden;
+
+box-shadow: 0 8px 24px rgba(0,0,0,.55);
 
 }
 
@@ -181,14 +189,16 @@ position:absolute;
 top:6px;
 right:6px;
 
-background:#000c;
-color:#fff;
+background:rgba(0,0,0,.75);
+color:#ffcc4d;
 
 font-size:12px;
 
 padding:2px 6px;
 
-border-radius:4px;
+border-radius:6px;
+
+backdrop-filter: blur(6px);
 
 }
 
@@ -198,15 +208,16 @@ position:absolute;
 bottom:6px;
 left:6px;
 
-background:#e50914;
+background: var(--zc-grad);
+
+color:#0a0a12;
 
 font-size:12px;
+font-weight: 700;
 
 padding:2px 6px;
 
-border-radius:4px;
-
-color:#fff;
+border-radius:6px;
 
 }
 
@@ -214,7 +225,7 @@ color:#fff;
 
 width:130px;
 
-color:#ddd;
+color:var(--zc-text-dim);
 
 font-size:13px;
 
@@ -224,6 +235,11 @@ white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
 
+transition: color .25s ease;
+
 }
 
+.trending-item:hover .movie-title{
+  color: #ffb700;
+}
 </style>

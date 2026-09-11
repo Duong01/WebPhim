@@ -4,8 +4,8 @@
   "description": "Trang xem phim online miễn phí tốc độ cao, chất lượng HD & 4K cực nét.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#1976d2",
+  "background_color": "#07070c",
+  "theme_color": "#ffb700",
   "icons": [
     {
       "src": "./Logo.png",

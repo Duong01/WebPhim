@@ -225,45 +225,79 @@ export default {
 
 <style scoped>
 .register-bg {
+  min-height: 100vh;
   background:
-    radial-gradient(circle at top, rgba(255,140,0,0.15), transparent 40%),
-    linear-gradient(135deg, #0f0f0f, #1c1c1c);
+    radial-gradient(circle at 20% 12%, rgba(255, 183, 0, 0.09), transparent 45%),
+    radial-gradient(circle at 82% 88%, rgba(255, 94, 0, 0.08), transparent 45%),
+    linear-gradient(180deg, #0a0a12 0%, #07070c 100%);
 }
 
 .cinematic-card {
-  background: rgba(20, 20, 20, 0.88);
-  border: 1px solid rgba(255, 140, 0, 0.15);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 22px !important;
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.8),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 44px rgba(255, 140, 0, 0.07) !important;
+  backdrop-filter: blur(16px);
 }
 
 .register-title {
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.6rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #f4f5f9;
 }
 
 .register-subtitle {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: #a4a7b4;
   margin-top: 6px;
 }
 
 .register-btn {
-  background: linear-gradient(135deg, #ff9800, #ff5722);
-  color: white;
-  font-weight: 600;
+  background: linear-gradient(135deg, #ffb700, #ff5e00) !important;
+  color: #0a0a12 !important;
+  font-weight: 700;
   letter-spacing: 0.4px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.35);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, filter 0.3s ease;
 }
 
 .register-btn:hover {
-  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 140, 0, 0.5);
+  filter: brightness(1.05);
 }
 
 .back-btn {
   color: rgba(255, 255, 255, 0.7);
+  transition: color 0.25s ease, transform 0.25s ease;
 }
 
+.back-btn:hover {
+  color: #ffb700;
+  transform: translateX(-3px);
+}
+
+/* Form fields */
+.cinematic-card :deep(.v-field) {
+  border-radius: 12px;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.cinematic-card :deep(.v-field--focused) {
+  box-shadow: 0 0 0 2px rgba(255, 183, 0, 0.22);
+}
+
+/* Links */
+.cinematic-card a {
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.cinematic-card a:hover {
+  color: #ffb700;
+  text-shadow: 0 0 14px rgba(255, 183, 0, 0.45);
+}
 </style>
