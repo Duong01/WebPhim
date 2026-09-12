@@ -333,7 +333,6 @@
         :class="{ 'bottom-navbar--hidden': !showBottomBar }"
         grow
         height="78"
-        bg-color="transparent"
       >
     
       <v-btn 
@@ -1961,6 +1960,481 @@ export default {
     background: transparent !important;
   }
 }
+/* =========================================================
+   BOTTOM NAVBAR
+   Luôn có màu nền rõ ràng, không bị ảnh/video phía dưới
+   ========================================================= */
 
+.bottom-navbar {
+  pointer-events: auto;
+
+  width: min(780px, calc(100vw - 24px)) !important;
+
+  height: 78px !important;
+
+  border-radius: 26px !important;
+
+  /* Không dùng transparent */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(18, 18, 28, 0.97),
+      rgba(10, 10, 18, 0.97)
+    ) !important;
+
+  /* Làm nền chắc chắn hơn */
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+
+  box-shadow:
+    0 14px 44px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  padding: 8px !important;
+
+  overflow: hidden;
+
+  margin: 0 auto;
+
+  position: fixed;
+
+  bottom: 10px;
+  left: 0;
+  right: 0;
+
+  z-index: 1005;
+
+  will-change: transform;
+
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+}
+
+
+/* Thanh nội dung bên trong */
+.bottom-navbar :deep(.v-bottom-navigation__content) {
+  width: 100% !important;
+
+  height: 100% !important;
+
+  display: flex !important;
+
+  align-items: stretch !important;
+
+  justify-content: center !important;
+
+  gap: 8px !important;
+
+  background: transparent !important;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.bottom-nav-btn {
+  position: relative;
+
+  flex: 1 1 0 !important;
+
+  min-width: 0 !important;
+
+  max-width: 150px;
+
+  height: 60px !important;
+
+  border-radius: 18px !important;
+
+  overflow: hidden;
+
+  color: rgba(255, 255, 255, 0.78) !important;
+
+  font-weight: 500;
+
+  letter-spacing: 0.2px;
+
+  background: transparent !important;
+
+  display: flex !important;
+
+  flex-direction: column !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  gap: 4px !important;
+
+  padding: 6px 10px !important;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+/* Nội dung Vuetify */
+.bottom-nav-btn :deep(.v-btn__content) {
+  width: 100% !important;
+
+  height: 100% !important;
+
+  display: flex !important;
+
+  flex-direction: column !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  gap: 3px !important;
+
+  opacity: 1 !important;
+}
+
+
+/* Icon */
+.bottom-nav-btn :deep(.v-icon) {
+  flex: 0 0 auto !important;
+
+  width: 22px !important;
+  height: 22px !important;
+
+  font-size: 22px !important;
+
+  margin: 0 !important;
+
+  color: rgba(255, 255, 255, 0.75) !important;
+
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease,
+    filter 0.25s ease;
+}
+
+
+/* Text */
+.bottom-nav-btn :deep(span) {
+  display: block !important;
+
+  margin: 0 !important;
+
+  font-size: 11px;
+
+  line-height: 14px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  text-transform: none !important;
+
+  color: rgba(255, 255, 255, 0.78) !important;
+
+  transition:
+    color 0.25s ease,
+    letter-spacing 0.25s ease;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.bottom-nav-btn:hover {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 183, 0, 0.12),
+      rgba(255, 94, 0, 0.08)
+    ) !important;
+
+  color: #fff !important;
+}
+
+.bottom-nav-btn:hover :deep(.v-icon) {
+  color: #fff !important;
+
+  transform: translateY(-1px);
+}
+
+.bottom-nav-btn:hover :deep(span) {
+  color: #fff !important;
+}
+
+
+/* =========================================================
+   ACTIVE
+   ========================================================= */
+
+.bottom-nav-btn.bottom-nav-active {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 183, 0, 0.20),
+      rgba(255, 94, 0, 0.14)
+    ) !important;
+
+  border: 1px solid rgba(255, 183, 0, 0.16);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 16px rgba(255, 183, 0, 0.08);
+}
+
+
+/* Icon active */
+.bottom-nav-btn.bottom-nav-active :deep(.v-icon) {
+  color: #ffb700 !important;
+
+  transform: scale(1.12) translateY(-1px);
+
+  filter:
+    drop-shadow(0 0 8px rgba(255, 183, 0, 0.65));
+}
+
+
+/* Text active */
+.bottom-nav-btn.bottom-nav-active :deep(span) {
+  color: #fff !important;
+
+  letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.bottom-navbar--hidden {
+  transform: translateY(160%);
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   AVATAR HEADER
+   ========================================================= */
+
+/* Avatar trong header */
+.main-navbar :deep(.v-avatar) {
+  flex: 0 0 auto !important;
+
+  width: 26px !important;
+  height: 26px !important;
+
+  min-width: 26px !important;
+  min-height: 26px !important;
+
+  border-radius: 50% !important;
+
+  overflow: hidden !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 183, 0, 0.25),
+      rgba(255, 94, 0, 0.18)
+    ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.04),
+    0 3px 10px rgba(0, 0, 0, 0.45);
+
+  opacity: 1 !important;
+}
+
+
+/* Ảnh bên trong avatar */
+.main-navbar :deep(.v-avatar img) {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block !important;
+
+  object-fit: cover !important;
+
+  object-position: center !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+}
+
+
+/* Avatar khi hover */
+.account-btn:hover :deep(.v-avatar) {
+  border-color: rgba(255, 183, 0, 0.65) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(255, 183, 0, 0.10),
+    0 0 14px rgba(255, 183, 0, 0.18);
+}
+
+
+/* Khung avatar + crown */
+.avatar-with-crown {
+  position: relative;
+
+  display: inline-flex !important;
+
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto !important;
+
+  width: 26px;
+  height: 26px;
+}
+
+
+/* Crown không che avatar quá nhiều */
+.avatar-with-crown :deep(.crown-icon) {
+  position: absolute !important;
+
+  top: -6px !important;
+  right: -7px !important;
+
+  z-index: 5;
+
+  filter:
+    drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+
+/* Avatar fallback */
+.main-navbar :deep(.v-icon.mdi-account-circle-outline) {
+  color: rgba(255, 255, 255, 0.85) !important;
+
+  opacity: 1 !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .bottom-navbar {
+    width: calc(100vw - 14px) !important;
+
+    height: 70px !important;
+
+    bottom: 8px !important;
+
+    border-radius: 22px !important;
+
+    padding: 5px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(18, 18, 28, 0.98),
+        rgba(9, 9, 16, 0.98)
+      ) !important;
+
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+
+  .bottom-navbar :deep(.v-bottom-navigation__content) {
+    gap: 2px !important;
+  }
+
+
+  .bottom-nav-btn {
+    flex: 1 1 0 !important;
+
+    width: auto !important;
+
+    max-width: none !important;
+
+    height: 58px !important;
+
+    border-radius: 16px !important;
+
+    padding: 5px 3px !important;
+
+    gap: 2px !important;
+  }
+
+
+  .bottom-nav-btn :deep(.v-btn__content) {
+    gap: 2px !important;
+  }
+
+
+  .bottom-nav-btn :deep(.v-icon) {
+    width: 21px !important;
+    height: 21px !important;
+
+    font-size: 21px !important;
+  }
+
+
+  .bottom-nav-btn :deep(span) {
+    font-size: 10px !important;
+
+    line-height: 13px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE RẤT NHỎ
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .bottom-navbar {
+    width: calc(100vw - 10px) !important;
+
+    bottom: 5px !important;
+
+    border-radius: 19px !important;
+
+    padding: 4px !important;
+  }
+
+
+  .bottom-navbar :deep(.v-bottom-navigation__content) {
+    gap: 1px !important;
+  }
+
+
+  .bottom-nav-btn {
+    height: 56px !important;
+
+    border-radius: 14px !important;
+
+    padding: 4px 2px !important;
+  }
+
+
+  .bottom-nav-btn :deep(.v-icon) {
+    width: 20px !important;
+    height: 20px !important;
+
+    font-size: 20px !important;
+  }
+
+
+  .bottom-nav-btn :deep(span) {
+    font-size: 9px !important;
+
+    line-height: 12px !important;
+  }
+}
 
 </style>
