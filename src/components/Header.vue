@@ -263,7 +263,7 @@
       <v-menu offset-y v-if="!isLogin">
         <template #activator="{ props }">
           <v-btn class="nav-icon-btn" icon variant="text" v-bind="props" :title="$t('Tài khoản')">
-            <v-avatar size="26" :image="avatar" v-if="avatar != ''"></v-avatar>
+            <v-avatar size="32" :image="avatar" v-if="avatar != ''"></v-avatar>
             <v-icon v-else size="22">mdi-account-circle-outline</v-icon>
           </v-btn>
         </template>
@@ -288,7 +288,7 @@
               :title="account"
             >
             <div class="avatar-with-crown">
-              <v-avatar size="26" :image="avatar" v-if="avatar != ''"></v-avatar>
+              <v-avatar size="32" :image="avatar" v-if="avatar != ''"></v-avatar>
               <v-icon v-else size="22">mdi-account-circle-outline</v-icon>
               <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="16">mdi-crown</v-icon>
             </div>
@@ -840,11 +840,11 @@ export default {
     },
     fetchMovieSuggestions(keyword) {
       try {
-        Search(
+        Search1(
           { keyword },
           (dat) => {
             if (dat.data.items == null || dat.data.items == []) {
-              Search1(
+              Search(
                 { keyword },
                 (data) => {
                   if (data.data.items != null) {
@@ -2219,33 +2219,26 @@ export default {
   pointer-events: none;
 }
 
-
 /* =========================================================
-   AVATAR HEADER
+   AVATAR HEADER - HIỂN THỊ TOÀN BỘ ẢNH
    ========================================================= */
 
-/* Avatar trong header */
 .main-navbar :deep(.v-avatar) {
-  flex: 0 0 auto !important;
+  position: relative !important;
 
-  width: 26px !important;
-  height: 26px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
 
-  min-width: 26px !important;
-  min-height: 26px !important;
+  flex: 0 0 32px !important;
 
   border-radius: 50% !important;
-
   overflow: hidden !important;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 183, 0, 0.25),
-      rgba(255, 94, 0, 0.18)
-    ) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
 
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.04),
@@ -2255,70 +2248,121 @@ export default {
 }
 
 
-/* Ảnh bên trong avatar */
-.main-navbar :deep(.v-avatar img) {
+/* =========================================================
+   QUAN TRỌNG:
+   Vuetify v-avatar :image sẽ tạo VImg bên trong
+   ========================================================= */
+
+.main-navbar :deep(.v-avatar .v-img) {
   width: 100% !important;
   height: 100% !important;
 
+  border-radius: 50% !important;
+  overflow: hidden !important;
+
+  background: transparent !important;
+}
+
+
+/* Ảnh avatar thực tế của Vuetify */
+
+.main-navbar :deep(.v-avatar .v-img__img) {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
+
   display: block !important;
 
-  object-fit: cover !important;
-
-  object-position: center !important;
-
   opacity: 1 !important;
-
   visibility: visible !important;
 }
 
 
-/* Avatar khi hover */
-.account-btn:hover :deep(.v-avatar) {
-  border-color: rgba(255, 183, 0, 0.65) !important;
+/* Nếu Vuetify sử dụng picture */
 
-  box-shadow:
-    0 0 0 2px rgba(255, 183, 0, 0.10),
-    0 0 14px rgba(255, 183, 0, 0.18);
+.main-navbar :deep(.v-avatar .v-img__picture) {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 
-/* Khung avatar + crown */
+/* =========================================================
+   KHUNG AVATAR + CROWN
+   ========================================================= */
+
 .avatar-with-crown {
   position: relative;
+
+  width: 32px;
+  height: 32px;
+
+  min-width: 32px;
+
+  flex: 0 0 32px;
 
   display: inline-flex !important;
 
   align-items: center;
   justify-content: center;
-
-  flex: 0 0 auto !important;
-
-  width: 26px;
-  height: 26px;
 }
 
 
-/* Crown không che avatar quá nhiều */
+/* Avatar bên trong */
+
+.avatar-with-crown :deep(.v-avatar) {
+  width: 32px !important;
+  height: 32px !important;
+
+  min-width: 32px !important;
+  min-height: 32px !important;
+
+  flex: 0 0 32px !important;
+}
+
+
+/* =========================================================
+   CROWN
+   ========================================================= */
+
 .avatar-with-crown :deep(.crown-icon) {
   position: absolute !important;
 
-  top: -6px !important;
+  top: -7px !important;
   right: -7px !important;
 
   z-index: 5;
 
   filter:
-    drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+    drop-shadow(0 1px 3px rgba(0, 0, 0, 0.65));
 }
 
 
-/* Avatar fallback */
-.main-navbar :deep(.v-icon.mdi-account-circle-outline) {
-  color: rgba(255, 255, 255, 0.85) !important;
+/* =========================================================
+   HOVER
+   ========================================================= */
 
+.account-btn:hover :deep(.v-avatar) {
+  border-color: rgba(255, 183, 0, 0.75) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(255, 183, 0, 0.12),
+    0 0 16px rgba(255, 183, 0, 0.22);
+}
+
+
+/* =========================================================
+   FALLBACK ICON
+   ========================================================= */
+
+.main-navbar :deep(.v-icon.mdi-account-circle-outline) {
+  color: rgba(255, 255, 255, 0.9) !important;
   opacity: 1 !important;
 }
-
 
 /* =========================================================
    MOBILE

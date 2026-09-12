@@ -800,9 +800,14 @@
               </v-card>
             </v-col>
 
-            <div ref="lazyCate"></div>
+            <div
+              ref="lazyCate"
+              class="lazy-cate-trigger"
+              aria-hidden="true"
+            ></div>
 
             <!-- Gợi ý phim - Responsive Scroll Layout -->
+            <div v-if="hasLoadedCate">
             <v-col cols="12">
               <div class="suggested-movies my-8">
                 <h2 class="text-h5 font-weight-bold text-white mb-4">
@@ -883,6 +888,7 @@
                 </div>
               </div>
             </v-col>
+            </div>
           </v-row>
 
           <!-- dialog share -->
@@ -1043,6 +1049,7 @@ export default {
 
       hasLoadedCate: false,
       hasLoadedComment: false,
+      lazyObserver: null,
       showAllEpisodes: false,
       dialogTrailer: false,
       videoLoaded: false,
@@ -1890,31 +1897,72 @@ export default {
       });
     },
     initLazyLoad() {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach(async (entry) => {
-            if (!entry.isIntersecting) return;
+  if (this.lazyObserver) {
+    this.lazyObserver.disconnect();
+  }
 
-            if (entry.target === this.$refs.lazyCate && !this.hasLoadedCate) {
-              this.hasLoadedCate = true;
-              await this.ListMovieByCate();
-            }
+  this.lazyObserver = new IntersectionObserver(
+    async (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
 
-            if (
-              entry.target === this.$refs.lazyComment &&
-              !this.hasLoadedComment
-            ) {
-              this.hasLoadedComment = true;
-              await this.GetComment();
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
+        // =========================
+        // COMMENT
+        // =========================
+        if (
+          entry.target === this.$refs.lazyComment &&
+          !this.hasLoadedComment
+        ) {
+          this.hasLoadedComment = true;
 
-      if (this.$refs.lazyCate) observer.observe(this.$refs.lazyCate);
-      if (this.$refs.lazyComment) observer.observe(this.$refs.lazyComment);
+          this.lazyObserver.unobserve(entry.target);
+
+          try {
+            await this.GetComment();
+          } catch (error) {
+            this.hasLoadedComment = false;
+            console.error("GetComment:", error);
+          }
+        }
+
+        // =========================
+        // PHIM ĐỀ XUẤT
+        // =========================
+        if (
+          entry.target === this.$refs.lazyCate &&
+          !this.hasLoadedCate
+        ) {
+          this.hasLoadedCate = true;
+
+          this.lazyObserver.unobserve(entry.target);
+
+          try {
+            await this.ListMovieByCate();
+          } catch (error) {
+            this.hasLoadedCate = false;
+            console.error("ListMovieByCate:", error);
+          }
+        }
+      }
     },
+    {
+      root: null,
+
+      // Chỉ bắt đầu load khi còn cách khoảng 300px
+      rootMargin: "300px 0px",
+
+      threshold: 0
+    }
+  );
+
+  if (this.$refs.lazyComment) {
+    this.lazyObserver.observe(this.$refs.lazyComment);
+  }
+
+  if (this.$refs.lazyCate) {
+    this.lazyObserver.observe(this.$refs.lazyCate);
+  }
+},
 
     // bindVideoEvents() {
     //   const video = this.$refs.videoPlayer;
@@ -4493,5 +4541,11 @@ a {
   .movie-detail-ad :deep(iframe) {
     max-width: 100%;
   }
+}
+.lazy-cate-trigger {
+  width: 100%;
+  height: 1px;
+  margin-top: 50px;
+  pointer-events: none;
 }
 </style>
