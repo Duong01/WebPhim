@@ -51,9 +51,7 @@
                   class="poster"
                 >
                   <template #placeholder>
-                    <div class="d-flex align-center justify-center fill-height">
-                      <v-progress-circular indeterminate />
-                    </div>
+                    <div class="zc-shimmer fill-height"></div>
                   </template>
 
                   <!-- BADGES -->
@@ -161,8 +159,12 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.checkScroll();
-      window.addEventListener("resize", this.checkScroll);
+      window.addEventListener("resize", this.checkScroll, { passive: true });
     });
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("resize", this.checkScroll);
   },
 
   methods: {

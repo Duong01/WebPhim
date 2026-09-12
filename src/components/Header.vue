@@ -20,13 +20,13 @@
       <!-- Menu chính -->
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn
-          text
-          class="bottom-nav-btn"
+          variant="text"
+          class="nav-btn"
           :to="{ path: '/home' }"
           :class="{ 'bottom-nav-active': $route.path === '/home' }"
         >
-        <v-icon size="18">mdi-fire</v-icon>
-          {{ $t("Trang chủ") }}
+          <v-icon size="20">mdi-fire</v-icon>
+          <span>{{ $t("Trang chủ") }}</span>
         </v-btn>
         <!-- <v-btn
           text
@@ -47,16 +47,16 @@
         <v-menu offset-y>
           <template #activator="{ props }">
             <v-btn
-              text
-              class="bottom-nav-btn"
+              variant="text"
+              class="nav-btn"
               v-bind="props"
               @click="getTheLoai"
               :loading="loadingTheLoai"
               :disabled="loadingTheLoai"
             >
-            <v-icon start size="18">mdi-shape</v-icon>
-              {{ $t("Thể loại") }}
-              <v-icon right>mdi-menu-down</v-icon>
+              <v-icon size="20">mdi-shape</v-icon>
+              <span>{{ $t("Thể loại") }}</span>
+              <v-icon class="nav-caret" size="18">mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list style="background-color: transparent" class="menu-glass">
@@ -95,16 +95,16 @@
         <v-menu offset-y>
           <template #activator="{ props }">
             <v-btn
-              text
-              class="bottom-nav-btn"
+              variant="text"
+              class="nav-btn"
               v-bind="props"
               @click="getQuocGia"
               :loading="loadingQuocGia"
               :disabled="loadingQuocGia"
             >
-            <v-icon start size="18">mdi-earth</v-icon>
-              {{ $t("Quốc gia") }}
-              <v-icon right>mdi-menu-down</v-icon>
+              <v-icon size="20">mdi-earth</v-icon>
+              <span>{{ $t("Quốc gia") }}</span>
+              <v-icon class="nav-caret" size="18">mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list style="background-color: transparent" class="menu-glass">
@@ -140,23 +140,23 @@
 
          
         <v-btn
-          text
-          class="bottom-nav-btn"
+          variant="text"
+          class="nav-btn"
           :to="{ path: '/phim-chieu-rap' }"
           :class="{ 'bottom-nav-active': $route.path === '/phim-chieu-rap' }"
         >
-        <v-icon start size="18">mdi-calendar</v-icon>
-          {{ $t("Chiếu rạp") }}
+          <v-icon size="20">mdi-ticket-confirmation</v-icon>
+          <span>{{ $t("Chiếu rạp") }}</span>
         
         </v-btn>
         <v-btn
-          text
-          class="bottom-nav-btn"
+          variant="text"
+          class="nav-btn"
           :to="{ path: '/movie-schedule' }"
           :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
         >
-        <v-icon start size="18">mdi-calendar</v-icon>
-          {{ $t("Lịch chiếu") }}
+          <v-icon size="20">mdi-calendar-clock</v-icon>
+          <span>{{ $t("Lịch chiếu") }}</span>
         </v-btn>
       </v-toolbar-items>
 
@@ -240,21 +240,12 @@
         </v-list>
       </v-menu>
 
-      <!-- Theme -->
-      <v-btn
-        icon
-        class="bottom-nav-btn"
-        title="Theme"
-        @click="changeTheme"
-        v-show="$vuetify.display.mdAndUp"
-      >
-        <v-icon>mdi-white-balance-sunny</v-icon>
-      </v-btn>
+      
       <!-- Ngôn ngữ -->
       <v-menu offset-y v-if="$vuetify.display.mdAndUp">
         <template #activator="{ props }">
-          <v-btn class="bottom-nav-btn" icon v-bind="props" :title="$t('Ngôn ngữ')">
-            <v-icon>mdi-translate</v-icon>
+          <v-btn class="nav-icon-btn" icon variant="text" v-bind="props" :title="$t('Ngôn ngữ')">
+            <v-icon size="22">mdi-translate</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -271,9 +262,9 @@
       <!-- Tài khoản -->
       <v-menu offset-y v-if="!isLogin">
         <template #activator="{ props }">
-          <v-btn class="bottom-nav-btn" icon v-bind="props" :title="$t('Tài khoản')">
-            <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
-              <v-icon v-else>mdi-account-circle</v-icon> {{ account }}
+          <v-btn class="nav-icon-btn" icon variant="text" v-bind="props" :title="$t('Tài khoản')">
+            <v-avatar size="26" :image="avatar" v-if="avatar != ''"></v-avatar>
+            <v-icon v-else size="22">mdi-account-circle-outline</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -293,13 +284,13 @@
             <v-btn
               v-bind="props"
               variant="text"
-              class="account-btn"
+              class="nav-icon-btn account-btn"
               :title="account"
             >
             <div class="avatar-with-crown">
-              <v-avatar :image="avatar" v-if="avatar != ''"></v-avatar>
-              <v-icon size="20" v-else>mdi-account-circle</v-icon>
-              <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="18">mdi-crown</v-icon>
+              <v-avatar size="26" :image="avatar" v-if="avatar != ''"></v-avatar>
+              <v-icon v-else size="22">mdi-account-circle-outline</v-icon>
+              <v-icon v-if="isFanCung" class="crown-icon" color="yellow-darken-2" size="16">mdi-crown</v-icon>
             </div>
 
               <!-- Chỉ hiện tên trên md trở lên -->
@@ -401,35 +392,36 @@
 
     <!-- DRAWER CHO MOBILE -->
     <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
-      <v-list nav dense>
+      <v-list nav dense class="drawer-list">
         <!-- Mục chính -->
         <v-list-item
           :to="{ path: '/home' }"
           :class="{ 'bottom-nav-active': $route.path === '/home' }"
         >
-          <v-list-item-title>
-            <v-icon size="16">mdi-fire</v-icon>
-            {{ $t("Trang chủ") }}</v-list-item-title>
+          <template #prepend>
+            <v-icon size="20">mdi-fire</v-icon>
+          </template>
+          <v-list-item-title>{{ $t("Trang chủ") }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item
           :to="{ path: '/phim-bo' }"
           :class="{ 'bottom-nav-active': $route.path === '/phim-bo' }"
         >
-          <v-list-item-title>
-            <v-icon size="16">mdi-movie</v-icon>
-            {{ $t("Phim Bộ") }}
-            </v-list-item-title>
+          <template #prepend>
+            <v-icon size="20">mdi-movie</v-icon>
+          </template>
+          <v-list-item-title>{{ $t("Phim Bộ") }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item
           :to="{ path: '/phim-le' }"
           :class="{ 'bottom-nav-active': $route.path === '/phim-le' }"
         >
-          <v-list-item-title>
-        <v-icon size="16">mdi-movie</v-icon>
-            {{ $t("Phim Lẻ") }}
-            </v-list-item-title>
+          <template #prepend>
+            <v-icon size="20">mdi-movie-open</v-icon>
+          </template>
+          <v-list-item-title>{{ $t("Phim Lẻ") }}</v-list-item-title>
         </v-list-item>
 
         <!-- THỂ LOẠI (submenu) -->
@@ -440,8 +432,10 @@
               :loading="loadingTheLoai"
               :disabled="loadingTheLoai"
             >
-            <v-icon start size="18">mdi-shape</v-icon>
-              {{ $t("Thể loại") }}
+              <div class="drawer-panel-title">
+                <v-icon size="20">mdi-shape</v-icon>
+                <span>{{ $t("Thể loại") }}</span>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list dense>
@@ -451,10 +445,10 @@
                   :to="{ name: 'TheLoai', params: { path: genre.slug } }"
                   @click="drawer = false"
                 >
-                  <v-list-item-title>
-                    <v-icon size="16" class="mr-1">mdi-filmstrip</v-icon>
-                    {{ genre.name }}
-                    </v-list-item-title>
+                  <template #prepend>
+                    <v-icon size="18">mdi-filmstrip</v-icon>
+                  </template>
+                  <v-list-item-title>{{ genre.name }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-expansion-panel-text>
@@ -467,8 +461,10 @@
               :loading="loadingQuocGia"
               :disabled="loadingQuocGia"
             >
-            <v-icon start size="16">mdi-earth</v-icon>
-              {{ $t("Quốc gia") }}
+              <div class="drawer-panel-title">
+                <v-icon size="20">mdi-earth</v-icon>
+                <span>{{ $t("Quốc gia") }}</span>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list dense>
@@ -478,6 +474,9 @@
                   :to="{ name: 'QuocGia', params: { path: country.slug } }"
                   @click="drawer = false"
                 >
+                  <template #prepend>
+                    <v-icon size="18">mdi-flag</v-icon>
+                  </template>
                   <v-list-item-title>{{ country.name }}</v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -493,39 +492,45 @@
             :to="{ path: '/tv-shows' }"
             :class="{ 'bottom-nav-active': $route.path === '/tv-shows' }"
           >
-            <v-list-item-title>
-              <v-icon size="16">mdi-movie</v-icon>
-              {{ $t("TV Show") }}
-              </v-list-item-title>
+            <template #prepend>
+              <v-icon size="20">mdi-television-classic</v-icon>
+            </template>
+            <v-list-item-title>{{ $t("TV Show") }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             :to="{ path: '/hoat-hinh' }"
             :class="{ 'bottom-nav-active': $route.path === '/hoat-hinh' }"
           >
-            <v-list-item-title>
-              <v-icon size="16">mdi-movie</v-icon>
-              {{ $t("Hoạt hình") }}
-              </v-list-item-title>
+            <template #prepend>
+              <v-icon size="20">mdi-animation</v-icon>
+            </template>
+            <v-list-item-title>{{ $t("Hoạt hình") }}</v-list-item-title>
           </v-list-item>
-          
+
           <v-list-item
             :to="{ path: '/movie-schedule' }"
             :class="{ 'bottom-nav-active': $route.path === '/movie-schedule' }"
           >
-            <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Lịch chiếu") }}</v-list-item-title>
+            <template #prepend>
+              <v-icon size="20">mdi-calendar-clock</v-icon>
+            </template>
+            <v-list-item-title>{{ $t("Lịch chiếu") }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             :to="{ path: '/phim-chieu-rap' }"
             :class="{ 'bottom-nav-active': $route.path === '/phim-chieu-rap' }"
           >
-            <v-list-item-title><v-icon start size="18">mdi-calendar</v-icon>{{ $t("Chiếu rạp") }}</v-list-item-title>
+            <template #prepend>
+              <v-icon size="20">mdi-ticket-confirmation</v-icon>
+            </template>
+            <v-list-item-title>{{ $t("Chiếu rạp") }}</v-list-item-title>
           </v-list-item>
-          
+
         <!-- Theme (chuyển theme) -->
-        <v-list-item @click="changeTheme">
-          <v-list-item-icon>
-            <v-icon>mdi-white-balance-sunny</v-icon>
-          </v-list-item-icon>
+        <v-list-item @click="changeTheme" class="bottom-nav-active">
+          <template #prepend>
+            <v-icon size="20">mdi-white-balance-sunny</v-icon>
+          </template>
           <v-list-item-title>{{ $t("Đổi giao diện") }}</v-list-item-title>
         </v-list-item>
 
@@ -533,10 +538,10 @@
         <v-expansion-panels multiple>
           <v-expansion-panel>
             <v-expansion-panel-title>
-              <v-list-item-icon
-                ><v-icon>mdi-translate</v-icon>
-                {{ $t("Ngôn ngữ") }}</v-list-item-icon
-              >
+              <div class="drawer-panel-title">
+                <v-icon size="20">mdi-translate</v-icon>
+                <span>{{ $t("Ngôn ngữ") }}</span>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-list dense>
@@ -886,329 +891,1076 @@ export default {
 </script>
 
 <style scoped>
-/* =========================
-   NAVBAR — glass cinema
-========================= */
+
+/* =========================================================
+   ZCINES HEADER — RESPONSIVE / NO OVERLAP
+   ========================================================= */
+
 .main-navbar {
-  background: linear-gradient(180deg, rgba(7, 7, 12, 0.92), rgba(7, 7, 12, 0.78)) !important;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  width: 100%;
+  height: 64px !important;
+  min-height: 64px !important;
+
+  z-index: 1000;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7, 7, 12, 0.96),
+      rgba(7, 7, 12, 0.86)
+    ) !important;
+
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  top: 0;
-  z-index: 1000;
+
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45);
+
+  overflow: visible !important;
 }
 
-/* Viền gradient mảnh dưới navbar */
+
+/* =========================================================
+   GRADIENT LINE
+   ========================================================= */
+
 .main-navbar::after {
   content: "";
+
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 183, 0, 0.55), rgba(255, 94, 0, 0.55), transparent);
-  opacity: 0.8;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 183, 0, 0.55),
+      rgba(255, 94, 0, 0.55),
+      transparent
+    );
+
   pointer-events: none;
 }
 
-/* =========================
-   MENU DROPDOWN — glass
-========================= */
-.menu-glass {
-  background: rgba(14, 14, 22, 0.92) !important;
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+/* =========================================================
+   VUETIFY APP BAR CONTENT
+   ========================================================= */
+
+.main-navbar :deep(.v-toolbar__content) {
+  height: 64px !important;
+  min-height: 64px !important;
+
+  display: flex !important;
+  align-items: center !important;
+
+  width: 100%;
+
+  padding: 0 16px !important;
+
+  gap: 10px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.main-navbar :deep(.v-app-bar-nav-icon) {
+  flex: 0 0 40px;
+
+  width: 40px !important;
+  height: 40px !important;
+
+  margin: 0 !important;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.main-navbar :deep(.v-img) {
+  flex: 0 0 auto;
+
+  width: 150px;
+  max-width: 150px;
+
+  height: 48px;
+  max-height: 48px;
+
+  object-fit: contain;
+
+  cursor: pointer;
+
+  margin: 0 !important;
+}
+
+
+/* =========================================================
+   MAIN MENU
+   ========================================================= */
+
+.main-navbar :deep(.v-toolbar-items) {
+  flex: 1 1 auto;
+
+  min-width: 0;
+
+  display: flex !important;
+  align-items: center !important;
+
+  height: 100%;
+
+  gap: 4px;
+
   overflow: hidden;
 }
 
-.menu-link {
-  padding: 6px 10px;
-  border-radius: 10px;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+
+/* =========================================================
+   NAV BUTTON
+   ========================================================= */
+
+.nav-btn {
+  flex: 0 1 auto;
+
+  height: 40px !important;
+  min-width: 0 !important;
+
+  padding: 0 12px !important;
+
+  border-radius: 12px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex-direction: row !important;
+
+  gap: 6px !important;
+
+  color: rgba(255, 255, 255, 0.78) !important;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  letter-spacing: 0.1px;
+
+  white-space: nowrap;
+
+  text-transform: none !important;
+
+  overflow: hidden;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.menu-link:hover {
-  background: linear-gradient(135deg, rgba(255, 183, 0, 0.16), rgba(255, 94, 0, 0.16));
+
+.nav-btn :deep(.v-btn__content) {
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex-direction: row !important;
+
+  gap: 6px !important;
+
+  width: auto !important;
+
+  min-width: 0;
+
+  white-space: nowrap;
+}
+
+
+/* ICON */
+
+.nav-btn :deep(.v-icon) {
+  flex: 0 0 20px !important;
+
+  width: 20px !important;
+  height: 20px !important;
+
+  font-size: 20px !important;
+
+  margin: 0 !important;
+
+  line-height: 1 !important;
+}
+
+
+/* TEXT */
+
+.nav-btn :deep(span) {
+  display: inline-block !important;
+
+  max-width: 100%;
+
+  margin: 0 !important;
+
+  font-size: 14px;
+
+  line-height: 20px;
+
+  white-space: nowrap;
+}
+
+
+/* DROPDOWN ARROW */
+
+.nav-btn :deep(.nav-caret) {
+  flex: 0 0 16px !important;
+
+  width: 16px !important;
+  height: 16px !important;
+
+  font-size: 16px !important;
+
+  margin-left: -2px !important;
+
+  opacity: 0.55;
+}
+
+
+/* HOVER */
+
+.nav-btn:hover {
+  color: #fff !important;
+
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+
+/* ACTIVE */
+
+.nav-btn.bottom-nav-active {
   color: #ffb700 !important;
-  transform: translateX(3px);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 183, 0, 0.14),
+      rgba(255, 94, 0, 0.10)
+    ) !important;
 }
 
-.suggestion-item {
-  border-radius: 10px;
-  margin: 2px 6px;
-  transition: background 0.2s ease;
+.nav-btn.bottom-nav-active :deep(.v-icon),
+.nav-btn.bottom-nav-active :deep(span) {
+  color: #ffb700 !important;
 }
 
-.suggestion-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+
+/* =========================================================
+   APPEND AREA
+   Search + language + account
+   ========================================================= */
+
+.main-navbar :deep(.v-toolbar__append) {
+  flex: 0 0 auto;
+
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 6px;
+
+  min-width: 0;
+
+  margin-left: auto;
+
+  padding-left: 6px;
 }
 
-/* =========================
+
+/* =========================================================
    SEARCH
-========================= */
+   ========================================================= */
+
 .search-wrapper {
-  flex: 1;
-  max-width: 420px;
-  min-width: 200px;
+  flex: 0 1 360px;
+
+  width: 360px;
+  max-width: 360px;
+
+  min-width: 180px;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
 }
 
-@media (max-width: 960px) {
-  .search-wrapper {
-    max-width: 100%;
-  }
-}
 
 .search-input {
   width: 100%;
+  min-width: 0;
 }
 
+
 .search-input :deep(.v-field) {
+  width: 100%;
+
+  min-height: 40px !important;
+  height: 40px !important;
+
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+
+  border-radius: 20px !important;
+
   background: rgba(255, 255, 255, 0.06) !important;
+
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
 }
+
+
+.search-input :deep(.v-field__input) {
+  min-height: 40px !important;
+
+  height: 40px;
+
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+
+  font-size: 14px;
+
+  min-width: 0;
+}
+
+
+.search-input :deep(.v-field__append-inner) {
+  padding-top: 0 !important;
+
+  align-items: center !important;
+}
+
 
 .search-input :deep(.v-field--focused) {
   background: rgba(255, 255, 255, 0.09) !important;
+
   border-color: rgba(255, 183, 0, 0.6);
-  box-shadow: 0 0 0 3px rgba(255, 183, 0, 0.15);
+
+  box-shadow:
+    0 0 0 3px rgba(255, 183, 0, 0.15);
 }
 
-.text-green {
-  color: #00e165 !important;
+
+/* =========================================================
+   LANGUAGE / ACCOUNT ICON
+   ========================================================= */
+
+.nav-icon-btn {
+  flex: 0 0 40px;
+
+  width: 40px !important;
+  min-width: 40px !important;
+
+  height: 40px !important;
+  min-height: 40px !important;
+
+  padding: 0 !important;
+
+  margin: 0 !important;
+
+  border-radius: 12px !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: rgba(255, 255, 255, 0.78) !important;
 }
 
-.v-spacer {
-  flex-grow: 0 !important;
+
+.nav-icon-btn:hover {
+  color: #fff !important;
+
+  background: rgba(255, 255, 255, 0.07) !important;
 }
 
-/* =========================
+
+.nav-icon-btn :deep(.v-icon) {
+  width: 22px !important;
+  height: 22px !important;
+
+  font-size: 22px !important;
+
+  margin: 0 !important;
+}
+
+
+/* =========================================================
    ACCOUNT
-========================= */
+   ========================================================= */
+
 .account-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  flex: 0 1 auto;
+
+  width: auto !important;
+
+  min-width: 40px !important;
+
   max-width: 180px;
+
+  height: 40px !important;
+
+  padding: 0 10px !important;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex-direction: row !important;
+
+  gap: 8px !important;
+
+  overflow: hidden;
 }
+
+
+.account-btn :deep(.v-btn__content) {
+  width: auto !important;
+  min-width: 0;
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex-direction: row !important;
+
+  gap: 8px !important;
+}
+
+
+/* ACCOUNT NAME */
 
 .account-name {
-  font-size: 14px;
-  font-weight: 500;
-  max-width: 120px;
-  white-space: nowrap;
+  display: block;
+
+  max-width: 100px;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  font-size: 14px;
+  line-height: 20px;
+
+  font-weight: 500;
 }
 
-.account-menu-name {
-  font-weight: 600;
-}
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
 
 .avatar-with-crown {
   position: relative;
+
+  width: 26px;
+  height: 26px;
+
+  min-width: 26px;
+
+  flex: 0 0 26px;
+
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 }
 
-.crown-icon {
-  position: absolute;
-  top: -5px;
-  right: -5px;
+
+.avatar-with-crown :deep(.v-avatar) {
+  width: 26px !important;
+  height: 26px !important;
 }
 
-/* =========================
-   BOTTOM NAVBAR — floating dock
-========================= */
 
-.bottom-navbar {
-  pointer-events: auto;
+.crown-icon {
+  position: absolute;
 
-  width: min(780px, calc(100vw - 24px)) !important;
+  top: -6px;
+  right: -7px;
 
-  border-radius: 26px !important;
+  z-index: 2;
+}
 
-  background: rgba(12, 12, 20, 0.78) !important;
 
-  backdrop-filter: blur(24px) saturate(1.5);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+/* =========================================================
+   DROPDOWN MENU
+   ========================================================= */
+
+.menu-glass {
+  background: rgba(14, 14, 22, 0.94) !important;
+
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
 
   border: 1px solid rgba(255, 255, 255, 0.09);
 
   box-shadow:
-    0 14px 44px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-
-  padding: 8px;
+    0 24px 60px rgba(0, 0, 0, 0.6);
 
   overflow: hidden;
-  margin: 0 auto;
-
-  will-change: transform;
-  position: fixed;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  z-index: 1005;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
 }
 
-/* Content */
 
-.bottom-navbar .v-bottom-navigation__content {
-  justify-content: center !important;
+.menu-link {
+  display: flex !important;
 
-  gap: 8px;
+  align-items: center;
 
-  width: 100%;
-}
+  min-height: 32px;
 
-/* Hidden */
+  padding: 6px 10px;
 
-.bottom-navbar--hidden {
-  transform: translateY(160%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* BUTTON */
-
-/* =========================
-   BOTTOM NAV BUTTON
-========================= */
-
-.bottom-nav-btn {
-  position: relative;
-
-  border-radius: 18px !important;
-
-  overflow: hidden;
+  border-radius: 10px;
 
   transition:
-    all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-
-  color: rgba(255, 255, 255, 0.72) !important;
-
-  font-weight: 500;
-  letter-spacing: 0.2px;
-
-  min-width: 0 !important;
-
-  /* Quan trọng */
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  gap: 3px !important;
-
-  padding: 6px 10px !important;
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-/* Vuetify thường đặt content bên trong button */
-.bottom-nav-btn :deep(.v-btn__content) {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
 
-  gap: 3px !important;
-
-  width: 100%;
-  height: 100%;
-}
-
-/* ICON */
-.bottom-nav-btn :deep(.v-icon) {
-  flex: 0 0 auto !important;
-
-  margin: 0 !important;
-
-  width: 22px;
-  height: 22px;
-
-  transition:
-    transform 0.3s ease,
-    color 0.3s ease;
-}
-
-/* TEXT */
-.bottom-nav-btn :deep(span) {
-  display: block !important;
-
-  margin: 0 !important;
-
-  font-size: 11px;
-  line-height: 14px;
-
-  font-weight: 600;
-
-  white-space: nowrap;
-
-  text-transform: none;
-
-  transition: all 0.25s ease;
-}
-
-/* ACTIVE */
-.bottom-nav-active .v-icon {
-  transform: scale(1.18) translateY(-1px);
+.menu-link:hover {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 183, 0, 0.16),
+      rgba(255, 94, 0, 0.16)
+    );
 
   color: #ffb700 !important;
 
-  filter: drop-shadow(
-    0 0 8px rgba(255, 183, 0, 0.65)
-  );
+  transform: translateX(3px);
 }
 
-.bottom-nav-active span {
-  color: white;
 
-  letter-spacing: 0.3px;
+/* =========================================================
+   TABLET
+   <= 1200px
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .main-navbar :deep(.v-toolbar__content) {
+    padding: 0 12px !important;
+
+    gap: 6px;
+  }
+
+
+  .main-navbar :deep(.v-img) {
+    width: 130px;
+    max-width: 130px;
+  }
+
+
+  .nav-btn {
+    padding: 0 9px !important;
+
+    gap: 5px !important;
+
+    font-size: 13px;
+  }
+
+
+  .nav-btn :deep(span) {
+    font-size: 13px;
+  }
+
+
+  .nav-btn :deep(.v-icon) {
+    width: 18px !important;
+    height: 18px !important;
+
+    font-size: 18px !important;
+
+    flex-basis: 18px !important;
+  }
+
+
+  .search-wrapper {
+    flex-basis: 280px;
+
+    width: 280px;
+    max-width: 280px;
+
+    min-width: 160px;
+  }
+
+
+  .account-btn {
+    max-width: 145px;
+  }
+
+
+  .account-name {
+    max-width: 75px;
+  }
 }
 
-/* MOBILE */
+
+/* =========================================================
+   SMALL LAPTOP / TABLET
+   <= 1050px
+
+   Ở kích thước này ưu tiên không chồng chéo.
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .main-navbar :deep(.v-toolbar__content) {
+    gap: 5px;
+  }
+
+
+  .main-navbar :deep(.v-img) {
+    width: 115px;
+    max-width: 115px;
+  }
+
+
+  .main-navbar :deep(.v-toolbar-items) {
+    gap: 2px;
+  }
+
+
+  .nav-btn {
+    padding: 0 7px !important;
+
+    gap: 4px !important;
+  }
+
+
+  .nav-btn :deep(span) {
+    font-size: 12px;
+  }
+
+
+  .search-wrapper {
+    flex-basis: 230px;
+
+    width: 230px;
+    max-width: 230px;
+
+    min-width: 140px;
+  }
+
+
+  .account-btn {
+    padding: 0 7px !important;
+
+    gap: 5px !important;
+
+    max-width: 120px;
+  }
+
+
+  .account-btn :deep(.v-btn__content) {
+    gap: 5px !important;
+  }
+
+
+  .account-name {
+    max-width: 65px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   <= 960px
+
+   Header chuyển sang chế độ compact.
+   ========================================================= */
+
+@media (max-width: 960px) {
+
+  .main-navbar {
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+
+
+  .main-navbar :deep(.v-toolbar__content) {
+    height: 60px !important;
+    min-height: 60px !important;
+
+    padding: 0 10px !important;
+  }
+
+
+  .main-navbar :deep(.v-img) {
+    width: 105px;
+    max-width: 105px;
+
+    height: 42px;
+    max-height: 42px;
+  }
+
+
+  /* Ẩn menu desktop để dùng drawer */
+
+  .main-navbar :deep(.v-toolbar-items) {
+    display: none !important;
+  }
+
+
+  .main-navbar :deep(.v-toolbar__append) {
+    flex: 1 1 auto;
+
+    margin-left: auto;
+
+    justify-content: flex-end;
+
+    gap: 5px;
+  }
+
+
+  .search-wrapper {
+    flex: 1 1 auto;
+
+    width: auto;
+    max-width: 360px;
+
+    min-width: 0;
+  }
+
+
+  .nav-icon-btn {
+    flex: 0 0 38px;
+
+    width: 38px !important;
+    min-width: 38px !important;
+
+    height: 38px !important;
+  }
+
+
+  .account-btn {
+    flex: 0 0 38px;
+
+    width: 38px !important;
+    min-width: 38px !important;
+
+    max-width: 38px;
+
+    padding: 0 !important;
+  }
+
+
+  .account-name {
+    display: none !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   <= 600px
+   ========================================================= */
+
 @media (max-width: 600px) {
-  .bottom-navbar {
-    width: calc(100% - 14px) !important;
 
-    bottom: 8px;
-
-    border-radius: 22px !important;
-
-    padding: 5px !important;
+  .main-navbar {
+    height: 56px !important;
+    min-height: 56px !important;
   }
 
-  .bottom-navbar .v-bottom-navigation__content {
-    gap: 2px !important;
+
+  .main-navbar :deep(.v-toolbar__content) {
+    height: 56px !important;
+    min-height: 56px !important;
+
+    padding: 0 7px !important;
+
+    gap: 3px;
   }
 
-  .bottom-nav-btn {
-    border-radius: 16px !important;
 
-    padding: 5px 4px !important;
+  .main-navbar :deep(.v-app-bar-nav-icon) {
+    flex: 0 0 38px;
 
-    gap: 2px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
 
-  .bottom-nav-btn :deep(.v-btn__content) {
-    gap: 2px !important;
+
+  .main-navbar :deep(.v-img) {
+    width: 90px;
+    max-width: 90px;
+
+    height: 38px;
+    max-height: 38px;
   }
 
-  .bottom-nav-btn :deep(span) {
-    font-size: 10px;
 
-    line-height: 13px;
+  .main-navbar :deep(.v-toolbar__append) {
+    gap: 3px;
+
+    min-width: 0;
   }
 
-  .bottom-nav-btn :deep(.v-icon) {
-    width: 22px;
-    height: 22px;
+
+  .search-wrapper {
+    flex: 1 1 auto;
+
+    width: auto;
+    max-width: none;
+
+    min-width: 0;
+  }
+
+
+  .search-input :deep(.v-field) {
+    height: 38px !important;
+    min-height: 38px !important;
+  }
+
+
+  .search-input :deep(.v-field__input) {
+    height: 38px;
+
+    min-height: 38px !important;
+
+    font-size: 12px;
+  }
+
+
+  .nav-icon-btn {
+    flex: 0 0 36px;
+
+    width: 36px !important;
+    min-width: 36px !important;
+
+    height: 36px !important;
+  }
+
+
+  .nav-icon-btn :deep(.v-icon) {
+    width: 20px !important;
+    height: 20px !important;
+
+    font-size: 20px !important;
+  }
+
+
+  .account-btn {
+    flex: 0 0 36px;
+
+    width: 36px !important;
+    min-width: 36px !important;
+
+    height: 36px !important;
+
+    max-width: 36px;
+
+    padding: 0 !important;
+  }
+
+
+  .avatar-with-crown {
+    width: 24px;
+    height: 24px;
+
+    min-width: 24px;
+
+    flex-basis: 24px;
+  }
+
+
+  .avatar-with-crown :deep(.v-avatar) {
+    width: 24px !important;
+    height: 24px !important;
   }
 }
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   <= 400px
+
+   Giữ khoảng cách an toàn.
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .main-navbar :deep(.v-toolbar__content) {
+    padding: 0 5px !important;
+
+    gap: 2px;
+  }
+
+
+  .main-navbar :deep(.v-app-bar-nav-icon) {
+    flex-basis: 34px;
+
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+
+  .main-navbar :deep(.v-img) {
+    width: 78px;
+    max-width: 78px;
+  }
+
+
+  .nav-icon-btn {
+    flex-basis: 34px;
+
+    width: 34px !important;
+    min-width: 34px !important;
+
+    height: 34px !important;
+  }
+
+
+  .account-btn {
+    flex-basis: 34px;
+
+    width: 34px !important;
+    min-width: 34px !important;
+
+    height: 34px !important;
+
+    max-width: 34px;
+  }
+
+
+  .search-input :deep(.v-field__input) {
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   FIX VUETIFY FLEX / OVERFLOW
+   ========================================================= */
+
+.main-navbar :deep(.v-toolbar__prepend),
+.main-navbar :deep(.v-toolbar__append),
+.main-navbar :deep(.v-toolbar-items),
+.main-navbar :deep(.v-btn),
+.main-navbar :deep(.v-menu) {
+  box-sizing: border-box;
+}
+
+
+.main-navbar :deep(.v-menu) {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   DRAWER
+   ========================================================= */
+
+.drawer-list :deep(.v-list-item) {
+  min-height: 44px;
+
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+
+.drawer-list :deep(.v-list-item__prepend) {
+  width: 36px;
+  min-width: 36px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+.drawer-list :deep(.v-list-item__prepend .v-icon) {
+  margin: 0 !important;
+}
+
+
+.drawer-list :deep(.v-list-item-title) {
+  min-width: 0;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  line-height: 20px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+.drawer-panel-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+
+  font-size: 14px;
+
+  font-weight: 500;
+}
+
+
+.drawer-panel-title .v-icon {
+  flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY / TOUCH
+   ========================================================= */
+
+@media (hover: none) {
+
+  .nav-btn:hover,
+  .nav-icon-btn:hover {
+    background: transparent !important;
+  }
+}
+
 
 </style>

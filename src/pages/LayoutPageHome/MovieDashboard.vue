@@ -12,7 +12,7 @@
       >
         <span class="rank">{{ i+1 }}.</span>
 
-        <img :src="movie.thumb_url" class="thumb" @click="goMovie(movie)" />
+        <img :src="movie.thumb_url" class="thumb" loading="lazy" @click="goMovie(movie)" />
 
         <div class="name">{{ movie.name }}</div>
         
@@ -30,7 +30,7 @@
       >
         <span class="rank">{{ i+1 }}.</span>
 
-        <img :src="'https://phimimg.com/' + movie.thumb_url" class="thumb" @click="goMovie(movie)"/>
+        <img :src="'https://phimimg.com/' + movie.thumb_url" class="thumb" loading="lazy" @click="goMovie(movie)"/>
 
         <div class="name">{{ movie.name }}</div>
       </div>
@@ -66,7 +66,8 @@
         :key="i"
         class="comment"
       >
-        <img :src="c.avatar" class="avatar"/>
+        <img v-if="c.avatar" :src="c.avatar" class="avatar"/>
+        <div v-else class="avatar avatar-fallback">{{ (c.user || "Z")[0] }}</div>
 
         <div>
           <div class="user">{{ c.user }}</div>
@@ -82,12 +83,7 @@ export default{
   props:["movies"],
   data(){
     return{
-      hotMovies:[
-        { name:"The Batman", img:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onM.jpg" },
-        { name:"The Flash", img:"https://image.tmdb.org/t/p/w500/8aM2qUoXW7jTnH7rPz9rYtLqLh.jpg" },
-        { name:"Black Panther: Wakanda Forever", img:"https://image.tmdb.org/t/p/w500/sv1xJUazXeYqALFehM0uL4DGLw.jpg" },
-        { name:"Avatar: The Way of Water", img:"https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
-      ],
+      hotMovies:[],
       favoriteMovies:[
         
       ],
@@ -99,18 +95,18 @@ export default{
         { name:"Kinh dị", router:"the-loai/kinh-di", arrow:"mdi-arrow-up-right", color:"green" }
       ],
       comments:[
-        { user:"Nguyễn Văn A", text:"Bộ phim này thật tuyệt vời!", avatar:"https://randomuser.me/api/portraits/men/1.jpg" },
-        { user:"Trần Thị B", text:"Tôi rất thích diễn xuất của diễn viên chính.", avatar:"https://randomuser.me/api/portraits/women/2.jpg" },
-        { user:"Lê Văn C", text:"Cốt truyện hơi yếu nhưng hiệu ứng đẹp.", avatar:"https://randomuser.me/api/portraits/men/3.jpg" },
-        { user:"Phạm Thị D", text:"Âm nhạc trong phim rất hay!", avatar:"https://randomuser.me/api/portraits/women/4.jpg" },
+        { user:"ZCines", text:"Tham gia bình luận để chia sẻ cảm nhận về bộ phim bạn yêu thích nhé!", avatar:"" },
       ]
     }
   },
   async mounted(){
-    const res = await fetch("https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=4");
-        const data = await res.json();
-
-        this.favoriteMovies = data.items || data.data?.items || [];
+    try {
+      const res = await fetch("https://phimapi.com/v1/api/danh-sach/phim-le?page=1&sort_field=year&sort_type=desc&limit=4");
+      const data = await res.json();
+      this.favoriteMovies = data.items || data.data?.items || [];
+    } catch (e) {
+      console.log("Không tải được phim yêu thích:", e);
+    }
   },
   methods:{
     goMovie(movie){
@@ -281,6 +277,16 @@ export default{
   height:36px;
   border-radius:50%;
   border: 2px solid rgba(255, 183, 0, 0.35);
+}
+
+.avatar-fallback{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: var(--zc-grad);
+  color:#0a0a12;
+  font-weight:800;
+  font-size:15px;
 }
 
 .user{

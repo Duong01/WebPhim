@@ -2112,7 +2112,7 @@ export default {
         image: this.movie.thumb_url || "",
         width: "100%",
         aspectratio: "16:9",
-        preload: "none",
+        preload: "metadata",
         autostart: false,
         mute: this.muted,
         stretching: "uniform",
@@ -2701,7 +2701,9 @@ export default {
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.includes(tap);
+        const data = server.server_data.find(
+          (ep) => ep.name === `Tập ${tap}` || ep.name === tap
+        );
         if (data) {
           this.movie.videoUrl = data.link_embed;
           this.movie.LinkDown = data.link_m3u8;

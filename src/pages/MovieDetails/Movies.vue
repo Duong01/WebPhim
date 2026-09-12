@@ -33,13 +33,7 @@
 
               <!-- Placeholder Loading -->
               <template #placeholder>
-                <div class="d-flex align-center justify-center fill-height">
-                  <v-progress-circular
-                    color="blue-lighten-3"
-                    :width="5"
-                    indeterminate
-                  ></v-progress-circular>
-                </div>
+                <div class="zc-shimmer fill-height"></div>
               </template>
             </v-img>
           </div>
@@ -71,14 +65,7 @@
                       @error="onImageError(movie, 'poster_url')"
                     >
                       <template #placeholder>
-                        <div
-                          class="d-flex align-center justify-center fill-height"
-                        >
-                          <v-progress-circular
-                            color="primary"
-                            indeterminate
-                          ></v-progress-circular>
-                        </div>
+                        <div class="zc-shimmer fill-height"></div>
                       </template>
                     </v-img>
                   </div>
@@ -385,9 +372,7 @@
                                       @error="onImageError(suggested, 'thumb_url')"
                                     >
                                       <template #placeholder>
-                                        <div class="d-flex align-center justify-center fill-height bg-grey-darken-4">
-                                          <v-progress-circular color="primary" indeterminate></v-progress-circular>
-                                        </div>
+                                        <div class="zc-shimmer fill-height"></div>
                                       </template>
                                     </v-img>
                                   </div>

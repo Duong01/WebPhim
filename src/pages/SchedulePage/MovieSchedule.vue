@@ -50,13 +50,7 @@
                 :alt="movie.title"
               >
                 <template #placeholder>
-                  <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular
-                      color="blue-lighten-3"
-                :width="4"
-                      indeterminate
-                    ></v-progress-circular>
-                  </div>
+                  <div class="zc-shimmer fill-height"></div>
                 </template>
               </v-img>
 
@@ -101,12 +95,7 @@
               class="movie-thumb"
             >
               <template #placeholder>
-                <div class="d-flex align-center justify-center fill-height">
-                  <v-progress-circular
-                    color="grey-lighten-4"
-                    indeterminate
-                  ></v-progress-circular>
-                </div>
+                <div class="zc-shimmer fill-height"></div>
               </template>
             </v-img>
 

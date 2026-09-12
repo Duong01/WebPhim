@@ -3,7 +3,8 @@
    Dark cinema theme · Amber accent · Glassmorphism
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap');
+/* Font được tải qua <link> trong public/index.html (preconnect + preload) —
+   không dùng @import để tránh chặn render CSS. */
 
 :root {
   /* ---- Color tokens ---- */

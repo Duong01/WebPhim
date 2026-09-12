@@ -106,9 +106,34 @@
   <meta name="apple-mobile-web-app-title" content="ZCines" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-  <!-- Preconnect -->
+  <!-- Preconnect — ưu tiên kết nối sớm cho font, CDN ảnh và API -->
   <link rel="preconnect" href="https://cdn.jwplayer.com" />
   <link rel="dns-prefetch" href="https://cdn.jwplayer.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://phimimg.com" />
+  <link rel="preconnect" href="https://img.ophim.live" />
+  <link rel="dns-prefetch" href="https://phimapi.com" />
+  <link rel="dns-prefetch" href="https://ophim1.com" />
+
+  <!-- Fonts — tải không chặn render (thay cho @import trong CSS) -->
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap"
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap"
+    />
+  </noscript>
 
   <!-- Adsense -->
   <meta
@@ -217,7 +242,8 @@
   <div id="app"></div>
 
   <!-- JWPlayer -->
-  <script src="https://cdn.jwplayer.com/libraries/SAHhwvZq.js"></script>
+  <!-- JWPlayer — defer để không chặn parse HTML -->
+  <script defer src="https://cdn.jwplayer.com/libraries/SAHhwvZq.js"></script>
 
 </body>
 </html>
