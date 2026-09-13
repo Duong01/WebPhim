@@ -378,7 +378,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .search-page {
   min-height: 100vh;

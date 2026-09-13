@@ -902,9 +902,9 @@ export default {
   right: 0;
 
   width: 100%;
-  height: 64px !important;
+  height: auto !important;
   min-height: 64px !important;
-
+  flex-shrink: 0 !important;
   z-index: 1000;
 
   background:
@@ -963,7 +963,7 @@ export default {
 
   display: flex !important;
   align-items: center !important;
-
+  flex-shrink: 0;
   width: 100%;
 
   padding: 0 16px !important;
@@ -1686,183 +1686,248 @@ export default {
 }
 
 
+
+
 /* =========================================================
-   MOBILE
-   <= 600px
+   FIX MOBILE KEYBOARD - HEADER KHÔNG BỊ PHÁ LAYOUT
    ========================================================= */
 
 @media (max-width: 600px) {
-
+  /* Header luôn giữ kích thước cố định */
   .main-navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+
+    width: 100% !important;
     height: 56px !important;
     min-height: 56px !important;
+    max-height: 56px !important;
+
+    flex-shrink: 0 !important;
+
+    /* Không để viewport resize làm thay đổi header */
+    transform: translateZ(0);
+    contain: layout style;
   }
 
-
+  /* Toolbar bên trong */
   .main-navbar :deep(.v-toolbar__content) {
+    width: 100% !important;
+
     height: 56px !important;
     min-height: 56px !important;
+    max-height: 56px !important;
 
     padding: 0 7px !important;
 
-    gap: 3px;
+    display: flex !important;
+    align-items: center !important;
+
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
   }
 
-
+  /* Menu */
   .main-navbar :deep(.v-app-bar-nav-icon) {
-    flex: 0 0 38px;
-
+    flex: 0 0 38px !important;
     width: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+
     height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
   }
 
-
+  /* Logo */
   .main-navbar :deep(.v-img) {
-    width: 90px;
-    max-width: 90px;
+    flex: 0 0 90px !important;
 
-    height: 38px;
-    max-height: 38px;
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+
+    height: 38px !important;
+    max-height: 38px !important;
   }
 
-
+  /* Khu vực bên phải */
   .main-navbar :deep(.v-toolbar__append) {
-    gap: 3px;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
 
-    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+
+    justify-content: flex-end !important;
+
+    gap: 3px !important;
+
+    margin-left: auto !important;
+    padding-left: 0 !important;
   }
 
-
+  /* Search */
   .search-wrapper {
-    flex: 1 1 auto;
+    flex: 1 1 auto !important;
 
-    width: auto;
-    max-width: none;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
 
-    min-width: 0;
+    height: 40px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    overflow: visible !important;
   }
 
+  .search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
 
+  /* Vuetify field */
   .search-input :deep(.v-field) {
+    width: 100% !important;
+
     height: 38px !important;
     min-height: 38px !important;
+    max-height: 38px !important;
+
+    border-radius: 20px !important;
+
+    box-sizing: border-box !important;
   }
 
-
+  /* INPUT QUAN TRỌNG NHẤT */
   .search-input :deep(.v-field__input) {
-    height: 38px;
+    width: 100% !important;
+    min-width: 0 !important;
 
+    height: 38px !important;
     min-height: 38px !important;
 
-    font-size: 12px;
+    /*
+     * 16px để iOS không tự zoom khi focus
+     */
+    font-size: 16px !important;
+
+    line-height: 38px !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
+  .search-input :deep(input) {
+    font-size: 16px !important;
+    line-height: normal !important;
+  }
 
+  /* Không để icon search làm input bị ép */
+  .search-input :deep(.v-field__append-inner) {
+    flex: 0 0 auto !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Icon ngôn ngữ */
   .nav-icon-btn {
-    flex: 0 0 36px;
+    flex: 0 0 36px !important;
 
     width: 36px !important;
     min-width: 36px !important;
+    max-width: 36px !important;
 
     height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
   }
 
-
-  .nav-icon-btn :deep(.v-icon) {
-    width: 20px !important;
-    height: 20px !important;
-
-    font-size: 20px !important;
-  }
-
-
+  /* Account */
   .account-btn {
-    flex: 0 0 36px;
+    flex: 0 0 36px !important;
 
     width: 36px !important;
     min-width: 36px !important;
+    max-width: 36px !important;
 
     height: 36px !important;
-
-    max-width: 36px;
+    min-height: 36px !important;
+    max-height: 36px !important;
 
     padding: 0 !important;
-  }
-
-
-  .avatar-with-crown {
-    width: 24px;
-    height: 24px;
-
-    min-width: 24px;
-
-    flex-basis: 24px;
-  }
-
-
-  .avatar-with-crown :deep(.v-avatar) {
-    width: 24px !important;
-    height: 24px !important;
   }
 }
 
 
 /* =========================================================
-   VERY SMALL MOBILE
-   <= 400px
-
-   Giữ khoảng cách an toàn.
+   MOBILE RẤT NHỎ
    ========================================================= */
 
 @media (max-width: 400px) {
-
   .main-navbar :deep(.v-toolbar__content) {
     padding: 0 5px !important;
-
-    gap: 2px;
+    gap: 2px !important;
   }
-
 
   .main-navbar :deep(.v-app-bar-nav-icon) {
-    flex-basis: 34px;
+    flex-basis: 34px !important;
 
     width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+
     height: 34px !important;
   }
-
 
   .main-navbar :deep(.v-img) {
-    width: 78px;
-    max-width: 78px;
-  }
+    flex-basis: 78px !important;
 
+    width: 78px !important;
+    min-width: 78px !important;
+    max-width: 78px !important;
+  }
 
   .nav-icon-btn {
-    flex-basis: 34px;
+    flex-basis: 34px !important;
 
     width: 34px !important;
     min-width: 34px !important;
+    max-width: 34px !important;
 
     height: 34px !important;
   }
-
 
   .account-btn {
-    flex-basis: 34px;
+    flex-basis: 34px !important;
 
     width: 34px !important;
     min-width: 34px !important;
+    max-width: 34px !important;
 
     height: 34px !important;
-
-    max-width: 34px;
   }
 
-
-  .search-input :deep(.v-field__input) {
-    font-size: 11px;
+  /*
+   * Không dùng 11px nữa.
+   * 16px giúp mobile không tự zoom khi focus.
+   */
+  .search-input :deep(.v-field__input),
+  .search-input :deep(input) {
+    font-size: 16px !important;
   }
 }
+
+
 
 
 /* =========================================================
